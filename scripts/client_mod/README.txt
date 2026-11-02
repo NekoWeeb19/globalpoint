@@ -102,6 +102,35 @@ Lets a phone with no root get the ~10 GB of game files from a folder instead of 
     python -I <repo>/scripts/client_mod/repack_apk.py wfcn-globalized-20.apk work-storage/unsigned.apk assets/worldflipper_android_release.swf=p15-local-storage.swf AndroidManifest.xml=work-storage/AndroidManifest.xml
     then zipalign + apksigner as above -> wfcn-test-storage-N.apk
 
+Server address file (2026-11-02): p16 (drop-off, now skipping server.txt) -> patch_cn_server_file.cjs
+-> p17-local-server.swf -> wfcn-globalized-23.apk (= build 22 + server.txt). Plays against a PC's
+StarPoint over plain Wi-Fi, no adb.
+  File: server.txt, top level of /sdcard/Android/obb/com.leiting.wf/ (read with no permission; Samsung
+    My Files can write there on Android 12/16) or else /sdcard/StarPoint/ (needs All files access).
+    The first line that isn't empty or a # comment: host:port, e.g. 192.168.1.20:8000. A BOM, spaces,
+    CRLF, "http://" in front, a trailing "/" or "/cn" are fine; no port = 8000. Read once per start.
+  Valid: the API host (DevConfig_gf_android "127.0.0.1:8000/cn") and the version check
+    (GbitsVersionLogic "http://127.0.0.1:8000/cn/shijtswy/version/") use it; CDN and patch downloads
+    follow by themselves (the server builds those addresses from the address the game used); co-op's
+    battle address comes from the server's replies (COOP_HOST), nothing on the client pins it. The
+    other 127.0.0.1/localhost strings in the SWF are unused dev settings (dummy socket, gamepad URL).
+    The title screen shows "Server: <host:port>" above the version text; a file that is there but not
+    understood shows "server.txt not understood" and the baked 127.0.0.1:8000 is used. Missing: as
+    build 22, nothing shown. The OBB/loose-file drop-off leaves server.txt alone.
+  Updating the APK: AIR keeps compiled code in /data/data/com.leiting.wf/cache/app and an update does
+    not clear it, so after installing 23 over an older build clear the app's cache (Settings > Apps >
+    World Flipper > Storage > Clear cache; adb: pm trim-caches 999G, or su rm -rf .../cache/app).
+    Otherwise the old build's code runs (seen on the emulator: build 21's drop-off moved server.txt).
+  Tested 2026-11-02 on LDPlayer emulator-5556 (Android 9): (1) no file: no title line, logs in to
+    127.0.0.1:8000 as before; (2) server.txt (BOM, CRLF, comment, http://.../) -> title "Server:
+    192.168.12.109:8010", signup/login/missions/login bonus on a separate test server on the PC's LAN
+    address (no adb reverse), the tutorial quest played; that server's get_path answer lists patch
+    URLs on 192.168.12.109:8010 and they download; (3) a junk file -> title "server.txt not understood", logs in to 127.0.0.1:8000 as before.
+  Build:
+    node <repo>/scripts/client_mod/patch_cn_storage_dropoff.cjs p14-local-strip.swf work-srv/p16b.swf work-srv ../../tools/ffdec/ffdec-cli.jar
+    node <repo>/scripts/client_mod/patch_cn_server_file.cjs work-srv/p16b.swf p17-local-server.swf work-srv ../../tools/ffdec/ffdec-cli.jar
+    then manifest_storage.py, repack_apk.py, zipalign + apksigner as for build 22 -> wfcn-globalized-23.apk
+
 OBB drop-off (2026-11-02): p14-local-strip.swf -> patch_cn_storage_dropoff.cjs -> p16-local-obb.swf ->
 wfcn-globalized-22.apk (= build 21 + OBB). The whole game-files set as ONE file, for players who copy
 it over USB instead of ~138k loose files.

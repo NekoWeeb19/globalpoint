@@ -41,6 +41,13 @@ package starpoint
          return !f.isDirectory && f.name.toLowerCase().substr(-4) == ".obb";
       }
 
+      // files in the drop-off folders that are not game files: OBBs (unpacked separately) and
+      // server.txt (ServerAddress.as reads it from the OBB folder; it stays where it is)
+      public static function isIgnored(f:File):Boolean
+      {
+         return isObb(f) || (!f.isDirectory && f.name.toLowerCase() == "server.txt");
+      }
+
       // the .obb files at the top of the drop-off folders
       public static function obbFiles():Array
       {
@@ -88,7 +95,7 @@ package starpoint
          for (var i:int = 0; i < list.length; i++)
          {
             var f:File = list[i];
-            if (isObb(f)) continue;
+            if (isIgnored(f)) continue;
             if (!f.isDirectory) return true;
             if (depth > 0 && hasFiles(f, depth - 1)) return true;
          }
@@ -442,7 +449,7 @@ package starpoint
                for (var i:int = 0; i < list.length; i++)
                {
                   var f:File = list[i];
-                  if (isObb(f)) continue;
+                  if (isIgnored(f)) continue;
                   var r:String = (rel == "" ? "" : rel + "/") + f.name;
                   if (f.isDirectory) dirs.push([root, r]);
                   else if (r == "info.json") infos.push([root, f]);
