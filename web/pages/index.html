@@ -206,6 +206,7 @@
                             $("phone-download").href = "/api/server/phone-connection/server.txt?host=" + encodeURIComponent($("phone-address").value)
                         }
                         fetch("/api/server/phone-connection").then(r => r.json()).then(data => {
+                            if (data.onPhone) { $("phone").classList.add("hidden"); return }
                             if (!data.onNetwork) { $("phone-off").classList.remove("hidden"); return }
                             if (data.addresses.length === 0) { $("phone-message").textContent = "No Wi-Fi or network address found on this PC."; return }
                             for (const address of data.addresses) {

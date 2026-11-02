@@ -117,7 +117,9 @@ const routes = async (fastify: FastifyInstance) => {
         const asked = (request.headers.host ?? "").replace(/:\d+$/, "")
         const addresses = lanAddresses()
         if (/^\d{1,3}(\.\d{1,3}){3}$/.test(asked) && !asked.startsWith("127.") && !addresses.includes(asked)) addresses.unshift(asked)
-        return reply.send({ onNetwork: onNetwork(), listenHost: process.env.LISTEN_HOST ?? "localhost", port: listenPort(), addresses })
+        // STARPOINT_COMPANION=1: the server runs inside the phone companion app, where this doesn't apply
+        const onPhone = process.env.STARPOINT_COMPANION === "1"
+        return reply.send({ onPhone, onNetwork: onNetwork(), listenHost: process.env.LISTEN_HOST ?? "localhost", port: listenPort(), addresses })
     })
     fastify.get("/phone-connection/server.txt", async (request: FastifyRequest, reply: FastifyReply) => {
         const host = String((request.query as { host?: string }).host ?? lanAddresses()[0] ?? "")
