@@ -1,0 +1,36 @@
+{
+ "221003": {
+  "name": "Deep-Sea Princess Amelia",
+  "until": "2023-09-12 06:00:00",
+  "source": "global news 2610 (live 2023-09-12) + worldflipper.wiki.gg/wiki/Amelia 2022 copy",
+  "rows": {
+   "master/ability/ability.orderedmap#2210031": "mermaid_1,true,attack_blue,0,,1,0,,,,,,,0,,,,,,,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(None),,,,,,,,,,,,4,,,,,,,,,,,false,0,5,Blue,,17500,35000,,,,,,,,,,,",
+   "master/ability/ability.orderedmap#2210032": "mermaid_2,true,attack_blue,0,,1,0,,,,,,,0,,,,,,,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(None),,,,,,,,,,,,0,0,,60000,60000,,,,,,,false,0,5,Blue,,10000,20000,,,,,,,,,,,",
+   "master/ability/ability.orderedmap#2210033": "mermaid_3,false,hp_skill,0,,0,0,,,,,,,0,,,,,,,0,,,,,,,8,,,100000,100000,,,(None),0,,,,(None),,,,,,,0,206,0,,,9000,18000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+   "master/ability/ability.orderedmap#2210034": "mermaid_4,true,attack_common,0,,0,0,,,,,,,0,,,,,,,0,,,,,,,8,,,100000,100000,,,(None),0,,,,(None),,,,,,,0,0,2,,,25000,50000,,,,,90000000,90000000,100000,100000,(None),(None),(None),(None),(None),,0,,,,,false,,1,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+   "master/ability/ability.orderedmap#2210035": "mermaid_5,true,hp_skill,0,,0,0,,,,,,,0,,,,,,,0,,,,,,,8,,,100000,100000,,,3,0,,,,(None),,,,,,,0,195,0,,,5000,10000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+   "master/ability/ability.orderedmap#2210036": "mermaid_6,true,attack_common,0,,0,43,,,,,Blue,,0,,,,,,,0,,,,,,,78,0,,200000000,200000000,,,(None),0,,,,(None),,,,,,,0,0,2,,,50000,100000,,,,,180000000,180000000,100000,100000,(None),(None),(None),(None),(None),,0,,,,,false,,1,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+   "master/ability/leader_ability.orderedmap#221003": "mermaid,0,,0,0,,,,,,,0,,,,,,,0,,,,,,,0,,,,,,,,,,,,(None),,,,,,,0,205,5,Blue,,15000,20000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,\nmermaid,0,,0,0,,,,,,,0,,,,,,,0,,,,,,,0,,,,,,,,,,,,(None),,,,,,,0,56,,,,18750,25000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+   "master/skill/action_skill.orderedmap#mermaid/1": {
+    "cols": {
+     "1": "Sends forth a great current, inflicting Water damage on nearby foes / Increases Fever Gauge"
+    }
+   },
+   "master/skill/action_skill.orderedmap#mermaid/2": {
+    "cols": {
+     "1": "Sends forth a great current, inflicting Water damage on nearby foes / Increases Fever Gauge"
+    }
+   },
+   "master/character/character_status.orderedmap#221003/1": "64,8",
+   "master/character/character_status.orderedmap#221003/10": "639,76",
+   "master/character/character_status.orderedmap#221003/80": "3835,454",
+   "master/character/character_status.orderedmap#221003/100": "4220,500",
+   "master/character/character.orderedmap#221003": {
+    "cols": {
+     "6": 3
+    }
+   }
+  }
+ },
+ "_about": "Unit kits before a global balance change: until the date (game clock, UTC) the listed rows ship with this text instead of the game's own. Keys: <table>#<row key>."
+}

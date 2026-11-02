@@ -302,7 +302,28 @@ async function main() {
             if (!id.startsWith("_") && !isNaN(ms) && now < ms) mb2Locked.add(id)
         }
     }
-    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...(mb2Dated ? [MB2_TABLE] : [])])].sort()
+    // Unit kits before a balance change (assets/kit_dates.json): until a unit's date on the game clock its
+    // listed rows ship with the old text ("<table>#<row key>": a full row, or { cols: { <index>: text } }
+    // for one line's columns). The tables are shipped whenever the file exists, so a later update puts the
+    // game's own rows back.
+    const kitFile = path.join(ROOT, "assets", "kit_dates.json")
+    const kitRows = new Map() // file -> Map(row key -> old text or column patch)
+    const kitTables = new Set()
+    if (fs.existsSync(kitFile)) {
+        const now = gameNowMs()
+        for (const [unit, kit] of Object.entries(JSON.parse(fs.readFileSync(kitFile, "utf8")))) {
+            if (unit.startsWith("_") || !kit.rows) continue
+            const until = Date.parse(String(kit.until).replace(" ", "T") + "Z")
+            for (const [ref, text] of Object.entries(kit.rows)) {
+                const file = fileOf(ref.slice(0, ref.indexOf("#")))
+                kitTables.add(file)
+                if (isNaN(until) || now >= until) continue
+                if (!kitRows.has(file)) kitRows.set(file, new Map())
+                kitRows.get(file).set(ref.slice(ref.indexOf("#") + 1), text)
+            }
+        }
+    }
+    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...(mb2Dated ? [MB2_TABLE] : []), ...kitTables])].sort()
     const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
     const cn = await cnFiles(new Set([...fileList, featureFile]))
     // art StarPoint's patches added (scripts/gen_cn_banner_art.cjs) counts too: their file names and
@@ -346,6 +367,24 @@ async function main() {
                 if (unit.node.entries.length < before) hidden++
             }
             console.log(`Mana Board 2: ${hidden} unit(s) not out yet on the game clock`)
+        }
+        if (kitRows.has(file)) {
+            const wanted = kitRows.get(file)
+            let set = 0
+            for (const { path: keys, leaf } of R.leaves(tree)) {
+                const old = wanted.get(keys.join("/"))
+                if (old === undefined) continue
+                const end = leaf.text.endsWith("\n") ? "\n" : ""
+                if (typeof old === "string") R.setLeafText(leaf, old.replace(/\n$/, "") + end)
+                else {
+                    const lines = leaf.text.replace(/\n$/, "").split("\n"), cols = R.splitCsv(lines[0])
+                    for (const [i, v] of Object.entries(old.cols ?? {})) cols[+i] = String(v)
+                    lines[0] = cols.map(R.csvField).join(",")
+                    R.setLeafText(leaf, lines.join("\n") + end)
+                }
+                set++
+            }
+            console.log(`Unit kits before a balance change: ${set} row(s) in ${file}`)
         }
         trees.set(file, tree)
     }
