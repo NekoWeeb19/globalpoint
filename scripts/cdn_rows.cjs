@@ -51,7 +51,8 @@ function decodeValue(raw) {
     return { ...decodeFile(raw), raw }
 }
 
-const changed = node => node.kind === "leaf" ? node.original !== undefined : node.entries.some(e => changed(e.node))
+// a map is changed when a leaf in it was edited, or when entries were added or removed (node.dirty)
+const changed = node => node.kind === "leaf" ? node.original !== undefined : node.dirty === true || node.entries.some(e => changed(e.node))
 
 function encodeValue(node) {
     if (node.kind === "map") return node.raw !== undefined && !changed(node) ? node.raw : encodeFile(node)

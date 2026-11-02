@@ -1,4 +1,5 @@
 import { awakeManaNodesSync } from "../../nya/manaAwake";
+import { mb2Locked } from "../../nya/mb2Lock";
 // Handles the insertion of mana into characters.
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
@@ -227,6 +228,12 @@ const routes = async (fastify: FastifyInstance) => {
         if (characterAssetData === null) return reply.status(500).send({
             "error": "Internal Server Error",
             "message": "No character asset data found."
+        })
+
+        // Mana Board 2 not out yet on the server clock (src/nya/mb2Lock.ts)
+        if (manaBoardIndex >= 2 && mb2Locked(characterId)) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "This unit's Mana Board 2 isn't available yet."
         })
 
         // make sure that the mana board index is valid
