@@ -5,7 +5,8 @@
 
 import getDatabase, { Database } from "../data"
 import { loginBonusDataFor } from "./cnCampaigns"
-import { LOGIN_BONUS_REWARD_KINDS, LoginBonusData, loginBonusGroupOfKey, LoginBonusProgress, LoginBonusReward, loginPaidBeads, loginPaidBeadsSetting, settleLoginBonus } from "../lib/loginBonus"
+import { LOGIN_BONUS_REWARD_KINDS, LoginBonusData, loginBonusGroupOfKey, LoginBonusProgress, LoginBonusReward, loginPaidBeads, settleLoginBonus } from "../lib/loginBonus"
+import { dailyPaidBeads } from "./serverSettings"
 import { getPlayerSync, updatePlayerSync } from "../data/wdfpData"
 import { dayNumber } from "../lib/mission"
 import { givePlayerRewardsSync } from "../lib/quest"
@@ -62,8 +63,8 @@ export function settleLoginBonusSync(playerId: number, serverMs = getServerDate(
         const rewards = grants.flatMap(grant => grant.rewards.map(toReward).filter((reward): reward is Reward => reward !== null))
         if (rewards.length > 0) givePlayerRewardsSync(playerId, rewards)
 
-        // server addition: paid beads with the everyday bonus (LOGIN_BONUS_PAID_BEADS in .env)
-        const paidBeads = loginPaidBeads(grants, loginPaidBeadsSetting(process.env.LOGIN_BONUS_PAID_BEADS))
+        // server addition: paid beads with the everyday bonus (the dashboard's first tab, else LOGIN_BONUS_PAID_BEADS in .env)
+        const paidBeads = loginPaidBeads(grants, dailyPaidBeads())
         const player = paidBeads > 0 ? getPlayerSync(playerId) : null
         if (player !== null) updatePlayerSync({ id: playerId, vmoney: player.vmoney + paidBeads })
 

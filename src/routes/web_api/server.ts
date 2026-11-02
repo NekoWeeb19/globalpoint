@@ -19,6 +19,7 @@ import { withRealTimeOfDay } from "../../lib/serverClock";
 import { deleteNews, listNews, NEWS_CATEGORIES, saveNews } from "../../nya/news";
 import { DROP_MULTIPLIER_MAX, DROP_MULTIPLIER_MIN, getDropMultiplier, setDropMultiplier } from "../../nya/dropSettings";
 import { lanAddresses } from "../../nya/coop";
+import { getServerSettings, setServerSettings } from "../../nya/serverSettings";
 
 interface TimeQuery {
     time: string | undefined
@@ -105,6 +106,17 @@ const routes = async (fastify: FastifyInstance) => {
             return reply.status(400).send({ error: "Bad Request", message: (error as Error).message })
         }
         return reply.send(dropsReply())
+    })
+
+    // ---- daily paid beads and the never-ending mails (src/nya/serverSettings.ts) ----
+
+    fastify.get("/settings", async (_: FastifyRequest, reply: FastifyReply) => reply.send(getServerSettings()))
+    fastify.post("/settings", async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+            return reply.send(setServerSettings((request.body ?? {}) as { dailyPaidBeads?: unknown, infiniteMails?: unknown }))
+        } catch (error) {
+            return reply.status(400).send({ error: "Bad Request", message: (error as Error).message })
+        }
     })
 
     // ---- phone connection file (server.txt, read by game build 23+): plays a phone against this

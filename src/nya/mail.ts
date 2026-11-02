@@ -4,6 +4,7 @@ import { givePlayerEquipmentSync } from "../lib/equipment"
 import { epochOf, getServerDate, getServerTime } from "../utils"
 import { ClientError } from "./utils"
 import { recordReceivedSync } from "./receiveHistory"
+import { InfiniteMail, infiniteMailOn } from "./serverSettings"
 
 export interface Mail_ {
     "id": number,
@@ -92,6 +93,15 @@ const SpecialMails: Mail_[] = [
     },
 ]
 
+// which dashboard switch each never-ending mail follows (src/nya/serverSettings.ts)
+const SPECIAL_MAIL_SWITCH: Record<number, InfiniteMail> = {
+    [SPECIAL_MAIL_ID.BREAD_1500]: "bread",
+    [SPECIAL_MAIL_ID.MANA_1500]: "mana",
+    [SPECIAL_MAIL_ID.EXP_1500]: "exp",
+}
+/** The never-ending mails switched on on the dashboard. */
+const activeSpecialMails = () => SpecialMails.filter(mail => infiniteMailOn(SPECIAL_MAIL_SWITCH[mail.id]))
+
 let MailIdCounter = 10000000
 const CachedMails: Record<number, Mail_[]> = {}
 
@@ -120,7 +130,7 @@ export const SendMail = (player_id: number, mail: Mail) => {
 // 2020 date showed as "2194 days ago")
 export const GetMails = (player_id: number) => {
     const now = new Date(getServerDate().getTime() - 60_000)
-    return SpecialMails.map(mail => ({ ...mail, "create_time": date2str(now) })).concat(CachedMails[player_id] || [])
+    return activeSpecialMails().map(mail => ({ ...mail, "create_time": date2str(now) })).concat(CachedMails[player_id] || [])
 }
 
 interface MailResult {
@@ -130,7 +140,7 @@ interface MailResult {
     equipment_list?: Object[],
 }
 
-const mailTotalCount = (player_id: number) => SpecialMails.length + (CachedMails[player_id]?.length ?? 0)
+const mailTotalCount = (player_id: number) => activeSpecialMails().length + (CachedMails[player_id]?.length ?? 0)
 
 const process_mail = (player_id: number, mail: Mail): MailResult => {
     const result = give_mail(player_id, mail)
@@ -226,7 +236,7 @@ const give_mail = (player_id: number, { type, type_id, number }: Mail): MailResu
 export const ProcessMail = (player_id: number, mail_id: number) => {
     let data: MailResult;
     if (mail_id >= SPECIAL_MAIL_ID.START) {
-        const mail = SpecialMails.find(mail => mail.id === mail_id)
+        const mail = activeSpecialMails().find(mail => mail.id === mail_id)
         if (!mail) throw new ClientError(`Mail not found: ${mail_id}`)
         data = process_mail(player_id, mail)
     } else {
