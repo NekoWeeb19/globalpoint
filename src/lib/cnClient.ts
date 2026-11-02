@@ -1,6 +1,6 @@
 // The patched CN client (scripts/client_mod/patch_cn_client.cjs) calls StarPoint at /cn/api/index.php,
 // next to the global client's /latest/api/index.php, so the two can be told apart. Its game files are
-// the CN CDN (CN_CDN_DIR, default D:\WF client\.cdn\cn), served at /cn/cdn.
+// the CN CDN (CN_CDN_DIR, default .cdn/cn in the server folder), served at /cn/cdn.
 //
 // Most of the CN-only reply shapes here come from the Chinese StarPoint fork (startpoint-cn,
 // src/routes/cn), which plays the official CN 1.8.1 client.
@@ -75,9 +75,10 @@ export function cnLinkedAccountId(): number | null {
 
 // ---- CN game files (CDN) ----
 
-/** Folder with the unpacked CN CDN (archive-*-full/diff, entities, path). */
+/** Folder with the unpacked CN CDN (archive-*-full/diff, entities, path): CN_CDN_DIR (relative paths
+ *  are from the server folder), else .cdn/cn there. */
 export function cnCdnRoot(): string {
-    return process.env.CN_CDN_DIR || "D:/WF client/.cdn/cn"
+    return path.resolve(path.join(__dirname, "..", ".."), process.env.CN_CDN_DIR || path.join(".cdn", "cn"))
 }
 
 interface CnArchive { location: string, size: number, sha256: string }
@@ -109,7 +110,13 @@ function cnPathFile(): CnPathFile {
 // .cdn/cn_patches/patches.json + the zips beside it, served at /cn/patch
 export const CN_PATCH_PREFIX = CN_PREFIX + "/patch"
 export function cnPatchDir(): string {
-    return path.join(__dirname, "..", "..", ".cdn", "cn_patches")
+    return path.join(cdnDir(), "cn_patches")
+}
+
+/** The server's game-files folder (CDN_DIR, relative paths are from the server folder; default .cdn):
+ *  StarPoint's CN patches, comics and the dashboard's pictures live in it. */
+export function cdnDir(): string {
+    return path.resolve(path.join(__dirname, "..", ".."), process.env.CDN_DIR || ".cdn")
 }
 interface CnPatch { version: string, from: string, archives: { file: string, size: number, sha256: string }[] }
 let patchCache: { mtime: number, patches: CnPatch[] } | null = null

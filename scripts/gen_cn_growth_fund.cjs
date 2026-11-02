@@ -6,7 +6,7 @@
 const fs = require("fs")
 const path = require("path")
 const R = require("./cdn_rows.cjs")
-const { readCnTable } = require("F:/WF client/tools/cn_read.cjs")
+const { readCnTable } = require("./cn_read.cjs")
 
 const OUT = path.join(__dirname, "..", "assets", "growth_fund_cn.json")
 const NONE = v => v === undefined || v === "" || v === "(None)"

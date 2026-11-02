@@ -12,12 +12,12 @@
 const fs = require("fs")
 const path = require("path")
 const R = require("./cdn_rows.cjs")
-const { hashed, readCn } = require("F:/WF client/tools/cn_read.cjs")
+const { hashed, readCn } = require("./cn_read.cjs")
 
 const ROOT = path.join(__dirname, "..")
 const OUT = path.join(ROOT, "assets", "cn_shops.json")
 const SCHEDULED = path.join(ROOT, ".cdn", "cn_schedule_files")
-const TRANSLATED = process.env.CN_TRANSLATED_DIR ?? "F:/WF client/globalize/text15"
+const TRANSLATED = require("./cn_archives.cjs").cnTextDir()
 
 const NONE = v => v === undefined || v === "" || v === "(None)"
 const utc = v => {

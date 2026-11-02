@@ -16,7 +16,7 @@ const zlib = require("zlib")
 const unzipper = require("unzipper")
 const R = require("./cdn_rows.cjs")
 const { cnZips } = require("./cn_archives.cjs")
-const { hashed } = require("F:/WF client/tools/cn_read.cjs")
+const { hashed } = require("./cn_read.cjs")
 
 const STANDARD_BOSS = "production/upload/d1/73e8ff929070d4c0bbef95fa679afcfa1c203f"
 

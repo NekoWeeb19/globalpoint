@@ -8,7 +8,7 @@
 const fs = require("fs")
 const path = require("path")
 const R = require("./cdn_rows.cjs")
-const { readCnTable } = require("F:/WF client/tools/cn_read.cjs")
+const { readCnTable } = require("./cn_read.cjs")
 
 const ROOT = path.join(__dirname, "..")
 const DRY = process.argv.includes("--dry")

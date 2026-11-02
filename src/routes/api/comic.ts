@@ -15,10 +15,11 @@ import { existsSync, readdirSync, readFileSync } from "fs";
 import path from "path";
 import { getSession } from "../../data/wdfpData";
 import { generateDataHeaders, getServerDate } from "../../utils";
+import { cdnDir } from "../../lib/cnClient";
 import comicsEn from "../../../assets/comics_en.json";
 import comicsStellaEn from "../../../assets/comics_stella_en.json";
 
-const COMIC_DIR = path.join(process.cwd(), ".cdn", "comics")
+const COMIC_DIR = path.join(cdnDir(), "comics")
 const PLACEHOLDER = path.join(process.cwd(), "web", "public", "img", "logo.png")
 const PER_PAGE = 9
 

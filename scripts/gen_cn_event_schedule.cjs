@@ -18,6 +18,8 @@ const { cnZips } = require("./cn_archives.cjs")
 const path = require("path")
 const unzipper = require("unzipper")
 const R = require("./cdn_rows.cjs")
+// the follow-up generators run as worker threads (no second Node process: see run_script.cjs)
+const { runScriptOrThrow } = require("./run_script.cjs")
 const { parseSchedule, planRowMoves } = require("../out/lib/eventSchedule.js")
 
 /**
@@ -54,8 +56,8 @@ function mapCnInstant(ms, from, to) {
 const { build } = require("./build_cn_patch.cjs")
 
 const ROOT = path.join(__dirname, "..")
-const CN_DIR = process.env.CN_CDN_DIR || "D:/WF client/.cdn/cn"
-const TRANSLATED = process.argv[2] ?? process.env.CN_TRANSLATED_DIR ?? "F:/WF client/globalize/text7"
+const CN_DIR = require("./cn_archives.cjs").cnDir()
+const TRANSLATED = process.argv[2] ?? require("./cn_archives.cjs").cnTextDir()
 const PATCHES = path.join(ROOT, ".cdn", "cn_patches", "patches.json")
 const OFFSET = 8 * 3600 * 1000
 const DATE = /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/g
@@ -67,6 +69,15 @@ const FAR = Date.UTC(2049, 0, 1)
 const cnNames = new Set()
 async function cnFiles(wanted) {
     const map = new Map()
+    // a slim CN folder (scripts/gen_cn_slim.cjs, no archives): its tables and file-name list
+    if (cnZips(CN_DIR).length === 0 && fs.existsSync(path.join(CN_DIR, "names.txt"))) {
+        for (const name of fs.readFileSync(path.join(CN_DIR, "names.txt"), "utf8").split(/\r?\n/)) if (name) cnNames.add(name)
+        for (const p of wanted) {
+            const file = path.join(CN_DIR, "tables", p)
+            if (fs.existsSync(file)) map.set(p, { buffer: async () => fs.readFileSync(file) })
+        }
+        return map
+    }
     for (const z of cnZips(CN_DIR)) for (const e of (await unzipper.Open.file(z)).files) {
         cnNames.add(e.path.split("\\").join("/").replace(/^production\/[a-z_]+\//, ""))
         if (wanted.has(e.path)) map.set(e.path, e)
@@ -85,6 +96,36 @@ function cnBannerHasArt(id, listPicture) {
 }
 /** Whether the CN files have a picture (logical path without ".png"). */
 const cnHasPicture = logical => cnNames.has(fileOf(logical + ".png").replace(/^production\/upload\//, ""))
+
+/**
+ * The game needs a regular (everyday) login bonus open at every date: its login bonus screen stops with
+ * error C2030 ("no normal bonus within its period") otherwise. CN's regular bonuses (kind 0, column 0)
+ * leave a gap: "normal" ends 2020-01-01 and the next one starts 2021-11-25. Any gap between regular
+ * bonuses is closed by keeping the earlier one open until the next starts (CN columns 41 open, 42 close).
+ */
+function fillNormalLoginBonusGaps(tree) {
+    const groups = new Map()
+    for (const { path: keys, leaf } of R.leaves(tree)) {
+        const fields = R.splitCsv(leaf.text.replace(/\n$/, ""))
+        if (fields[0] !== "0" || fields.length < 43) continue
+        const g = groups.get(keys[0]) ?? { key: keys[0], start: fields[41], end: fields[42], leaves: [] }
+        g.leaves.push(leaf)
+        groups.set(keys[0], g)
+    }
+    const sorted = [...groups.values()].filter(g => parse(g.start) !== null).sort((a, b) => parse(a.start) - parse(b.start))
+    for (let i = 0; i + 1 < sorted.length; i++) {
+        const cur = sorted[i], next = sorted[i + 1]
+        const end = parse(cur.end), nextStart = parse(next.start)
+        if (end === null || nextStart === null || end + 1000 >= nextStart) continue
+        const newEnd = format(nextStart - 1000)
+        for (const leaf of cur.leaves) {
+            const fields = R.splitCsv(leaf.text.replace(/\n$/, ""))
+            fields[42] = newEnd
+            R.setLeafText(leaf, fields.map(R.csvField).join(",") + (leaf.text.endsWith("\n") ? "\n" : ""))
+        }
+        console.log(`regular login bonus "${cur.key}" kept open until ${newEnd} (the next, "${next.key}", starts then)`)
+    }
+}
 
 /** Splits the pass home banner into one row per pass window (start/end of each pass, after moves). */
 function passBannerWindows(trees, { banner, pass, id }) {
@@ -270,22 +311,24 @@ async function main() {
         if (EOS_TABLES.includes(file)) for (const { leaf } of R.leaves(tree)) {
             if (leaf.text.includes("2025-08-14 23:59:59")) R.setLeafText(leaf, leaf.text.split("2025-08-14 23:59:59").join("2199-12-31 23:59:59"))
         }
+        if (file === CAMPAIGN_TABLES.login) fillNormalLoginBonusGaps(tree)
         trees.set(file, tree)
     }
 
     // the catalog names global's banner ids; CN gave some of global's banners new ids (usually
     // 10000 + the global id) and reused the old ids for its own reruns, so a banner is found by its
-    // internal name (gacha column 0) when the same id is a different banner in CN
+    // internal name (gacha column 0) when the same id is a different banner in CN. Global's names are
+    // in assets/global_gacha_names.json, so this works without the global game files.
     const gachaFile = fileOf("master/gacha/gacha.orderedmap")
     let cnBannerId = id => id
-    if (trees.has(gachaFile)) {
-        const { readTable } = require("./cdn_master.cjs")
-        const globalGacha = await readTable("master/gacha/gacha.orderedmap")
+    const namesFile = path.join(ROOT, "assets", "global_gacha_names.json")
+    if (trees.has(gachaFile) && fs.existsSync(namesFile)) {
+        const globalNames = JSON.parse(fs.readFileSync(namesFile, "utf8")).names
         const name = line => R.splitCsv(String(line))[0]
         const cnRows = new Map(R.leaves(trees.get(gachaFile)).map(l => [l.path.join("/"), name(l.leaf.text)]))
         const cnByName = new Map([...cnRows].map(([id, n]) => [n, id]))
         cnBannerId = id => {
-            const g = globalGacha[id] && name(globalGacha[id])
+            const g = globalNames[id]
             if (!g || cnRows.get(id) === g || !cnByName.has(g)) return id
             return cnByName.get(g)
         }
@@ -368,11 +411,11 @@ async function main() {
     await build(version, last, list)
     console.log(`CN schedule ${version}: ${events} event(s), ${moved} rows moved, ${campaignsMade}, ${list.length} files`)
     // the server's copy of the CN missions follows the new dates
-    require("child_process").execFileSync(process.execPath, [path.join(__dirname, "gen_cn_missions.cjs")], { stdio: "inherit", env: { ...process.env, CN_TRANSLATED_DIR: TRANSLATED } })
+    await runScriptOrThrow(path.join(__dirname, "gen_cn_missions.cjs"), { env: { ...process.env, CN_TRANSLATED_DIR: TRANSLATED }, echo: true })
     // and the server's copy of the CN passes (a pass can be moved too)
-    require("child_process").execFileSync(process.execPath, [path.join(__dirname, "gen_cn_pass_card.cjs")], { stdio: "inherit", env: { ...process.env, CN_TRANSLATED_DIR: TRANSLATED } })
+    await runScriptOrThrow(path.join(__dirname, "gen_cn_pass_card.cjs"), { env: { ...process.env, CN_TRANSLATED_DIR: TRANSLATED }, echo: true })
     // and the server's copy of the CN shops (event shops follow moved events)
-    require("child_process").execFileSync(process.execPath, [path.join(__dirname, "gen_cn_shops.cjs")], { stdio: "inherit", env: { ...process.env, CN_TRANSLATED_DIR: TRANSLATED } })
+    await runScriptOrThrow(path.join(__dirname, "gen_cn_shops.cjs"), { env: { ...process.env, CN_TRANSLATED_DIR: TRANSLATED }, echo: true })
 }
 
 main().catch(e => { console.error(e.stack || e.message); process.exit(1) })

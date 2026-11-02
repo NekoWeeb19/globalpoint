@@ -1,0 +1,37 @@
+World Flipper (globalized CN 1.8.1) on StarPoint - how to play
+==============================================================
+
+This folder is a private World Flipper server (StarPoint) plus everything the game needs: the game's
+files with English text and art, and the game app itself (apk folder). It runs fully offline on your PC.
+
+What you need
+  - Windows PC with Node.js 20 or newer (https://nodejs.org)
+  - An Android emulator (e.g. LDPlayer) or an Android phone connected with adb. The game talks to
+    127.0.0.1:8000, so on an emulator it reaches your PC through "adb reverse" (done for you).
+  - About 16 GB of free space (the game downloads ~12 GB of files from this server the first time).
+
+First time
+  1. Run setup.bat. It installs the server's packages (needs internet once), builds the server and
+     checks the game files. If adb is found it offers to install the game on your emulator, then
+     starts the server.
+  2. Open the game. The very first screen is the CN publisher's user agreement and privacy notice in
+     Chinese: the right-hand button (同意) agrees and continues, the left one (拒绝) declines and closes
+     the game. Then it downloads its files from the server (only the first time), and you can play.
+
+Every other time
+  Run start-cn.bat, then open the game. Close the server window to stop the server.
+
+Dashboard
+  With the server running, open http://127.0.0.1:8000 in your browser: events and summon banners
+  (schedule any of them), campaigns, news, players, the server clock.
+
+After updating the game app
+  Clear the game's cache once: Android Settings > Apps > World Flipper > Storage > Clear cache
+  (not Clear data: that deletes the downloaded game files).
+
+Notes
+  - Events start on their original CN dates; schedule the ones you want from the dashboard. Each
+    change builds a small game update that the game downloads the next time it reaches the title.
+  - Settings are in .env (copied from .env.example on first setup). LISTEN_HOST "127.0.0.1" keeps
+    the server and its dashboard to this PC.
+  - Linux/macOS: setup.sh and start-cn.sh do the same but are untested.

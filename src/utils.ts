@@ -44,10 +44,19 @@ function saveServerClock() {
  */
 export function initServerClock(env: { [key: string]: string | undefined } = process.env): boolean {
     serverTimeTicks = parseClockConfig(env).ticking
+    const clockFile = path.join(process.cwd(), ".database", "server_time.json")
+    // a new install (no saved clock yet) starts at SERVER_START_DATE when it's set; players change the
+    // date on the dashboard from there
+    const startMs = Date.parse(env.SERVER_START_DATE ?? "")
+    const firstStart = !existsSync(clockFile)
+    if (firstStart && !Number.isNaN(startMs)) {
+        serverTime = new Date(startMs)
+        serverTimePinned = true
+    }
     if (!serverTimeTicks) return false
 
-    serverClockFile = path.join(process.cwd(), ".database", "server_time.json")
-    if (existsSync(serverClockFile)) {
+    serverClockFile = clockFile
+    if (!firstStart) {
         const saved = parseSavedClock(readFileSync(serverClockFile, "utf-8"))
         if (saved === null) {
             console.warn("The saved server time could not be read, so it starts over.")

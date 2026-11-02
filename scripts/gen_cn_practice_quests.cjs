@@ -5,7 +5,7 @@
 //   node scripts/gen_cn_practice_quests.cjs
 const fs = require("fs")
 const path = require("path")
-const { readCnTable } = require("F:/WF client/tools/cn_read.cjs")
+const { readCnTable } = require("./cn_read.cjs")
 
 ;(async () => {
     const rows = await readCnTable("master/quest/practice/practice_quest.orderedmap")
