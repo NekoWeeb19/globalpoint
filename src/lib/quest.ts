@@ -7,6 +7,7 @@ import { givePlayerEquipmentSync } from "./equipment";
 import { CharacterReward, CommonScoreReward, CurrencyReward, CurrencyScoreReward, DropScoreRewardId, EquipmentItemReward, GivePlayerScoreRewardsResult, ItemScoreReward, PlayerRewardResult, RareScoreRewardGroup, Reward, RewardType, ScoreReward, ScoreRewardType } from "./types";
 import { Player } from "../data/types";
 import { itemDropMultiplier, multipliedDrop } from "./rewardCampaign";
+import { withDropAmount } from "../nya/dropSettings";
 import elementItemMap from "../../assets/reward_element_map.json";
 import questElements from "../../assets/quest_elements.json";
 
@@ -83,21 +84,21 @@ export function givePlayerScoreRewardsSync(
                             // element material of the stage's enemies, tier = the reward's id
                             const itemId = elementDropItemId((reward as ItemScoreReward).id, stageElement)
                             if (itemId === undefined) break
-                            rewardAmount = multipliedDrop((reward as ItemScoreReward).count * 10, dropMultiplier)
+                            rewardAmount = multipliedDrop(withDropAmount((reward as ItemScoreReward).count), dropMultiplier)
                             items[String(itemId)] = givePlayerItemSync(playerId, itemId, rewardAmount);
                             break;
                         }
                         case RewardType.ITEM: {
                             const itemReward = reward as ItemScoreReward
                             const itemId = itemReward.id
-                            rewardAmount = multipliedDrop(itemReward.count * 10, dropMultiplier)
+                            rewardAmount = multipliedDrop(withDropAmount(itemReward.count), dropMultiplier)
                             items[String(itemId)] = givePlayerItemSync(playerId, itemId, rewardAmount);
                             break;
                         }
                         case RewardType.MANA: {
                             const player = getPlayerSync(playerId)
                             const currencyReward = reward as CurrencyScoreReward
-                            rewardAmount = multipliedDrop(currencyReward.count * 10, dropMultiplier)
+                            rewardAmount = multipliedDrop(withDropAmount(currencyReward.count), dropMultiplier)
                             mana += rewardAmount
                             updatePlayerSync({
                                 id: playerId,
@@ -109,7 +110,7 @@ export function givePlayerScoreRewardsSync(
                         case RewardType.EXP: {
                             const player = getPlayerSync(playerId)
                             const currencyReward = reward as CurrencyScoreReward
-                            rewardAmount = multipliedDrop(currencyReward.count * 10, dropMultiplier)
+                            rewardAmount = multipliedDrop(withDropAmount(currencyReward.count), dropMultiplier)
                             expPool += rewardAmount
                             updatePlayerSync({
                                 id: playerId,

@@ -7,6 +7,7 @@
 
 import { questInRangeQuery } from "./mission"
 import { multipliedDrop } from "./rewardCampaign"
+import { withDropAmount } from "../nya/dropSettings"
 
 export interface EventDropGroup {
     index: number
@@ -76,7 +77,7 @@ export function eventDrops(
             if (threshold.level > level) break
             const group = data.groups[String(threshold.groupId)]
             if (group === undefined) continue
-            drops.push({ group_id: threshold.groupId, index: group.index, number: multipliedDrop(group.number, multiplier) })
+            drops.push({ group_id: threshold.groupId, index: group.index, number: multipliedDrop(withDropAmount(group.number), multiplier) })
         }
     }
     return drops

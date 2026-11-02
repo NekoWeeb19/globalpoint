@@ -125,6 +125,63 @@
                 </script>
             </form>
 
+            <section id="drops" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                    <h3 class="text-xl text-on-background font-semibold">Quest drop amount</h3>
+                    <span id="drops-badge"
+                        class="px-4 py-1 rounded-full text-sm font-semibold bg-surface-container-high text-on-surface">Loading...</span>
+                </div>
+                <p class="text-on-surface-variant">Multiplies the items, materials, mana and EXP that quests drop, and event drops. 1x is the base game's amounts; raise it to make the game less grindy. Reward campaigns and boosts still multiply on top. Applies from the next quest you finish.</p>
+                <form id="drops-form" class="flex flex-col gap-3">
+                    <div class="flex gap-3 flex-wrap items-center">
+                        <input id="drops-value" type="number" min="1" max="100" step="0.5" required
+                            class="bg-surface-container rounded-2xl border border-outline-variant p-3" />
+                        <button type="submit" id="drops-save"
+                            class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Save</button>
+                    </div>
+                    <div class="flex gap-3 flex-wrap" id="drops-presets">
+                        <button type="button" data-value="1" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">1x (base game)</button>
+                        <button type="button" data-value="2" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">2x</button>
+                        <button type="button" data-value="5" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">5x</button>
+                        <button type="button" data-value="10" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">10x</button>
+                    </div>
+                    <p class="text-sm text-on-surface-variant">Any value from 1x to 100x; the presets fill the box, then press Save.</p>
+                </form>
+                <p id="drops-message" class="text-sm text-on-surface-variant" role="status"></p>
+                <script>
+                    (function () {
+                        const $ = (id) => document.getElementById(id)
+                        const show = (data) => {
+                            $("drops-badge").textContent = data.multiplier + "x"
+                            $("drops-value").value = data.multiplier
+                        }
+                        fetch("/api/server/drops").then(r => r.json()).then(show)
+                            .catch(error => { $("drops-badge").textContent = "Unavailable"; $("drops-message").textContent = "Could not load: " + error.message })
+                        for (const button of $("drops-presets").querySelectorAll("button"))
+                            button.addEventListener("click", () => { $("drops-value").value = button.dataset.value })
+                        $("drops-form").addEventListener("submit", async (event) => {
+                            event.preventDefault()
+                            $("drops-save").disabled = true
+                            $("drops-message").textContent = "Saving..."
+                            try {
+                                const response = await fetch("/api/server/drops", {
+                                    method: "POST", headers: { "content-type": "application/json" },
+                                    body: JSON.stringify({ multiplier: Number($("drops-value").value) })
+                                })
+                                const data = await response.json().catch(() => ({}))
+                                if (!response.ok) throw new Error(data.message || response.statusText)
+                                show(data)
+                                $("drops-message").textContent = "Saved: quests now drop " + data.multiplier + "x."
+                            } catch (error) {
+                                $("drops-message").textContent = "Error: " + error.message
+                            } finally {
+                                $("drops-save").disabled = false
+                            }
+                        })
+                    })()
+                </script>
+            </section>
+
             <section id="rotation" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
                 <div class="flex items-center justify-between gap-3 flex-wrap">
                     <h3 class="text-xl text-on-background font-semibold">Banner rotation</h3>

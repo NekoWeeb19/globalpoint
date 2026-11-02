@@ -17,6 +17,7 @@ import { createReadStream } from "fs";
 import { allowLoginBonusAgainSync } from "../../nya/loginBonus";
 import { withRealTimeOfDay } from "../../lib/serverClock";
 import { deleteNews, listNews, NEWS_CATEGORIES, saveNews } from "../../nya/news";
+import { DROP_MULTIPLIER_MAX, DROP_MULTIPLIER_MIN, getDropMultiplier, setDropMultiplier } from "../../nya/dropSettings";
 
 interface TimeQuery {
     time: string | undefined
@@ -90,6 +91,19 @@ const routes = async (fastify: FastifyInstance) => {
             "ticking": isServerTimeTicking(),
             "mode": getServerTimeMode()
         })
+    })
+
+    // ---- quest drop amount (src/nya/dropSettings.ts) ----
+
+    const dropsReply = () => ({ multiplier: getDropMultiplier(), min: DROP_MULTIPLIER_MIN, max: DROP_MULTIPLIER_MAX })
+    fastify.get("/drops", async (_: FastifyRequest, reply: FastifyReply) => reply.send(dropsReply()))
+    fastify.post("/drops", async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+            setDropMultiplier(Number((request.body as { multiplier?: unknown } | undefined)?.multiplier))
+        } catch (error) {
+            return reply.status(400).send({ error: "Bad Request", message: (error as Error).message })
+        }
+        return reply.send(dropsReply())
     })
 
     // ---- event schedule (see src/lib/eventSchedule.ts) ----
