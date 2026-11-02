@@ -2,7 +2,9 @@
 // who copy the game over USB instead of downloading it. The game (StorageDropoff.as, build 22+) unpacks
 // it at first start into its private download folder.
 //
-//   node scripts/build_cn_obb.cjs <out.obb | out folder> [--server <StarPoint folder>] [--version-code 1008001]
+//   node scripts/build_cn_obb.cjs <out.obb | out folder | -> [--server <StarPoint folder>] [--version-code 1008001]
+//   "-" streams it to stdout, e.g. straight onto a phone with no copy on the PC:
+//   node scripts/build_cn_obb.cjs - | adb exec-in "cat > /sdcard/Android/obb/com.leiting.wf/main.1008001.com.leiting.wf.obb"
 //
 // Out folder: the file is named main.<versionCode>.com.leiting.wf.obb. The phone takes it at
 // /sdcard/Android/obb/com.leiting.wf/ (no permission needed there) or /sdcard/StarPoint/game/.
@@ -32,11 +34,14 @@ const SERVER = path.resolve(opt("--server", path.join(__dirname, "..")))
 const VERSION_CODE = opt("--version-code", "1008001")
 const BASE_URL = opt("--base-url", "http://127.0.0.1:8000/cn/cdn/")
 if (args.length !== 1) {
-    console.error("usage: node scripts/build_cn_obb.cjs <out.obb | out folder> [--server <StarPoint folder>] [--version-code N]")
+    console.error("usage: node scripts/build_cn_obb.cjs <out.obb | out folder | -> [--server <StarPoint folder>] [--version-code N]")
     process.exit(2)
 }
-let OUT = path.resolve(args[0])
-if (!OUT.toLowerCase().endsWith(".obb")) OUT = path.join(OUT, `main.${VERSION_CODE}.com.leiting.wf.obb`)
+// "-" = write the OBB to stdout (e.g. straight into a phone: | adb exec-in "cat > <path>"), notes to stderr
+const TO_STDOUT = args[0] === "-"
+let OUT = TO_STDOUT ? "-" : path.resolve(args[0])
+if (!TO_STDOUT && !OUT.toLowerCase().endsWith(".obb")) OUT = path.join(OUT, `main.${VERSION_CODE}.com.leiting.wf.obb`)
+const log = (...a) => (TO_STDOUT ? console.error : console.log)(...a)
 
 // the server's own settings: its .env, then its archive helpers (they read the env)
 try { process.loadEnvFile(path.join(SERVER, ".env")) } catch { }
@@ -134,10 +139,10 @@ function centralHeader(e) {
 }
 
 class Out {
-    constructor(file) { this.fd = fs.openSync(file, "w"); this.pos = 0; this.bufs = []; this.len = 0 }
+    constructor(file) { this.fd = file === "-" ? 1 : fs.openSync(file, "w"); this.pos = 0; this.bufs = []; this.len = 0 }
     write(b) { this.bufs.push(b); this.len += b.length; this.pos += b.length; if (this.len >= 8 << 20) this.flush() }
     flush() { if (this.len) { const b = Buffer.concat(this.bufs, this.len); let o = 0; while (o < b.length) o += fs.writeSync(this.fd, b, o); this.bufs = []; this.len = 0 } }
-    close() { this.flush(); fs.closeSync(this.fd) }
+    close() { this.flush(); if (this.fd !== 1) fs.closeSync(this.fd) }
 }
 
 const pad = n => String(n).padStart(12, "0")
@@ -157,7 +162,7 @@ const pad = n => String(n).padStart(12, "0")
         sources.push(src)
         for (const e of src.entries) newest.set(e.name, { src, e })
     }
-    console.log(`${zipFiles.length} zips (CN base + ${patchList.length} StarPoint patches to ${version}), ${newest.size} distinct files`)
+    log(`${zipFiles.length} zips (CN base + ${patchList.length} StarPoint patches to ${version}), ${newest.size} distinct files`)
 
     // layout: index, info.json, download/.empty, then the files in source order (sequential reads)
     const files = [...newest.entries()].map(([name, v]) => ({ path: "download/" + name, size: v.e.size, crc: v.e.crc, src: v.src, e: v.e }))
@@ -187,10 +192,10 @@ const pad = n => String(n).padStart(12, "0")
     const index = Buffer.from(head + entries.map(e => `${pad(e.hdr)} ${pad(e.data0)} ${pad(e.size)} ${e.path}\n`).join(""))
     if (index.length !== indexLen) throw new Error("index length mismatch")
     const indexEntry = { path: INDEX_NAME, size: index.length, crc: zlib.crc32(index), hdr: 0 }
-    console.log(`writing ${OUT}: ${(pos / 2 ** 30).toFixed(2)} GB, version ${version}`)
+    log(`writing ${OUT}: ${(pos / 2 ** 30).toFixed(2)} GB, version ${version}`)
 
-    fs.mkdirSync(path.dirname(OUT), { recursive: true })
-    const tmp = OUT + ".part"
+    if (!TO_STDOUT) fs.mkdirSync(path.dirname(OUT), { recursive: true })
+    const tmp = TO_STDOUT ? "-" : OUT + ".part"
     const out = new Out(tmp)
     out.write(localHeader(INDEX_NAME, index.length, indexEntry.crc)); out.write(index)
     let n = 0
@@ -198,7 +203,7 @@ const pad = n => String(n).padStart(12, "0")
         if (out.pos !== e.hdr) throw new Error(`${e.path}: offset ${out.pos} != ${e.hdr}`)
         out.write(localHeader(e.path, e.size, e.crc))
         out.write(e.data || readData(e.src, e.e))
-        if (++n % 10000 === 0) console.log(`  ${n}/${entries.length}  ${(out.pos / 2 ** 30).toFixed(2)} GB  ${((Date.now() - started) / 1000).toFixed(0)} s`)
+        if (++n % 10000 === 0) log(`  ${n}/${entries.length}  ${(out.pos / 2 ** 30).toFixed(2)} GB  ${((Date.now() - started) / 1000).toFixed(0)} s`)
     }
     // central directory (zip64 end records: more than 65535 entries, offsets past 4 GB)
     const cdStart = out.pos
@@ -219,7 +224,7 @@ const pad = n => String(n).padStart(12, "0")
     out.write(eocd)
     out.close()
     for (const s of sources) fs.closeSync(s.fd)
-    fs.renameSync(tmp, OUT)
-    console.log(`done: ${OUT}`)
-    console.log(`  ${entries.length} entries (${files.length} game files, ${(totalSize / 2 ** 30).toFixed(2)} GB), file ${(out.pos / 2 ** 30).toFixed(2)} GB, version ${version}, ${((Date.now() - started) / 1000).toFixed(0)} s`)
+    if (!TO_STDOUT) fs.renameSync(tmp, OUT)
+    log(`done: ${OUT}`)
+    log(`  ${entries.length} entries (${files.length} game files, ${(totalSize / 2 ** 30).toFixed(2)} GB), file ${out.pos} bytes (${(out.pos / 2 ** 30).toFixed(2)} GB), version ${version}, ${((Date.now() - started) / 1000).toFixed(0)} s`)
 })().catch(e => { console.error(e); process.exit(1) })

@@ -130,6 +130,42 @@ it over USB instead of ~138k loose files.
     then the emptied OBB is deleted. Storage full: the screen says how much is left and how much is
     free, and stays there (going on would start the 10 GB download); free space and reopen to carry on.
     Text: "Unpacking game files: n / total" + "x / y GB. Keep the game open."
+  Tested 2026-11-02 on LDPlayer (Android 9, emulator-5556) as a first-timer: game uninstalled, OBB put
+    in /sdcard/Android/obb/com.leiting.wf/, build 22 installed with NO storage permission granted,
+    opened: "Unpacking game files", the OBB shrank from the end (~140 MB/s), a force-stop halfway
+    then reopen carried on with the rest (113691 files / 5.7 GB left), done and the OBB deleted ~2.5
+    min after launch; title ResVer 1.4.203; tutorial skip -> nickname -> main menu, no download.
+    Streaming onto the device: node scripts/build_cn_obb.cjs - | adb exec-in "cat > <obb>.part" (then
+    mv) avoids a 10 GB copy on the PC, but adb exec-in dropped the last ~1 MB once (part of the zip's
+    central directory, which the game never reads; the data entries were intact). Compare the size on
+    the device with the "file N bytes" line. Emulator note: LDPlayer's disk images (D:\LDPlayer\
+    LDPlayer9\vms\leidianN\*.vmdk) grow by what is pushed in and don't shrink, so a 10 GB push needs
+    10+ GB free on D: (a push once filled D: and crashed the emulator).
+  Android 11+ (targetSdk 30; the emulator is Android 9 and can't show these rules):
+    - Reading/writing/deleting: an app reaches its OWN Android/obb/<package> folder by plain file path
+      without any permission (scoped storage exempts app-specific folders; since 11 they are bind-
+      mounted straight from the lower filesystem, so truncate and delete work like on any folder).
+      Unchanged in 12-16 as far as the platform docs go. AIR's File/FileStream use plain paths.
+    - The game never creates the folder itself (AIR doesn't call getObbDir), so the player's copy
+      creates it. On 11+ a folder made over USB (MTP, runs as MediaProvider) is fixed up to the app's
+      ownership by MediaProvider; if the game can't open the OBB anyway, the fallback is
+      /sdcard/StarPoint/game/ with All files access.
+    - MTP: PCs still see Android/obb on 11-16 (only on-phone file managers lost access to it in 11+;
+      some OEM file managers can't open it). Copy main.1008001.com.leiting.wf.obb into
+      Android/obb/com.leiting.wf/ (create the folder if missing). A 10 GB file over MTP takes a while;
+      Windows may say "the file is too large" only on FAT32 cards, not on internal storage.
+    - Uninstalling the game deletes Android/obb/com.leiting.wf/ with it, so copy the OBB after
+      installing (or reinstall as an update) if the OBB is still unpacked.
+    Only the real phones can confirm: the game sees and opens the OBB with NO permission granted (12
+    and 16), the file shrinks while unpacking and is gone at the end, MTP copy into Android/obb on each
+    phone's maker's build, the speed on real flash, and the storage-full screen.
+  16 KB pages (Android 15+/16 devices that use them; most phones still use 4 KB: adb shell getconf
+    PAGE_SIZE): the arm64 libs are stored compressed (extracted at install, so zip alignment does not
+    matter). 12 of them, including libCore.so (the AIR runtime), have 64 KB-aligned segments (fine).
+    3 have 4 KB segments: libexecgame.so, libfakedyn.so, assets/ijm_lib/arm64-v8a/libexec(main).so
+    (Leiting's protection loader). On a 16 KB phone those run in Android's page-size compatibility
+    mode (a one-time warning may show), or may fail to load; only a 16 KB device can tell. Not
+    fixable by realigning: the segments themselves are built for 4 KB.
   Build:
     node <repo>/scripts/client_mod/patch_cn_storage_dropoff.cjs p14-local-strip.swf p16-local-obb.swf work-obb ../../tools/ffdec/ffdec-cli.jar
     then manifest_storage.py, repack_apk.py, zipalign + apksigner as for storage-3 -> wfcn-globalized-22.apk
