@@ -62,6 +62,9 @@ android {
     }
     buildTypes {
         release {
+            // debuggable on purpose: players can copy their save out with
+            // `adb shell run-as org.globalpoint.companion` without root (companion/README.md)
+            debuggable true
             minifyEnabled true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             if (signingProps.getProperty("storeFile")) signingConfig signingConfigs.release

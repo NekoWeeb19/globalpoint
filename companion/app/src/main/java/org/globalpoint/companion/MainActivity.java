@@ -52,6 +52,10 @@ public class MainActivity extends Activity {
         row2.addView(button("Game data", () -> startActivity(new Intent(this, DataActivity.class))));
         row2.addView(button("Open in browser", () -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(ServerProbe.URL_ROOT)))));
 
+        LinearLayout row3 = row(u);
+        row3.addView(button("Export save", this::exportSave));
+        row3.addView(button("Import save", this::importSave));
+
         battery = u.button("Let the server run in the background", this::askBattery);
         CheckBox auto = u.check("Start the server when this app opens", prefs.getBoolean("autoStart", true));
         auto.setOnCheckedChangeListener((b, on) -> prefs.edit().putBoolean("autoStart", on).apply());
@@ -65,6 +69,70 @@ public class MainActivity extends Activity {
 
         setContentView(u.root);
         if (Build.VERSION.SDK_INT >= 33) requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, 1);
+    }
+
+    private static final int EXPORT_SAVE = 10, IMPORT_SAVE = 11;
+
+    private void exportSave() {
+        String name = "starpoint-save-" + new java.text.SimpleDateFormat("yyyyMMdd-HHmm", java.util.Locale.US).format(new java.util.Date()) + ".zip";
+        Intent i = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType("application/zip");
+        i.putExtra(Intent.EXTRA_TITLE, name);
+        startActivityForResult(i, EXPORT_SAVE);
+    }
+
+    private void importSave() {
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Import a save?")
+                .setMessage("This replaces the save on this phone (account, units, progress) with the one in the zip you pick. "
+                        + "The server restarts. Export your current save first if you may want it back.")
+                .setPositiveButton("Choose zip...", (d, w) -> {
+                    Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    i.addCategory(Intent.CATEGORY_OPENABLE);
+                    i.setType("*/*");
+                    startActivityForResult(i, IMPORT_SAVE);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent result) {
+        super.onActivityResult(requestCode, resultCode, result);
+        if (resultCode != RESULT_OK || result == null || result.getData() == null) return;
+        Uri uri = result.getData();
+        if (requestCode == EXPORT_SAVE) {
+            toast("Exporting the save...");
+            worker.execute(() -> {
+                try {
+                    int n = SaveBackup.export(this, uri);
+                    toast("Save exported (" + n + " files)");
+                } catch (Exception e) {
+                    toast("Export failed: " + e.getMessage());
+                }
+            });
+        } else if (requestCode == IMPORT_SAVE) {
+            toast("Importing the save...");
+            worker.execute(() -> {
+                try {
+                    if (ServerProbe.running()) {
+                        ServerService.stop(this);
+                        for (int i = 0; i < 50 && ServerProbe.running(); i++) Thread.sleep(200);
+                    }
+                    int n = SaveBackup.importSave(this, uri);
+                    ServerFiles.log(this, "[companion] save imported (" + n + " files)");
+                    ServerService.start(this);
+                    toast("Save imported (" + n + " files); server restarting");
+                } catch (Exception e) {
+                    toast("Import failed: " + e.getMessage());
+                }
+            });
+        }
+    }
+
+    private void toast(String message) {
+        ui.post(() -> android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_LONG).show());
     }
 
     private LinearLayout row(Ui u) {
