@@ -119,6 +119,7 @@ const ITEM_TABLE = "master/item/item.orderedmap"
 const BOX_GACHA_TABLE = "master/box_gacha/box_gacha.orderedmap"
 const BOX_TABLE = "master/box_gacha/box.orderedmap"
 const GACHA_TABLE = "master/gacha/gacha.orderedmap"
+const { NO_ART_BANNERS } = require("./no_art_banners.cjs")
 const SHOP_COST_COLUMNS = [18, 20, 22, 24]
 
 const IMAGES_OUT = path.join(ROOT, ".cdn", "dashboard_images")
@@ -319,8 +320,8 @@ async function main() {
             const refs = m.params.filter(v => v !== null).flatMap(v => String(v).split(","))
             if (refs.some(ref => linkedTo(ev, table, ref))) link(ev, r, "mission")
         }
-        // summon banners that opened with the event
-        for (const r of rowsByTable[GACHA_TABLE]) if (r.dates[0] === ev.start && !ev.linked.has(`${r.table}#${r.p}`)) ev.banners.push(r)
+        // summon banners that opened with the event (not ones without a picture: scripts/no_art_banners.cjs)
+        for (const r of rowsByTable[GACHA_TABLE]) if (r.dates[0] === ev.start && !ev.linked.has(`${r.table}#${r.p}`) && !NO_ART_BANNERS.has(String(r.p))) ev.banners.push(r)
     }
 
     // pictures: the event's own banner, and its summon banners

@@ -16,6 +16,7 @@ const path = require("path")
 const crypto = require("crypto")
 const unzipper = require("unzipper")
 const R = require("./cdn_rows.cjs")
+const { NO_ART_BANNERS } = require("./no_art_banners.cjs")
 const { cnZips } = require("./cn_archives.cjs")
 const { readCnTable } = require("F:/WF client/tools/cn_read.cjs")
 
@@ -104,7 +105,8 @@ const rows = async table => Object.entries(await readCnTable(table)).map(([k, v]
     const freePulls = [], gachaCampaigns = {}
     for (const [id, c] of await rows("master/gacha/gacha_campaign.orderedmap")) {
         if (globalFreePulls.some(p => p.id === Number(id))) continue
-        const banners = (c[5] ?? "").split(",").filter(Boolean).map(Number)
+        // (not banners without a picture: scripts/no_art_banners.cjs)
+        const banners = (c[5] ?? "").split(",").filter(Boolean).filter(b => !NO_ART_BANNERS.has(b)).map(Number)
         freePulls.push({ id: Number(id), name: pullEn.get(id)?.[1] ?? c[1], kind: Number(c[2]), start: toUtc(c[3]), end: toUtc(c[4]), banners, picture: str(c[6]) })
         // a banner global's data has no free pull for takes this campaign (the newest one wins)
         for (const banner of banners) if (globalGachaCampaign[String(banner)] === undefined) gachaCampaigns[String(banner)] = Number(id)
