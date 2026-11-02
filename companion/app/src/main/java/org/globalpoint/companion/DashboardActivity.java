@@ -3,17 +3,22 @@ package org.globalpoint.companion;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -46,8 +51,36 @@ public class DashboardActivity extends Activity {
         // app theme (values / values-night), and the dashboard's own dark colors apply. No automatic
         // darkening on top (off by default at this target; said explicitly so pages aren't darkened twice).
         web.setBackgroundColor(getColor(R.color.surface));
-        if (android.os.Build.VERSION.SDK_INT >= 33) s.setAlgorithmicDarkeningAllowed(false);
+        if (Build.VERSION.SDK_INT >= 33) s.setAlgorithmicDarkeningAllowed(false);
+        boolean night = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
         web.setWebViewClient(new WebViewClient() {
+            // Below Android 13 the WebView may not report dark from the app theme (Android 9 has no
+            // isLightTheme at all, and setForceDark is ignored for apps targeting 33+), so in dark mode the
+            // stylesheet's @media (prefers-color-scheme: dark) block is made to apply as it loads. In light
+            // mode, and on 13+, the stylesheet is left alone.
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                if (!night || Build.VERSION.SDK_INT >= 33) return null;
+                Uri url = request.getUrl();
+                boolean local = "127.0.0.1".equals(url.getHost()) || "localhost".equals(url.getHost());
+                if (!local || url.getPath() == null || !url.getPath().endsWith(".css") || !"GET".equals(request.getMethod())) return null;
+                try {
+                    HttpURLConnection c = (HttpURLConnection) new URL(url.toString()).openConnection();
+                    try (InputStream in = c.getInputStream()) {
+                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        byte[] b = new byte[64 * 1024];
+                        int n;
+                        while ((n = in.read(b)) > 0) out.write(b, 0, n);
+                        String css = out.toString("UTF-8").replaceAll("@media\\s*\\(\\s*prefers-color-scheme\\s*:\\s*dark\\s*\\)", "@media all");
+                        return new WebResourceResponse("text/css", "UTF-8", new ByteArrayInputStream(css.getBytes("UTF-8")));
+                    } finally {
+                        c.disconnect();
+                    }
+                } catch (Exception e) {
+                    return null; // the WebView loads it as it is
+                }
+            }
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri url = request.getUrl();
