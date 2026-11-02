@@ -57,6 +57,7 @@ import indexWebApiPlugin from "./routes/web_api"
 import openapiPlugin from "./routes/openapi";
 import battleLogPlugin from "./routes/battleLog";
 import infodeskPlugin from "./routes/infodesk";
+import companionPlugin from "./routes/companion";
 import { cnApiUrl, isCnRequest, runInCnContext, CN_INTERNAL_HEADER, CN_PREFIX, CN_CDN_PREFIX, cnCdnRoot, adaptCnReply, cnApiPath, CN_PATCH_PREFIX, cnPatchDir } from "./lib/cnClient";
 import { fixUint32Tags } from "./lib/msgpackCompat";
 import cnApiPlugin from "./routes/api/cn";
@@ -229,6 +230,8 @@ fastify.register(openapiPlugin, { prefix: "/openapi/service" })
 
 // infodesk
 fastify.register(infodeskPlugin, { prefix: "/infodesk" })
+// the phone companion app copies its slim data set from here (src/routes/companion.ts)
+fastify.register(companionPlugin, { prefix: "/companion" })
 
 // web routes
 fastify.register(indexWebPlugin, { prefix: "/" })

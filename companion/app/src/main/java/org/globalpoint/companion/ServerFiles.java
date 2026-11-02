@@ -29,11 +29,18 @@ final class ServerFiles {
     static void prepare(Context c) throws IOException {
         File server = serverDir(c), data = dataDir(c);
         data.mkdirs();
+        // server.version is the SHA-256 of server.zip (app/build.gradle): unpack only when it changes
         String stamp;
-        try {
-            stamp = String.valueOf(c.getPackageManager().getPackageInfo(c.getPackageName(), 0).lastUpdateTime);
-        } catch (PackageManager.NameNotFoundException e) {
-            stamp = "unknown";
+        try (InputStream in = c.getAssets().open("server.version")) {
+            byte[] b = new byte[128];
+            int n = in.read(b);
+            stamp = n > 0 ? new String(b, 0, n).trim() : "";
+        } catch (IOException e) {
+            try {
+                stamp = String.valueOf(c.getPackageManager().getPackageInfo(c.getPackageName(), 0).lastUpdateTime);
+            } catch (PackageManager.NameNotFoundException e2) {
+                stamp = "unknown";
+            }
         }
         File marker = new File(server, ".installed");
         if (marker.exists() && stamp.equals(readSmall(marker))) return;
@@ -70,7 +77,7 @@ final class ServerFiles {
 
     private static String readSmall(File f) {
         try (InputStream in = new java.io.FileInputStream(f)) {
-            byte[] b = new byte[64];
+            byte[] b = new byte[128];
             int n = in.read(b);
             return n > 0 ? new String(b, 0, n) : "";
         } catch (IOException e) {

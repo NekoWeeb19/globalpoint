@@ -30,23 +30,58 @@ function plainRow(row: any): any {
 }
 
 // better-sqlite3 takes arrays as lists of values (`.run([a, b])`), which node:sqlite would read as
-// named values, and binds undefined as NULL, which node:sqlite refuses
+// named values; binds undefined as NULL, which node:sqlite refuses; and ignores keys of a named-value
+// object that the SQL doesn't use, where node:sqlite throws
 const nullish = (value: any) => value === undefined ? null : value
-function flat(params: any[]): any[] {
+function flat(params: any[], names: Set<string>): any[] {
     return params.flat().map(p => {
         if (p === null || typeof p !== "object" || ArrayBuffer.isView(p)) return nullish(p)
         const named: any = {}
-        for (const key in p) named[key] = nullish(p[key])
+        for (const key in p) if (names.has(key)) named[key] = nullish(p[key])
         return named
     })
 }
 
+// the @name / :name / $name parameters in a statement, skipping quoted text and comments
+function parameterNames(source: string): Set<string> {
+    const names = new Set<string>()
+    const pattern = /'(?:[^']|'')*'|"(?:[^"]|"")*"|`[^`]*`|\[[^\]]*\]|--[^\n]*|\/\*[\s\S]*?\*\/|[@:$]([A-Za-z_][A-Za-z0-9_]*)/g
+    for (const m of source.matchAll(pattern)) if (m[1] !== undefined) names.add(m[1])
+    return names
+}
+
+// node:sqlite throws on integers beyond 2^53 where better-sqlite3 returns a rounded number
+const isTooBig = (error: any) => error?.code === "ERR_OUT_OF_RANGE"
+const roundBig = (row: any) => {
+    if (row === undefined || row === null) return row
+    for (const key in row) if (typeof row[key] === "bigint") row[key] = Number(row[key])
+    return row
+}
+
 class NodeSqliteStatement {
-    constructor(private readonly statement: any) {}
-    run(...params: any[]) { return this.statement.run(...flat(params)) }
-    get(...params: any[]) { return plainRow(this.statement.get(...flat(params))) }
-    all(...params: any[]) { return this.statement.all(...flat(params)).map(plainRow) }
-    *iterate(...params: any[]) { for (const row of this.statement.iterate(...flat(params))) yield plainRow(row) }
+    private readonly names: Set<string>
+    constructor(private readonly statement: any, source: string) { this.names = parameterNames(source) }
+
+    private read<T>(fn: () => T, fix: (value: T) => T): T {
+        try {
+            return fn()
+        } catch (error) {
+            if (!isTooBig(error)) throw error
+            this.statement.setReadBigInts(true)
+            try { return fix(fn()) } finally { this.statement.setReadBigInts(false) }
+        }
+    }
+
+    run(...params: any[]) { return this.statement.run(...flat(params, this.names)) }
+    get(...params: any[]) {
+        const args = flat(params, this.names)
+        return plainRow(this.read(() => this.statement.get(...args), roundBig))
+    }
+    all(...params: any[]) {
+        const args = flat(params, this.names)
+        return this.read(() => this.statement.all(...args), (rows: any[]) => rows.map(roundBig)).map(plainRow)
+    }
+    *iterate(...params: any[]) { yield* this.all(...params) }
 }
 
 class NodeSqliteDatabase {
@@ -68,17 +103,18 @@ class NodeSqliteDatabase {
         let statement = this.statements.get(source)
         if (statement === undefined) {
             if (this.statements.size >= 1000) this.statements.clear()
-            statement = new NodeSqliteStatement(this.db.prepare(source))
+            statement = new NodeSqliteStatement(this.db.prepare(source), source)
             this.statements.set(source, statement)
         }
         return statement
     }
 
-    // like better-sqlite3: BEGIN/COMMIT at the outer level, savepoints when nested, rollback on throw
+    // like better-sqlite3: BEGIN/COMMIT at the outer level, savepoints when nested, rollback on throw;
+    // .deferred/.immediate/.exclusive pick the BEGIN kind
     transaction<A extends any[], R>(fn: (...args: A) => R): (...args: A) => R {
-        return (...args: A) => {
+        const make = (begin: string) => (...args: A) => {
             const savepoint = `sp${this.depth}`
-            this.db.exec(this.depth === 0 ? "BEGIN" : `SAVEPOINT ${savepoint}`)
+            this.db.exec(this.depth === 0 ? begin : `SAVEPOINT ${savepoint}`)
             this.depth++
             try {
                 const result = fn(...args)
@@ -92,5 +128,6 @@ class NodeSqliteDatabase {
                 throw error
             }
         }
+        return Object.assign(make("BEGIN"), { deferred: make("BEGIN DEFERRED"), immediate: make("BEGIN IMMEDIATE"), exclusive: make("BEGIN EXCLUSIVE") })
     }
 }
