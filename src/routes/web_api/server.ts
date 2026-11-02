@@ -18,6 +18,7 @@ import { allowLoginBonusAgainSync } from "../../nya/loginBonus";
 import { withRealTimeOfDay } from "../../lib/serverClock";
 import { deleteNews, listNews, NEWS_CATEGORIES, saveNews } from "../../nya/news";
 import { DROP_MULTIPLIER_MAX, DROP_MULTIPLIER_MIN, getDropMultiplier, setDropMultiplier } from "../../nya/dropSettings";
+import { lanAddresses } from "../../nya/coop";
 
 interface TimeQuery {
     time: string | undefined
@@ -104,6 +105,27 @@ const routes = async (fastify: FastifyInstance) => {
             return reply.status(400).send({ error: "Bad Request", message: (error as Error).message })
         }
         return reply.send(dropsReply())
+    })
+
+    // ---- phone connection file (server.txt, read by game build 23+): plays a phone against this
+    // server over Wi-Fi. Only useful when the server listens on the network (LISTEN_HOST 0.0.0.0). ----
+
+    const listenPort = () => Number.parseInt(process.env.LISTEN_PORT ?? "8000") || 8000
+    const onNetwork = () => !["127.0.0.1", "localhost", "::1", ""].includes((process.env.LISTEN_HOST ?? "localhost").trim())
+    fastify.get("/phone-connection", async (request: FastifyRequest, reply: FastifyReply) => {
+        // opened from another device by the PC's address: that address works, so list it first
+        const asked = (request.headers.host ?? "").replace(/:\d+$/, "")
+        const addresses = lanAddresses()
+        if (/^\d{1,3}(\.\d{1,3}){3}$/.test(asked) && !asked.startsWith("127.") && !addresses.includes(asked)) addresses.unshift(asked)
+        return reply.send({ onNetwork: onNetwork(), listenHost: process.env.LISTEN_HOST ?? "localhost", port: listenPort(), addresses })
+    })
+    fastify.get("/phone-connection/server.txt", async (request: FastifyRequest, reply: FastifyReply) => {
+        const host = String((request.query as { host?: string }).host ?? lanAddresses()[0] ?? "")
+        if (!/^[A-Za-z0-9.-]+$/.test(host)) return reply.status(400).send({ error: "Bad Request", message: "Pick this PC's address first." })
+        return reply
+            .header("content-disposition", `attachment; filename="server.txt"`)
+            .type("text/plain; charset=utf-8")
+            .send(`# StarPoint server for World Flipper (game build 23 or newer)\r\n# Put this file in Android/obb/com.leiting.wf/ on the phone\r\n${host}:${listenPort()}\r\n`)
     })
 
     // ---- event schedule (see src/lib/eventSchedule.ts) ----

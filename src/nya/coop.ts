@@ -100,14 +100,19 @@ export function coopHost(requestHost?: string): string {
     if (configured) return configured
     const hostname = (requestHost ?? "").replace(/:\d+$/, "")
     if (/^\d{1,3}(\.\d{1,3}){3}$/.test(hostname)) return hostname
+    return lanAddresses()[0] ?? "127.0.0.1"
+}
+
+/** This PC's local network (LAN) IPv4 addresses, the usual home network ranges first. */
+export function lanAddresses(): string[] {
     const candidates: string[] = []
     for (const list of Object.values(os.networkInterfaces())) {
         for (const address of list ?? []) {
             if (address.family === "IPv4" && !address.internal) candidates.push(address.address)
         }
     }
-    // prefer the usual home network ranges
-    return candidates.find(a => a.startsWith("192.168.")) ?? candidates.find(a => a.startsWith("10.")) ?? candidates[0] ?? "127.0.0.1"
+    const rank = (a: string) => a.startsWith("192.168.") ? 0 : a.startsWith("10.") ? 1 : 2
+    return candidates.sort((a, b) => rank(a) - rank(b))
 }
 
 export function coopPlayerInfo(playerId: number, viewerId: number): CoopPlayerInfo | null {

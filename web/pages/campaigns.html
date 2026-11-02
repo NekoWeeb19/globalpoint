@@ -180,7 +180,12 @@
 
             function row(options) {
                 const item = document.createElement("li")
-                item.className = "flex flex-wrap gap-3 items-center p-3 rounded-2xl bg-surface-container-low"
+                item.className = "flex flex-wrap gap-3 items-center p-3 rounded-2xl bg-surface-container-low cursor-pointer"
+                // a click anywhere on the box ticks it (the label already covers its picture and text)
+                item.addEventListener("click", (e) => {
+                    if (e.target.closest("input, button, a, select, textarea, label")) return
+                    if (!pick.disabled) pick.click()
+                })
                 const label = document.createElement("label")
                 label.className = "flex flex-wrap gap-3 items-center min-w-0 cursor-pointer"
                 const pick = document.createElement("input")
