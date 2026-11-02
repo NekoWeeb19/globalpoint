@@ -101,3 +101,35 @@ Lets a phone with no root get the ~10 GB of game files from a folder instead of 
     python -I <repo>/scripts/client_mod/manifest_storage.py wfcn-globalized-20.apk work-storage/AndroidManifest.xml
     python -I <repo>/scripts/client_mod/repack_apk.py wfcn-globalized-20.apk work-storage/unsigned.apk assets/worldflipper_android_release.swf=p15-local-storage.swf AndroidManifest.xml=work-storage/AndroidManifest.xml
     then zipalign + apksigner as above -> wfcn-test-storage-N.apk
+
+OBB drop-off (2026-11-02): p14-local-strip.swf -> patch_cn_storage_dropoff.cjs -> p16-local-obb.swf ->
+wfcn-globalized-22.apk (= build 21 + OBB). The whole game-files set as ONE file, for players who copy
+it over USB instead of ~138k loose files.
+  The file: scripts/build_cn_obb.cjs writes main.<versionCode>.com.leiting.wf.obb (versionCode 1008001)
+    straight from a StarPoint server's files, no device or root needed:
+      node scripts/build_cn_obb.cjs "D:/WF client/obb" --server F:/starpoint-main
+    = the CN base zips (no iOS) oldest first, then the StarPoint patches in patches.json order, newest
+    copy wins, plus info.json (version = newest patch, baseUrl http://127.0.0.1:8000/cn/cdn/, fulfill).
+    1.4.203: 138092 files (+ info.json), 10.29 GB file (9.54 GB of game files), built in ~2 min on D:.
+    File list and sizes checked equal to a device that downloaded everything.
+  Format: a plain zip, files STORED (they are already compressed), zip64 (offsets past 4 GB, >65535
+    entries); any zip tool can list or unpack it. Its FIRST entry starpoint-obb-index.txt lists every
+    entry ("STARPOINT-OBB 1 <n>", then "<header offset> <data offset> <size> <path>", 12-digit fixed
+    width), so the game reads everything from the start of the file and never needs the central
+    directory at the end. Why: AS3 FileStream reads at any Number position, but a 17 MB central
+    directory at the end would be gone once the game starts cutting the file (below).
+  Where: /sdcard/Android/obb/com.leiting.wf/ (the game's own OBB folder: readable and writable with NO
+    permission on every Android version, including 11+ with targetSdk 30) or /sdcard/StarPoint/game/
+    (needs the storage permission, as the loose files do). Any *.obb there; a .obb that is not ours
+    is left alone. Loose files there are still taken as before (after the OBB).
+  The game (StorageDropoff.as): unpacks from the END of the file backwards and cuts the file shorter
+    (FileStream.truncate) after every ~50 ms slice, so the space it frees takes the unpacked files:
+    beyond the OBB itself only a little free space is needed (not a second 10 GB). Interrupted: next start reads the index again, everything
+    past the file's current end is already unpacked, it carries on. info.json is the 2nd entry, so it
+    comes last, and is written only if nothing failed (an older one is dropped, as for loose files);
+    then the emptied OBB is deleted. Storage full: the screen says how much is left and how much is
+    free, and stays there (going on would start the 10 GB download); free space and reopen to carry on.
+    Text: "Unpacking game files: n / total" + "x / y GB. Keep the game open."
+  Build:
+    node <repo>/scripts/client_mod/patch_cn_storage_dropoff.cjs p14-local-strip.swf p16-local-obb.swf work-obb ../../tools/ffdec/ffdec-cli.jar
+    then manifest_storage.py, repack_apk.py, zipalign + apksigner as for storage-3 -> wfcn-globalized-22.apk
