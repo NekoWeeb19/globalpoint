@@ -35,7 +35,9 @@ function dataDir() {
 /** Where the schedule writes the server's CN data (missions_cn, cn_shops, pass_card_cn .json):
  *  CN_GENERATED_DIR (relative to the repo folder), else the repo's assets folder. */
 function generatedDir() {
-    return path.resolve(path.join(__dirname, ".."), process.env.CN_GENERATED_DIR || "assets")
+    const dir = path.resolve(path.join(__dirname, ".."), process.env.CN_GENERATED_DIR || "assets")
+    fs.mkdirSync(dir, { recursive: true })
+    return dir
 }
 
 /** Zip file paths, oldest first. */
