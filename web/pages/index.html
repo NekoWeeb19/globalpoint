@@ -84,7 +84,7 @@
                 <h3 class="text-lg text-on-surface-variant">Time is in UTC, not your local time zone.</h3>
                 <p id="clock-now" class="text-lg text-on-surface" role="status"></p>
                 <p id="clock-note" class="text-sm text-on-surface-variant text-center"></p>
-                <input id="time" name="time" type="datetime-local" value="{{currentServerTime}}" class="bg-surface-container rounded-2xl border border-outline-variant p-3" required />
+                <input id="time" name="time" type="datetime-local" step="1" value="{{currentServerTime}}" class="bg-surface-container rounded-2xl border border-outline-variant p-3" required />
                 <div class="flex gap-5 justify-center">
                     <button type="submit"
                         class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity">
@@ -260,7 +260,7 @@ BANNER_ROTATION_HOURS="24"</pre>
                     <form id="rotation-jump" class="flex flex-col gap-2">
                         <label for="rotation-jump-time" class="font-semibold text-on-background">Jump to a date (UTC)</label>
                         <div class="flex gap-3 flex-wrap items-center">
-                            <input id="rotation-jump-time" type="datetime-local" required
+                            <input id="rotation-jump-time" type="datetime-local" step="1" required
                                 class="bg-surface-container rounded-2xl border border-outline-variant p-3" />
                             <button type="submit" id="rotation-jump-button"
                                 class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Jump</button>
