@@ -21,6 +21,7 @@ import {
     RowMove, Schedule, ScheduleEntry
 } from "../lib/eventSchedule"
 import { getServerDate } from "../utils"
+import getDatabase, { Database } from "../data"
 import { cdnDir, cnCdnRoot, cnCopyWindow } from "../lib/cnClient"
 import { reloadMods } from "../routes/api/asset"
 
@@ -57,10 +58,22 @@ const { runScript } = require(path.join(__dirname, "..", "..", "scripts", "run_s
 const lastLines = (text: string, n: number) => text.trim().split("\n").slice(-n).join(" ")
 let cnRunning = false, cnAgain = false
 /** Rebuilds the CN client's schedule update in the background (only when the CN game files are set up). */
+/** The units some save has on Mana Board 2 (the CN update keeps their board 2 open, see checkCnClockDependents). */
+function unitsOnBoard2(): string[] {
+    try {
+        const rows = getDatabase(Database.WDFP_DATA).prepare(`SELECT DISTINCT id FROM players_characters WHERE mana_board_index >= 2`).all() as { id: number }[]
+        return rows.map(r => String(r.id)).sort()
+    } catch {
+        return []
+    }
+}
+
 function rebuildCnSchedule() {
     if (!existsSync(cnCdnRoot())) return
     if (cnRunning) { cnAgain = true; return }
     cnRunning = true
+    // read by scripts/gen_cn_event_schedule.cjs
+    try { writeFileSync(path.join(process.cwd(), ".database", "cn_mb2_in_use.json"), JSON.stringify(unitsOnBoard2())) } catch { }
     runScript(CN_SCRIPT).then(({ code, stdout, stderr }) => {
         cnRunning = false
         if (code !== 0) console.error(`[cn] schedule update failed: ${lastLines(stderr || stdout, 3)}`)
@@ -100,6 +113,43 @@ function checkCnScheduleMatches() {
     console.log("[cn] the saved schedules differ from the ones the game update was built from; rebuilding the CN schedule update")
     rebuildCnSchedule()
 }
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const KIT = require(path.join(__dirname, "..", "..", "scripts", "kit_dates.cjs")) as {
+    readKits: (file: string) => unknown, kitState: (kits: unknown, nowMs: number) => string
+}
+const KIT_FILE = path.join(__dirname, "..", "..", "assets", "kit_dates.json")
+/** CN time ("YYYY-MM-DD hh:mm:ss", UTC+8) to ms. */
+const cnTimeMs = (text: string) => Date.parse(String(text).replace(" ", "T") + "+08:00")
+
+/**
+ * Rebuilds the CN update when the game clock has moved past something the update was built for:
+ * - a unit kit date (assets/kit_dates.json): the old or the game's own rows have to be swapped in;
+ * - a unit some save has on Mana Board 2 now has its board 2 date ahead of the clock (the clock went
+ *   back): the CN client would crash on its board screen (F1009) until the update keeps it open.
+ * Runs every 10 minutes and right after the clock is set.
+ */
+export function checkCnClockDependents() {
+    if (!existsSync(cnCdnRoot())) return
+    const dir = path.join(process.cwd(), ".database")
+    const built = readBuilt(dir) as { kitState?: string } | null
+    if (built === null) return // no update yet: the start-up check builds one
+    const now = getServerDate().getTime()
+    const kits = existsSync(KIT_FILE) ? KIT.readKits(KIT_FILE) : null
+    if ((built.kitState ?? "") !== KIT.kitState(kits, now)) {
+        console.log("[cn] the game clock crossed a unit kit date; rebuilding the CN schedule update")
+        rebuildCnSchedule()
+        return
+    }
+    let mb2: { keptOpen?: string[], dates?: Record<string, string> } = {}
+    try { mb2 = JSON.parse(readFileSync(path.join(dir, "cn_mb2_dates.json"), "utf8")) } catch { return }
+    const kept = new Set(mb2.keptOpen ?? [])
+    const risky = unitsOnBoard2().filter(id => !kept.has(id) && mb2.dates?.[id] !== undefined && cnTimeMs(mb2.dates[id]) > now)
+    if (risky.length > 0) {
+        console.log(`[cn] ${risky.length} unit(s) on Mana Board 2 have their board 2 date ahead of the game clock; rebuilding the CN schedule update`)
+        rebuildCnSchedule()
+    }
+}
+
 const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
 
 const fileOf = (logical: string) => {
@@ -235,6 +285,8 @@ export function initEventSchedule() {
     setTimeout(checkCnCopyWindow, 60 * 1000).unref()
     setInterval(checkCnCopyWindow, 10 * 60 * 1000).unref()
     setTimeout(checkCnScheduleMatches, 5 * 1000).unref()
+    setTimeout(checkCnClockDependents, 70 * 1000).unref()
+    setInterval(checkCnClockDependents, 10 * 60 * 1000).unref()
     if (existsSync(SCHEDULE_FILE)) {
         try {
             const { schedule: loaded, problems } = parseSchedule(JSON.parse(readFileSync(SCHEDULE_FILE, "utf-8")), catalog)

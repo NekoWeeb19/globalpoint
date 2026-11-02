@@ -92,6 +92,18 @@ function leaves(node, keyPath = []) {
     return node.entries.flatMap(e => leaves(e.node, [...keyPath, e.key]))
 }
 
+/** Splits a leaf's text into its CSV lines (a newline inside a quoted field doesn't end a line). */
+function splitCsvLines(text) {
+    const lines = []
+    let start = 0, quoted = false
+    for (let i = 0; i < text.length; i++) {
+        if (text[i] === '"') quoted = !quoted
+        else if (text[i] === "\n" && !quoted) { lines.push(text.slice(start, i)); start = i + 1 }
+    }
+    if (start < text.length) lines.push(text.slice(start))
+    return lines
+}
+
 /** Splits a CSV row into fields (quoted fields may hold commas, quotes and newlines). */
 function splitCsv(line) {
     const out = []
@@ -143,4 +155,4 @@ async function readHashedFile(hashed) {
     throw new Error(`${hashed} (version ${version}) was not found in any archive.`)
 }
 
-module.exports = { ROOT, CDN, decodeFile, encodeFile, setLeafText, leaves, splitCsv, csvField, readHashedFile }
+module.exports = { ROOT, CDN, decodeFile, encodeFile, setLeafText, leaves, splitCsv, splitCsvLines, csvField, readHashedFile }
