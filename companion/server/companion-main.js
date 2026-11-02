@@ -63,6 +63,8 @@ const defaults = {
     SERVER_TIME_TICKS: "true",
     BANNER_ROTATION: "false",
     BANNER_ROTATION_HOURS: "24",
+    // tells the dashboard it runs inside the companion app (hides the PC-only "Play on a phone over Wi-Fi" box)
+    STARPOINT_COMPANION: "1",
 }
 for (const [key, value] of Object.entries(defaults)) if (process.env[key] === undefined) process.env[key] = value
 
