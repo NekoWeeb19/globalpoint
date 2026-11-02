@@ -1,0 +1,45 @@
+CN client (com.leiting.wf, AIR) private storage after a finished download, and the drop-off bundle layout.
+Captured from LDPlayer 9 (Android 9) on 2026-11-02, game files version 1.4.202 -> 1.4.203.
+
+/data/data/com.leiting.wf/
+  com.leiting.wf/Local Store/                  = AIR File.applicationStorageDirectory
+    asset/asset_download/dummy/                = AssetDownloader root (DevConfig.getDownloadedAssetDirectory,
+                                                 data key is always "dummy")
+      info.json                                = the version record (see below)
+      download/.empty                          1 byte, written by the game
+      download/production/android_upload/xx/<hash>   997 files,      87 MB
+      download/production/medium_upload/xx/<hash>  23478 files,   3.3 GB
+      download/production/upload/xx/<hash>        113616 files,   6.7 GB
+                                                 (138092 files, ~10.2 GB in all; names are content hashes,
+                                                 so the same path always holds the same file)
+      partial_downloaded.json / .platform / partial_downloaded_android_thread.json, temp/
+                                               = only while a download is unfinished
+    asset/bundle/                              = bundle.zip from the APK, extracted at first start
+                                                 (AssetExtractor; bundle.zip.sha1 decides re-extraction).
+                                                 Not part of the drop-off: the game rebuilds it.
+    custom_Release_Android/                    = account, application_option, misc_data, latest.log, report/
+                                                 (account and options; not part of the drop-off)
+    <hash>_viewer, <hash>_device               = account/device ids (not part of the drop-off)
+  shared_prefs/, files/protocols/              = Leiting SDK (not part of the drop-off)
+
+info.json (written by AssetDownloader.writeInfoFile after each finished download), e.g.
+  {"assetRecoveryInfo":[],"totalSize":10177212635,"version":"1.4.203",
+   "baseUrl":"http://127.0.0.1:8000/cn/cdn/","assetSizeKind":"fulfill",
+   "latestModifiedTimeOfArchive":"Mon, 02 Nov 2026 07:25:53 GMT"}
+  version  = the game files' version. The client sends it to /asset/get_path (RES_VER); StarPoint
+             (src/lib/cnClient.ts cnPathList) answers "nothing" when it equals the newest patch, only the
+             later patches when older, and everything when missing or unknown.
+  baseUrl  = the 127.0.0.1 server address (right for the 127.0.0.1 APK and for an on-phone server).
+  assetSizeKind "fulfill" = full set (not the "shortened" partial mode).
+  AssetDownloader.isDownloaded: version == server version AND no partial_downloaded.json AND the saved
+  shortened-mode option is not Unknown/ChangingToFull. A fresh install's option is Unknown, so the game
+  still asks the server once; with a matching version that answer is empty.
+
+Drop-off bundle = the contents of asset_download/dummy/ (info.json + download/), nothing else:
+  /sdcard/StarPoint/game/info.json
+  /sdcard/StarPoint/game/download/.empty
+  /sdcard/StarPoint/game/download/production/{android_upload,medium_upload,upload}/xx/<hash>
+  (or the same under /sdcard/Android/obb/com.leiting.wf/)
+Make one with capture_cn_storage.py from a device that finished its download (CAPTURE.txt it writes is
+only a note; harmless if copied along). Version of the bundle = its info.json version; players get any
+newer StarPoint patches through the normal download afterwards.

@@ -66,3 +66,36 @@ the strip ones like pictures. strip_pages.json (scripts/gen_cn_strip_pages.cjs) 
 it if banner art changes. The halftone band along those strips' top edge (hidden by the old layout's top
 bar) is removed in the game files instead: scripts/gen_cn_strip_band.cjs + ClearRect.java make its dot
 tile transparent (CN patch 1.4.202, tagged "stripBand" in patches.json so reruns start from the originals).
+
+Storage drop-off (TEST, 2026-11-02; sharing plan Phase 4): p14-local-strip.swf ->
+patch_cn_storage_dropoff.cjs -> p15-local-storage.swf; manifest_storage.py; wfcn-test-storage-1.apk.
+Lets a phone with no root get the ~10 GB of game files from a folder instead of downloading them.
+  patch_cn_storage_dropoff.cjs: AssetExtractor.start (first loading step, before any downloaded file
+    is read) now asks as3/starpoint/StorageDropoff.as first. If /sdcard/Android/obb/com.leiting.wf/ or
+    /sdcard/StarPoint/game/ holds files, they are moved into Local Store/asset/asset_download/dummy/
+    with the same relative paths (rename, or copy + delete across volumes), the emptied drop-off
+    folders removed (the two roots stay), then the game's own start runs. info.json (the version
+    record) goes last and only if every file moved; an info.json older than the game's own is dropped;
+    a moved one clears partial_downloaded*. Work runs in ~50 ms slices with a line on screen
+    ("Moving game files into the game: n / total (x / y GB) Keep the game open."), shown over the
+    boot logo. Emulator: ~8000 files / 0.53 GB in ~10 s, so a full set is a few minutes. No folder,
+    no files or no permission: nothing happens and the normal download runs. Failures stay in the
+    drop-off and are retried next start.
+  manifest_storage.py <apk> <out AndroidManifest.xml>: binary manifest edit; adds
+    MANAGE_EXTERNAL_STORAGE ("All files access", needed on Android 11+ since the APK targets 30),
+    READ/WRITE_EXTERNAL_STORAGE if missing (the official manifest has both, plus a misspelled
+    READ_EXTERNAL_STORGE that does nothing), and application requestLegacyExternalStorage=true
+    (Android 10). Pass the result to repack_apk.py as AndroidManifest.xml=<file>.
+  The player must allow storage once: Android 11+ Settings -> Apps -> World Flipper -> "All files
+    access" (or the companion opens ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION); Android 6-10 the
+    Storage permission in the app's permissions. The game never asks by itself. Emulator/adb:
+    adb shell pm grant com.leiting.wf android.permission.READ_EXTERNAL_STORAGE (and WRITE_...);
+    Android 11+: adb shell appops set com.leiting.wf MANAGE_EXTERNAL_STORAGE allow
+  capture_cn_storage.py <out dir> --adb <adb.exe> --serial <dev>: copies a finished download off a
+    rooted device (su + tar over adb exec-out, `stty raw` because LDPlayer's su turns \n into \r\n)
+    in exactly the drop-off layout. Layout and the info.json record: STORAGE_LAYOUT.txt.
+  Build (from F:\WF client\cn\build):
+    node <repo>/scripts/client_mod/patch_cn_storage_dropoff.cjs p14-local-strip.swf p15-local-storage.swf work-storage ../../tools/ffdec/ffdec-cli.jar
+    python -I <repo>/scripts/client_mod/manifest_storage.py wfcn-globalized-20.apk work-storage/AndroidManifest.xml
+    python -I <repo>/scripts/client_mod/repack_apk.py wfcn-globalized-20.apk work-storage/unsigned.apk assets/worldflipper_android_release.swf=p15-local-storage.swf AndroidManifest.xml=work-storage/AndroidManifest.xml
+    then zipalign + apksigner as above -> wfcn-test-storage-1.apk
