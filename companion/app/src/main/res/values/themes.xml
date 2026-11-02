@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The dashboard's dark colors (src/input.css, *-dark), so the app's screens, its built-in
-     dashboard (DashboardActivity forces the dashboard's dark scheme) and the icon look like one thing. -->
+<!-- The dashboard's colors (src/input.css): light here, dark in values-night. The app follows the
+     phone's light/dark setting, and so does its built-in dashboard: with targetSdk 33+ the WebView
+     reports prefers-color-scheme from this theme's isLightTheme. -->
 <resources>
-    <color name="surface">#FF171306</color>
-    <color name="surface_dim">#FF100D04</color>
-    <color name="surface_container_highest">#FF393525</color>
+    <color name="surface">#FFFFF9EF</color>
+    <color name="surface_dim">#FFF1E8D0</color>
+    <color name="surface_container_highest">#FFEBE2CB</color>
     <color name="primary">#FFE9C400</color>
-    <color name="outline">#FF9F977E</color>
+    <color name="outline">#FF6F6851</color>
 
-    <style name="Companion" parent="android:Theme.Material">
+    <style name="Companion" parent="android:Theme.Material.Light">
         <item name="android:colorPrimary">@color/surface</item>
         <item name="android:colorPrimaryDark">@color/surface_dim</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="android:colorAccent">@color/primary</item>
         <item name="android:colorControlNormal">@color/outline</item>
         <item name="android:colorButtonNormal">@color/surface_container_highest</item>
         <item name="android:colorBackground">@color/surface</item>
         <item name="android:windowBackground">@color/surface</item>
-        <item name="android:navigationBarColor">@color/surface</item>
     </style>
 </resources>

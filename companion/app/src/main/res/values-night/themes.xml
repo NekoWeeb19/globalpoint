@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The dashboard's dark colors (src/input.css, *-dark), used when the phone is in dark mode. -->
+<resources>
+    <color name="surface">#FF171306</color>
+    <color name="surface_dim">#FF100D04</color>
+    <color name="surface_container_highest">#FF393525</color>
+    <color name="primary">#FFE9C400</color>
+    <color name="outline">#FF9F977E</color>
+
+    <style name="Companion" parent="android:Theme.Material">
+        <item name="android:colorPrimary">@color/surface</item>
+        <item name="android:colorPrimaryDark">@color/surface_dim</item>
+        <item name="android:colorAccent">@color/primary</item>
+        <item name="android:colorControlNormal">@color/outline</item>
+        <item name="android:colorButtonNormal">@color/surface_container_highest</item>
+        <item name="android:colorBackground">@color/surface</item>
+        <item name="android:windowBackground">@color/surface</item>
+        <item name="android:navigationBarColor">@color/surface</item>
+    </style>
+</resources>

@@ -58,7 +58,7 @@ download.
    Press **Let the server run in the background** once, so the phone doesn't stop it.
 4. Play. The notification shows the server is running; its **Stop** button (or Stop in the app) ends it.
 
-The app and its built-in dashboard always use the dashboard's dark colors (gold on #171306), also on a phone in light mode: the app has a dark theme, and the in-app dashboard rewrites the stylesheet's `@media (prefers-color-scheme: dark)` to always apply as it loads (the server's files are unchanged; a phone browser still follows the phone's setting).
+The app and its built-in dashboard follow the phone's light/dark setting, in the dashboard's two palettes (cream, or gold on #171306): the app theme has a light and a night version (`res/values`, `res/values-night`), and with targetSdk 33+ the WebView reports `prefers-color-scheme` from it, so the dashboard switches by itself (its files are unchanged; automatic WebView darkening stays off).
 
 Buttons: **Dashboard** opens the server's dashboard inside the app; **Open in browser** opens it in
 the phone's browser.
