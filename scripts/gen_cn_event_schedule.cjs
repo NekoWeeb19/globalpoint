@@ -240,9 +240,22 @@ async function main() {
     const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass])].sort()
     const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
     const cn = await cnFiles(new Set([...fileList, featureFile]))
-    if (cn.has(featureFile)) {
+    // art StarPoint's patches added (scripts/gen_cn_banner_art.cjs) counts too: their file names and
+    // their newest copy of the feature table (only for this check; tables are still edited from the
+    // translated/CN copies, never from an earlier schedule's output)
+    let featureBuf = cn.has(featureFile) ? await cn.get(featureFile).buffer() : null
+    if (fs.existsSync(PATCHES)) for (const p of JSON.parse(fs.readFileSync(PATCHES, "utf8"))) for (const a of p.archives) {
+        const zf = path.join(path.dirname(PATCHES), a.file)
+        if (!fs.existsSync(zf)) continue
+        for (const e of (await unzipper.Open.file(zf)).files) {
+            const name = e.path.split("\\").join("/")
+            cnNames.add(name.replace(/^production\/[a-z_]+\//, ""))
+            if (name === featureFile) featureBuf = await e.buffer()
+        }
+    }
+    if (featureBuf) {
         featureContent = {}
-        for (const { path: keys, leaf } of R.leaves(R.decodeFile(await cn.get(featureFile).buffer()))) featureContent[keys.join("/")] = leaf.text
+        for (const { path: keys, leaf } of R.leaves(R.decodeFile(featureBuf))) featureContent[keys.join("/")] = leaf.text
     }
     const trees = new Map()
     // the translated dir's files.json names every translated table, also the ones kept from an
@@ -260,10 +273,32 @@ async function main() {
         trees.set(file, tree)
     }
 
+    // the catalog names global's banner ids; CN gave some of global's banners new ids (usually
+    // 10000 + the global id) and reused the old ids for its own reruns, so a banner is found by its
+    // internal name (gacha column 0) when the same id is a different banner in CN
+    const gachaFile = fileOf("master/gacha/gacha.orderedmap")
+    let cnBannerId = id => id
+    if (trees.has(gachaFile)) {
+        const { readTable } = require("./cdn_master.cjs")
+        const globalGacha = await readTable("master/gacha/gacha.orderedmap")
+        const name = line => R.splitCsv(String(line))[0]
+        const cnRows = new Map(R.leaves(trees.get(gachaFile)).map(l => [l.path.join("/"), name(l.leaf.text)]))
+        const cnByName = new Map([...cnRows].map(([id, n]) => [n, id]))
+        cnBannerId = id => {
+            const g = globalGacha[id] && name(globalGacha[id])
+            if (!g || cnRows.get(id) === g || !cnByName.has(g)) return id
+            return cnByName.get(g)
+        }
+    }
+
     // moves grouped by event: the CN rows and their CN window
     const byEvent = new Map()
     for (const [key, move] of moves) {
-        const [file, p] = [key.slice(0, key.indexOf("#")), key.slice(key.indexOf("#") + 1)]
+        let [file, p] = [key.slice(0, key.indexOf("#")), key.slice(key.indexOf("#") + 1)]
+        if (file === gachaFile && cnBannerId(p) !== p) {
+            console.log(`${move.eventKey}: global banner ${p} is CN banner ${cnBannerId(p)}`)
+            p = cnBannerId(p)
+        }
         if (!byEvent.has(move.eventKey)) byEvent.set(move.eventKey, { move, rows: [] })
         byEvent.get(move.eventKey).rows.push({ file, p })
     }

@@ -56,3 +56,13 @@ patch_cn_coop_lite.cjs: Battle.preparation now sets lightweightModeLevel = co-op
 own line (Lite Mode / "Abbreviate Multiplayer Notifications" options), so co-op always hides the partners'
 skill animations, trails and multiballs, and solo always shows every effect. Emulator: x2 co-op ~19 fps
 before, ~25 fps after (measured while screen recording).
+
+Build 20 (2026-11-02): p13-*-coop-lite.swf -> patch_cn_strip_pages.cjs -> p14-*-strip.swf;
+wfcn-globalized-20.apk / -phone-20.apk. The early banners' summon art is a short strip (~624 px) made for
+an older screen layout; the game centers picture pages but puts animation pages at the top, leaving a
+gap above the featured units. GachaFeaturePageHolderView.setContent now calls
+as3/starpoint/StripPages.template.as (StripPages.place) after adding an animation page, which centers
+the strip ones like pictures. strip_pages.json (scripts/gen_cn_strip_pages.cjs) lists them; regenerate
+it if banner art changes. The halftone band along those strips' top edge (hidden by the old layout's top
+bar) is removed in the game files instead: scripts/gen_cn_strip_band.cjs + ClearRect.java make its dot
+tile transparent (CN patch 1.4.202, tagged "stripBand" in patches.json so reruns start from the originals).
