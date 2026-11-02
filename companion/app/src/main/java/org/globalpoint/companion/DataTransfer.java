@@ -213,7 +213,7 @@ final class DataTransfer {
         boolean patches = new File(data, ".cdn/cn_patches/patches.json").exists();
         boolean save = new File(data, ".database/wdfp_data.db").exists();
         File comics = new File(data, ".cdn/comics");
-        if (!path || !patches) return "Game data: missing. Open \"Game data\" to copy it from your PC or a zip.";
+        if (!path || !patches) return "Game data: missing (copy it from your PC or a zip in \"Game data\").";
         return "Game data: ready" + (save ? ", save present" : ", no save yet (a new account is made)") + (comics.isDirectory() ? ", comics" : "");
     }
 }

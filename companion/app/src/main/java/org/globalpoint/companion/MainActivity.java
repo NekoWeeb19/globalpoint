@@ -109,6 +109,8 @@ public class MainActivity extends Activity {
                     int n = SaveBackup.export(this, uri);
                     toast("Save exported (" + n + " files)");
                 } catch (Exception e) {
+                    // don't leave an empty or half-written file behind
+                    try { android.provider.DocumentsContract.deleteDocument(getContentResolver(), uri); } catch (Exception ignored) { }
                     toast("Export failed: " + e.getMessage());
                 }
             });
@@ -116,10 +118,7 @@ public class MainActivity extends Activity {
             toast("Importing the save...");
             worker.execute(() -> {
                 try {
-                    if (ServerProbe.running()) {
-                        ServerService.stop(this);
-                        for (int i = 0; i < 50 && ServerProbe.running(); i++) Thread.sleep(200);
-                    }
+                    ServerProbe.stopAndWait(this);
                     int n = SaveBackup.importSave(this, uri);
                     ServerFiles.log(this, "[companion] save imported (" + n + " files)");
                     ServerService.start(this);
@@ -186,10 +185,13 @@ public class MainActivity extends Activity {
     private void refresh() {
         if (!visible) return;
         worker.execute(() -> {
-            boolean up = ServerProbe.running();
+            boolean up = ServerProbe.running(), own = ServerProbe.ownProcess(this);
             String tail = tail(ServerFiles.logFile(this), 6000);
             ui.post(() -> {
-                status.setText(up ? "Server: running on 127.0.0.1:8000" : "Server: stopped");
+                status.setText(own && up ? "Server: running on 127.0.0.1:8000"
+                        : own ? "Server: starting..."
+                        : up ? "Server: stopped (another server answers on port 8000, e.g. a PC through adb)"
+                        : "Server: stopped");
                 boolean atEnd = logScroll.getChildAt(0).getBottom() <= logScroll.getHeight() + logScroll.getScrollY() + 40;
                 log.setText(tail);
                 if (atEnd) logScroll.post(() -> logScroll.fullScroll(ScrollView.FOCUS_DOWN));

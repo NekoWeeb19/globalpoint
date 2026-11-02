@@ -37,7 +37,7 @@ final class SaveBackup {
         int count = 0;
         try (OutputStream raw = c.getContentResolver().openOutputStream(target);
              ZipOutputStream zip = new ZipOutputStream(raw)) {
-            if (ServerProbe.running()) {
+            if (ServerProbe.ownProcess(c) && ServerProbe.running()) {
                 JSONObject manifest = new JSONObject(new String(get(ServerProbe.URL_ROOT + "companion/manifest?save=1"), "UTF-8"));
                 JSONArray files = manifest.getJSONArray("files");
                 for (int i = 0; i < files.length(); i++) {

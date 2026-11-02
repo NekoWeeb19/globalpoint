@@ -29,6 +29,11 @@ process.on("uncaughtException", error => { console.error("[companion] uncaught:"
 const link = (target, at) => {
     try { fs.lstatSync(at) } catch { try { fs.symlinkSync(target, at, "dir") } catch (e) { console.error(`[companion] link ${at}: ${e.message}`) } }
 }
+// Android has no /tmp: temporary files (e.g. the save snapshot in src/routes/companion.ts) go here
+const tmp = path.join(dataDir, ".tmp")
+fs.mkdirSync(tmp, { recursive: true })
+process.env.TMPDIR = tmp
+
 link(path.join(serverDir, "web"), path.join(dataDir, "web"))
 link(path.join(dataDir, ".cdn"), path.join(serverDir, ".cdn"))
 process.chdir(dataDir)

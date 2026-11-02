@@ -34,6 +34,7 @@ public class DataActivity extends Activity {
     private CheckBox save, patches, images, comics;
     private Button download, importZip;
     private SharedPreferences prefs;
+    private ScrollView scroll;
 
     @Override
     protected void onCreate(Bundle saved) {
@@ -76,7 +77,7 @@ public class DataActivity extends Activity {
         u.add(bar);
         status = u.text("", 13);
 
-        ScrollView scroll = new ScrollView(this);
+        scroll = new ScrollView(this);
         scroll.addView(u.root);
         setContentView(scroll);
         refresh();
@@ -129,13 +130,13 @@ public class DataActivity extends Activity {
 
     private void run(Job job) {
         busy(true);
+        scroll.post(() -> scroll.fullScroll(View.FOCUS_DOWN));
         new Thread(() -> {
             String result;
             try {
-                if (ServerProbe.running()) {
+                if (ServerProbe.ownProcess(this)) {
                     progress("Stopping the server first...", 0, -1);
-                    ServerService.stop(this);
-                    for (int i = 0; i < 50 && ServerProbe.running(); i++) Thread.sleep(200);
+                    ServerProbe.stopAndWait(this);
                 }
                 result = job.run();
             } catch (Exception e) {
