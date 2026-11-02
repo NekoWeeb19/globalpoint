@@ -18,10 +18,10 @@ import {
     activeFreePullCopy, CampaignRun, campaignCopyId, campaignRuns, CampaignSchedule, currentOrNextRun, describeRun,
     isWindowOn, KnownRuns, runCopies, TimedCampaign, yearlyClash, FreePullBannerInfo, FreePullCampaign, freePullClash,
     freePullCopies, FreePullCopy, isFreePullBanner, parseCampaignSchedule, SEASONAL_FREE_PULLS,
-    SEASONAL_LOGIN_BONUSES, yearlyLoginServerColumns, yearlyPart, CN_SEASONAL_LOGIN_BONUSES, CN_SEASONAL_FREE_PULLS, cnFreePullCopyId
+    SEASONAL_LOGIN_BONUSES, yearlyLoginServerColumns, yearlyPart, CN_SEASONAL_LOGIN_BONUSES, CN_SEASONAL_FREE_PULLS, cnFreePullCopyId, isFreePullCopyId
 } from "../lib/campaignSchedule"
 import { cnCampaigns, cnOnlyLoginGroups } from "./cnCampaigns"
-import { cnCopyWindow, cnTableIds, inCnRequest } from "../lib/cnClient"
+import { cnBuiltFreePullCopies, cnCopyWindow, cnTableIds, inCnRequest } from "../lib/cnClient"
 import { LoginBonusGroup, isLoginBonusGroupOpen } from "../lib/loginBonus"
 import { dayNumber } from "../lib/mission"
 import { getGachaCampaignIdSync } from "../lib/assets"
@@ -168,6 +168,24 @@ export function resolveFreePullCampaignId(gachaId: number, serverMs = getServerD
  * unit banner (count 1 = today's pull is still there), on top of the player's saved entries. The
  * client shows a banner's free pull only when this list has an entry for it.
  */
+/**
+ * A player's saved free pull entries, without the yearly copies the CN client's update doesn't have: a save
+ * moved from another setup (or a schedule changed since) can name copies this update lacks, and an unknown
+ * campaign id stops the CN client with C8601. The global client and non-copy campaigns pass unchanged.
+ */
+export function cnKnownFreePullEntries<T extends { campaign_id: number }>(list: T[]): T[] {
+    if (!inCnRequest()) return list
+    const built = cnBuiltFreePullCopies()
+    const window = cnCopyWindow()
+    return list.filter(entry => {
+        if (!isFreePullCopyId(entry.campaign_id)) return true
+        if (built !== null) return built.has(entry.campaign_id)
+        // an update from before the copies were recorded: global copies are year * 100 + id
+        const year = Math.floor(entry.campaign_id / 100)
+        return window !== null && entry.campaign_id < 1_000_000 && year >= window.from && year <= window.until
+    })
+}
+
 export function freePullCopyEntriesSync(saved: { gacha_id: number, campaign_id: number, count: number }[], serverMs = getServerDate().getTime()) {
     const cn = inCnRequest()
     const copy = activeFreePullCopy(cn ? [...cnCopies, ...copies] : copies, serverMs)

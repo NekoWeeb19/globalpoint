@@ -59,6 +59,10 @@ const ROOT = path.join(__dirname, "..")
 const CN_DIR = require("./cn_archives.cjs").cnDir()
 const TRANSLATED = process.argv[2] ?? require("./cn_archives.cjs").cnTextDir()
 const { cdnDir, dataDir } = require("./cn_archives.cjs")
+const { scheduleFingerprint } = require("./schedule_fingerprint.cjs")
+// the yearly free pull copies this update has (.database/cn_schedule_built.json): the server never sends the
+// CN client a used copy it doesn't have (an unknown campaign id stops it with C8601)
+const builtFreePullCopyIds = []
 const PATCHES = path.join(cdnDir(), "cn_patches", "patches.json")
 const OFFSET = 8 * 3600 * 1000
 const DATE = /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/g
@@ -218,6 +222,7 @@ function applyYearlyCampaigns(trees, files) {
                 const copy = cnOnly ? { ...found, id: C.cnFreePullCopyId(found.year, found.originalId) } : found
                 const row = C.freePullCopyRow({ ...original, name: names.get(String(id)) ?? original.name }, { ...copy, start: toCn(copy.start), end: toCn(copy.end) }, banners)
                 pullTree.entries.push({ key: String(copy.id), node: { kind: "leaf", text: row, original: "" } })
+                builtFreePullCopyIds.push(copy.id)
                 pulls++
             }
         }
@@ -251,6 +256,8 @@ function applyYearlyCampaigns(trees, files) {
 }
 
 async function main() {
+    // the schedules this update is built from (compared by the server at start, src/nya/eventSchedule.ts)
+    const fingerprint = scheduleFingerprint(dataDir())
     const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, "assets", "event_catalog.json"), "utf8"))
     // plus the events only CN has (scripts/gen_event_catalog.cjs --cn)
     const cnCatalogFile = path.join(ROOT, "assets", "event_catalog_cn.json")
@@ -410,6 +417,7 @@ async function main() {
         list.push({ path: file, from: out })
     }
     await build(version, last, list)
+    fs.writeFileSync(path.join(dataDir(), "cn_schedule_built.json"), JSON.stringify({ fingerprint, version, freePullCopyIds: builtFreePullCopyIds.sort((a, b) => a - b) }))
     console.log(`CN schedule ${version}: ${events} event(s), ${moved} rows moved, ${campaignsMade}, ${list.length} files`)
     // the server's copy of the CN missions follows the new dates
     await runScriptOrThrow(path.join(__dirname, "gen_cn_missions.cjs"), { env: { ...process.env, CN_TRANSLATED_DIR: TRANSLATED }, echo: true })

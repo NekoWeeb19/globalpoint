@@ -10,7 +10,7 @@ import { progressPlayerMissionsSync } from "../../nya/mission";
 import { prepareSoloAdventEventsSync } from "../../nya/soloAdvent";
 import { getPendingLoginBonusSync, settleLoginBonusSync } from "../../nya/loginBonus";
 import { refillBossBoostSync } from "../../nya/bossBoost";
-import { freePullCopyEntriesSync, refreshFreePullCopiesSync } from "../../nya/campaignSchedule";
+import { freePullCopyEntriesSync, cnKnownFreePullEntries, refreshFreePullCopiesSync } from "../../nya/campaignSchedule";
 import { refillPeriodicRewardPointsSync } from "../../nya/periodicReward";
 import { catchUpQuestJoinUnitsSync } from "../../nya/storyJoin";
 import { COUNTER_KINDS } from "../../lib/mission";
@@ -115,7 +115,7 @@ const routes = async (fastify: FastifyInstance) => {
             for (const id of Object.keys(nodes)) nodes[id] = cnManaNodeList(nodes[id], awake[id])
         }
         // the yearly free pull copy running now (dashboard Campaigns tab) on every regular unit banner
-        clientData.gacha_campaign_list = [...clientData.gacha_campaign_list, ...freePullCopyEntriesSync(clientData.gacha_campaign_list)]
+        clientData.gacha_campaign_list = [...cnKnownFreePullEntries(clientData.gacha_campaign_list), ...freePullCopyEntriesSync(clientData.gacha_campaign_list)]
         const pendingLoginBonus = getPendingLoginBonusSync(playerId)
         if (pendingLoginBonus !== null) {
             clientData.bonus_index_list = pendingLoginBonus.bonus_index_list

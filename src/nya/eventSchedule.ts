@@ -81,6 +81,25 @@ function checkCnCopyWindow() {
         rebuildCnSchedule()
     }
 }
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { scheduleFingerprint, readBuilt } = require(path.join(__dirname, "..", "..", "scripts", "schedule_fingerprint.cjs")) as {
+    scheduleFingerprint: (dataDir: string) => string, readBuilt: (dataDir: string) => { fingerprint?: string } | null
+}
+/**
+ * Rebuilds the CN update when the saved schedules aren't the ones it was built from: a save imported with
+ * its own schedules, a data pack, a copy from a PC. Without this the client keeps the old tables, and a
+ * save naming a yearly copy they lack stops it (C8601). An update with no record counts as built from empty
+ * schedules (the shared package's clean one).
+ */
+function checkCnScheduleMatches() {
+    if (!existsSync(cnCdnRoot())) return
+    const dir = path.join(process.cwd(), ".database")
+    const now = scheduleFingerprint(dir)
+    const built = readBuilt(dir)?.fingerprint ?? scheduleFingerprint(path.join(dir, "no-schedules"))
+    if (now === built) return
+    console.log("[cn] the saved schedules differ from the ones the game update was built from; rebuilding the CN schedule update")
+    rebuildCnSchedule()
+}
 const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
 
 const fileOf = (logical: string) => {
@@ -215,6 +234,7 @@ export function initEventSchedule() {
     // first check after a minute: the server clock (initServerClock) is set after this runs
     setTimeout(checkCnCopyWindow, 60 * 1000).unref()
     setInterval(checkCnCopyWindow, 10 * 60 * 1000).unref()
+    setTimeout(checkCnScheduleMatches, 5 * 1000).unref()
     if (existsSync(SCHEDULE_FILE)) {
         try {
             const { schedule: loaded, problems } = parseSchedule(JSON.parse(readFileSync(SCHEDULE_FILE, "utf-8")), catalog)
