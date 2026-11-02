@@ -3,7 +3,7 @@ import { ContentTypeParserDoneFunction } from "fastify/types/content-type-parser
 import fastifyStatic from "@fastify/static";
 import { pack, unpack } from "msgpackr";
 import path from "path";
-import { appendFileSync, mkdirSync } from "fs";
+import { appendFileSync, mkdirSync, writeFileSync } from "fs";
 // api routes
 import apiPlugin from "./routes/api";
 import assetApiPlugin from "./routes/api/asset";
@@ -73,6 +73,12 @@ const fastify = Fastify({
     // the patched CN client calls /cn/api/index.php/...; it is served by the same API as global
     rewriteUrl: (req) => cnApiUrl(req.url ?? "/") ?? req.url ?? "/"
 })
+
+// STARPOINT_LIST_ROUTES=<file>: write every route as JSON to that file and exit, without starting
+// anything (scripts/gen_routes_doc.cjs builds docs/routes.md from it)
+const routeListFile = process.env.STARPOINT_LIST_ROUTES
+const listedRoutes: { method: string | string[], url: string, prefix: string }[] = []
+if (routeListFile) fastify.addHook("onRoute", (route) => { listedRoutes.push({ method: route.method, url: route.url, prefix: route.prefix ?? "" }) })
 
 // lets code without the request (the mission data) tell CN requests apart
 // CN_INTERNAL_HEADER: a route passing a CN request on to another route (co-op runs the solo battle
@@ -266,6 +272,14 @@ fastify.register(fastifyStatic, {
     decorateReply: false
 })
 
+if (routeListFile) {
+    fastify.ready().then(() => {
+        writeFileSync(routeListFile, JSON.stringify(listedRoutes, null, 1))
+        process.exit(0)
+    })
+} else startServer()
+
+function startServer() {
 // listen
 // event schedule (moves events set on the dashboard's Events tab; before the rotation reads the banners)
 initEventSchedule()
@@ -291,3 +305,4 @@ fastify.listen({ port: listenPort, host: listenHost }, (err, address) => {
 // co-op battle connection (multiplayer with COM partners): the game connects to it directly, at the
 // address /multi_battle_quest/select_room gives (COOP_HOST, or this PC's network address) and COOP_PORT
 startCoopServer(coopPort())
+}
