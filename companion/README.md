@@ -16,6 +16,21 @@ installed, version 1.4.203):
 - Exporting the save, importing it back and restarting kept everything.
 - The built-in dashboard works, and the signed, shrunk release APK starts.
 
+**After merging `sharing-package`** (worker-thread rebuilds, portable paths, slim CN data), tested on
+the second emulator (5556, game build 20) as a new player, with the companion's data from the clean
+package server:
+- Download from PC brought the slim set, the schedule data (slim CN tables + English tables) and
+  dashboard pictures (6,199 files, 179 MB, about a minute), then the game update (80 files, 1.6 GB).
+- The game downloaded the update from the companion, made a new account, did the guided first pull
+  and reached home.
+- **A schedule edit from the companion's dashboard works on the phone:** moving "10 Million Reroll
+  Celebration" to start now ran the CN rebuild in a worker thread (no second Node process) from the
+  slim tables. It regenerated the server's CN missions, passes and shops and wrote game update
+  1.4.210: 48 files, 4.5 MB, the same 48 files a full-archive build gives. It took about 7 minutes on
+  the emulator.
+- Not seen in game: that client was at 1.4.206 from an older package. It downloads the package's
+  squashed 1.4.209 (built from 1.4.54) but keeps reporting 1.4.206 and asks again; see Next steps.
+
 ## For players
 
 1. Install the game APK (127.0.0.1 build) and `app-arm64-v8a-release.apk` (PC emulators:
@@ -95,7 +110,7 @@ in two kinds of case:
 On the PC, a full save export and the events list were byte-identical between the two drivers (except
 the ticking clock). On the phone, the play session above found no adapter gaps.
 
-## 3. Second Node processes (server-side fix in progress in the main checkout)
+## 3. Second Node processes (fixed by the main session; confirmed on the phone)
 
 On the phone `process.execPath` is `/system/bin/app_process64`, so `execFile(process.execPath, …)`
 **fails**. Other child processes and `worker_threads` work, including `node:sqlite` inside a worker
@@ -108,12 +123,20 @@ these places:
 | `src/nya/eventSchedule.ts` `rebuildMod()` | `scripts/gen_event_schedule_mod.cjs` | every dashboard schedule save |
 | `scripts/gen_cn_event_schedule.cjs` | `gen_cn_missions.cjs`, `gen_cn_pass_card.cjs`, `gen_cn_shops.cjs` | end of every CN schedule build |
 
-The proposed fix: the scripts export `run(options)` (CLI kept with `require.main === module`, throw
-instead of `process.exit`), `gen_cn_event_schedule.cjs` calls the three generators in place, and
-`eventSchedule.ts` runs each rebuild in a fresh `Worker`, so the game's requests aren't blocked
-during a minutes-long build. The main session is doing this together with the co-op bind address
-and `cnPatchDir()` from `CDN_DIR`. Until it lands, **dashboard schedule edits don't work on the
-phone**; everything else does.
+Since `sharing-package` (828a2ff), `scripts/run_script.cjs` runs these scripts as worker threads,
+and on the phone a dashboard schedule edit rebuilds the CN update this way. The global-app mod is
+skipped when `<CDN_DIR>/en/entities` is missing, as on the phone.
+
+A few scripts still use the server folder instead of the working folder / `CDN_DIR`. On the phone
+the server folder is replaced on every app update, so `companion-main.js` links them into the data
+folder:
+
+| Script | Uses | Link |
+|---|---|---|
+| `build_cn_patch.cjs`, `gen_cn_event_schedule.cjs` | `<server>/.cdn/cn_patches`, `.cdn/cn_schedule_files` | `server/.cdn` → `data/.cdn` |
+| `gen_cn_event_schedule.cjs` | `<server>/.database/` (server_time, cn_copy_window, schedules) | `server/.database` → `data/.database` |
+| `gen_cn_missions/pass_card/shops.cjs` | `<server>/assets/missions_cn.json`, `pass_card_cn.json`, `cn_shops.json` | each file → `data/.assets/` |
+| comics placeholder (`src/routes/api/comic.ts`) | `<working folder>/web` | `data/web` → `server/web` |
 
 ## 4. What the phone server needs (the slim set)
 
@@ -126,14 +149,19 @@ phone**; everything else does.
 | Comics screens (optional) | `.cdn/comics/` | 1.4 GB |
 | Dashboard pictures (optional) | `.cdn/dashboard_images/` | 81 MB |
 | A game that's behind (optional) | `.cdn/cn_patches/<version>/…` patch zips | 2.1 GB |
-| Dashboard schedule edits | CN base archives (10 GB) or the planned pre-extracted originals, translated tables | not yet |
+| Dashboard schedule edits (optional) | slim CN folder (`tables/`, `names.txt`, from `scripts/gen_cn_slim.cjs`) as `.cdn/cn/`, English tables as `.cdn/cn_text/` | ~140 MB |
 
 **Phone to PC route:** `src/routes/companion.ts` (registered at `/companion` in `src/server.ts`). It
 reads the CN paths through `cnCdnRoot()`/`cnPatchDir()` and edits nothing else.
 - `GET /companion/manifest?save=&patches=&images=&comics=` lists the files, each with the path it
   gets in the phone's data folder. With `save=1` it makes a fresh `VACUUM INTO` snapshot of the save
   and adds `CN_ACCOUNT_ID` to the reply, so the phone's `.env` matches.
-- `GET /companion/file?path=` serves only paths a manifest can list (anything else: 404).
+- `GET /companion/file?path=` serves only paths a manifest can list (anything else: 404). The
+  list is cached for a minute, since a download asks for thousands of files.
+- `schedule=1` adds the slim CN folder: `CN_CDN_DIR` itself if it's slim, else `CN_SLIM_DIR`, else
+  `<CDN_DIR>/cn_slim`. If none exists, the reply carries a note telling the player to run
+  `node scripts/gen_cn_slim.cjs .cdn/cn_slim` on the PC. It also adds the English tables from
+  `CN_TRANSLATED_DIR`.
 
 `companion/tools/make-data-zip.cjs` builds the same set as an import zip from a running server: 17.5 MB
 with a save, no comics or pictures.
@@ -167,8 +195,10 @@ companion/
 answers. If something else answers on 8000 (e.g. a PC through `adb reverse`), the screen says so.
 
 **Phone defaults** (override in `files/data/.env`, same names as the PC `.env`):
-`LISTEN_HOST=127.0.0.1`, `LISTEN_PORT=8000`, `COOP_HOST=127.0.0.1`, `CDN_DIR=data/.cdn`,
-`CN_CDN_DIR=data/.cdn/cn`, `TMPDIR=data/.tmp` (Android has no `/tmp`; the save snapshot needs it).
+`LISTEN_HOST=127.0.0.1` (co-op follows it since `sharing-package`), `LISTEN_PORT=8000`,
+`COOP_HOST=127.0.0.1`, `CDN_DIR=data/.cdn`, `CN_CDN_DIR=data/.cdn/cn`,
+`CN_TRANSLATED_DIR=data/.cdn/cn_text`, `SERVER_START_DATE=2021-07-24T05:00:00Z`, and
+`TMPDIR=data/.tmp` (Android has no `/tmp`; the save snapshot needs it).
 
 ### Build
 
@@ -214,16 +244,25 @@ On this PC: SDK `F:\wf-android-sdk` (junction at `F:\WF client\tools\android-sdk
 
 ## 6. Next steps
 
-1. Server side (main session, in progress): worker-thread schedule rebuilds, co-op bind address
-   from an env var (it's still `0.0.0.0:18888`, so reachable on Wi-Fi), `cnPatchDir()` from
-   `CDN_DIR` (then drop the `server/.cdn` link in `companion-main.js`), and pre-extracted CN
-   originals so schedule edits run without the 10 GB archives.
-2. Real-phone test on Android 12+: keep-alive with the game in front for an hour, screen off, OEM
-   killers; the notification permission prompt; Wi-Fi download speed (the emulator test went through
-   `adb reverse`, ~1.5 MB/s).
-3. A size number instead of the 17 MB `android_medium.csv` (needs `cnInstalledBytes()` to read it).
-4. Resumable downloads for comics and patches (now a failed file restarts from zero; finished files
+1. **Updating a client from an older package** (main session, `src/lib/cnClient.ts`):
+   - A client at 1.4.206 (an earlier package's last patch) is offered the squashed 1.4.209
+     (`from` 1.4.54) plus 1.4.210. It downloads them (`custom_notify download_true`) but keeps
+     reporting `res_ver=1.4.206` and asks again on every start.
+   - Likely cause: the CN client only applies an update whose `original_version` matches its own.
+   - Fresh installs, the package's normal path, aren't affected.
+2. **Server folder vs working folder:** the scripts in the table in section 3 could use
+   `process.cwd()` for `.database` and `cdnDir()` for `.cdn` (and keep their generated assets
+   outside the code), so the companion's links can go.
+3. **Rebuild time:** a schedule edit takes ~7 minutes on the emulator. The game's requests keep
+   being answered (worker thread), but players should be told to wait before reopening the game.
+4. **Real-phone test on Android 12+:** keep-alive with the game in front for an hour, screen off,
+   OEM killers, the notification permission prompt, and Wi-Fi download speed (the emulator downloads
+   went through `adb reverse`, 1.5–3 MB/s).
+5. A size number instead of the 17 MB `android_medium.csv` (needs `cnInstalledBytes()` to read it).
+6. Resumable downloads for comics and patches (now a failed file restarts from zero; finished files
    are skipped).
-5. Seen during testing, not companion issues: the game's result screen shows "等级最大!" (level max)
-   in Chinese, and opening mail shows an empty result box. The three built-in "special" mails are
-   never used up by design.
+7. **Seen during testing, not companion issues:**
+   - The game shows a few labels in Chinese: "等级最大!" (level max), "登录奖励" (login bonus) and
+     "当前进度" (current progress).
+   - Opening mail shows an empty result box.
+   - The three built-in "special" mails are never used up by design.

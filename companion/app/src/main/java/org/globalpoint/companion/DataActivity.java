@@ -31,7 +31,7 @@ public class DataActivity extends Activity {
     private TextView summary, status;
     private ProgressBar bar;
     private EditText host;
-    private CheckBox save, patches, images, comics;
+    private CheckBox save, patches, images, comics, schedule;
     private Button download, importZip;
     private SharedPreferences prefs;
     private ScrollView scroll;
@@ -58,6 +58,7 @@ public class DataActivity extends Activity {
         save = u.check("My save (account, units, progress)", prefs.getBoolean("optSave", true));
         images = u.check("Dashboard pictures (~80 MB)", prefs.getBoolean("optImages", true));
         comics = u.check("Comics (~1.4 GB)", prefs.getBoolean("optComics", false));
+        schedule = u.check("Event schedule editing (~140 MB; lets the dashboard move events)", prefs.getBoolean("optSchedule", true));
         patches = u.check("Game updates (~2 GB; only if the game still has to download them)", prefs.getBoolean("optPatches", false));
         download = u.button("Download from PC", this::startDownload);
 
@@ -103,15 +104,17 @@ public class DataActivity extends Activity {
         String address = host.getText().toString().trim();
         if (address.isEmpty()) { status.setText("Enter the PC's address first."); return; }
         prefs.edit().putString("pcHost", address).putBoolean("optSave", save.isChecked()).putBoolean("optImages", images.isChecked())
-                .putBoolean("optComics", comics.isChecked()).putBoolean("optPatches", patches.isChecked()).apply();
+                .putBoolean("optComics", comics.isChecked()).putBoolean("optPatches", patches.isChecked()).putBoolean("optSchedule", schedule.isChecked()).apply();
         DataTransfer.Options o = new DataTransfer.Options();
         o.save = save.isChecked();
         o.images = images.isChecked();
         o.comics = comics.isChecked();
         o.patches = patches.isChecked();
+        o.schedule = schedule.isChecked();
         run(() -> {
             int n = DataTransfer.downloadFromPc(this, address, o, this::progress);
-            return "Downloaded " + n + " file(s). Press Start on the main screen.";
+            return "Downloaded " + n + " file(s). Back on the main screen the server starts."
+                    + (o.notes.isEmpty() ? "" : "\n\nNote from the PC:\n" + o.notes);
         });
     }
 

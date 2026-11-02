@@ -34,7 +34,9 @@ final class DataTransfer {
     interface Progress { void update(String message, long done, long total); }
 
     static final class Options {
-        boolean save, patches, images, comics;
+        boolean save, patches, images, comics, schedule;
+        /** Filled by downloadFromPc: what the PC said it couldn't provide. */
+        String notes = "";
     }
 
     private DataTransfer() {}
@@ -124,10 +126,12 @@ final class DataTransfer {
         data.mkdirs();
         String base = "http://" + host.trim().replaceFirst("^https?://", "").replaceAll("/+$", "");
         p.update("Asking " + base + " for the file list...", 0, -1);
-        String query = "?save=" + (o.save ? 1 : 0) + "&patches=" + (o.patches ? 1 : 0) + "&images=" + (o.images ? 1 : 0) + "&comics=" + (o.comics ? 1 : 0);
+        String query = "?save=" + (o.save ? 1 : 0) + "&patches=" + (o.patches ? 1 : 0) + "&images=" + (o.images ? 1 : 0) + "&comics=" + (o.comics ? 1 : 0) + "&schedule=" + (o.schedule ? 1 : 0);
         JSONObject manifest = new JSONObject(new String(get(base + "/companion/manifest" + query), "UTF-8"));
         JSONArray files = manifest.getJSONArray("files");
         long total = manifest.optLong("totalSize", -1);
+        JSONArray notes = manifest.optJSONArray("notes");
+        if (notes != null) for (int i = 0; i < notes.length(); i++) o.notes += (o.notes.isEmpty() ? "" : "\n") + notes.getString(i);
 
         // skip files already here with the same size, except the save and schedules (always fresh)
         List<JSONObject> todo = new ArrayList<>();
