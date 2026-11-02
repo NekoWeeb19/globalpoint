@@ -35,6 +35,14 @@ package server:
 - The moved events themselves couldn't be checked in game on this new account: Events is locked at
   rank 2, and the moved summon banner was already open in the Portal before the move.
 
+**0.3, first install over Wi-Fi** (emulator 5556, Android 9): companion and game uninstalled, game
+build 21 installed fresh. Game data → Download from PC with Full game files + save asked for storage,
+went on by itself once allowed, and copied 138,530 files (10.2 GB game files + the slim set) from a PC
+server in 5 minutes (~33 MB/s over the LAN address). After the game's storage permission, the first
+start moved all 138,093 files in (~6 minutes), the title showed ResVer 1.4.203, and the game went
+through signup, the tutorial skip and nickname to the main menu, all on the phone's server with no
+download.
+
 ## For players
 
 1. Install the game APK (127.0.0.1 build) and `app-arm64-v8a-release.apk` (PC emulators:
