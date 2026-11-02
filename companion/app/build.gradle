@@ -1,0 +1,80 @@
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
+
+plugins {
+    id "com.android.application"
+}
+
+// local.properties (not in git): sdk.dir=..., nodejs.mobile.dir=<unpacked nodejs-mobile-android zip>
+// nodejs-mobile: https://github.com/digidem/nodejs-mobile/releases/tag/v24.20.0-0
+def localProps = new Properties()
+def localFile = rootProject.file("local.properties")
+if (localFile.exists()) localFile.withInputStream { localProps.load(it) }
+def nodeDir = project.findProperty("nodejsMobileDir") ?: localProps.getProperty("nodejs.mobile.dir")
+if (!nodeDir) throw new GradleException("Set nodejs.mobile.dir in companion/local.properties (the unpacked nodejs-mobile-android zip)")
+nodeDir = file(nodeDir).absolutePath.replace('\\', '/')
+
+android {
+    namespace "org.globalpoint.companion"
+    compileSdk 36
+    buildToolsVersion "36.1.0"
+    // ndk-build can't handle spaces in paths: if the SDK path has one, set ndk.dir in local.properties
+    // to a space-free link to the NDK
+    ndkVersion "27.3.13750724"
+
+    defaultConfig {
+        applicationId "org.globalpoint.companion"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "0.1"
+        ndk { abiFilters "arm64-v8a", "x86_64" }
+        externalNativeBuild {
+            ndkBuild { arguments "NODEJS_MOBILE_DIR=${nodeDir}" }
+        }
+    }
+    externalNativeBuild {
+        ndkBuild { path "src/main/jni/Android.mk" }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    androidResources {
+        // server.zip is already compressed
+        noCompress += "zip"
+    }
+}
+
+// Zips companion/build/server-stage (made by `node companion/tools/stage-server.cjs`) into the APK's
+// assets as server.zip; the app unpacks it on first start after each install.
+abstract class BundleServer extends DefaultTask {
+    @InputDirectory abstract DirectoryProperty getStage()
+    @OutputDirectory abstract DirectoryProperty getOutputDir()
+
+    @TaskAction
+    void run() {
+        def root = stage.get().asFile
+        def out = new File(outputDir.get().asFile, "server.zip")
+        out.parentFile.mkdirs()
+        new ZipOutputStream(new FileOutputStream(out)).withCloseable { zip ->
+            root.eachFileRecurse { f ->
+                if (!f.isFile() || f.path.contains("${File.separator}.bin${File.separator}")) return
+                zip.putNextEntry(new ZipEntry(root.toPath().relativize(f.toPath()).toString().replace('\\', '/')))
+                f.withInputStream { zip << it }
+                zip.closeEntry()
+            }
+        }
+    }
+}
+
+def bundleServer = tasks.register("bundleServer", BundleServer) {
+    stage = rootProject.layout.projectDirectory.dir("build/server-stage")
+    outputDir = layout.buildDirectory.dir("generated/serverAssets")
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        variant.sources.assets?.addGeneratedSourceDirectory(bundleServer) { it.outputDir }
+    }
+}
