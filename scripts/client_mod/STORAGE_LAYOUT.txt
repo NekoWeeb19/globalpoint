@@ -43,5 +43,6 @@ Drop-off bundle = the contents of asset_download/dummy/ (info.json + download/),
 Make one with capture_cn_storage.py from a device that finished its download (CAPTURE.txt it writes is
 only a note; harmless if copied along).
 Tested 2026-11-02: the game's data cleared, this set placed in /sdcard/StarPoint/game/, first start moved
-it in (~2.5 min on LDPlayer) and went to home with no download. Version of the bundle = its info.json version; players get any
-newer StarPoint patches through the normal download afterwards.
+it in (~2.5 min on LDPlayer) and went to home with no download.
+Version of the bundle = its info.json version; players get any newer StarPoint patches through the
+normal download afterwards.
