@@ -96,7 +96,8 @@ const escapeHtml = (text: string) => text.replace(/&/g, "&amp;").replace(/</g, "
 
 /** A post's text as the CN client's rich text (paragraphs, line breaks). */
 export function newsHtml(post: NewsPost): string {
-    return post.body.split(/\n{2,}/).map(paragraph => `<p>${escapeHtml(paragraph).replace(/\n/g, "<br>")}</p>`).join("")
+    // the CN client parses this as XML (error C7613 / #1085 on an unclosed tag), so <br/>, not <br>
+    return post.body.split(/\n{2,}/).map(paragraph => `<p>${escapeHtml(paragraph).replace(/\r?\n/g, "<br/>")}</p>`).join("")
 }
 
 /** "YYYY-MM-DD hh:mm:ss" in Japan time (the CN client reads news dates as Japan time). */
