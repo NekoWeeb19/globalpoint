@@ -9,6 +9,7 @@ import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -42,7 +43,33 @@ public class DashboardActivity extends Activity {
         s.setDomStorageEnabled(true);
         s.setBuiltInZoomControls(true);
         s.setDisplayZoomControls(false);
+        web.setBackgroundColor(0xFF171306);
         web.setWebViewClient(new WebViewClient() {
+            // Always the dashboard's dark scheme, even on a phone in light mode or with an older
+            // WebView: its stylesheet switches with @media (prefers-color-scheme: dark), so that
+            // condition is made to always apply as the stylesheet loads (the server's files stay as they are).
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                Uri url = request.getUrl();
+                boolean local = "127.0.0.1".equals(url.getHost()) || "localhost".equals(url.getHost());
+                if (!local || url.getPath() == null || !url.getPath().endsWith(".css") || !"GET".equals(request.getMethod())) return null;
+                try {
+                    HttpURLConnection c = (HttpURLConnection) new URL(url.toString()).openConnection();
+                    try (InputStream in = c.getInputStream()) {
+                        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+                        byte[] b = new byte[64 * 1024];
+                        int n;
+                        while ((n = in.read(b)) > 0) out.write(b, 0, n);
+                        String css = out.toString("UTF-8").replaceAll("@media\\s*\\(\\s*prefers-color-scheme\\s*:\\s*dark\\s*\\)", "@media all");
+                        return new WebResourceResponse("text/css", "UTF-8", new java.io.ByteArrayInputStream(css.getBytes("UTF-8")));
+                    } finally {
+                        c.disconnect();
+                    }
+                } catch (Exception e) {
+                    return null; // let the WebView load it as it is
+                }
+            }
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri url = request.getUrl();

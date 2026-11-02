@@ -20,7 +20,7 @@
     <application
         android:label="StarPoint Companion"
         android:icon="@mipmap/ic_launcher"
-        android:theme="@android:style/Theme.DeviceDefault"
+        android:theme="@style/Companion"
         android:usesCleartextTraffic="true"
         android:allowBackup="false"
         android:requestLegacyExternalStorage="true">
