@@ -17,7 +17,7 @@
 //   node scripts/gen_cn_contents_guide.cjs     (CN_TRANSLATED_DIR: the translated text, for skill text)
 const fs = require("fs")
 const path = require("path")
-const { readCnTable } = require("F:/WF client/tools/cn_read.cjs")
+const { readCnTable } = require("./cn_read.cjs")
 const { recordsOf } = require("./gen_cn_text.cjs")
 const R = require("./cdn_rows.cjs")
 

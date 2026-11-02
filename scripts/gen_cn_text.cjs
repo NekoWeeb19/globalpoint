@@ -14,7 +14,7 @@ const path = require("path")
 const R = require("./cdn_rows.cjs")
 const { parseRecords } = require("./gen_translation_mod.cjs")
 const { globalFile } = require("./build_cn_patch.cjs")
-const { readCn } = require("F:/WF client/tools/cn_read.cjs")
+const { readCn } = require("./cn_read.cjs")
 const unzipper = require("unzipper")
 
 const HAN = /[\u3400-\u9fff\uf900-\ufaff]/

@@ -5,7 +5,7 @@
 //   node scripts/gen_cn_gacha_tickets.cjs     -> assets/cn_gacha_tickets.json { gachaId: { once, ten, crazy } }
 const fs = require("fs")
 const path = require("path")
-const { readCnTable } = require("F:/WF client/tools/cn_read.cjs")
+const { readCnTable } = require("./cn_read.cjs")
 const { recordsOf } = require("./gen_cn_text.cjs")
 
 ;(async () => {

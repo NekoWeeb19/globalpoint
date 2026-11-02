@@ -11,7 +11,7 @@
 const fs = require("fs")
 const path = require("path")
 const R = require("./cdn_rows.cjs")
-const { hashed } = require("F:/WF client/tools/cn_read.cjs")
+const { hashed } = require("./cn_read.cjs")
 const unzipper = require("unzipper")
 const { cnZips } = require("./cn_archives.cjs")
 

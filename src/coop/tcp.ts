@@ -328,7 +328,13 @@ function onFrame(client: Client, frame: unknown): void {
 let server: net.Server | null = null
 
 /** Starts the battle connection server (once). Listens on every network address, so a phone can reach it. */
-export function startCoopServer(port: number, host = "0.0.0.0"): net.Server {
+/** The co-op server's address: COOP_LISTEN_HOST, else the web server's LISTEN_HOST, else every address.
+ *  A phone playing over Wi-Fi needs 0.0.0.0; an emulator (adb reverse) or the phone companion 127.0.0.1. */
+export function coopListenHost(): string {
+    return process.env.COOP_LISTEN_HOST || process.env.LISTEN_HOST || "0.0.0.0"
+}
+
+export function startCoopServer(port: number, host = coopListenHost()): net.Server {
     if (server) return server
     server = net.createServer(socket => {
         const client: Client = { socket, kind: null, roomNumber: null, viewerId: null, connectionId: null, buffer: "" }

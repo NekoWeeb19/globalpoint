@@ -5,7 +5,7 @@
 //   node scripts/gen_cn_ids.cjs     -> assets/cn_ids.json
 const fs = require("fs")
 const path = require("path")
-const { readCnTable } = require("F:/WF client/tools/cn_read.cjs")
+const { readCnTable } = require("./cn_read.cjs")
 
 // name in cn_ids.json -> CN table (its first key level is the id)
 const TABLES = {

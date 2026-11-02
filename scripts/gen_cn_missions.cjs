@@ -19,12 +19,12 @@ const path = require("path")
 const R = require("./cdn_rows.cjs")
 const { readTable, parseCsvLine, str, int } = require("./cdn_master.cjs")
 const { CATEGORIES, parseRewardRow } = require("./gen_missions.cjs")
-const { hashed, readCn } = require("F:/WF client/tools/cn_read.cjs")
+const { hashed, readCn } = require("./cn_read.cjs")
 
 const ROOT = path.join(__dirname, "..")
 const OUT = path.join(ROOT, "assets", "missions_cn.json")
 const SCHEDULED = path.join(ROOT, ".cdn", "cn_schedule_files")
-const TRANSLATED = process.env.CN_TRANSLATED_DIR ?? "F:/WF client/globalize/text13"
+const TRANSLATED = require("./cn_archives.cjs").cnTextDir()
 
 // CN layouts: global's plus three columns before the dates
 const LAYOUT = { pattern: 0, text: 1, kind: 2, params: 3, prerequisite: 18, start: 25, end: 26 }
@@ -75,6 +75,10 @@ async function cnTable(logical) {
 
 ;(async () => {
     const missions = {}, distinct = {}
+    // "distinct" needs global's mission tables (.cdn/en); without them (a shared package) the lists
+    // already in assets/missions_cn.json are kept: they don't depend on the schedule
+    const previous = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, "utf8")).distinct ?? {} : {}
+    const globalTable = async table => { try { return await readTable(table, false) } catch { return null } }
     const untracked = {}
     const tables = [
         ...Object.entries(CATEGORIES).map(([category, table]) => [category, `master/mission/${table}`]),
@@ -84,7 +88,7 @@ async function cnTable(logical) {
         const isPass = PASS_TABLES[category] !== undefined
         const definitions = await cnTable(`${table}.orderedmap`)
         const rewardRows = await cnTable(`${table}_reward.orderedmap`)
-        const globalDefinitions = isPass ? {} : await readTable(`${table}.orderedmap`, false)
+        const globalDefinitions = isPass ? {} : await globalTable(`${table}.orderedmap`)
         const rewards = {}
         for (const [key, line] of Object.entries(rewardRows)) {
             const [id, stage] = key.split("/")
@@ -115,9 +119,10 @@ async function cnTable(logical) {
                 end: utc(c[at.end]),
                 stages: stages.map(({ target, rewardId, timeLimitSeconds, rewards }) => ({ target, rewardId, ...(timeLimitSeconds === undefined ? {} : { timeLimitSeconds }), rewards })),
             }
-            const g = globalDefinitions[id]
+            const g = globalDefinitions?.[id]
             if (g !== undefined && parseCsvLine(g)[at.pattern] !== out[id].pattern) distinct[category].push(Number(id))
         }
+        if (globalDefinitions === null) distinct[category] = previous[category] ?? []
         missions[category] = out
         console.log(`category ${category}: ${Object.keys(out).length} missions (${distinct[category].length} ids differ from global)`)
     }

@@ -4,7 +4,6 @@
 // (.cdn/mods/event_schedule.zip, by scripts/gen_event_schedule_mod.cjs) so the game shows the
 // same dates.
 
-import { execFile } from "child_process"
 import { createHash } from "crypto"
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs"
 import path from "path"
@@ -22,7 +21,7 @@ import {
     RowMove, Schedule, ScheduleEntry
 } from "../lib/eventSchedule"
 import { getServerDate } from "../utils"
-import { cnCopyWindow } from "../lib/cnClient"
+import { cdnDir, cnCdnRoot, cnCopyWindow } from "../lib/cnClient"
 import { reloadMods } from "../routes/api/asset"
 
 // global's events, plus the events only the CN client has (assets/event_catalog_cn.json, from
@@ -50,16 +49,22 @@ const SCHEDULE_FILE = path.join(process.cwd(), ".database", "event_schedule.json
 const MOD_SCRIPT = path.join(__dirname, "..", "..", "scripts", "gen_event_schedule_mod.cjs")
 // the same schedule for the CN client: a new CN game-file update (scripts/gen_cn_event_schedule.cjs)
 const CN_SCRIPT = path.join(__dirname, "..", "..", "scripts", "gen_cn_event_schedule.cjs")
+// the scripts run as worker threads, not second Node processes (the phone companion's embedded Node
+// can't start one): scripts/run_script.cjs
+type ScriptResult = { code: number, stdout: string, stderr: string }
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { runScript } = require(path.join(__dirname, "..", "..", "scripts", "run_script.cjs")) as { runScript: (file: string) => Promise<ScriptResult> }
+const lastLines = (text: string, n: number) => text.trim().split("\n").slice(-n).join(" ")
 let cnRunning = false, cnAgain = false
 /** Rebuilds the CN client's schedule update in the background (only when the CN game files are set up). */
 function rebuildCnSchedule() {
-    if (!existsSync(process.env.CN_CDN_DIR || "D:/WF client/.cdn/cn")) return
+    if (!existsSync(cnCdnRoot())) return
     if (cnRunning) { cnAgain = true; return }
     cnRunning = true
-    execFile(process.execPath, [CN_SCRIPT], { cwd: process.cwd(), maxBuffer: 16 * 1024 * 1024 }, (error, stdout, stderr) => {
+    runScript(CN_SCRIPT).then(({ code, stdout, stderr }) => {
         cnRunning = false
-        if (error) console.error(`[cn] schedule update failed: ${(stderr || error.message).trim().split("\n").slice(-3).join(" ")}`)
-        else console.log(`[cn] ${stdout.trim().split("\n").pop() ?? ""}`)
+        if (code !== 0) console.error(`[cn] schedule update failed: ${lastLines(stderr || stdout, 3)}`)
+        else console.log(`[cn] ${lastLines(stdout, 1)}`)
         if (cnAgain) { cnAgain = false; rebuildCnSchedule() }
     })
 }
@@ -185,18 +190,21 @@ export const getScheduleModStatus = () => modStatus
  */
 export function rebuildMod(): Promise<void> {
     modStatus = { state: "building", message: "Updating the game's data files..." }
-    return new Promise(resolve => {
-        execFile(process.execPath, [MOD_SCRIPT], { cwd: process.cwd(), maxBuffer: 16 * 1024 * 1024 }, (error, stdout, stderr) => {
-            if (error) {
-                modStatus = { state: "failed", message: `The game's data files could not be updated: ${(stderr || error.message).trim().split("\n").slice(-3).join(" ")}` }
-                console.error(modStatus.message)
-            } else {
-                reloadMods()
-                modStatus = { state: "idle", message: stdout.trim().split("\n").pop() ?? "" }
-                rebuildCnSchedule()
-            }
-            resolve()
-        })
+    // the CN client's update doesn't depend on the global one: it is rebuilt either way
+    rebuildCnSchedule()
+    // a CN-only setup (the shared package) has no global game files to build the global mod from
+    if (!existsSync(path.join(cdnDir(), "en", "entities"))) {
+        modStatus = { state: "idle", message: "Schedule saved (CN game update rebuilding)." }
+        return Promise.resolve()
+    }
+    return runScript(MOD_SCRIPT).then(({ code, stdout, stderr }) => {
+        if (code !== 0) {
+            modStatus = { state: "failed", message: `The game's data files could not be updated: ${lastLines(stderr || stdout, 3)}` }
+            console.error(modStatus.message)
+        } else {
+            reloadMods()
+            modStatus = { state: "idle", message: lastLines(stdout, 1) }
+        }
     })
 }
 
@@ -246,7 +254,7 @@ const imageUrl = (id: string | null | undefined) => id ? `/api/server/event-imag
 /** Where the dashboard's copy of a game picture is (see scripts/gen_event_catalog.cjs), or null. */
 export function eventImagePath(id: string): string | null {
     if (!/^[0-9a-f]{40}$/.test(id)) return null
-    const file = path.join(process.cwd(), ".cdn", "dashboard_images", `${id}.png`)
+    const file = path.join(cdnDir(), "dashboard_images", `${id}.png`)
     return existsSync(file) ? file : null
 }
 

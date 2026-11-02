@@ -18,7 +18,7 @@ const unzipper = require("unzipper")
 const R = require("./cdn_rows.cjs")
 const { NO_ART_BANNERS } = require("./no_art_banners.cjs")
 const { cnZips } = require("./cn_archives.cjs")
-const { readCnTable } = require("F:/WF client/tools/cn_read.cjs")
+const { readCnTable } = require("./cn_read.cjs")
 
 const ROOT = path.join(__dirname, "..")
 const OUT = path.join(ROOT, "assets", "campaigns_cn.json")
@@ -55,11 +55,12 @@ const rows = async table => Object.entries(await readCnTable(table)).map(([k, v]
 
 ;(async () => {
     // English names from the translated text the CN client gets (falls back to CN's own)
-    const textDir = process.env.CN_TRANSLATED_DIR
-    const translated = textDir ? new Map(JSON.parse(fs.readFileSync(path.join(textDir, "files.json"), "utf8")).map(f => [f.path, f.from])) : new Map()
+    const textDir = require("./cn_archives.cjs").cnTextDir()
+    const listFile = path.join(textDir, "files.json")
+    const translated = fs.existsSync(listFile) ? new Map(JSON.parse(fs.readFileSync(listFile, "utf8")).map(f => [f.path, f.from])) : new Map()
     const englishRows = table => {
-        const file = translated.get(hashed(table))
-        if (!file) return new Map()
+        const file = translated.get(hashed(table)) ?? path.join(textDir, hashed(table))
+        if (!fs.existsSync(file)) return new Map()
         return new Map(R.leaves(R.decodeFile(fs.readFileSync(file))).map(l => [l.path.join("/"), R.splitCsv(l.leaf.text.replace(/\n$/, ""))]))
     }
 
@@ -130,7 +131,7 @@ const rows = async table => Object.entries(await readCnTable(table)).map(([k, v]
     for (const pull of freePulls) if (pull.picture) wanted.set(hashed(pull.picture + ".png"), pull)
     fs.mkdirSync(IMAGES_OUT, { recursive: true })
     let pictures = 0
-    for (const zip of cnZips("D:/WF client/.cdn/cn")) {
+    for (const zip of cnZips()) {
         for (const entry of (await unzipper.Open.file(zip)).files) {
             const key = "production/" + entry.path.split("\\").join("/").replace(/^production\//, "")
             const owner = wanted.get(key)
