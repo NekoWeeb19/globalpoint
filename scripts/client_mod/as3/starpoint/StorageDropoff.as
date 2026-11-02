@@ -36,7 +36,8 @@ package starpoint
             try
             {
                var f:File = new File(paths[i]);
-               if (f.exists && f.isDirectory && hasFiles(f, 3)) out.push(f);
+               // game files sit 5 folders down (download/production/upload/xx/<hash>)
+               if (f.exists && f.isDirectory && hasFiles(f, 8)) out.push(f);
             }
             catch (e:*)
             {
@@ -185,7 +186,7 @@ package starpoint
          if (next < files.length)
          {
             var gb:Number = 1024 * 1024 * 1024;
-            say("Moving game files into the game: " + next + " / " + files.length + " (" + (bytesDone / gb).toFixed(1) + " / " + (bytesTotal / gb).toFixed(1) + " GB)\nKeep the game open.");
+            say("Moving game files: " + next + " / " + files.length + "\n" + (bytesDone / gb).toFixed(1) + " / " + (bytesTotal / gb).toFixed(1) + " GB. Keep the game open.");
             if (bytesTotal > 0) pm.progress(0, 0.99 * bytesDone / bytesTotal);
             setTimeout(move, 1);
             return;
@@ -359,7 +360,7 @@ package starpoint
             overlay.mouseChildren = false;
             var size:int = Math.max(14, Math.round(w / 28));
             overlay.graphics.beginFill(0x000000, 0.75);
-            overlay.graphics.drawRect(0, h * 0.42, w, size * 4);
+            overlay.graphics.drawRect(0, h * 0.42, w, size * 5);
             overlay.graphics.endFill();
             label = new TextField();
             label.defaultTextFormat = new TextFormat("_sans", size, 0xFFFFFF, false, null, null, null, null, TextFormatAlign.CENTER);
@@ -369,7 +370,7 @@ package starpoint
             label.x = size / 2;
             label.y = h * 0.42 + size / 2;
             label.width = w - size;
-            label.height = size * 3;
+            label.height = size * 4;
             overlay.addChild(label);
             st.addChild(overlay);
          }
