@@ -52,7 +52,12 @@ public class DashboardActivity extends Activity {
         // darkening on top (off by default at this target; said explicitly so pages aren't darkened twice).
         web.setBackgroundColor(getColor(R.color.surface));
         if (Build.VERSION.SDK_INT >= 33) s.setAlgorithmicDarkeningAllowed(false);
-        boolean night = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+        // a page cached in the other mode must not show: clear the cache once when the mode differs from last time
+        android.content.SharedPreferences prefs = getSharedPreferences("companion", MODE_PRIVATE);
+        if (prefs.getBoolean("dashboardNight", false) != isNight()) {
+            web.clearCache(true);
+            prefs.edit().putBoolean("dashboardNight", isNight()).apply();
+        }
         web.setWebViewClient(new WebViewClient() {
             // Below Android 13 the WebView may not report dark from the app theme (Android 9 has no
             // isLightTheme at all, and setForceDark is ignored for apps targeting 33+), so in dark mode the
@@ -60,7 +65,7 @@ public class DashboardActivity extends Activity {
             // mode, and on 13+, the stylesheet is left alone.
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                if (!night || Build.VERSION.SDK_INT >= 33) return null;
+                if (Build.VERSION.SDK_INT >= 33 || !isNight()) return null; // the mode as it is now, per request
                 Uri url = request.getUrl();
                 boolean local = "127.0.0.1".equals(url.getHost()) || "localhost".equals(url.getHost());
                 if (!local || url.getPath() == null || !url.getPath().endsWith(".css") || !"GET".equals(request.getMethod())) return null;
@@ -72,7 +77,9 @@ public class DashboardActivity extends Activity {
                         int n;
                         while ((n = in.read(b)) > 0) out.write(b, 0, n);
                         String css = out.toString("UTF-8").replaceAll("@media\\s*\\(\\s*prefers-color-scheme\\s*:\\s*dark\\s*\\)", "@media all");
-                        return new WebResourceResponse("text/css", "UTF-8", new ByteArrayInputStream(css.getBytes("UTF-8")));
+                        java.util.Map<String, String> headers = new java.util.HashMap<>();
+                        headers.put("Cache-Control", "no-store"); // never reused in light mode
+                        return new WebResourceResponse("text/css", "UTF-8", 200, "OK", headers, new ByteArrayInputStream(css.getBytes("UTF-8")));
                     } finally {
                         c.disconnect();
                     }
@@ -114,6 +121,10 @@ public class DashboardActivity extends Activity {
         setContentView(web);
         if (saved != null) web.restoreState(saved);
         else web.loadUrl(ServerProbe.URL_ROOT);
+    }
+
+    private boolean isNight() {
+        return (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
     }
 
     @Override
