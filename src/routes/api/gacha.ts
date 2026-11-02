@@ -5,7 +5,7 @@ import { drawGachaSync, rewardPlayerGachaDrawResultSync } from "../../lib/gacha"
 import { getGachaCampaignIdSync, getGachaSync } from "../../lib/assets";
 import { GachaType } from "../../lib/types";
 import { serializeGachaCampaign } from "../../data/utils";
-import { resolveFreePullCampaignId } from "../../nya/campaignSchedule";
+import { cnKnownFreePullEntries, resolveFreePullCampaignId } from "../../nya/campaignSchedule";
 import { UserGachaCampaign } from "../../data/types";
 import { givePlayerCharacterSync } from "../../lib/character";
 import { givePlayerEquipmentSync } from "../../lib/equipment";
@@ -438,7 +438,7 @@ const routes = async (fastify: FastifyInstance) => {
                         ...items,
                         ...rewardResult.items
                     },
-                    "gacha_campaign_list": gachaCampaigns,
+                    "gacha_campaign_list": cnKnownFreePullEntries(gachaCampaigns),
                     "gacha_info_list": [
                         {
                             "gacha_id": gachaId,

@@ -493,6 +493,19 @@ export function conformCnReply(api: string, payload: unknown): void {
  * The years the CN update has yearly campaign copies for (.database/cn_copy_window.json, written by
  * scripts/gen_cn_event_schedule.cjs), or null when it hasn't been built with the window yet.
  */
+/**
+ * The yearly free pull copies the CN client's current update has (.database/cn_schedule_built.json, written
+ * by scripts/gen_cn_event_schedule.cjs), or null for an update built before that was recorded.
+ */
+export function cnBuiltFreePullCopies(): Set<number> | null {
+    try {
+        const built = JSON.parse(readFileSync(path.join(process.cwd(), ".database", "cn_schedule_built.json"), "utf8"))
+        return Array.isArray(built.freePullCopyIds) ? new Set(built.freePullCopyIds.map(Number)) : null
+    } catch {
+        return null
+    }
+}
+
 export function cnCopyWindow(): { from: number, until: number } | null {
     try {
         const w = JSON.parse(readFileSync(path.join(process.cwd(), ".database", "cn_copy_window.json"), "utf8"))
