@@ -286,22 +286,6 @@ async function main() {
     // the home "Way of Practice" banner (feature_banner_secondary 20016) runs 2024-2099 in CN, which had a
     // pass every month; here it gets one row per pass window, so it's only up while a pass is (C25000 otherwise)
     const PASS_BANNER = { banner: fileOf("master/feature_banner/feature_banner_secondary.orderedmap"), pass: fileOf("master/pass_card/pass_card_event.orderedmap"), id: "20016" }
-    // Mana Board 2 dates (assets/mb2_dates.json, src/nya/mb2Lock.ts): a unit whose MB2 isn't out yet on the
-    // game clock has its board 2 left out of the client's mana node table ("<unit>/<board>/<node>"), so
-    // the game shows it with one board until then
-    const MB2_TABLE = fileOf("master/mana_board/mana_node.orderedmap")
-    const mb2Locked = new Set()
-    const mb2File = path.join(ROOT, "assets", "mb2_dates.json")
-    // shipped whenever there are MB2 dates, also with nothing locked: the update then puts back the
-    // boards an earlier update left out (a client keeps its last copy of a table otherwise)
-    const mb2Dated = fs.existsSync(mb2File)
-    if (mb2Dated) {
-        const now = gameNowMs()
-        for (const [id, text] of Object.entries(JSON.parse(fs.readFileSync(mb2File, "utf8")))) {
-            const ms = Date.parse(String(text).replace(" ", "T") + "Z")
-            if (!id.startsWith("_") && !isNaN(ms) && now < ms) mb2Locked.add(id)
-        }
-    }
     // Unit kits before a balance change (assets/kit_dates.json): until a unit's date on the game clock its
     // listed rows ship with the old text ("<table>#<row key>": a full row, or { cols: { <index>: text } }
     // for one line's columns). The tables are shipped whenever the file exists, so a later update puts the
@@ -323,7 +307,7 @@ async function main() {
             }
         }
     }
-    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...(mb2Dated ? [MB2_TABLE] : []), ...kitTables])].sort()
+    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...kitTables])].sort()
     const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
     const cn = await cnFiles(new Set([...fileList, featureFile]))
     // art StarPoint's patches added (scripts/gen_cn_banner_art.cjs) counts too: their file names and
@@ -357,17 +341,6 @@ async function main() {
             if (leaf.text.includes("2025-08-14 23:59:59")) R.setLeafText(leaf, leaf.text.split("2025-08-14 23:59:59").join("2199-12-31 23:59:59"))
         }
         if (file === CAMPAIGN_TABLES.login) fillNormalLoginBonusGaps(tree)
-        if (file === MB2_TABLE) {
-            let hidden = 0
-            for (const unit of tree.entries) {
-                if (!mb2Locked.has(unit.key) || unit.node.kind !== "map") continue
-                const before = unit.node.entries.length
-                unit.node.entries = unit.node.entries.filter(board => board.key !== "2")
-                unit.node.dirty = true
-                if (unit.node.entries.length < before) hidden++
-            }
-            console.log(`Mana Board 2: ${hidden} unit(s) not out yet on the game clock`)
-        }
         if (kitRows.has(file)) {
             const wanted = kitRows.get(file)
             let set = 0

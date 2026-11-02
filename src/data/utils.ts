@@ -1,5 +1,4 @@
 import storyJoinData from "../../assets/story_join_character.json"
-import { visibleBondTokens } from "../nya/mb2Lock";
 import { StoryJoinData, townPickupHistory } from "../lib/storyJoin"
 import { getCharacterDataSync } from "../lib/assets"
 import { getDateFromServerTime, epochOf, getServerTime } from "../utils"
@@ -178,8 +177,7 @@ export function serializePlayerData(
             "update_time": getServerTime(character.updateTime),
             "exp": character.exp,
             "stack": character.stack,
-            // Mana Board 2 shows from its date (src/nya/mb2Lock.ts)
-            "bond_token_list": serializeBondTokenStatuses(visibleBondTokens(Number(characterId), character.bondTokenList, character.manaBoardIndex)),
+            "bond_token_list": serializeBondTokenStatuses(character.bondTokenList),
             "mana_board_index": character.manaBoardIndex
         }
 
