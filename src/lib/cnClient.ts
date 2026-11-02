@@ -196,6 +196,26 @@ export function cnPathList(host: string, resVer: string | undefined): CnPathFile
     ]
     const known = resVer !== undefined && /^\d+\.\d+\.\d+$/.test(resVer)
         && compareVersions(resVer, file.info.latest_maj_first_version) >= 0 && compareVersions(resVer, target) <= 0
+    // a client AHEAD of this server: its files came from another setup's updates (a phone moved from a
+    // PC to its own data pack, or the other way round). It has CN's own files up to CN's last update
+    // (file.info.target_asset_version, 1.4.54), so it gets all of this server's updates from there, the
+    // first labelled as starting from its version: they hold the newest copy of every file StarPoint
+    // changes, so its files end up exactly this server's (instead of a full ~12 GB download).
+    const cnLast = file.info.target_asset_version
+    const ahead = resVer !== undefined && /^\d+\.\d+\.\d+$/.test(resVer) && compareVersions(resVer, target) > 0
+        && compareVersions(target, cnLast) > 0
+    if (ahead) {
+        const diff: typeof updates = []
+        let current = cnLast
+        while (compareVersions(current, target) < 0) {
+            const next = updates.find(d => d.original_version === current && compareVersions(d.version, current) > 0)
+                ?? updates.find(d => compareVersions(d.version, current) > 0 && compareVersions(d.original_version, current) <= 0)
+            if (!next) break
+            diff.push({ ...next, original_version: diff.length === 0 ? resVer! : current, archive: forAndroid(next.archive, base) })
+            current = next.version
+        }
+        if (current === target && diff.length > 0) return { info: info(resVer!, false), full: null, diff, asset_version_hash: "" }
+    }
 
     if (known && resVer === target) {
         return { info: info(target, false), full: null, diff: null, asset_version_hash: "" }
