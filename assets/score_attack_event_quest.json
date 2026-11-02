@@ -5,10 +5,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1002": {
         "name": "",
@@ -16,10 +16,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1003": {
         "name": "",
@@ -27,10 +27,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1004": {
         "name": "",
@@ -38,10 +38,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1005": {
         "name": "",
@@ -49,10 +49,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1006": {
         "name": "",
@@ -60,10 +60,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1007": {
         "name": "",
@@ -71,10 +71,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1008": {
         "name": "",
@@ -82,10 +82,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1009": {
         "name": "",
@@ -93,10 +93,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1010": {
         "name": "",
@@ -104,10 +104,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1011": {
         "name": "",
@@ -115,10 +115,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1012": {
         "name": "",
@@ -126,10 +126,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1013": {
         "name": "",
@@ -137,10 +137,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1014": {
         "name": "",
@@ -148,10 +148,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1015": {
         "name": "",
@@ -159,10 +159,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1016": {
         "name": "",
@@ -170,10 +170,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1017": {
         "name": "",
@@ -181,10 +181,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1018": {
         "name": "",
@@ -192,10 +192,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1019": {
         "name": "",
@@ -203,10 +203,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1020": {
         "name": "",
@@ -214,10 +214,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1021": {
         "name": "",
@@ -225,10 +225,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1022": {
         "name": "",
@@ -236,10 +236,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1023": {
         "name": "",
@@ -247,10 +247,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1024": {
         "name": "",
@@ -258,10 +258,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1025": {
         "name": "",
@@ -269,10 +269,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1026": {
         "name": "",
@@ -280,10 +280,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1027": {
         "name": "",
@@ -291,10 +291,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1028": {
         "name": "",
@@ -302,10 +302,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1029": {
         "name": "",
@@ -313,10 +313,10 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     },
     "1030": {
         "name": "",
@@ -324,9 +324,9 @@
         "aRankTime": 0,
         "sRankTime": 0,
         "sPlusRankTime": 0,
-        "rankPointReward": 0,
-        "characterExpReward": 0,
-        "manaReward": 0,
-        "poolExpReward": 0
+        "rankPointReward": 10,
+        "characterExpReward": 15,
+        "manaReward": 15,
+        "poolExpReward": 15
     }
 }

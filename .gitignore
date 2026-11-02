@@ -16,3 +16,8 @@ build
 .mitmproxy/mitmdump.exe
 .unzip-temp
 .cn-cdn
+# local only: request/server logs (contain viewer ids), old CoreDNS tool, stray archives and shortcuts
+logs/
+.coredns/
+/*.zip
+*.url

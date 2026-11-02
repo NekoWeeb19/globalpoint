@@ -24,6 +24,39 @@
                 </svg>
                 Dashboard
             </a>
+            <a href="/events"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z" />
+                </svg>
+                Events
+            </a>
+            <a href="/summons" data-nav="summons"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M480-80 371-371 80-480l291-109 109-291 109 291 291 109-291 109L480-80Z" />
+                </svg>
+                Summons
+            </a>
+            <a href="/campaigns" data-nav="campaigns"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-280v80h640v-80H160Zm0-440h88q-5-9-6.5-19t-1.5-21q0-50 35-85t85-35q30 0 55.5 15.5T460-826l20 26 20-26q18-24 44-39t56-15q50 0 85 35t35 85q0 11-1.5 21t-6.5 19h88q33 0 56.5 23.5T880-640v440q0 33-23.5 56.5T800-120H160q-33 0-56.5-23.5T80-200v-440q0-33 23.5-56.5T160-720Zm0 320h640v-240H596l84 114-64 46-136-184-136 184-64-46 82-114H160v240Zm200-320q17 0 28.5-11.5T400-760q0-17-11.5-28.5T360-800q-17 0-28.5 11.5T320-760q0 17 11.5 28.5T360-720Zm240 0q17 0 28.5-11.5T640-760q0-17-11.5-28.5T600-800q-17 0-28.5 11.5T560-760q0 17 11.5 28.5T600-720Z" />
+                </svg>
+                Campaigns
+            </a>
+            <a href="/news" data-nav="news"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120H160Zm0-80h640v-560H160v560Zm80-80h480v-80H240v80Zm0-160h160v-240H240v240Zm240 0h240v-80H480v80Zm0-160h240v-80H480v80ZM160-200v-560 560Z" />
+                </svg>
+                News
+            </a>
             <div
                 class="px-5 py-3 flex gap-3 items-center bg-primary rounded-full w-full font-bold text-on-primary text-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
@@ -43,8 +76,63 @@
                 Source Code
             </a>
         </nav>
-        <ul class="w-full flex flex-col gap-5">{{listContent}}</ul>
+        <div class="w-full flex flex-col gap-5 min-w-0">
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <h2 class="text-2xl text-on-background font-semibold">Active account</h2>
+                <p class="text-on-surface-variant">Pick which player each app plays on. Close the game and open it again (back to the title screen) to switch.</p>
+                <label class="flex flex-col gap-1">
+                    <span class="text-on-surface">Global app plays on</span>
+                    <select id="active-global" class="w-full rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3"></select>
+                </label>
+                <label class="flex flex-col gap-1">
+                    <span class="text-on-surface">CN app plays on</span>
+                    <select id="active-cn" class="w-full rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3"></select>
+                </label>
+                <p id="active-message" class="text-sm text-on-surface-variant" role="status"></p>
+            </section>
+            <ul class="w-full flex flex-col gap-5">{{listContent}}</ul>
+        </div>
     </div>
+    <script>
+        (function () {
+            const message = document.getElementById("active-message")
+            const own = { global: "Its own login (the player the game signed in as)", cn: "Its own login (each device gets its own player)" }
+            function render(data) {
+                for (const app of ["global", "cn"]) {
+                    const select = document.getElementById("active-" + app)
+                    select.replaceChildren()
+                    const first = document.createElement("option")
+                    first.value = ""
+                    first.textContent = own[app]
+                    select.appendChild(first)
+                    for (const player of data.players) {
+                        const option = document.createElement("option")
+                        option.value = String(player.id)
+                        option.textContent = player.name + " (player " + player.id + ")"
+                        select.appendChild(option)
+                    }
+                    select.value = data[app] === null ? "" : String(data[app])
+                }
+            }
+            for (const app of ["global", "cn"]) {
+                document.getElementById("active-" + app).addEventListener("change", async (event) => {
+                    const value = event.target.value
+                    event.target.disabled = true
+                    try {
+                        const response = await fetch("/api/server/account/active", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ app, playerId: value === "" ? null : Number(value) }) })
+                        const reply = await response.json()
+                        if (!response.ok) throw new Error(reply.message || response.statusText)
+                        render(reply)
+                        message.textContent = "Saved. Reopen the " + (app === "cn" ? "CN" : "global") + " app to load it."
+                    } catch (error) {
+                        message.textContent = "Error: " + error.message
+                    } finally { event.target.disabled = false }
+                })
+            }
+            fetch("/api/server/account/active").then(r => r.json()).then(render)
+                .catch(error => { message.textContent = "Could not load the accounts: " + error.message })
+        })()
+    </script>
 </body>
 
 </html>

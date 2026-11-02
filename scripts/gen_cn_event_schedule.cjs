@@ -1,0 +1,343 @@
+// The dashboard's event schedule (Events/Summons tabs, .database/event_schedule.json) for the CN
+// client: the same events and banners move to the same new dates in the CN game files, shipped as the
+// next CN update (scripts/build_cn_patch.cjs, served by StarPoint).
+//
+// CN ran events on its own dates, so each event's window is measured from its CN rows (the earliest
+// and latest real date in them; far-future "never ends" dates like 2050/2199 don't count), and every
+// date in those rows moves from that window to the new one, the same way as for global
+// (src/lib/eventSchedule.ts mapInstant). CN master dates are China time (UTC+8).
+//
+// The rows are edited on top of the newest translated copy of each file (the "globalized" English
+// text), and every file the schedule can touch is sent every time, so an event taken off the
+// schedule goes back to its CN dates. Run it again after building a new translation update, since
+// that update ships whole files without the moves.
+//
+//   npx tsc && node scripts/gen_cn_event_schedule.cjs [translated dir]
+const fs = require("fs")
+const { cnZips } = require("./cn_archives.cjs")
+const path = require("path")
+const unzipper = require("unzipper")
+const R = require("./cdn_rows.cjs")
+const { parseSchedule, planRowMoves } = require("../out/lib/eventSchedule.js")
+
+/**
+ * Moves a CN date from the event's CN window to its new one. Dates inside the window are scaled to
+ * the new window (global's mapInstant clamps them to the new end when the new window is shorter,
+ * which puts distinct dates such as a raid's battle end and reward end on the same second, and the
+ * client then builds banner ranges that end before they start: error C2044). Scaling keeps every
+ * date in order. Dates outside the window keep their distance from it.
+ */
+// each family's own table and its start/end columns in CN's data (scripts/gen_event_catalog.cjs, CN layout)
+const OWN_WINDOW = {
+    story_event: { table: "master/quest/event/story_event.orderedmap", start: 16, end: 17 },
+    world_story_event: { table: "master/quest/event/world_story_event.orderedmap", start: 22, end: 23 },
+    advent_event: { table: "master/quest/event/advent_event.orderedmap", start: 24, end: 25 },
+    carnival_event: { table: "master/quest/event/carnival_event.orderedmap", start: 20, end: 21 },
+    hard_multi_event: { table: "master/quest/event/hard_multi_event.orderedmap", start: 23, end: 24 },
+    raid_event: { table: "master/quest/event/raid_event.orderedmap", start: 22, end: 23 },
+    ranking_event: { table: "master/quest/event/ranking_event.orderedmap", start: 18, end: 19 },
+    rush_event: { table: "master/quest/event/rush_event.orderedmap", start: 15, end: 16 },
+    gacha: { table: "master/gacha/gacha.orderedmap", start: 29, end: 30 },
+    pass_card_event: { table: "master/pass_card/pass_card_event.orderedmap", start: 8, end: 9 },
+}
+const fileOf = logical => {
+    const h = require("crypto").createHash("sha1").update(logical + "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy").digest("hex")
+    return `production/upload/${h.slice(0, 2)}/${h.slice(2)}`
+}
+
+function mapCnInstant(ms, from, to) {
+    if (ms <= from.start) return to.start + (ms - from.start)
+    if (ms >= from.end) return to.end + (ms - from.end)
+    const span = from.end - from.start
+    return to.start + Math.floor((ms - from.start) * (to.end - to.start) / span / 1000) * 1000
+}
+const { build } = require("./build_cn_patch.cjs")
+
+const ROOT = path.join(__dirname, "..")
+const CN_DIR = process.env.CN_CDN_DIR || "D:/WF client/.cdn/cn"
+const TRANSLATED = process.argv[2] ?? process.env.CN_TRANSLATED_DIR ?? "F:/WF client/globalize/text7"
+const PATCHES = path.join(ROOT, ".cdn", "cn_patches", "patches.json")
+const OFFSET = 8 * 3600 * 1000
+const DATE = /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/g
+const parse = t => { const ms = Date.parse(t.replace(" ", "T") + "Z"); return isNaN(ms) ? null : ms - OFFSET }
+const format = ms => new Date(ms + OFFSET).toISOString().slice(0, 19).replace("T", " ")
+const FAR = Date.UTC(2049, 0, 1)
+
+// every file name in the CN game files (hashed, without "production/"), to check pictures exist
+const cnNames = new Set()
+async function cnFiles(wanted) {
+    const map = new Map()
+    for (const z of cnZips(CN_DIR)) for (const e of (await unzipper.Open.file(z)).files) {
+        cnNames.add(e.path.split("\\").join("/").replace(/^production\/[a-z_]+\//, ""))
+        if (wanted.has(e.path)) map.set(e.path, e)
+    }
+    return map
+}
+// a banner page's artwork: its feature content (master/gacha/gacha_feature_content, "<banner>/<n>":
+// kind 0 = an animated feature, kind 1 = a picture in column 1), else its list picture (gacha column 3)
+let featureContent = null
+function cnBannerHasArt(id, listPicture) {
+    const rows = Object.entries(featureContent ?? {}).filter(([k]) => k.split("/")[0] === id).map(([, line]) => R.splitCsv(line))
+    if (rows.some(c => c[0] === "0" && c[2])) return true
+    const pictures = rows.filter(c => c[0] === "1" && c[1]).map(c => c[1])
+    if (pictures.length > 0) return pictures.some(cnHasPicture)
+    return !listPicture || cnHasPicture(listPicture)
+}
+/** Whether the CN files have a picture (logical path without ".png"). */
+const cnHasPicture = logical => cnNames.has(fileOf(logical + ".png").replace(/^production\/upload\//, ""))
+
+/** Splits the pass home banner into one row per pass window (start/end of each pass, after moves). */
+function passBannerWindows(trees, { banner, pass, id }) {
+    const bt = trees.get(banner), pt = trees.get(pass)
+    if (!bt || !pt) return
+    const entry = bt.entries.find(e => e.key === id)
+    if (!entry || entry.node.kind !== "leaf") return
+    const fields = R.splitCsv(entry.node.text.replace(/\n$/, ""))
+    const dateCols = fields.map((v, i) => /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/.test(v) ? i : -1).filter(i => i >= 0)
+    if (dateCols.length < 2) return
+    const [startCol, endCol] = dateCols
+    const windows = []
+    for (const { path: keys, leaf } of R.leaves(pt)) {
+        const c = R.splitCsv(leaf.text.replace(/\n$/, ""))
+        if (/^\d{4}-/.test(c[8] ?? "") && /^\d{4}-/.test(c[9] ?? "")) windows.push({ pass: Number(keys[0]), start: c[8], end: c[9] })
+    }
+    bt.entries = bt.entries.filter(e => !(e.key === id || (e.key.startsWith(id) && e.key.length === id.length + 3)))
+    windows.forEach((w, i) => {
+        const f = [...fields]; f[startCol] = w.start; f[endCol] = w.end
+        bt.entries.push({ key: i === 0 ? id : id + String(w.pass).padStart(3, "0"), node: { kind: "leaf", text: f.map(R.csvField).join(","), original: "" } })
+    })
+    bt.entries.sort((a, b) => Number(a.key) - Number(b.key))
+    console.log(`pass banner: ${windows.length} window(s)`)
+}
+
+/** The game clock now (.database/server_time.json, src/lib/serverClock.ts), else real time. */
+function gameNowMs() {
+    try {
+        const clock = JSON.parse(fs.readFileSync(path.join(ROOT, ".database", "server_time.json"), "utf8"))
+        if (typeof clock.serverMs === "number") return clock.pinned || typeof clock.realMs !== "number" ? clock.serverMs : clock.serverMs + (Date.now() - clock.realMs)
+    } catch { }
+    return Date.now()
+}
+
+/**
+ * Writes the yearly campaigns into the CN tables: a chosen login bonus gets a yearly window (its end
+ * goes; CN's rows have the dates one column later than global's: 41/42 open, 43/44 yearly), a chosen
+ * free pull a row for every year in the copy window listing every regular unit banner CN has, and a chosen
+ * stamina/reward campaign run a copy of its rows for every year in the copy window. Global's dates (UTC) become
+ * China time. Returns a summary.
+ */
+function applyYearlyCampaigns(trees, files) {
+    const C = require("../out/lib/campaignSchedule.js")
+    const read = file => JSON.parse(fs.readFileSync(path.join(ROOT, file), "utf8"))
+    // Copies only for the game clock's year -1 to +1 (last year: runs over New Year; next year: ready before the year changes). The CN client scans every
+    // stamina/reward campaign row for every event banner it shows, so copies up to 2099 (17,000+ rows)
+    // froze the Events screen for ~20 s. The server rebuilds this update when the game clock leaves the
+    // window (src/nya/eventSchedule.ts checkCnCopyWindow), using .database/cn_copy_window.json.
+    const gameYear = new Date(gameNowMs()).getUTCFullYear()
+    const window = { from: gameYear - 1, until: gameYear + 1 }
+    const inWindow = w => w.year >= window.from && w.year <= window.until
+    fs.writeFileSync(path.join(ROOT, ".database", "cn_copy_window.json"), JSON.stringify(window))
+    const scheduleFile = path.join(ROOT, ".database", "campaign_schedule.json")
+    const runTables = { reward: read("assets/reward_campaign.json").campaigns, stamina: read("assets/stamina_campaign.json").campaigns }
+    const runs = { reward: C.campaignRuns(runTables.reward), stamina: C.campaignRuns(runTables.stamina) }
+    const known = { reward: runs.reward.map(r => r.key), stamina: runs.stamina.map(r => r.key) }
+    const { schedule: chosen } = C.parseCampaignSchedule(fs.existsSync(scheduleFile) ? JSON.parse(fs.readFileSync(scheduleFile, "utf8")) : {}, known)
+    const seasonal = read("assets/seasonal_campaigns.json")
+    const cnOwn = read("assets/campaigns_cn.json")
+    const allPulls = [...seasonal.freePulls, ...cnOwn.freePulls]
+    const toCn = text => { const ms = Date.parse(String(text).replace(" ", "T") + "Z"); return isNaN(ms) ? text : format(ms) }
+    let login = 0, pulls = 0, runRows = 0
+
+    const loginTree = trees.get(files.login)
+    if (loginTree) for (const { path: keys, leaf } of R.leaves(loginTree)) {
+        if (!chosen.yearlyLoginBonuses.includes(keys[0])) continue
+        const fields = R.splitCsv(leaf.text.replace(/\n$/, ""))
+        const columns = fields.length >= 45 ? C.yearlyLoginColumns(fields[41], fields[42]) : null
+        if (columns === null) { console.log(`yearly login bonus ${keys.join("/")}: its dates can't be made yearly`); continue }
+        fields[42] = "(None)"
+        fields[43] = columns.yearlyFrom
+        fields[44] = columns.yearlyUntil
+        R.setLeafText(leaf, fields.map(R.csvField).join(",") + (leaf.text.endsWith("\n") ? "\n" : ""))
+        login++
+    }
+
+    const pullTree = trees.get(files.freePull)
+    const gachaTree = trees.get(fileOf("master/gacha/gacha.orderedmap"))
+    if (pullTree && chosen.yearlyFreePulls.length > 0) {
+        const cnBanners = new Set(gachaTree ? R.leaves(gachaTree).map(l => l.path[0]) : [])
+        const gachas = read("assets/gacha.json")
+        const banners = Object.entries(gachas).filter(([id, g]) => C.isFreePullBanner(g) && (cnBanners.size === 0 || cnBanners.has(id))).map(([id]) => Number(id)).sort((a, b) => a - b)
+        const names = new Map(R.leaves(pullTree).map(l => [l.path.join("/"), R.splitCsv(l.leaf.text.replace(/\n$/, ""))[1]]))
+        for (const id of chosen.yearlyFreePulls) {
+            const original = allPulls.find(c => c.id === id)
+            if (!original) continue
+            const cnOnly = !seasonal.freePulls.some(c => c.id === id)
+            for (const found of C.freePullCopies(original, allPulls, window.until).filter(inWindow)) {
+                const copy = cnOnly ? { ...found, id: C.cnFreePullCopyId(found.year, found.originalId) } : found
+                const row = C.freePullCopyRow({ ...original, name: names.get(String(id)) ?? original.name }, { ...copy, start: toCn(copy.start), end: toCn(copy.end) }, banners)
+                pullTree.entries.push({ key: String(copy.id), node: { kind: "leaf", text: row, original: "" } })
+                pulls++
+            }
+        }
+        if (pulls > 0) pullTree.entries.sort((a, b) => Number(a.key) - Number(b.key))
+    }
+
+    for (const kind of ["reward", "stamina"]) {
+        const tree = trees.get(files[kind])
+        if (!tree) continue
+        const added = []
+        for (const key of kind === "reward" ? chosen.yearlyRewardRuns : chosen.yearlyStaminaRuns) {
+            const run = runs[kind].find(r => r.key === key)
+            if (!run) continue
+            for (const copyWindow of C.runCopies(run, runs[kind], window.until).filter(inWindow)) for (const id of run.ids) {
+                const entry = tree.entries.find(e => e.key === String(id))
+                if (!entry || entry.node.kind !== "leaf") continue
+                const fields = R.splitCsv(entry.node.text.replace(/\n$/, ""))
+                fields[1] = toCn(copyWindow.start)
+                fields[2] = toCn(copyWindow.end)
+                const index = runTables[kind].findIndex(row => row.id === id)
+                added.push({ key: String(C.campaignCopyId(copyWindow.year, index)), node: { kind: "leaf", text: fields.map(R.csvField).join(","), original: "" } })
+            }
+        }
+        if (added.length > 0) {
+            tree.entries.push(...added)
+            tree.entries.sort((a, b) => Number(a.key) - Number(b.key))
+            runRows += added.length
+        }
+    }
+    return `${login} yearly login bonus rows, ${pulls} free pull copies, ${runRows} stamina/reward campaign copies`
+}
+
+async function main() {
+    const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, "assets", "event_catalog.json"), "utf8"))
+    // plus the events only CN has (scripts/gen_event_catalog.cjs --cn)
+    const cnCatalogFile = path.join(ROOT, "assets", "event_catalog_cn.json")
+    if (fs.existsSync(cnCatalogFile)) {
+        const cnCatalog = JSON.parse(fs.readFileSync(cnCatalogFile, "utf8"))
+        const known = new Set(catalog.events.map(e => e.key))
+        catalog.events.push(...cnCatalog.events.filter(e => !known.has(e.key)))
+        catalog.tables = { ...cnCatalog.tables, ...catalog.tables }
+    }
+    const scheduleFile = path.join(ROOT, ".database", "event_schedule.json")
+    const raw = fs.existsSync(scheduleFile) ? JSON.parse(fs.readFileSync(scheduleFile, "utf8")) : { entries: [] }
+    const { schedule } = parseSchedule(raw, catalog)
+    const { moves } = planRowMoves(catalog, schedule)
+
+    // every file the schedule can touch, from the newest translated copy (else CN's own)
+    // tables CN closed on its shutdown day (2025-08-14 23:59:59, China time) that global keeps open:
+    // their rows ending then are kept open (2199-12-31), so e.g. the Star Sliver exchange isn't empty
+    const EOS_TABLES = ["master/shop/star_crumb_exchange.orderedmap"].map(fileOf)
+    // the yearly campaigns (dashboard Campaigns tab) are written in these, every time
+    const CAMPAIGN_TABLES = {
+        login: fileOf("master/bonus/login_bonus.orderedmap"),
+        freePull: fileOf("master/gacha/gacha_campaign.orderedmap"),
+        reward: fileOf("master/campaign/reward_campaign.orderedmap"),
+        stamina: fileOf("master/campaign/stamina_campaign.orderedmap"),
+    }
+    // the home "Way of Practice" banner (feature_banner_secondary 20016) runs 2024-2099 in CN, which had a
+    // pass every month; here it gets one row per pass window, so it's only up while a pass is (C25000 otherwise)
+    const PASS_BANNER = { banner: fileOf("master/feature_banner/feature_banner_secondary.orderedmap"), pass: fileOf("master/pass_card/pass_card_event.orderedmap"), id: "20016" }
+    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass])].sort()
+    const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
+    const cn = await cnFiles(new Set([...fileList, featureFile]))
+    if (cn.has(featureFile)) {
+        featureContent = {}
+        for (const { path: keys, leaf } of R.leaves(R.decodeFile(await cn.get(featureFile).buffer()))) featureContent[keys.join("/")] = leaf.text
+    }
+    const trees = new Map()
+    // the translated dir's files.json names every translated table, also the ones kept from an
+    // earlier step's dir (only the tables the last step changed are in the dir itself)
+    const listFile = path.join(TRANSLATED, "files.json")
+    const translatedFrom = new Map(fs.existsSync(listFile) ? JSON.parse(fs.readFileSync(listFile, "utf8")).map(f => [f.path, f.from]) : [])
+    for (const file of fileList) {
+        const translated = translatedFrom.get(file) ?? path.join(TRANSLATED, file)
+        const buf = fs.existsSync(translated) ? fs.readFileSync(translated) : await cn.get(file)?.buffer()
+        if (!buf) continue // a table CN doesn't have
+        const tree = R.decodeFile(buf)
+        if (EOS_TABLES.includes(file)) for (const { leaf } of R.leaves(tree)) {
+            if (leaf.text.includes("2025-08-14 23:59:59")) R.setLeafText(leaf, leaf.text.split("2025-08-14 23:59:59").join("2199-12-31 23:59:59"))
+        }
+        trees.set(file, tree)
+    }
+
+    // moves grouped by event: the CN rows and their CN window
+    const byEvent = new Map()
+    for (const [key, move] of moves) {
+        const [file, p] = [key.slice(0, key.indexOf("#")), key.slice(key.indexOf("#") + 1)]
+        if (!byEvent.has(move.eventKey)) byEvent.set(move.eventKey, { move, rows: [] })
+        byEvent.get(move.eventKey).rows.push({ file, p })
+    }
+    let moved = 0, events = 0
+    for (const [eventKey, { move, rows }] of byEvent) {
+        const leaves = []
+        let ownRow = null
+        const [family, eventId] = [eventKey.slice(0, eventKey.indexOf(":")), eventKey.slice(eventKey.indexOf(":") + 1)]
+        const own = OWN_WINDOW[family]
+        for (const { file, p } of rows) {
+            const tree = trees.get(file)
+            const found = tree && R.leaves(tree).find(x => x.path.join("/") === p)
+            if (!found) continue
+            // a summon banner the CN files have no picture for shows as an empty page: left where it is
+            if (file === fileOf("master/gacha/gacha.orderedmap") && !cnBannerHasArt(p, R.splitCsv(found.leaf.text)[3])) {
+                console.log(`${eventKey}: banner ${p} has no artwork in the CN files, not moved`)
+                continue
+            }
+            leaves.push(found.leaf)
+            if (own && file === fileOf(own.table) && p === eventId) ownRow = found.leaf
+        }
+        const dates = leaves.flatMap(l => (l.text.match(DATE) ?? []).map(parse)).filter(ms => ms !== null && ms < FAR)
+        if (dates.length === 0) { console.log(`${eventKey}: not in the CN files, skipped`); continue }
+        // the event's window is its own row's start and end in CN's data (like global's, which uses the
+        // event's own dates); the dates in all its linked rows (missions, items...) can reach far before
+        // or after it, which used to stretch the window and push the event to the wrong days
+        let from = null
+        if (ownRow) {
+            const c = R.splitCsv(ownRow.text)
+            const first = v => parse(((v ?? "").match(DATE) ?? [])[0] ?? "")
+            const last = v => { const all = (v ?? "").match(DATE) ?? []; return parse(all[all.length - 1] ?? "") }
+            const start = first(c[own.start]), end = last(c[own.end])
+            if (start !== null && end !== null && end > start && end < FAR) from = { start, end }
+        }
+        if (from === null) {
+            from = { start: Math.min(...dates), end: Math.max(...dates) }
+            console.log(`${eventKey}: own dates not readable, using all its rows' dates`)
+        }
+        for (const leaf of leaves) {
+            // far-future "never ends" dates (2050, 2199) stay as they are: moved, they can pass 2200, which the
+            // client refuses (C7100, e.g. an item's expiry)
+            const text = leaf.text.replace(DATE, found => { const ms = parse(found); return ms === null || ms >= FAR ? found : format(mapCnInstant(ms, from, move.to)) })
+            if (text !== leaf.text) { R.setLeafText(leaf, text); moved++ }
+        }
+        events++
+    }
+
+    // ---- yearly campaigns (.database/campaign_schedule.json, src/lib/campaignSchedule.ts), as the
+    // global client's mod has them (scripts/gen_event_schedule_mod.cjs), in CN's layout and China time
+    const campaignsMade = applyYearlyCampaigns(trees, CAMPAIGN_TABLES)
+    passBannerWindows(trees, PASS_BANNER)
+
+    // the next CN update
+    const patches = fs.existsSync(PATCHES) ? JSON.parse(fs.readFileSync(PATCHES, "utf8")) : []
+    const last = patches.length ? patches[patches.length - 1].version : "1.4.54"
+    const v = last.split(".").map(Number); v[2]++
+    const version = v.join(".")
+    const outDir = path.join(ROOT, ".cdn", "cn_schedule_files")
+    fs.rmSync(outDir, { recursive: true, force: true })
+    const list = []
+    for (const [file, tree] of trees) {
+        const out = path.join(outDir, file)
+        fs.mkdirSync(path.dirname(out), { recursive: true })
+        fs.writeFileSync(out, R.encodeFile(tree))
+        list.push({ path: file, from: out })
+    }
+    await build(version, last, list)
+    console.log(`CN schedule ${version}: ${events} event(s), ${moved} rows moved, ${campaignsMade}, ${list.length} files`)
+    // the server's copy of the CN missions follows the new dates
+    require("child_process").execFileSync(process.execPath, [path.join(__dirname, "gen_cn_missions.cjs")], { stdio: "inherit", env: { ...process.env, CN_TRANSLATED_DIR: TRANSLATED } })
+    // and the server's copy of the CN passes (a pass can be moved too)
+    require("child_process").execFileSync(process.execPath, [path.join(__dirname, "gen_cn_pass_card.cjs")], { stdio: "inherit", env: { ...process.env, CN_TRANSLATED_DIR: TRANSLATED } })
+    // and the server's copy of the CN shops (event shops follow moved events)
+    require("child_process").execFileSync(process.execPath, [path.join(__dirname, "gen_cn_shops.cjs")], { stdio: "inherit", env: { ...process.env, CN_TRANSLATED_DIR: TRANSLATED } })
+}
+
+main().catch(e => { console.error(e.stack || e.message); process.exit(1) })

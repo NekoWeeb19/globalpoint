@@ -1,0 +1,329 @@
+{
+ "loginBonusFile": "production/upload/33/12fe29bb65e17203008c1f025ae262faaa0cb0",
+ "freePullFile": "production/upload/74/e7be1b0da0fd069aba147e2fd92da2b427d86e",
+ "loginBonuses": {
+  "ny20": {
+   "start": "2021-08-28 05:00:00",
+   "end": "2021-09-05 04:59:59",
+   "days": 7,
+   "image": "a4f89047d2b1bf1b0bcabfbc6b6b716729abd0b1"
+  },
+  "gw2020": {
+   "start": "2021-12-26 05:00:00",
+   "end": "2022-01-09 04:59:59",
+   "days": 14,
+   "image": "004e76743cabd38d19c49e6989f54ef8e15c3ada"
+  },
+  "valentine21": {
+   "start": "2022-10-07 05:00:00",
+   "end": "2022-10-14 04:59:59",
+   "days": 7,
+   "image": "c4f52d3aeb85a7e3a329ba34193391a938517369"
+  },
+  "smr_v20": {
+   "start": "2022-03-18 05:00:00",
+   "end": "2022-04-29 04:59:59",
+   "days": 42,
+   "image": "58c4767264786fb08f9e225b8f27a262bc1690e7"
+  },
+  "ny21": {
+   "start": "2022-08-29 05:00:00",
+   "end": "2022-09-08 04:59:59",
+   "days": 10,
+   "image": "74d072ee500c36ee9a0f5bfbbf25e069b410d846"
+  },
+  "spring2021": {
+   "start": "2022-11-05 05:00:00",
+   "end": "2022-11-21 04:59:59",
+   "days": 16,
+   "image": "252a5711da46129157b5cd4aa34073bd9d773bbe"
+  },
+  "gw21": {
+   "start": "2022-12-26 05:00:00",
+   "end": "2023-01-07 04:59:59",
+   "days": 12,
+   "image": "369a8ef0f7c9b7f6ea9b16277381e545b70933de"
+  },
+  "smr_v21": {
+   "start": "2023-02-25 05:00:00",
+   "end": "2023-03-12 04:59:59",
+   "days": 15,
+   "image": "313e711f96fda0db070ff2f61ad2876a740432f6"
+  },
+  "smr_v21_02": {
+   "start": "2023-03-25 14:00:00",
+   "end": "2023-04-09 04:59:59",
+   "days": 15,
+   "image": "86b8256b89de67b7544e976e3928ab65c6e1e18b"
+  },
+  "hw_v21_01": {
+   "start": "2023-06-15 14:00:00",
+   "end": "2023-06-24 04:59:59",
+   "days": 9,
+   "image": "e00658382cbfc1dcd820f20909f0f52d46a93aa0"
+  },
+  "hw_v21_02": {
+   "start": "2023-06-24 14:00:00",
+   "end": "2023-06-28 04:59:59",
+   "days": 4,
+   "image": "b55f5b4c49685d423f882c19d3c57931d085ed83"
+  },
+  "xmas21": {
+   "start": "2023-08-14 14:00:00",
+   "end": "2023-08-28 04:59:59",
+   "days": 14,
+   "image": "41484f976518c511a0f42fa0775cf9a26c446a79"
+  },
+  "ny22": {
+   "start": "2023-09-13 14:00:00",
+   "end": "2023-09-30 04:59:59",
+   "days": 16,
+   "image": "623ad89ecd7a6d1dd0e4bcda4301929beac27e21"
+  },
+  "gw22": {
+   "start": "2023-12-26 14:00:00",
+   "end": "2024-01-05 04:59:59",
+   "days": 10,
+   "image": "9110db109cb023a255fef836f042daca0688aeb3"
+  },
+  "smr_v22": {
+   "start": "2024-02-01 14:00:00",
+   "end": "2024-03-03 04:59:59",
+   "days": 31,
+   "image": "67eb9601e05f35b85a097471a94b2e40e5a7f005"
+  },
+  "xmas22": {
+   "start": "2024-05-01 14:00:00",
+   "end": "2024-05-17 04:59:59",
+   "days": 16,
+   "image": "36844e5ce22be9e8ee8bfeaaa3f1f88d692d5b10"
+  }
+ },
+ "freePulls": [
+  {
+   "id": 1,
+   "name": "Happy Half-Year Flipperversary! Celebrate with Free 10-Pulls Daily",
+   "kind": 2,
+   "start": "2022-01-22 14:00:00",
+   "end": "2022-02-07 13:59:59",
+   "banners": [
+    28,
+    29,
+    30
+   ]
+  },
+  {
+   "id": 2,
+   "name": "The first Flipperversary is on the way! Get one free pull every day leading up to the event!",
+   "kind": 1,
+   "start": "2022-06-28 05:00:00",
+   "end": "2022-07-25 04:59:59",
+   "banners": [
+    46,
+    47,
+    48,
+    49
+   ]
+  },
+  {
+   "id": 3,
+   "name": "1st Flipperversary Bonus! Get 1 free 10-pull every day!",
+   "kind": 2,
+   "start": "2022-07-25 05:00:00",
+   "end": "2022-08-17 04:59:59",
+   "banners": [
+    49,
+    50,
+    51,
+    52,
+    53,
+    54
+   ]
+  },
+  {
+   "id": 4,
+   "name": "Special New Year's Celebration! Get one free pull every day!",
+   "kind": 1,
+   "start": "2022-08-28 05:00:00",
+   "end": "2022-09-06 04:59:59",
+   "banners": [
+    55,
+    56,
+    58
+   ]
+  },
+  {
+   "id": 5,
+   "name": "ゴールデンウィーク記念！1日1回ガチャ無料キャンペーン",
+   "kind": 1,
+   "start": "2022-12-26 05:00:00",
+   "end": "2023-01-07 04:59:59",
+   "banners": [
+    72,
+    73
+   ]
+  },
+  {
+   "id": 6,
+   "name": "Granblue Fantasy Celebration! Daily Free 1-Pull Promo!",
+   "kind": 1,
+   "start": "2023-01-07 05:00:00",
+   "end": "2023-01-16 04:59:59",
+   "banners": [
+    73,
+    74
+   ]
+  },
+  {
+   "id": 7,
+   "name": "1.5 Flipperversary Free Daily 10-Pulls Promo",
+   "kind": 2,
+   "start": "2023-01-22 05:00:00",
+   "end": "2023-02-09 04:59:59",
+   "banners": [
+    75,
+    76,
+    77
+   ]
+  },
+  {
+   "id": 8,
+   "name": "Summer Season Free Daily 1-Pull Promo",
+   "kind": 1,
+   "start": "2023-02-25 05:00:00",
+   "end": "2023-03-23 04:59:59",
+   "banners": [
+    81,
+    82,
+    83,
+    84
+   ]
+  },
+  {
+   "id": 10,
+   "name": "Chapter 10 Part 2 Release: Free Daily 1-Pull!",
+   "kind": 1,
+   "start": "2023-06-28 14:00:00",
+   "end": "2023-07-10 04:59:59",
+   "banners": [
+    98,
+    99
+   ]
+  },
+  {
+   "id": 11,
+   "name": "2nd Flipperversary Countdown Free Daily 1-Pulls Promo",
+   "kind": 1,
+   "start": "2023-07-15 14:00:00",
+   "end": "2023-07-25 04:59:59",
+   "banners": [
+    99,
+    100
+   ]
+  },
+  {
+   "id": 12,
+   "name": "2nd Flipperversary Free Daily 10-Pulls Promo",
+   "kind": 2,
+   "start": "2023-07-25 14:00:00",
+   "end": "2023-08-17 04:59:59",
+   "banners": [
+    101,
+    700000,
+    103,
+    104
+   ]
+  },
+  {
+   "id": 13,
+   "name": "Free 10-Pull Event Celebrating Fall Foliage (3 days)",
+   "kind": 2,
+   "start": "2023-09-28 14:00:00",
+   "end": "2023-10-01 04:59:59",
+   "banners": [
+    106
+   ]
+  },
+  {
+   "id": 14,
+   "name": "Free 10-Pull Event Celebrating Winter",
+   "kind": 2,
+   "start": "2023-11-26 14:00:00",
+   "end": "2023-11-29 04:59:59",
+   "banners": [
+    116
+   ]
+  },
+  {
+   "id": 15,
+   "name": "Winter Holiday Free Daily 1-Pulls",
+   "kind": 1,
+   "start": "2023-12-26 14:00:00",
+   "end": "2024-01-05 04:59:59",
+   "banners": [
+    118,
+    119
+   ]
+  },
+  {
+   "id": 16,
+   "name": "2.5 Year Flipperversary Free Daily 10-Pulls Promo",
+   "kind": 2,
+   "start": "2024-01-17 14:00:00",
+   "end": "2024-02-01 04:59:59",
+   "banners": [
+    123,
+    124
+   ]
+  },
+  {
+   "id": 17,
+   "name": "Daily Summer Free Pull Promo",
+   "kind": 1,
+   "start": "2024-02-01 14:00:00",
+   "end": "2024-03-03 04:59:59",
+   "banners": [
+    129,
+    130,
+    131,
+    132
+   ]
+  },
+  {
+   "id": 18,
+   "name": "3rd Flipperversary Free Daily 10-Pulls Promo",
+   "kind": 2,
+   "start": "2024-04-28 14:00:00",
+   "end": "2024-05-23 04:59:59",
+   "banners": [
+    147,
+    148,
+    149
+   ]
+  },
+  {
+   "id": 19,
+   "name": "Free 10-Pull Event Celebrating Winter",
+   "kind": 2,
+   "start": "2024-05-28 14:00:00",
+   "end": "2024-07-25 14:59:59",
+   "banners": [
+    157,
+    700004,
+    155
+   ]
+  },
+  {
+   "id": 20,
+   "name": "3.5周年アニバーサリー記念 1日1回10連ガチャ無料キャンペーン",
+   "kind": 2,
+   "start": "2024-12-01 14:00:00",
+   "end": "2024-12-16 04:59:59",
+   "banners": [
+    179,
+    700004,
+    180
+   ]
+  }
+ ]
+}

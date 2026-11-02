@@ -1,12 +1,19 @@
 // Handles the insertion of mana into characters.
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { buyEnhancementSync, enhancementSalesListSync, EQUIPMENT_ENHANCEMENT_SHOP_TYPE } from "../../nya/equipmentEnhancement";
+import { getPlayerShopPurchasesSync, recordShopPurchaseSync } from "../../nya/shopPurchases";
 import { deserializeClientDate } from "../../data/utils";
 import { getAccountPlayers, getPlayerItemSync, getPlayerSync, getSession, updatePlayerItemSync, updatePlayerSync } from "../../data/wdfpData";
 import { getBossCoinShopItemsSync, getEventShopItemsSync, getGenericShopItemsSync, getShopItemSync } from "../../lib/assets";
 import { CharacterReward, CharacterShopItemReward, CurrencyReward, CurrencyShopItemReward, EquipmentItemReward, EquipmentItemShopItemReward, Reward, RewardType, ShopItemRewardType, ShopItems, ShopItemUserCostType, ShopType } from "../../lib/types";
-import { generateDataHeaders, getServerDate, getServerTime } from "../../utils";
+import { generateDataHeaders, getServerDate, epochOf, getServerTime } from "../../utils";
 import { givePlayerRewardsSync } from "../../lib/quest";
+import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";
+import { withMissionRewards } from "../../nya/mission";
+import { addPassPointSync, getPassPointPack, openPassIdSync } from "../../nya/passCard";
+import { isCnRequest } from "../../lib/cnClient";
+import { COUNTER_KINDS, CounterEvent } from "../../lib/mission";
 
 interface GetSalesListBody {
     equipment_enhancement_shop_category_ids: number[],
@@ -58,6 +65,39 @@ const routes = async (fastify: FastifyInstance) => {
             "error": "Internal Server Error",
             "message": "No players bound to account."
         })
+
+        // Augment Armament (shop type 10): raises the armament's augment level (src/nya/equipmentEnhancement.ts)
+        if (shopType === EQUIPMENT_ENHANCEMENT_SHOP_TYPE) {
+            const result = buyEnhancementSync(playerId, shopItemId, purchaseAmount)
+            if (!result.ok) return reply.status(400).send({ "error": "Bad Request", "message": result.message })
+            recordShopPurchaseSync(playerId, shopType, shopItemId, purchaseAmount)
+            reply.header("content-type", "application/x-msgpack")
+            return reply.status(200).send({ "data_headers": generateDataHeaders({ viewer_id: viewerId }), "data": result.data })
+        }
+
+        // CN pass point packs (special pack shop, type 3): paid beads for points in the open pass
+        // ("The Way of Practice" level-up). The client asks for the pass again afterwards.
+        const pointPack = shopType === ShopType.SPECIAL_PACK && isCnRequest(request.originalUrl) ? getPassPointPack(shopItemId) : null
+        if (pointPack !== null) {
+            const passId = openPassIdSync(getServerDate().getTime())
+            if (passId === null) return reply.status(400).send({ "error": "Bad Request", "message": "No pass is open." })
+            // paid beads only (the client's purchase dialog takes them from "Paid")
+            const cost = pointPack.beads * purchaseAmount
+            if (cost > player.vmoney) return reply.status(400).send({ "error": "Bad Request", "message": "Not enough paid beads." })
+            updatePlayerSync({ id: playerId, vmoney: player.vmoney - cost })
+            const point = addPassPointSync(playerId, passId, pointPack.points * purchaseAmount)
+            recordShopPurchaseSync(playerId, shopType, shopItemId, purchaseAmount)
+            console.log(`[pass] Player ${playerId}: bought ${purchaseAmount}x ${pointPack.name} for ${cost} beads; pass ${passId} now ${point} points.`)
+            reply.header("content-type", "application/x-msgpack")
+            return reply.status(200).send({
+                "data_headers": generateDataHeaders({ viewer_id: viewerId }),
+                "data": {
+                    "user_info": { "free_vmoney": player.freeVmoney, "vmoney": player.vmoney - cost },
+                    "item_list": {},
+                    "mail_arrived": false
+                }
+            })
+        }
 
         // get the shop item's data
         const shopItemData = getShopItemSync(shopType, shopItemId)
@@ -187,16 +227,44 @@ const routes = async (fastify: FastifyInstance) => {
         // give rewards
         const rewardResult = givePlayerRewardsSync(playerId, rewards)
 
+        // active missions: items bought in the treasure shop
+        const missionCounters: Record<number, number> = {}
+        if (shopType === ShopType.TREASURE) missionCounters[45] = purchaseAmount
+        // ...and equipment bought with boss coins
+        if (shopType === ShopType.BOSS_COIN && shopItemData.rewards.some(reward => reward.type === ShopItemRewardType.EQUIPMENT)) {
+            missionCounters[64] = purchaseAmount
+        }
+        const activeMissionList = Object.keys(missionCounters).length > 0
+            ? trackActiveMissionProgress(playerId, { add: missionCounters })
+            : []
+
+        // Mission screen: mana spent at The Trove, and mana obtained from the shop
+        const missionEvents: CounterEvent[] = []
+        if (shopType === ShopType.TREASURE && userCost?.type === ShopItemUserCostType.MANA) {
+            missionEvents.push({ kind: COUNTER_KINDS.TROVE_MANA_SPENT, amount: userCost.amount * purchaseAmount })
+        }
+        // "Spend N mana" (campaign missions): any mana paid in a shop
+        if (userCost?.type === ShopItemUserCostType.MANA && userCost.amount * purchaseAmount > 0) {
+            missionEvents.push({ kind: COUNTER_KINDS.MANA_SPENT, amount: userCost.amount * purchaseAmount })
+        }
+        for (const reward of shopItemData.rewards) {
+            if (reward.type === ShopItemRewardType.MANA) {
+                missionEvents.push({ kind: COUNTER_KINDS.TOTAL_MANA, amount: (reward as CurrencyShopItemReward).count * purchaseAmount })
+            }
+        }
+
         reply.header("content-type", "application/x-msgpack")
+        recordShopPurchaseSync(playerId, shopType, shopItemId, purchaseAmount)
+
         return reply.status(200).send({
             "data_headers": generateDataHeaders({
                 viewer_id: viewerId
             }),
-            "data": {
+            "data": withMissionRewards(playerId, {
                 "user_info": {
                     "free_mana": freeMana + (rewardResult?.user_info.free_mana ?? 0),
                     "exp_pool": player.expPool + (rewardResult?.user_info.exp_pool ?? 0),
-                    "exp_pooled_time": getServerTime(player.expPooledTime),
+                    "exp_pooled_time": epochOf(player.expPooledTime),
                     "bond_token": bondTokens
                 },
                 "joined_character_id_list": rewardResult?.joined_character_id_list ?? [],
@@ -206,8 +274,9 @@ const routes = async (fastify: FastifyInstance) => {
                     ...itemList,
                     ...(rewardResult?.items ?? {})
                 },
-                "mail_arrived": false
-            }
+                "mail_arrived": false,
+                ...(activeMissionList.length > 0 ? { "active_mission_list": activeMissionList } : {})
+            }, missionEvents)
         })
     })
 
@@ -268,18 +337,20 @@ const routes = async (fastify: FastifyInstance) => {
         const salesList: Object[] = []
 
         const now: number = getServerDate().getTime()
+        const bought = getPlayerShopPurchasesSync(playerId)
         for (const [shopType, items] of Object.entries(toParseShopItems)) {
             for (const [itemId, item] of Object.entries(items)) {
                 const from = deserializeClientDate(item.availableFrom)
                 const until = item.availableUntil === null ? null : deserializeClientDate(item.availableUntil)
 
                 if ((now >= from.getTime()) && (until === null || (until.getTime() > now))) {
+                    const counts = bought.get(`${shopType}:${itemId}`) ?? { today: 0, month: 0, total: 0 }
                     salesList.push({
                         "shop_item_id": Number(itemId),
                         "stock_quantity": -1, // Change if you want a limited quantity of items. -1 = infinite.
-                        "today_purchase_num": 0,
-                        "this_month_purchase_num": 0,
-                        "total_purchase_num": 0,
+                        "today_purchase_num": counts.today,
+                        "this_month_purchase_num": counts.month,
+                        "total_purchase_num": counts.total,
                         "group_info": {
                             "group_total_stock_quantity": -1,
                             "group_total_purchase_num": 0,
@@ -297,7 +368,54 @@ const routes = async (fastify: FastifyInstance) => {
                 viewer_id: viewerId
             }),
             "data": {
-                "sales_list": salesList
+                "sales_list": (shopTypes as number[]).includes(EQUIPMENT_ENHANCEMENT_SHOP_TYPE)
+                    ? [...salesList, ...enhancementSalesListSync(playerId, body.equipment_enhancement_shop_category_ids ?? [])]
+                    : salesList
+            }
+        })
+    })
+}
+
+/** Registered at the API prefix itself (the path isn't under /shop). */
+export const howToGetRoutes = async (fastify: FastifyInstance) => {
+    // the item details' "How to Get": open shop entries that give the item (the trove, general and star
+    // grain shops; event and boss coin shops are listed by their own screens). Box summons aren't
+    // looked through (box_gacha_id_list stays empty), so the item's own "how to get" text is shown.
+    fastify.post("/how_to_get/get_list", async (request: FastifyRequest, reply: FastifyReply) => {
+        const body = request.body as { viewer_id: number, item_id: number }
+        const viewerId = Number(body?.viewer_id), itemId = Number(body?.item_id)
+        const viewerIdSession = isNaN(viewerId) ? null : await getSession(viewerId.toString())
+        if (!viewerIdSession || isNaN(itemId)) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Invalid request body."
+        })
+        const playerId = (await getAccountPlayers(viewerIdSession.accountId))[0]
+        const bought = getPlayerShopPurchasesSync(playerId)
+        const now = getServerDate().getTime()
+        const salesList: Object[] = []
+        for (const shopType of [ShopType.TREASURE, ShopType.GENERAL, ShopType.STAR_GRAIN]) {
+            for (const [shopItemId, item] of Object.entries(getGenericShopItemsSync(shopType) ?? {})) {
+                if (!(item.rewards as { type?: number, id?: number }[]).some(reward => (reward.type ?? 0) === 0 && Number(reward.id) === itemId)) continue
+                const until = item.availableUntil === null ? null : deserializeClientDate(item.availableUntil).getTime()
+                if (now < deserializeClientDate(item.availableFrom).getTime() || (until !== null && until <= now)) continue
+                const counts = bought.get(`${shopType}:${shopItemId}`) ?? { today: 0, month: 0, total: 0 }
+                salesList.push({
+                    "shop_item_id": Number(shopItemId),
+                    "stock_quantity": -1,
+                    "today_purchase_num": counts.today,
+                    "this_month_purchase_num": counts.month,
+                    "total_purchase_num": counts.total,
+                    "shop_type": shopType,
+                })
+            }
+        }
+        reply.header("content-type", "application/x-msgpack")
+        return reply.status(200).send({
+            "data_headers": generateDataHeaders({ viewer_id: viewerId }),
+            "data": {
+                "box_gacha_id_list": [],
+                "unselected_lineup_shop_sales_list": [],
+                "shop_sales_list": salesList,
             }
         })
     })

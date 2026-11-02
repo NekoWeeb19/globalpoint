@@ -1,0 +1,295 @@
+{
+ "_note": "Unit text for the CN client's units global never had (and CN's new skill++ upgrades of global units), written in global's style; meaning from CN's text and eliya-bot (assets/translations/eliya_units_jp.json). scripts/gen_cn_unit_cells.cjs turns it into cells of master/character/character_text. Fields: name, description, title, skill, skillDesc (skill, skill+ and skill++ unless skillPlusPlusDesc is given), skillPlusPlusDesc, leader, va. Global units only list skillPlusPlusDesc where CN's skill++ adds effects; their skill++ name is global's skill+ name with another +. cnName: the unit's CN name, where global's name map doesn't have it (used for names in other texts).",
+ "units": {
+  "111069": {
+   "name": "Haruhi Suzumiya",
+   "description": "A hero who crossed over from another world and the leader of the SOS Brigade. She has the power to rewrite the world however she likes and has turned this world into a lively place too, though she's completely unaware of it.",
+   "title": "Unabashed Hero",
+   "skill": "All-Out Attack!",
+   "skillDesc": "Swings the Hero's Sword (SOS Brigade Leader exclusive) with all her might, inflicting Fire damage on nearby foes / Increases skill damage for all units in your party",
+   "leader": "Power to Liven Up the World",
+   "cnName": "凉宫春日"
+  },
+  "111117": {
+   "name": "Megumin",
+   "description": "A Crimson Demon girl from a faraway world. She loves Explosion magic more than anything—and it's the only magic she can use. The catch? She can only cast it once a day.",
+   "title": "Master of Explosion Magic",
+   "skill": "EXPLOSION",
+   "skillDesc": "[While not Out of Mana] Unleashes Explosion magic at the nearest foe, inflicting Fire damage on hit foes and those around them / Inflicts Out of Mana (Level 99) on self\n[While Out of Mana] Collapses, unable to move",
+   "leader": "Megumin of the Crimson Demons",
+   "cnName": "惠惠"
+  },
+  "111171": {
+   "name": "Couette",
+   "description": "A girl who crossed the Abyss, grasped the Void, and befriended a dragon. In search of kindred spirits to cheer each other on, Couette is setting off on vacation—it's sure to be a summer to remember!",
+   "title": "Opener of Summer's Gate",
+   "skill": "Void Gazer",
+   "skillDesc": "Opens the Abyss and summons Koma (Swimsuit) (Multiball summon; summons her again if she's already on the field) / Restores the HP of all units and multiballs in your party and units in other players' parties (Effect boosted for Fire units) / Grants a fixed maximum speed effect to Fire multiballs",
+   "leader": "Invitation to the Void",
+   "va": "Ayasa Ito"
+  },
+  "111177": {
+   "name": "Wilfred",
+   "description": "A graduate student at the Voluntas Arcane Arts Academy who fell for a timid childhood friend. After shouting out those feelings, the two became a couple. Wanting to stay together and build something new—and insisting it takes courage—Wilfred now wears this all-too-clumsy suit of armor.",
+   "title": "Passionate Proposal Armor",
+   "skill": "Flame Craft",
+   "skillDesc": "Unleashes a heartful of love for Mary, inflicting Fire damage on all foes on the field + Removes 1 buff / Increases skill damage for Fire units",
+   "leader": "Cheers Exchanged",
+   "va": "Yuki Amezawa"
+  },
+  "111183": {
+   "name": "Vagner",
+   "description": "A great elder dragon and King of the Flame Dragons. He fought fate again and again, yet never won, right up until the very end. Now freed from destiny, a raging fire still burns within his heart.",
+   "title": "Flame Dragon King",
+   "skill": "Prominence Break",
+   "skillDesc": "Leaps forward, inflicting Fire damage on nearby foes with an explosive shockwave / Engulfs the whole field in flames for a period of time, periodically inflicting Fire damage on all foes (Doesn't break weak points)",
+   "leader": "Prominence Pride"
+  },
+  "121057": {
+   "name": "Yuki Nagato",
+   "description": "The SOS Brigade's proud bookworm from a faraway world... or so she seems. In truth, she's a humanoid interface for contacting organic lifeforms—an alien, in other words. In an emergency, she can wield almighty power to protect the SOS Brigade and this world, making her very reliable.",
+   "title": "The Taciturn Alien",
+   "skill": "Hyperdimensional Data Manipulation",
+   "skillDesc": "Manipulates the data of the space around the nearest foe and freezes it, inflicting Water damage and reduced Water resistance on foes around it",
+   "leader": "Almighty Data Manipulation",
+   "va": "Minori Chihara",
+   "cnName": "长门有希"
+  },
+  "121123": {
+   "name": "Aqua",
+   "description": "The goddess of water from a faraway world, and the deity worshipped by the Axis Order. Her stats are extremely high and she excels at purification and healing magic, but her intelligence is below average and her luck is bottomless. She's great at party tricks and loves fizzy drinks.",
+   "title": "Goddess of the Axis Order",
+   "skill": "Heal",
+   "skillDesc": "Uses a goddess's healing power to restore the HP of all units and multiballs in your party and units in other players' parties (Effect boosted for Water units) + Removes 1 debuff / Reduces the Coffin count of all units in your party and units in other players' parties / If used while not in Fever, also increases the Fever Gauge",
+   "leader": "Treat Me Better!!",
+   "cnName": "阿克娅"
+  },
+  "121171": {
+   "name": "Ryuichi Kageoka",
+   "description": "\"Dragon, dwell within me. Dragon, dwell within me.\" Praying without end, the boy who once stepped forward trembling has finally grown strong. The midsummer sun still irritates him and the sweltering crowds still wear him down—but when people call his name, there's a hint of gentleness in his reply.",
+   "title": "Dragon Shadow of Summer",
+   "skill": "My Name Is Dragon",
+   "skillDesc": "Unleashes a raging torrent at the nearest foe, inflicting Water damage on foes around it / When party leader is Water, grants Combo Bonus to the party",
+   "leader": "Dragon, Dwell Within Me"
+  },
+  "121177": {
+   "name": "Sohvi",
+   "description": "Life is a series of choices, and for every choice, there's a world that might have been. Deep within the Abyss, she met \"the him who might have existed.\" And so, the two... met.",
+   "title": "Bride of Possibility",
+   "skill": "Rave-Up Reception",
+   "skillDesc": "Scatters dolls at the nearest foe, inflicting Water damage on foes around it / Raises own Bouquet Toss level by 3",
+   "leader": "Vows of Love"
+  },
+  "121183": {
+   "name": "Pur Lilie",
+   "description": "A staffer at Palpebra's Adventurers' Guild. Most of her sheepfolk kin work as shepherds, but she's one of the few who came to Palpebra for work. She got the job through connections and had a post of her own, but went ahead and founded the \"Labyrinth Explorer Life Safety Improvement PR Department\" anyway. She's chosen to support adventurers, always on the front lines.",
+   "title": "Shoulderer of the Canopy",
+   "skill": "Guild Support",
+   "skillDesc": "Issues a special quest to rally allies, restoring the HP of all units and multiballs in your party and units in other players' parties (Effect boosted for Water units) / Increases Fever gain rate for Water units / When party leader is Water, increases Power Flip damage for the party + Grants Combo Bonus",
+   "leader": "Head of Labyrinth Explorer Safety PR"
+  },
+  "121189": {
+   "name": "Challua",
+   "description": "The sprite girl who brought the first, decisive light to the broken goddess's journey. To soothe a wounded heart and dry the tears that fell, a true sprite appeared in this world. Now, to grant a new wish, she has changed her form once again. And so, starting today, Challua is a magical girl!",
+   "title": "Sprite of Blessings",
+   "skill": "Anima Gracia",
+   "skillDesc": "Blesses allies at a festival, restoring the HP of all units and multiballs in your party and units in other players' parties (Effect boosted for Water units) / Grants a barrier + increased skill damage to Water units",
+   "leader": "What Shall We Play Tomorrow?"
+  },
+  "123001": {
+   "name": "Noelle Silva",
+   "description": "A young mage from a faraway world. Born into royalty with immense magic power, she struggled to control her mana and was treated as a failure, but meeting Asta and her comrades slowly taught her to believe in herself.",
+   "title": "Youngest of the Royal Silvas",
+   "skill": "Sea Dragon's Roar",
+   "skillDesc": "Creates a giant water dragon and sends it charging forward, inflicting Water damage on hit foes / Increases attack of Water units and Water multiballs",
+   "leader": "Royal Mana",
+   "va": "Kana Yuuki"
+  },
+  "131164": {
+   "name": "Teo",
+   "description": "\"I'll make sure to study hard!\" The lion boy is ready for summer! What will the boy who once fought for freedom find at a summer resort freer than anywhere else? Summer is about to become his next trial.",
+   "title": "Summer Lion",
+   "skill": "Roar of Freedom",
+   "skillDesc": "Hands out special juice to everyone, restoring the HP of all units and multiballs in your party and units in other players' parties (Effect boosted for Thunder units) / Increases attack of Thunder units and Thunder multiballs / Inflicts Thunder damage on all foes / If used while not in Fever, also increases the Fever Gauge",
+   "leader": "The Summer I Found",
+   "va": "Riko Kohara"
+  },
+  "131170": {
+   "name": "Teurgis",
+   "description": "The self-proclaimed best gunner in the world—and, according to everyone else, the world's best troublemaker. He's always borrowing money and dragging his friends into his debt-collection messes. Just as everyone wondered what trouble he'd bring this time, he simply smiled, bearing the same wings as his partner.",
+   "title": "Mighty-Winged Gunner",
+   "skill": "Big Bang Impact",
+   "skillDesc": "[When at 50% HP or more] Boosts the output of his plasma engine, granting self a stackable skill damage up effect (Permanent) + Increases own Skill Gauge / Damages self\n[When below 50% HP] Flies forward, then dives down with a slash, inflicting Thunder damage on foes around him / Increases attack for self",
+   "leader": "We're the Strongest!"
+  },
+  "131176": {
+   "name": "Charlene",
+   "description": "The top mercenary of the City of Qualia's underworld, nicknamed the Reaper. A cold-blooded sniping machine who never misses, even from three thousand meters away... or so they say. Everyone who knows her says otherwise—she's more like a wild animal that does whatever she pleases.",
+   "title": "Codename: Reaper",
+   "skill": "Dead Line 3000",
+   "skillDesc": "Fires a piercing round at the nearest foe, inflicting Thunder damage and reduced Thunder resistance on hit foes",
+   "leader": "Ace of Sniper",
+   "va": "Mari Uchiyama",
+   "cnName": "夏琳"
+  },
+  "131182": {
+   "name": "Light",
+   "description": "Light, who regained his human form with the help of Rustamov and Armadeus. Toyed with by power and duty, and after countless setbacks, he still chose to take up his sword and face the future bravely. No matter how many times he falls, he'll stand again—because they taught him how to find himself.",
+   "title": "Guardian of Courage",
+   "skill": "Dwell in Me, Fang of My Friend",
+   "skillDesc": "Unleashes a full-power sword technique, charging at the nearest foe and inflicting Thunder damage / Increases attack for self",
+   "leader": "A Fairy Tale Retold"
+  },
+  "141129": {
+   "name": "Yuno",
+   "description": "A genius mage from a faraway world who commands the wind. He dreams of one day becoming the Wizard King. Cool and quiet, he overcomes every hardship with the burning passion he keeps inside.",
+   "title": "Genius Wind Mage",
+   "skill": "Spirit Storm",
+   "skillDesc": "Uses Spirit Dive to increase skill damage for self / Unleashes Spirit Storm at the nearest foe, inflicting Wind damage on hit foes / Grants Levitate to all units and multiballs in your party",
+   "leader": "Four-Leaf Grimoire",
+   "va": "Nobunaga Shimazaki"
+  },
+  "141177": {
+   "name": "Yukariko Kuguri",
+   "description": "\"Turn back time and take me with you!\" Time can't be rewound, but feelings can still reach. Shota Inori's sloppiness, half-heartedness, carelessness, kindness, strength, weakness, voice, breath, movements, smile, eyes, lips, neck, collarbone, the backs of his hands, fingers, waist, back, knees, heartbeat, and everything else—she loves every last bit of it♡",
+   "title": "Heavy-Hearted Lover",
+   "skill": "Hera Restraint Device",
+   "skillDesc": "Offers up her heavy love, restoring the HP of all units and multiballs in your party and units in other players' parties (Effect boosted for Wind units) / Increases skill damage for Wind units / Inflicts Wind damage on all foes",
+   "leader": "Love & Curse"
+  },
+  "141183": {
+   "name": "Fluffy",
+   "description": "After that fierce battle ended, her comrades each went their own way, and she was no exception. Once, she was a soldier of the Land Federation. Then, she was Santa Claus. Her next goal? Finding a job where she can fight to her heart's content.",
+   "title": "Gale Brawler",
+   "skill": "Daybreak Combo",
+   "skillDesc": "Unleashes the power of her gear; when party leader is Wind, grants Levitate + a fixed maximum speed effect to the party / Increases attack + direct attack damage for self",
+   "leader": "Sparkling Martial Arts",
+   "va": "Sora Tokui"
+  },
+  "141189": {
+   "name": "Gramp Zigza",
+   "description": "The foremost painter of Wa and the Eastern lands. Past 75, yet his curiosity and drive have never faded and his body only grows sturdier. A mad painter who boldly vows to paint everything in the world—and his next subject is another world.",
+   "title": "Mad Painter Across Worlds",
+   "skill": "Brush of Two Worlds",
+   "skillDesc": "Paints the mad painter's world, restoring the HP of all units and multiballs in your party and units in other players' parties (Effect boosted for Wind units) / Increases direct attack damage for Wind units / When party leader is Wind, grants a fixed maximum speed effect to the party",
+   "leader": "Painting All Creation",
+   "va": "Kazumasa Katsura"
+  },
+  "141201": {
+   "name": "Celtie",
+   "description": "A prodigy swordswoman once feared and shunned as a demon of the blade for her superhuman talent. But the girl who wished to turn herself into steel has regained her wish to share. Standing in her path are the gods of another world... and the gaze of the frail one she loves.",
+   "title": "Sword Saint of the Stars",
+   "skill": "Starry Fang: Enlil",
+   "skillDesc": "Charges at the nearest foe, inflicting Wind damage on hit foes and those around them with lightning-fast swordplay / Increases attack for self / When party leader is Wind, grants Pierce + a fixed maximum speed effect to the party",
+   "leader": "Blade That Carves the Beyond"
+  },
+  "151057": {
+   "name": "Mikuru Asahina",
+   "description": "The SOS Brigade's mascot and maid, from a faraway world. In truth, she's a time traveler from the distant future. Of course, that's \"classified information\" to everyone but a few Brigade members.",
+   "title": "SOS Brigade Mascot",
+   "skill": "That's Classified Information♪",
+   "skillDesc": "Winks so adorably it nearly breaks the rules, restoring the HP of all units in your party and units in other players' parties (Effect boosted for Light units) / Grants Recover + increased attack to all units in your party",
+   "leader": "Clubroom-Exclusive Angel",
+   "va": "Yuko Goto",
+   "cnName": "朝比奈实玖琉"
+  },
+  "151111": {
+   "name": "Darkness",
+   "description": "A female knight from a faraway world. She bravely throws herself in front of enemy attacks—though really, it's so she can take every blow and insult for herself.",
+   "title": "Masochistic Crusader",
+   "skill": "I'll Take Every Attack!",
+   "skillDesc": "Shows her pride as a knight, restoring own HP (Effect boosted for Sword units) + Removes 2 debuffs + Increases Dark resistance / Increases attack of Light units and Light multiballs / Charges at foes",
+   "leader": "Impregnable Defense",
+   "cnName": "达克妮丝"
+  },
+  "151182": {
+   "name": "Nova",
+   "description": "A broken star. One tormented by the end who longed for release. Yet the boy never forgot his true wish. So that the stars and life may go on together, he'll keep living, holding the flowers that bloomed from what was lost and a guilt that will never fade.",
+   "title": "Fellow Traveler",
+   "skill": "Nova, Like Twin Stars",
+   "skillDesc": "Blesses allies with the protection of his spear, granting Twin Star Journey to Light units / Removes 1 buff from all foes / Increases skill damage for units in your party",
+   "leader": "Together Again Tomorrow"
+  },
+  "161141": {
+   "name": "Asta",
+   "description": "A young mage from a faraway world. Born without a drop of magic in a world where magic is everything, he takes on every hardship with his trained body, his anti-magic swords, and a heart that never gives up.",
+   "title": "The Magicless Mage",
+   "skill": "Black Meteorite",
+   "skillDesc": "Channels anti-magic into himself and charges at the nearest foe, slashing it to inflict Dark damage + Removes 1 buff",
+   "leader": "Indomitable Spirit"
+  },
+  "161195": {
+   "name": "Chatrina",
+   "description": "A former intelligence agent of the resistance. Always calm, careful, and quiet... is how I'd love to describe myself, but honestly, talking with people is my favorite thing! Thanks to everyone, I'm spending happy days in a new land. I'll work myself to the bone for all of you—ah, I'm so sorry! I talked too much again!",
+   "title": "Chatty Ex-Spy",
+   "skill": "Double Moon Iris",
+   "skillDesc": "[When Chatrina's chakram is not on the field] Summons a chakram afflicted with Anti-Healing (Multiball summon) / Grants a stackable skill damage up effect to Dark units + Removes 1 debuff\n[When Chatrina's chakram is on the field] Throws the chakram, inflicting Dark damage on all foes on the field / Grants a stackable skill damage up effect to Dark units + Removes 1 debuff",
+   "leader": "Words Without End",
+   "va": "Yui Hashimoto",
+   "cnName": "查特丽娜"
+  },
+  "161201": {
+   "name": "Leve",
+   "description": "The world she found at journey's end wasn't the one from her old wishes and dreams. But that's alright. Freed from fate, the girl keeps her departed friend close to her heart, takes the hands of new friends, and steps out into the world on her own.",
+   "title": "Traveler Embracing Dreams",
+   "skill": "Dream Star Lighting the Dark",
+   "skillDesc": "Uses the power of darkness and nature to inflict Dream Star Mark on all foes + Removes 1 buff from them / Increases skill damage for units in your party",
+   "leader": "Departure at Dawn"
+  },
+  "213007": {
+   "name": "Kyon",
+   "description": "An ordinary guy who wandered in from another world. He has no special powers, but he keeps getting dragged into the mysterious phenomena Haruhi Suzumiya goes chasing after.",
+   "title": "SOS Brigade's Normal Guy",
+   "skill": "Kyon Burst Mode",
+   "skillDesc": "Throws his sword at the nearest foe out of desperation, inflicting Fire damage on hit foes / Increases skill damage for all units in your party and a Fire leader",
+   "leader": "Charming? Ordinary Human",
+   "cnName": "阿虚"
+  },
+  "261053": {
+   "name": "Itsuki Koizumi",
+   "description": "A mysterious bard who suddenly crossed over into another world. In truth, he's an esper who protects the world, though only a handful of people know it. He's also the SOS Brigade's vice-leader.",
+   "title": "The Smiling Bard",
+   "skill": "Esper Rhapsody",
+   "skillDesc": "Uses his esper powers to become a red sphere of light, inflicting Dark damage on foes he bumps into for a period of time + Grants Levitate to all units and multiballs in your party",
+   "leader": "A Yes-Man's Beautiful Melody",
+   "va": "Daisuke Ono",
+   "cnName": "古泉一树"
+  },
+  "263015": {
+   "name": "Kazuma",
+   "description": "A boy from a faraway world who was reincarnated in another world after an accident. He dreamed of thrilling adventures full of swords and magic, but reality had other plans. Surrounded by companions with all sorts of flaws, every day of his is full of farce and chaos.",
+   "title": "Reincarnated Tactician",
+   "skill": "Drain Touch",
+   "skillDesc": "Charges at the nearest foe, draining the life force of foes he bumps into to inflict Dark damage + Removes 1 buff / On hit, restores the HP of all units and multiballs in your party + Increases attack",
+   "leader": "I've Got a Plan!!",
+   "cnName": "和真"
+  },
+  "111001": {
+   "skillPlusPlusDesc": "Breathes a burst of flame, inflicting fire damage on foes in front / Increases Power Flip damage"
+  },
+  "121001": {
+   "skillPlusPlusDesc": "Launches into a sword dance, inflicting Water damage on foes she bumps into for a period of time (Damage increases with number of buffs on Sonia) / Increases the attack of all units and multiballs in your party, and units in other players' parties / Increases attack for self"
+  },
+  "161002": {
+   "skillPlusPlusDesc": "Sharpens senses, inflicting Dark damage on nearby foes for a period of time / Increases attack for self / Grants Pierce to all units and multiballs in your party / Increases the attack of all units and multiballs in your party, and units in other players' parties"
+  },
+  "221004": {
+   "skillPlusPlusDesc": "Performs several jabs with her umbrella, inflicting Water damage on foes in front / Grants Levitate to all units and multiballs in your party / Increases Power Flip damage"
+  },
+  "231001": {
+   "skillPlusPlusDesc": "Brings lightning down upon the closest target, inflicting Thunder damage on all foes within radius of its shock (Deals more damage to Paralyzed foes) / Increases skill damage for self"
+  },
+  "241063": {
+   "skillPlusPlusDesc": "Sends her painted yokai out, inflicting Wind damage on all foes on the field / Increases skill damage for Wind units / Grants Levitate to all units and multiballs in your party"
+  },
+  "251003": {
+   "skillPlusPlusDesc": "Sends orbs of light fanning out, inflicting light damage on hit foes (Damage increases with number of buffs on Ellya) / Restores own HP (Effect boosted for Elves) / Increases attack of Light units"
+  },
+  "321013": {
+   "skillPlusPlusDesc": "Tosses out dynamite in front, inflicting Water damage on hit foes / When party leader is Water, increases attack"
+  },
+  "341001": {
+   "skillPlusPlusDesc": "Swings sword, sending shock waves running in front, inflicting wind damage on hit foes (Damage increases with higher combos) / When party leader is Wind, increases Power Flip damage"
+  }
+ }
+}

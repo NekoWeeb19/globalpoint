@@ -1,11 +1,17 @@
+import { awakeManaNodesSync } from "../../nya/manaAwake";
 // Handles the insertion of mana into characters.
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { getAccountPlayers, getPlayerCharacterManaNodesSync, getPlayerCharacterSync, getPlayerCharactersManaNodesSync, getPlayerItemSync, getPlayerSync, getSession, givePlayerItemSync, hasPlayerUnlockedCharacterManaNodeSync, insertPlayerCharacterManaNodesSync, updatePlayerCharacterBondTokenSync, updatePlayerCharacterSync, updatePlayerItemSync, updatePlayerSync } from "../../data/wdfpData";
+import { getAccountPlayers, getPlayerCharacterManaNodesSync, getPlayerCharacterSync, getPlayerCharactersSync, getPlayerCharactersManaNodesSync, getPlayerItemSync, getPlayerSync, getSession, givePlayerItemSync, hasPlayerUnlockedCharacterManaNodeSync, insertPlayerCharacterManaNodesSync, updatePlayerCharacterBondTokenSync, updatePlayerCharacterSync, updatePlayerItemSync, updatePlayerSync } from "../../data/wdfpData";
 import { generateDataHeaders } from "../../utils";
 import { getCharacterDataSync, getCharacterManaNodeSync, getCharacterManaNodesSync } from "../../lib/assets";
 import { clientSerializeDate } from "../../data/utils";
 import { givePlayerCharacterSync } from "../../lib/character";
+import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";
+import { withMissionRewards } from "../../nya/mission";
+import { COUNTER_KINDS } from "../../lib/mission";
+import { evolutionLevelFromManaNodes, evolutionResponse } from "../../lib/characterEvolution";
+import { selectBulkOverLimits } from "../../lib/characterStack";
 
 interface OverLimitBody {
     viewer_id: number
@@ -156,12 +162,16 @@ const routes = async (fastify: FastifyInstance) => {
             })
         }
 
+        // active missions: a bond token was received
+        const activeMissionList = trackActiveMissionProgress(playerId, { recompute: [8, 1048] })
+
         reply.header("content-type", "application/x-msgpack")
         return reply.status(200).send({
             "data_headers": generateDataHeaders({
                 viewer_id: viewerId
             }),
-            "data": {
+            // Mission screen: "Obtain a total of N Amity Scrolls" (the recorded reply clears mission 39 here)
+            "data": withMissionRewards(playerId, {
                 "user_info": {
                     "bond_token": newBondTokens
                 },
@@ -174,8 +184,9 @@ const routes = async (fastify: FastifyInstance) => {
                         "join_time": clientSerializeDate(characterData.joinTime)
                     }
                 ],
-                "mail_arrived": false
-            }
+                "mail_arrived": false,
+                ...(activeMissionList.length > 0 ? { "active_mission_list": activeMissionList } : {})
+            })
         })
     })
 
@@ -244,7 +255,8 @@ const routes = async (fastify: FastifyInstance) => {
             "data_headers": generateDataHeaders({
                 viewer_id: viewerId
             }),
-            "data": {
+            // Mission screen: "Unlock N 2nd Mana Board(s)" (the recorded reply clears mission 95 here)
+            "data": withMissionRewards(playerId, {
                 "character_list": [
                     {
                         "viewer_id": viewerId,
@@ -256,7 +268,7 @@ const routes = async (fastify: FastifyInstance) => {
                     }
                 ],
                 "mail_arrived": false
-            }
+            })
         })
     })
 
@@ -374,20 +386,18 @@ const routes = async (fastify: FastifyInstance) => {
             updatePlayerItemSync(playerId, itemId, newAmount)
         }
 
-        // increase evolution level
+        // awakening: once every Board 1 ability slot has a node learned and the skill evolution node is
+        // learned (src/lib/characterEvolution.ts), not on the first node learned
         let characterEvolutionLevel = characterData.evolutionLevel
-        let evolutionData: Object = []
-        if (characterEvolutionLevel === 0) {
-            characterEvolutionLevel = 1
+        const boardOneNodes = getCharacterManaNodesSync(characterId, 1) ?? {}
+        const learnedNodeIds = new Set<number>([...unlockedManaNodes, ...toUnlockNodeIds].map(Number))
+        const reachedLevel = evolutionLevelFromManaNodes(boardOneNodes, learnedNodeIds)
+        const evolutionData = evolutionResponse(characterId, characterEvolutionLevel, reachedLevel)
+        if (reachedLevel > characterEvolutionLevel) {
+            characterEvolutionLevel = reachedLevel
             updatePlayerCharacterSync(playerId, characterId, {
                 evolutionLevel: characterEvolutionLevel
             })
-
-            evolutionData = {
-                "character_id": characterId,
-                "level": 1,
-                "img_level": 1
-            }
         }
 
         // give bond reward, if available
@@ -411,12 +421,16 @@ const routes = async (fastify: FastifyInstance) => {
         // insert new mana nodes
         insertPlayerCharacterManaNodesSync(playerId, characterId, toUnlockNodeIds)
 
+        // active missions: mana nodes were learned (and the character may have awakened)
+        const activeMissionList = trackActiveMissionProgress(playerId, { recompute: [62, 61] })
+
         reply.header("content-type", "application/x-msgpack")
         return reply.status(200).send({
             "data_headers": generateDataHeaders({
                 viewer_id: viewerId
             }),
-            "data": {
+            // Mission screen: mana board advances, completed 2nd boards
+            "data": withMissionRewards(playerId, {
                 "user_info": {
                     "free_mana": newMana
                 },
@@ -436,8 +450,54 @@ const routes = async (fastify: FastifyInstance) => {
                 "user_character_mana_node_list": {
                     [String(characterId)]: userCharacterManaNodeListItem
                 },
-                "mail_arrived": false
-            }
+                "mail_arrived": false,
+                ...(activeMissionList.length > 0 ? { "active_mission_list": activeMissionList } : {})
+            }, manaCost > 0 ? [{ kind: COUNTER_KINDS.MANA_SPENT, amount: manaCost }] : [])
+        })
+    })
+
+    // CN node awakening (src/nya/manaAwake.ts)
+    fastify.post("/awake_mana_node", async (request: FastifyRequest, reply: FastifyReply) => {
+        const body = request.body as { viewer_id: number, character_id: number, mana_node_multiplied_id_list: number[], awake_level: number }
+        const viewerId = body.viewer_id, characterId = body.character_id
+        if (!viewerId || isNaN(viewerId) || !characterId || !Array.isArray(body.mana_node_multiplied_id_list)) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Invalid request body."
+        })
+        const viewerIdSession = await getSession(viewerId.toString())
+        if (!viewerIdSession) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Invalid viewer id."
+        })
+        const playerId = (await getAccountPlayers(viewerIdSession.accountId))[0]
+        const characterData = !isNaN(playerId) ? getPlayerCharacterSync(playerId, characterId) : null
+        if (characterData === null) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Character not owned."
+        })
+        const result = awakeManaNodesSync(playerId, characterId, body.mana_node_multiplied_id_list.map(Number), Number(body.awake_level))
+        if (!result.ok) return reply.status(400).send({ "error": "Bad Request", "message": result.message })
+        const { mana_board_awake, ...rest } = result.data as Record<string, any>
+        // active missions that count awakened nodes
+        const activeMissionList = trackActiveMissionProgress(playerId, { recompute: [62, 61] })
+
+        reply.header("content-type", "application/x-msgpack")
+        return reply.status(200).send({
+            "data_headers": generateDataHeaders({ viewer_id: viewerId }),
+            "data": {
+                ...rest,
+                "character_list": [{
+                    "evolution_level": characterData.evolutionLevel,
+                    "evolution_img_level": characterData.evolutionLevel,
+                    "character_id": characterId,
+                    "create_time": clientSerializeDate(characterData.joinTime),
+                    "update_time": clientSerializeDate(characterData.updateTime),
+                    "join_time": clientSerializeDate(characterData.joinTime),
+                    "mana_board_awake": mana_board_awake[String(characterId)] ?? {},
+                }],
+                "mail_arrived": false,
+                ...(activeMissionList.length > 0 ? { "active_mission_list": activeMissionList } : {}),
+            },
         })
     })
 
@@ -545,12 +605,16 @@ const routes = async (fastify: FastifyInstance) => {
             })
         }
 
+        // active missions: a character was raised over its limit
+        const activeMissionList = trackActiveMissionProgress(playerId, { recompute: [9] })
+
         reply.header("content-type", "application/x-msgpack")
         return reply.status(200).send({
             "data_headers": generateDataHeaders({
                 viewer_id: viewerId
             }),
-            "data": {
+            // Mission screen: "Perform a unit uncap N times"
+            "data": withMissionRewards(playerId, {
                 "character_list": [
                     {
                         "over_limit_step": newOverLimit,
@@ -562,8 +626,81 @@ const routes = async (fastify: FastifyInstance) => {
                     }
                 ],
                 "item_list": item_list,
-                "mail_arrived": false
-            }
+                "mail_arrived": false,
+                ...(activeMissionList.length > 0 ? { "active_mission_list": activeMissionList } : {})
+            })
+        })
+    })
+
+    // Select all -> uncap: every unit with spare copies is uncapped with them, up to its maximum
+    // (src/lib/characterStack.ts). Copies only, no items; the body has only viewer_id, as in the
+    // Chinese fork.
+    fastify.post("/bulk_over_limit", async (request: FastifyRequest, reply: FastifyReply) => {
+        const body = request.body as { viewer_id: number, api_count?: number }
+
+        const viewerId = body?.viewer_id
+        if (!viewerId || isNaN(viewerId)) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Invalid request body."
+        })
+
+        const viewerIdSession = await getSession(viewerId.toString())
+        if (!viewerIdSession) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Invalid viewer id."
+        })
+
+        const playerIds = await getAccountPlayers(viewerIdSession.accountId)
+        const playerId = playerIds[0]
+        if (isNaN(playerId)) return reply.status(500).send({
+            "error": "Internal Server Error",
+            "message": "No players bound to account."
+        })
+
+        const owned = getPlayerCharactersSync(playerId)
+        const stacked = Object.entries(owned).flatMap(([id, character]) => {
+            const asset = getCharacterDataSync(Number(id))
+            return asset === null ? [] : [{
+                characterId: Number(id),
+                rarity: asset.rarity,
+                stack: character.stack,
+                overLimitStep: character.overLimitStep,
+                protection: character.protection,
+            }]
+        })
+        const updates = selectBulkOverLimits(stacked, characterMaxOverLimits)
+        for (const update of updates) {
+            updatePlayerCharacterSync(playerId, update.characterId, {
+                overLimitStep: update.overLimitStep,
+                stack: update.stack
+            })
+        }
+
+        // active missions: characters were raised over their limit
+        const activeMissionList = updates.length > 0 ? trackActiveMissionProgress(playerId, { recompute: [9] }) : []
+
+        reply.header("content-type", "application/x-msgpack")
+        return reply.status(200).send({
+            "data_headers": generateDataHeaders({
+                viewer_id: viewerId
+            }),
+            // Mission screen: "Perform a unit uncap N times"
+            "data": withMissionRewards(playerId, {
+                "character_list": updates.map(update => {
+                    const character = owned[String(update.characterId)]
+                    return {
+                        "over_limit_step": update.overLimitStep,
+                        "character_id": update.characterId,
+                        "stack": update.stack,
+                        "create_time": clientSerializeDate(character.joinTime),
+                        "update_time": clientSerializeDate(new Date()),
+                        "join_time": clientSerializeDate(character.joinTime)
+                    }
+                }),
+                "item_list": {},
+                "mail_arrived": false,
+                ...(activeMissionList.length > 0 ? { "active_mission_list": activeMissionList } : {})
+            })
         })
     })
 
@@ -590,6 +727,9 @@ const routes = async (fastify: FastifyInstance) => {
             "message": "Could not give player character."
         })
 
+        // active missions: a character was obtained
+        const activeMissionList = trackActiveMissionProgress(playerId, { recompute: [4] })
+
         reply.header("content-type", "application/x-msgpack")
         return reply.status(200).send({
             "data_headers": generateDataHeaders({
@@ -602,7 +742,8 @@ const routes = async (fastify: FastifyInstance) => {
                 "item_list": giveResult.item !== undefined ? {
                     [giveResult.item.id]: giveResult.item.count
                 } : [],
-                "mail_arrived": false
+                "mail_arrived": false,
+                ...(activeMissionList.length > 0 ? { "active_mission_list": activeMissionList } : {})
             }
         })
     })

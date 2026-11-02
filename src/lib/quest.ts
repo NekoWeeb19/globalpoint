@@ -1,11 +1,40 @@
 import { randomInt } from "crypto";
 import { clientSerializeDate } from "../data/utils";
-import { getPlayerCharacterSync, getPlayerSync, givePlayerItemSync, updatePlayerSync } from "../data/wdfpData";
+import { getPlayerCharacterSync, getPlayerItemSync, getPlayerSync, givePlayerItemSync, updatePlayerSync } from "../data/wdfpData";
 import { getRareScoreRewardGroup } from "./assets";
 import { givePlayerCharacterSync } from "./character";
 import { givePlayerEquipmentSync } from "./equipment";
 import { CharacterReward, CommonScoreReward, CurrencyReward, CurrencyScoreReward, DropScoreRewardId, EquipmentItemReward, GivePlayerScoreRewardsResult, ItemScoreReward, PlayerRewardResult, RareScoreRewardGroup, Reward, RewardType, ScoreReward, ScoreRewardType } from "./types";
 import { Player } from "../data/types";
+import { itemDropMultiplier, multipliedDrop } from "./rewardCampaign";
+import elementItemMap from "../../assets/reward_element_map.json";
+import questElements from "../../assets/quest_elements.json";
+
+// Element-material drops (score reward type 6): the reward's id is the tier (1-3) and the item is the
+// one of the element the stage's enemies have, the element the stage's recommended one beats
+// (fire beats wind, water fire, thunder water, wind thunder, light dark, dark light). Same rule as the
+// Chinese fork (lib/quest/score-reward-selection.ts); stage elements from scripts/gen_quest_elements.cjs.
+const ELEMENT_DROP = 6
+const ENEMY_ELEMENT: Record<number, number> = { 0: 3, 1: 0, 2: 1, 3: 2, 4: 5, 5: 4 }
+// quest category -> its table in assets/quest_elements.json
+const ELEMENT_TABLES: Record<number, string> = {
+    1: "main_quest", 2: "boss_battle_quest", 4: "ex_quest", 7: "advent_event_quest", 8: "advent_event_quest",
+    10: "story_event_single_quest", 13: "challenge_dungeon_event_quest", 18: "world_story_event_quest",
+    19: "world_story_event_boss_battle_quest", 21: "expert_single_event_quest", 26: "hard_multi_event_quest",
+}
+
+/** A stage's recommended element (0 fire ... 5 dark), or undefined when not known. */
+export function questElement(category: number, questId: number): number | undefined {
+    const table = (questElements as Record<string, Record<string, number>>)[ELEMENT_TABLES[category]]
+    return table?.[String(questId)]
+}
+
+/** The item an element-material drop of `tier` gives on a stage of `element`, or undefined. */
+export function elementDropItemId(tier: number, element: number | undefined): number | undefined {
+    if (element === undefined) return undefined
+    const enemy = ENEMY_ELEMENT[element]
+    return (elementItemMap as Record<string, Record<string, Record<string, number>>>)["1"]?.[String(tier)]?.[String(enemy)]
+}
 
 /**
  * Grants a player score rewards.
@@ -20,7 +49,13 @@ export function givePlayerScoreRewardsSync(
     groupId?: number,
     scoreRewards?: ScoreReward[],
     boostPointUsed: boolean = false,
+    /** A reward campaign's item rate (1 without one); see src/lib/rewardCampaign.ts. */
+    itemCampaignRate: number = 1,
+    /** The stage's recommended element, for element-material drops (questElement()). */
+    stageElement?: number,
 ): GivePlayerScoreRewardsResult {
+    // drops are multiplied by the campaign rate, plus 1 with a boost (a boost alone doubles them)
+    const dropMultiplier = itemDropMultiplier(itemCampaignRate, boostPointUsed)
 
     const dropScoreRewardIds: DropScoreRewardId[] = []
     const dropRareRewardIds: DropScoreRewardId[] = []
@@ -44,28 +79,37 @@ export function givePlayerScoreRewardsSync(
                     let rewardAmount = 0
 
                     switch (reward.reward_type) {
+                        case ELEMENT_DROP as RewardType: {
+                            // element material of the stage's enemies, tier = the reward's id
+                            const itemId = elementDropItemId((reward as ItemScoreReward).id, stageElement)
+                            if (itemId === undefined) break
+                            rewardAmount = multipliedDrop((reward as ItemScoreReward).count * 10, dropMultiplier)
+                            items[String(itemId)] = givePlayerItemSync(playerId, itemId, rewardAmount);
+                            break;
+                        }
                         case RewardType.ITEM: {
                             const itemReward = reward as ItemScoreReward
                             const itemId = itemReward.id
-                            rewardAmount = itemReward.count * 10 * (boostPointUsed ? 2 : 1)
+                            rewardAmount = multipliedDrop(itemReward.count * 10, dropMultiplier)
                             items[String(itemId)] = givePlayerItemSync(playerId, itemId, rewardAmount);
                             break;
                         }
                         case RewardType.MANA: {
                             const player = getPlayerSync(playerId)
                             const currencyReward = reward as CurrencyScoreReward
-                            rewardAmount = currencyReward.count * 10 * (boostPointUsed ? 2 : 1)
+                            rewardAmount = multipliedDrop(currencyReward.count * 10, dropMultiplier)
                             mana += rewardAmount
                             updatePlayerSync({
                                 id: playerId,
-                                freeMana: (player?.freeVmoney || 0) + rewardAmount
+                                // was based on freeVmoney (beads), which set mana to beads + the drop
+                                freeMana: (player?.freeMana || 0) + rewardAmount
                             })
                             break;
                         }
                         case RewardType.EXP: {
                             const player = getPlayerSync(playerId)
                             const currencyReward = reward as CurrencyScoreReward
-                            rewardAmount = currencyReward.count * 10 * (boostPointUsed ? 2 : 1)
+                            rewardAmount = multipliedDrop(currencyReward.count * 10, dropMultiplier)
                             expPool += rewardAmount
                             updatePlayerSync({
                                 id: playerId,
@@ -93,7 +137,11 @@ export function givePlayerScoreRewardsSync(
                         const group = getRareScoreRewardGroup(rareGroupId)
                         if (group !== null) {
                             const random_index = 1 >= group.length ? 0 : randomInt(group.length)
-                            const reward = group[random_index]
+                            const picked = group[random_index]
+                            // an item drop is multiplied like the score drops; units and beads aren't
+                            const reward = picked.type === RewardType.ITEM
+                                ? { ...picked, count: multipliedDrop((picked as Reward as EquipmentItemReward).count, dropMultiplier) } as typeof picked
+                                : picked
                             const result = givePlayerRewardSync(playerId, reward)
 
                             if (result) {
@@ -104,14 +152,11 @@ export function givePlayerScoreRewardsSync(
                                 characterList = [...characterList, ...result.character_list]
                                 equipmentList = [...equipmentList, ...result.equipment_list]
 
-                                // merge items
-                                for (const [itemId, count] of Object.entries(result.items)) {
-                                    const existingCount = items[itemId]
-                                    if (existingCount === undefined) {
-                                        items[itemId] = count
-                                    } else {
-                                        items[itemId] = existingCount + count
-                                    }
+                                // merge items: these are new totals, and the rare drop came last,
+                                // so its total replaces the one from the drops above (adding the
+                                // two totals doubled the medal count the game showed)
+                                for (const [itemId, total] of Object.entries(result.items)) {
+                                    items[itemId] = total
                                 }
 
                                 // calculate number
@@ -185,8 +230,10 @@ export function givePlayerRewardsSync(
             case RewardType.ITEM: {
                 const convertedReward = (reward as EquipmentItemReward)
                 const itemId = convertedReward.id
+                // the reply carries the player's NEW TOTAL of each item, so keep the latest total
+                // (adding totals together over-reported items given more than once)
                 const result = givePlayerItemSync(playerId, itemId, convertedReward.count);
-                items.set(itemId, (items.get(itemId) ?? 0) + result)
+                items.set(itemId, result)
                 break;
             }
             case RewardType.EQUIPMENT: {
@@ -202,8 +249,9 @@ export function givePlayerRewardsSync(
 
                 const giveItem = giveResult?.item
                 if (giveItem !== undefined) {
+                    // giveItem.count is the amount given; the reply wants the new total
                     const itemId = giveItem.id
-                    items.set(itemId, (items.get(itemId) ?? 0) + giveItem.count)
+                    items.set(itemId, getPlayerItemSync(playerId, itemId) ?? giveItem.count)
                 }
     
                 const giveCharacter = giveResult?.character

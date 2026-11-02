@@ -2,6 +2,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { SessionType } from "../data/types";
 import { deleteAccountSessionsOfType, deleteSession, getAccount, getAccountFromIdpIdSync, getAccountFromPlayerIdSync, getSession, insertAccount, insertSession, updateAccount } from "../data/wdfpData";
 import { generateIdpAlias } from "../utils";
+import { takeAccountClaim } from "../nya/accountClaim";
 
 interface CreateDeviceAccessTokenBody {
     adid: string
@@ -300,7 +301,17 @@ const routes = async (fastify: FastifyInstance) => {
         const idpId = body.whiteKey
 
         // create account
-        const existingAccount = accountId === undefined ? getAccountFromIdpIdSync(idpId) : await getAccount(accountId)
+        let existingAccount = accountId === undefined ? getAccountFromIdpIdSync(idpId) : await getAccount(accountId)
+
+        // a new guest login (e.g. after reinstalling the game) takes over the account claimed on the dashboard
+        if (existingAccount === null && accountId === undefined) {
+            const claimed = takeAccountClaim()
+            const claimedAccount = claimed === null ? null : await getAccount(claimed)
+            if (claimedAccount !== null) {
+                console.log(`[account claim] new guest login now uses account ${claimedAccount.id}`)
+                existingAccount = await updateAccount({ id: claimedAccount.id, idpId: idpId })
+            }
+        }
         const account = existingAccount === null ? await insertAccount({
             appId: body.appId,
             idpAlias: idpAlias,

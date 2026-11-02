@@ -1,0 +1,632 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/public/tailwind.css">
+    <title>Starpoint</title>
+</head>
+
+<body data-mode="{{pageMode}}"
+    class="bg-background text-on-surface relative mt-16 m-auto max-w-screen-2xl min-h-screen box-border flex flex-col items-start px-3 pb-3">
+    <header class="flex gap-3 items-center md:justify-start justify-center mb-3 w-full">
+        <img src="/public/img/logo.png" class="w-9 h-9">
+        <h1 class="text-4xl mt-4 font-black mb-4 text-on-background">Starpoint</h1>
+    </header>
+    <div class="md:grid md:grid-cols-sidebar flex flex-col gap-5 w-full h-fit">
+        <nav class="px-3 py-5 gap-3 flex flex-col bg-surface-container-low rounded-3xl h-fit w-full">
+            <a href="/"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M520-600v-240h320v240H520ZM120-440v-400h320v400H120Zm400 320v-400h320v400H520Zm-400 0v-240h320v240H120Zm80-400h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z" />
+                </svg>
+                Dashboard
+            </a>
+            <a href="/events" data-nav="events"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z" />
+                </svg>
+                Events
+            </a>
+            <a href="/summons" data-nav="summons"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M480-80 371-371 80-480l291-109 109-291 109 291 291 109-291 109L480-80Z" />
+                </svg>
+                Summons
+            </a>
+            <a href="/campaigns" data-nav="campaigns"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-280v80h640v-80H160Zm0-440h88q-5-9-6.5-19t-1.5-21q0-50 35-85t85-35q30 0 55.5 15.5T460-826l20 26 20-26q18-24 44-39t56-15q50 0 85 35t35 85q0 11-1.5 21t-6.5 19h88q33 0 56.5 23.5T880-640v440q0 33-23.5 56.5T800-120H160q-33 0-56.5-23.5T80-200v-440q0-33 23.5-56.5T160-720Zm0 320h640v-240H596l84 114-64 46-136-184-136 184-64-46 82-114H160v240Zm200-320q17 0 28.5-11.5T400-760q0-17-11.5-28.5T360-800q-17 0-28.5 11.5T320-760q0 17 11.5 28.5T360-720Zm240 0q17 0 28.5-11.5T640-760q0-17-11.5-28.5T600-800q-17 0-28.5 11.5T560-760q0 17 11.5 28.5T600-720Z" />
+                </svg>
+                Campaigns
+            </a>
+            <a href="/news" data-nav="news"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120H160Zm0-80h640v-560H160v560Zm80-80h480v-80H240v80Zm0-160h160v-240H240v240Zm240 0h240v-80H480v80Zm0-160h240v-80H480v80ZM160-200v-560 560Z" />
+                </svg>
+                News
+            </a>
+            <a href="/player"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M40-160v-112q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0 130 15.5T616-378q29 15 46.5 43.5T680-272v112H40Zm720 0v-120q0-44-24.5-84.5T666-434q51 6 96 20.5t84 35.5q36 20 55 44.5t19 53.5v120H760ZM360-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm400-160q0 66-47 113t-113 47q-11 0-28-2.5t-28-5.5q27-32 41.5-71t14.5-81q0-42-14.5-81T544-792q14-5 28-6.5t28-1.5q66 0 113 47t47 113ZM120-240h480v-32q0-11-5.5-20T580-306q-54-27-109-40.5T360-360q-56 0-111 13.5T140-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T440-640q0-33-23.5-56.5T360-720q-33 0-56.5 23.5T280-640q0 33 23.5 56.5T360-560Zm0 320Zm0-400Z" />
+                </svg>
+                Players
+            </a>
+            <a href="https://github.com/Duosion/starpoint"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M320-240 80-480l240-240 57 57-184 184 183 183-56 56Zm320 0-57-57 184-184-183-183 56-56 240 240-240 240Z" />
+                </svg>
+                Source Code
+            </a>
+        </nav>
+        <article class="w-full flex flex-col gap-5 min-w-0">
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3">
+                <h3 id="page-title" class="text-xl text-on-background font-semibold">Event schedule</h3>
+                <p id="page-intro" class="text-on-surface-variant">Move any event to new dates. Its quests, missions, shop, tokens and help pages move with it. Times are in UTC, on the server's calendar.</p>
+                <p class="text-on-surface-variant">The game picks up a change the next time it logs in: close and reopen it, and it downloads the new dates.</p>
+                <p id="server-now" class="text-lg text-on-surface" role="status"></p>
+                <p id="mod-status" class="text-sm text-on-surface-variant" role="status"></p>
+                <ul id="warnings" class="flex flex-col gap-1 text-sm text-on-surface-variant"></ul>
+            </section>
+
+            <section id="editor" class="hidden flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <img id="editor-image" alt="" class="hidden w-full max-w-[640px] rounded-2xl" />
+                <div class="flex flex-col gap-1">
+                    <h3 id="editor-title" class="text-xl text-on-background font-semibold"></h3>
+                    <p id="editor-original" class="text-on-surface-variant"></p>
+                    <p id="editor-rows" class="text-sm text-on-surface-variant"></p>
+                </div>
+                <form id="editor-form" class="flex flex-col gap-4">
+                    <div class="flex flex-wrap gap-4">
+                        <label class="flex flex-col gap-2">
+                            <span class="font-semibold text-on-background">Starts (UTC)</span>
+                            <input id="editor-start" type="datetime-local" step="1" required
+                                class="bg-surface-container rounded-2xl border border-outline-variant p-3" />
+                        </label>
+                        <label class="flex flex-col gap-2">
+                            <span class="font-semibold text-on-background">Ends (UTC)</span>
+                            <input id="editor-end" type="datetime-local" step="1" required
+                                class="bg-surface-container rounded-2xl border border-outline-variant p-3" />
+                        </label>
+                    </div>
+                    <p id="editor-length" class="text-on-surface-variant"></p>
+                    <div class="flex flex-wrap gap-3">
+                        <button type="button" id="editor-now"
+                            class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">Start now</button>
+                        <button type="button" id="editor-original-length"
+                            class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">Original length</button>
+                    </div>
+                    <label id="editor-banners-row" class="flex gap-3 items-center">
+                        <input id="editor-banners" type="checkbox" class="w-5 h-5" checked />
+                        <span id="editor-banners-label" class="text-on-surface"></span>
+                    </label>
+                    <ul id="editor-banner-list" class="flex flex-wrap gap-3"></ul>
+                    <div class="flex flex-wrap gap-3">
+                        <button type="submit" id="editor-save"
+                            class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Save</button>
+                        <button type="button" id="editor-reset"
+                            class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Back to original dates</button>
+                        <button type="button" id="editor-cancel"
+                            class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">Close</button>
+                    </div>
+                    <p id="editor-message" class="text-sm text-on-surface-variant" role="status"></p>
+                </form>
+            </section>
+
+            <section id="group" class="hidden flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <div class="flex flex-col gap-1">
+                    <h3 id="group-title" class="text-xl text-on-background font-semibold"></h3>
+                    <p class="text-on-surface-variant">Start them all at the same moment. Each one keeps its own original length.</p>
+                </div>
+                <ul id="group-list" class="flex flex-col gap-2"></ul>
+                <label class="flex flex-col gap-2">
+                    <span class="font-semibold text-on-background">All start at (UTC)</span>
+                    <input id="group-start" type="datetime-local" step="1"
+                        class="bg-surface-container rounded-2xl border border-outline-variant p-3 w-fit" />
+                </label>
+                <label id="group-banners-row" class="flex gap-3 items-center">
+                    <input id="group-banners" type="checkbox" class="w-5 h-5" checked />
+                    <span class="text-on-surface">Also move the summon banners that opened with them</span>
+                </label>
+                <div class="flex flex-wrap gap-3">
+                    <button type="button" id="group-save"
+                        class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Start them together</button>
+                    <button type="button" id="group-now"
+                        class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">Start now</button>
+                    <button type="button" id="group-reset"
+                        class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Back to original dates</button>
+                    <button type="button" id="group-clear"
+                        class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">Clear selection</button>
+                </div>
+                <p id="group-message" class="text-sm text-on-surface-variant" role="status"></p>
+            </section>
+
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <div class="flex flex-wrap gap-3 items-end">
+                    <label class="flex flex-col gap-2 grow">
+                        <span class="font-semibold text-on-background">Search</span>
+                        <input id="search" type="search" placeholder="Event name"
+                            class="bg-surface-container rounded-2xl border border-outline-variant p-3 w-full" />
+                    </label>
+                    <label class="flex flex-col gap-2">
+                        <span class="font-semibold text-on-background">Game</span>
+                        <select id="game" class="bg-surface-container rounded-2xl border border-outline-variant p-3">
+                            <option value="global">Global app</option>
+                            <option value="cn">CN app</option>
+                            <option value="all">Both apps</option>
+                        </select>
+                    </label>
+                    <label class="flex flex-col gap-2">
+                        <span id="family-label" class="font-semibold text-on-background">Kind</span>
+                        <select id="family" class="bg-surface-container rounded-2xl border border-outline-variant p-3">
+                            <option id="family-all" value="">All kinds</option>
+                        </select>
+                    </label>
+                    <label class="flex flex-col gap-2">
+                        <span class="font-semibold text-on-background">Show</span>
+                        <select id="show" class="bg-surface-container rounded-2xl border border-outline-variant p-3">
+                            <option value="all">All events</option>
+                            <option value="scheduled">Moved by you</option>
+                            <option value="live">On now</option>
+                            <option value="upcoming">Coming up</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="flex flex-wrap gap-3 items-center justify-between">
+                    <p id="count" class="text-sm text-on-surface-variant"></p>
+                    <button type="button" id="select-shown"
+                        class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">Select all shown</button>
+                </div>
+                <ul id="events" class="flex flex-col gap-2"></ul>
+            </section>
+        </article>
+    </div>
+
+    <script>
+        (function () {
+            const $ = (id) => document.getElementById(id)
+
+            // one page, two tabs: events, or summon banners (family "gacha")
+            const MODE = document.body.dataset.mode === "summons" ? "summons" : "events"
+            const SUMMONS = MODE === "summons"
+            const inMode = (event) => (event.family === "gacha") === SUMMONS
+            const noun = (n) => n + " " + (SUMMONS ? "banner" : "event") + (n === 1 ? "" : "s")
+            const kindOf = (event) => SUMMONS ? (event.bannerType === "armament" ? "Armament" : "Unit") : event.familyLabel
+            const kindKey = (event) => SUMMONS ? (event.bannerType ?? "unit") : event.family
+            // which app's list to show: an entry is in the global app, the CN app, or both
+            // (the choice is remembered in this browser)
+            const servers = (event) => event.servers ?? ["global"]
+            const inGame = (event) => { const game = $("game").value; return game === "all" || servers(event).includes(game) }
+            const appBadge = (event) => { const s = servers(event); return s.length === 1 ? (s[0] === "cn" ? "CN only" : "Global only") : null }
+            try { const saved = localStorage.getItem("starpoint-game"); if (saved) $("game").value = saved } catch { }
+            for (const link of document.querySelectorAll("[data-nav]")) {
+                if (link.dataset.nav !== MODE) continue
+                link.className = "px-5 py-3 flex gap-3 items-center bg-primary rounded-full w-full font-bold text-on-primary text-lg"
+                link.querySelector("svg").setAttribute("class", "fill-on-primary")
+            }
+            if (SUMMONS) {
+                $("page-title").textContent = "Summon schedule"
+                $("page-intro").textContent = "Move any unit or armament banner to new dates. Times are in UTC, on the server's calendar. A banner given dates here keeps them, even if an event it opened with is moved."
+                $("search").placeholder = "Banner name"
+                $("family-label").textContent = "Type"
+                $("family-all").textContent = "Units and armaments"
+                $("editor-banners-row").classList.add("hidden")
+                $("editor-banner-list").classList.add("hidden")
+                $("group-banners-row").classList.add("hidden")
+                $("editor-rows").classList.add("hidden")
+            }
+            let data = null
+            let loadedAt = 0
+            let editing = null
+            let busy = false
+            const selected = new Set()
+            let lastShown = []
+
+            // dates: the server sends ISO (UTC); inputs are "YYYY-MM-DDTHH:MM:SS" in UTC
+            const toInput = (ms) => new Date(ms).toISOString().slice(0, 19)
+            const fromInput = (value) => {
+                if (!value) return NaN
+                return Date.parse((value.length === 16 ? value + ":00" : value) + "Z")
+            }
+            const show = (iso) => iso.slice(0, 16).replace("T", " ")
+            function lengthText(ms) {
+                const totalMinutes = Math.round(ms / 60000)
+                const days = Math.floor(totalMinutes / 1440)
+                const hours = Math.floor((totalMinutes % 1440) / 60)
+                const minutes = totalMinutes % 60
+                return [days ? days + " day" + (days === 1 ? "" : "s") : "", hours ? hours + " h" : "", minutes ? minutes + " min" : ""].filter(Boolean).join(" ") || "0 min"
+            }
+            const serverNow = () => data === null ? Date.now() : new Date(data.serverDate).getTime() + (Date.now() - loadedAt)
+
+            function badge(text, strong) {
+                const span = document.createElement("span")
+                span.className = "px-3 py-1 rounded-full text-sm " + (strong ? "bg-primary text-on-primary" : "bg-surface-container-high text-on-surface")
+                span.textContent = text
+                return span
+            }
+
+            function stateOf(event) {
+                const now = serverNow()
+                const start = Date.parse(event.scheduled ? event.scheduled.start : event.original.start)
+                const end = Date.parse(event.scheduled ? event.scheduled.end : event.original.end)
+                return now < start ? "upcoming" : now <= end ? "live" : "ended"
+            }
+
+            function renderList() {
+                if (data === null) return
+                const search = $("search").value.trim().toLowerCase()
+                const family = $("family").value
+                const showing = $("show").value
+                const list = $("events")
+                list.replaceChildren()
+                const all = data.events.filter(inMode).filter(inGame)
+                const shown = all.filter(event => {
+                    if (family && kindKey(event) !== family) return false
+                    if (search && !event.name.toLowerCase().includes(search)) return false
+                    const state = stateOf(event)
+                    if (showing === "scheduled" && !event.scheduled) return false
+                    if (showing === "live" && state !== "live") return false
+                    if (showing === "upcoming" && state !== "upcoming") return false
+                    return true
+                })
+                $("count").textContent = shown.length + " of " + noun(all.length)
+                lastShown = shown
+                for (const event of shown) {
+                    const item = document.createElement("li")
+                    item.className = "flex flex-wrap gap-3 items-center justify-between p-3 rounded-2xl bg-surface-container-low"
+                    const left = document.createElement("div")
+                    left.className = "flex flex-wrap gap-3 items-center min-w-0"
+                    const pick = document.createElement("input")
+                    pick.type = "checkbox"
+                    pick.className = "w-5 h-5 shrink-0"
+                    pick.checked = selected.has(event.key)
+                    pick.setAttribute("aria-label", "Select " + event.name)
+                    pick.addEventListener("change", () => {
+                        if (pick.checked) selected.add(event.key)
+                        else selected.delete(event.key)
+                        renderGroup()
+                    })
+                    left.appendChild(pick)
+                    if (event.image) left.appendChild(picture(event.image, "w-48 max-w-full rounded-xl"))
+                    const text = document.createElement("div")
+                    text.className = "flex flex-col gap-1 min-w-0"
+                    const title = document.createElement("div")
+                    title.className = "flex flex-wrap gap-2 items-center"
+                    const name = document.createElement("span")
+                    name.className = "text-on-surface font-semibold"
+                    name.textContent = event.name + (event.rerun ? " (rerun)" : "")
+                    title.append(name, badge(kindOf(event), false))
+                    if (appBadge(event)) title.append(badge(appBadge(event), false))
+                    const state = stateOf(event)
+                    if (state === "live") title.append(badge("On now", true))
+                    if (state === "upcoming" && event.scheduled) title.append(badge("Coming up", false))
+                    if (event.scheduled) title.append(badge("Moved", false))
+                    const dates = document.createElement("span")
+                    dates.className = "text-on-surface-variant text-sm"
+                    dates.textContent = event.scheduled
+                        ? show(event.scheduled.start) + " to " + show(event.scheduled.end) + " UTC (originally " + show(event.original.start) + " to " + show(event.original.end) + ")"
+                        : show(event.original.start) + " to " + show(event.original.end) + " UTC"
+                    text.append(title, dates)
+                    const button = document.createElement("button")
+                    button.type = "button"
+                    button.className = "text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity"
+                    button.textContent = event.scheduled ? "Change dates" : "Schedule"
+                    button.addEventListener("click", () => openEditor(event.key))
+                    left.appendChild(text)
+                    item.append(left, button)
+                    list.appendChild(item)
+                }
+            }
+
+            function picture(src, className) {
+                const img = document.createElement("img")
+                img.src = src
+                img.alt = ""
+                img.loading = "lazy"
+                img.className = className
+                return img
+            }
+
+            const originalLength = (event) => Date.parse(event.original.end) - Date.parse(event.original.start)
+
+            // the "start them together" panel for the picked events
+            function renderGroup() {
+                if (data === null) return
+                const picked = data.events.filter(e => selected.has(e.key))
+                $("group").classList.toggle("hidden", picked.length === 0)
+                if (picked.length === 0) return
+                $("group-title").textContent = noun(picked.length) + " picked"
+                if (!$("group-start").value) $("group-start").value = toInput(Math.ceil(serverNow() / 3600000) * 3600000)
+                const start = fromInput($("group-start").value)
+                const list = $("group-list")
+                list.replaceChildren()
+                for (const event of picked) {
+                    const item = document.createElement("li")
+                    item.className = "flex flex-wrap gap-3 items-center"
+                    if (event.image) item.appendChild(picture(event.image, "w-32 max-w-full rounded-lg"))
+                    const text = document.createElement("span")
+                    text.className = "text-on-surface"
+                    const length = originalLength(event)
+                    text.textContent = event.name + (event.rerun ? " (rerun)" : "") + ": " + lengthText(length) +
+                        (isNaN(start) ? "" : ", " + show(new Date(start).toISOString()) + " to " + show(new Date(start + length).toISOString()))
+                    const remove = document.createElement("button")
+                    remove.type = "button"
+                    remove.className = "text-sm text-on-surface-variant underline"
+                    remove.textContent = "Remove"
+                    remove.addEventListener("click", () => { selected.delete(event.key); renderGroup(); renderList() })
+                    item.append(text, remove)
+                    list.appendChild(item)
+                }
+                $("group-reset").disabled = busy || !picked.some(e => e.scheduled)
+            }
+
+            async function postGroup(path, body, doneText) {
+                if (busy) return
+                setBusy(true)
+                $("group-message").textContent = "Saving and updating the game's data files..."
+                try {
+                    const response = await fetch(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
+                    const reply = await response.json().catch(() => ({}))
+                    if (!response.ok) throw new Error(reply.message || response.statusText)
+                    accept(reply)
+                    $("group-message").textContent = data.mod.state === "failed" ? data.mod.message : doneText
+                } catch (error) {
+                    $("group-message").textContent = "Error: " + error.message
+                } finally {
+                    setBusy(false)
+                }
+            }
+
+            function renderHeader() {
+                if (data === null) return
+                $("server-now").textContent = "Server time now: " + new Date(serverNow()).toISOString().slice(0, 19).replace("T", " ") + " UTC"
+            }
+
+            function renderStatus() {
+                const mod = data.mod
+                $("mod-status").textContent = mod.state === "building" ? mod.message
+                    : mod.state === "failed" ? mod.message
+                    : mod.message ? "Last update: " + mod.message : ""
+                const warnings = $("warnings")
+                warnings.replaceChildren()
+                for (const text of [...data.problems, ...data.conflicts]) {
+                    const item = document.createElement("li")
+                    item.textContent = "Note: " + text
+                    warnings.appendChild(item)
+                }
+            }
+
+            function updateLength() {
+                const start = fromInput($("editor-start").value), end = fromInput($("editor-end").value)
+                $("editor-length").textContent = isNaN(start) || isNaN(end) ? ""
+                    : end <= start ? "The end must be after the start."
+                    : "Runs for " + lengthText(end - start) + "."
+            }
+
+            function openEditor(key) {
+                const event = data.events.find(e => e.key === key)
+                if (!event) return
+                editing = event
+                const originalLength = Date.parse(event.original.end) - Date.parse(event.original.start)
+                $("editor").classList.remove("hidden")
+                $("editor-title").textContent = event.name + (event.rerun ? " (rerun)" : "") + (kindOf(event) === event.name ? "" : " · " + kindOf(event))
+                const closes = event.original.close > event.original.end
+                    ? (SUMMONS ? ", its points count until " : ", shops open until ") + show(event.original.close)
+                    : ""
+                $("editor-original").textContent = "Originally " + show(event.original.start) + " to " + show(event.original.end) + " UTC (" + lengthText(originalLength) + ")" + closes + "."
+                $("editor-rows").textContent = event.rowCount + " game data rows move with it (quests, missions, shop items and more)."
+                const start = event.scheduled ? Date.parse(event.scheduled.start) : Math.ceil(serverNow() / 3600000) * 3600000
+                const end = event.scheduled ? Date.parse(event.scheduled.end) : start + originalLength
+                $("editor-start").value = toInput(start)
+                $("editor-end").value = toInput(end)
+                $("editor-banners").checked = event.bannerCount > 0 && (event.scheduled ? event.scheduled.moveBanners : true)
+                $("editor-banners").disabled = event.bannerCount === 0
+                $("editor-banners-label").textContent = event.bannerCount === 0
+                    ? "No summon banners opened with this event."
+                    : "Also move the " + event.bannerCount + " summon banner" + (event.bannerCount === 1 ? "" : "s") + " that opened with it"
+                $("editor-reset").disabled = busy || !event.scheduled
+                $("editor-message").textContent = ""
+                const image = $("editor-image")
+                image.classList.toggle("hidden", !event.image)
+                if (event.image) image.src = event.image
+                // one checkbox per banner: unticked ones stay on their own dates
+                const banners = $("editor-banner-list")
+                banners.replaceChildren()
+                const skipped = new Set(event.scheduled ? event.scheduled.skipBanners ?? [] : [])
+                for (const banner of event.banners) {
+                    const item = document.createElement("li")
+                    item.className = "w-56 max-w-full"
+                    const label = document.createElement("label")
+                    label.className = "flex flex-col gap-1 cursor-pointer"
+                    if (banner.image) label.appendChild(picture(banner.image, "w-full rounded-xl"))
+                    const row = document.createElement("span")
+                    row.className = "flex gap-2 items-center"
+                    const pick = document.createElement("input")
+                    pick.type = "checkbox"
+                    pick.className = "w-5 h-5 shrink-0"
+                    pick.dataset.banner = banner.id
+                    pick.checked = !skipped.has(String(banner.id))
+                    pick.setAttribute("aria-label", "Move " + banner.name)
+                    const name = document.createElement("span")
+                    name.className = "text-sm text-on-surface-variant"
+                    name.textContent = banner.name + " (#" + banner.id + ")"
+                    row.append(pick, name)
+                    label.appendChild(row)
+                    item.appendChild(label)
+                    banners.appendChild(item)
+                }
+                const syncBannerPicks = () => {
+                    for (const pick of banners.querySelectorAll("input[data-banner]")) pick.disabled = !$("editor-banners").checked
+                }
+                $("editor-banners").onchange = syncBannerPicks
+                syncBannerPicks()
+                updateLength()
+                $("editor").scrollIntoView({ behavior: "smooth", block: "start" })
+            }
+
+            function setBusy(value) {
+                busy = value
+                $("editor-save").disabled = value
+                $("editor-reset").disabled = value || !(editing && editing.scheduled)
+                $("group-save").disabled = value
+                if (data !== null) $("group-reset").disabled = value || !data.events.some(e => selected.has(e.key) && e.scheduled)
+            }
+
+            async function post(path, body, doneText) {
+                setBusy(true)
+                $("editor-message").textContent = "Saving and updating the game's data files..."
+                try {
+                    const response = await fetch(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
+                    const reply = await response.json().catch(() => ({}))
+                    if (!response.ok) throw new Error(reply.message || response.statusText)
+                    accept(reply)
+                    const updated = data.events.find(e => e.key === body.key)
+                    if (updated) openEditor(updated.key)
+                    $("editor-message").textContent = data.mod.state === "failed" ? data.mod.message : doneText
+                } catch (error) {
+                    $("editor-message").textContent = "Error: " + error.message
+                } finally {
+                    setBusy(false)
+                }
+            }
+
+            function accept(reply) {
+                data = reply
+                loadedAt = Date.now()
+                renderHeader()
+                renderStatus()
+                renderList()
+                renderGroup()
+            }
+
+            async function load() {
+                try {
+                    const response = await fetch("/api/server/events")
+                    if (!response.ok) throw new Error(response.statusText)
+                    const reply = await response.json()
+                    const families = $("family")
+                    if (families.options.length === 1) {
+                        const seen = new Map()
+                        for (const event of reply.events.filter(inMode)) seen.set(kindKey(event), kindOf(event))
+                        for (const [value, label] of seen) {
+                            const option = document.createElement("option")
+                            option.value = value
+                            option.textContent = label
+                            families.appendChild(option)
+                        }
+                    }
+                    accept(reply)
+                } catch (error) {
+                    $("server-now").textContent = "Could not load the events: " + error.message
+                }
+            }
+
+            $("select-shown").addEventListener("click", () => {
+                for (const event of lastShown) selected.add(event.key)
+                renderList()
+                renderGroup()
+            })
+            $("group-start").addEventListener("input", renderGroup)
+            $("group-now").addEventListener("click", () => {
+                $("group-start").value = toInput(Math.floor(serverNow() / 60000) * 60000)
+                renderGroup()
+            })
+            $("group-clear").addEventListener("click", () => {
+                selected.clear()
+                $("group-message").textContent = ""
+                renderList()
+                renderGroup()
+            })
+            $("group-save").addEventListener("click", () => {
+                const start = fromInput($("group-start").value)
+                if (isNaN(start)) {
+                    $("group-message").textContent = "Pick a start date."
+                    return
+                }
+                const picked = data.events.filter(e => selected.has(e.key))
+                postGroup("/api/server/events/schedule-many", {
+                    entries: picked.map(event => ({
+                        key: event.key,
+                        start: new Date(start).toISOString(),
+                        end: new Date(start + originalLength(event)).toISOString(),
+                        moveBanners: $("group-banners").checked
+                    }))
+                }, "Saved " + noun(picked.length) + ". Reopen the game to see them.")
+            })
+            $("group-reset").addEventListener("click", () => {
+                const keys = data.events.filter(e => selected.has(e.key) && e.scheduled).map(e => e.key)
+                postGroup("/api/server/events/unschedule-many", { keys }, "Back on their original dates.")
+            })
+            $("search").addEventListener("input", renderList)
+            $("family").addEventListener("change", renderList)
+            $("game").addEventListener("change", () => {
+                try { localStorage.setItem("starpoint-game", $("game").value) } catch { }
+                renderList()
+            })
+            $("show").addEventListener("change", renderList)
+            $("editor-start").addEventListener("input", updateLength)
+            $("editor-end").addEventListener("input", updateLength)
+            $("editor-now").addEventListener("click", () => {
+                // keep the length that's set now
+                const length = fromInput($("editor-end").value) - fromInput($("editor-start").value)
+                const start = Math.floor(serverNow() / 60000) * 60000
+                $("editor-start").value = toInput(start)
+                if (!isNaN(length) && length > 0) $("editor-end").value = toInput(start + length)
+                updateLength()
+            })
+            $("editor-original-length").addEventListener("click", () => {
+                if (!editing) return
+                const start = fromInput($("editor-start").value)
+                if (isNaN(start)) return
+                $("editor-end").value = toInput(start + Date.parse(editing.original.end) - Date.parse(editing.original.start))
+                updateLength()
+            })
+            $("editor-cancel").addEventListener("click", () => {
+                editing = null
+                $("editor").classList.add("hidden")
+            })
+            $("editor-reset").addEventListener("click", () => {
+                if (editing) post("/api/server/events/unschedule", { key: editing.key }, "Back on its original dates.")
+            })
+            $("editor-form").addEventListener("submit", (event) => {
+                event.preventDefault()
+                if (!editing || busy) return
+                const start = fromInput($("editor-start").value), end = fromInput($("editor-end").value)
+                if (isNaN(start) || isNaN(end) || end <= start) {
+                    $("editor-message").textContent = "Pick a start and an end after it."
+                    return
+                }
+                post("/api/server/events/schedule", {
+                    key: editing.key,
+                    start: new Date(start).toISOString(),
+                    end: new Date(end).toISOString(),
+                    moveBanners: $("editor-banners").checked,
+                    skipBanners: [...$("editor-banner-list").querySelectorAll("input[data-banner]")].filter(pick => !pick.checked).map(pick => pick.dataset.banner)
+                }, "Saved. Reopen the game to see it.")
+            })
+
+            load()
+            setInterval(renderHeader, 1000)
+            setInterval(() => { if (!busy) load() }, 30000)
+        })()
+    </script>
+</body>
+
+</html>

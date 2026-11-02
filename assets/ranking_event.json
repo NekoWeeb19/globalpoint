@@ -1,0 +1,1497 @@
+{
+  "events": {
+    "1": {
+      "code": "time_attack_event_water_001",
+      "name": "Trial by Water",
+      "questId": 1001,
+      "tiers": [
+        {
+          "id": 101,
+          "border": 0.03,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54040
+            },
+            {
+              "kind": 0,
+              "amount": 50,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1500
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 12002
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 999004
+            }
+          ]
+        },
+        {
+          "id": 102,
+          "border": 0.05,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54030
+            },
+            {
+              "kind": 0,
+              "amount": 40,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1500
+            },
+            {
+              "kind": 0,
+              "amount": 7,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 999004
+            }
+          ]
+        },
+        {
+          "id": 103,
+          "border": 0.1,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54030
+            },
+            {
+              "kind": 0,
+              "amount": 40,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1500
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 7,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 104,
+          "border": 0.2,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54020
+            },
+            {
+              "kind": 0,
+              "amount": 30,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1000
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 7,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 105,
+          "border": 0.3,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54020
+            },
+            {
+              "kind": 0,
+              "amount": 30,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1000
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 106,
+          "border": 0.4,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54010
+            },
+            {
+              "kind": 0,
+              "amount": 20,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 500
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 107,
+          "border": 0.5,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54010
+            },
+            {
+              "kind": 0,
+              "amount": 20,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 500
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 108,
+          "border": 0.7,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54000
+            },
+            {
+              "kind": 0,
+              "amount": 10,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 300
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 109,
+          "border": 1,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54000
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 150
+            }
+          ]
+        }
+      ]
+    },
+    "2": {
+      "code": "time_attack_event_white_001",
+      "name": "Trial by Light",
+      "questId": 2001,
+      "tiers": [
+        {
+          "id": 201,
+          "border": 0.03,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54090
+            },
+            {
+              "kind": 0,
+              "amount": 50,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1500
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 12002
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 999004
+            }
+          ]
+        },
+        {
+          "id": 202,
+          "border": 0.06,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54080
+            },
+            {
+              "kind": 0,
+              "amount": 40,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1500
+            },
+            {
+              "kind": 0,
+              "amount": 7,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 999004
+            }
+          ]
+        },
+        {
+          "id": 203,
+          "border": 0.1,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54080
+            },
+            {
+              "kind": 0,
+              "amount": 40,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1500
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 7,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 204,
+          "border": 0.2,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54070
+            },
+            {
+              "kind": 0,
+              "amount": 30,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1000
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 7,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 205,
+          "border": 0.3,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54070
+            },
+            {
+              "kind": 0,
+              "amount": 30,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1000
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 206,
+          "border": 0.4,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54060
+            },
+            {
+              "kind": 0,
+              "amount": 20,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 500
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 207,
+          "border": 0.6,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54060
+            },
+            {
+              "kind": 0,
+              "amount": 20,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 300
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 208,
+          "border": 0.8,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54050
+            },
+            {
+              "kind": 0,
+              "amount": 10,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 150
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 13001
+            }
+          ]
+        },
+        {
+          "id": 209,
+          "border": 1,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54050
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 49100
+            }
+          ]
+        }
+      ]
+    },
+    "3": {
+      "code": "time_attack_event_green_001",
+      "name": "Trial by Wind",
+      "questId": 3001,
+      "tiers": [
+        {
+          "id": 301,
+          "border": 0.03,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54140
+            },
+            {
+              "kind": 0,
+              "amount": 50,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1500
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 12002
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 999004
+            }
+          ]
+        },
+        {
+          "id": 302,
+          "border": 0.06,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54130
+            },
+            {
+              "kind": 0,
+              "amount": 40,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1500
+            },
+            {
+              "kind": 0,
+              "amount": 7,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 999004
+            }
+          ]
+        },
+        {
+          "id": 303,
+          "border": 0.1,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54130
+            },
+            {
+              "kind": 0,
+              "amount": 40,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1500
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 7,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 304,
+          "border": 0.2,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54120
+            },
+            {
+              "kind": 0,
+              "amount": 30,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1000
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 7,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 305,
+          "border": 0.3,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54120
+            },
+            {
+              "kind": 0,
+              "amount": 30,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1000
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 306,
+          "border": 0.4,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54110
+            },
+            {
+              "kind": 0,
+              "amount": 20,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 500
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 307,
+          "border": 0.6,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54110
+            },
+            {
+              "kind": 0,
+              "amount": 20,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 300
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 308,
+          "border": 0.8,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54100
+            },
+            {
+              "kind": 0,
+              "amount": 10,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 150
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 13001
+            }
+          ]
+        },
+        {
+          "id": 309,
+          "border": 1,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54100
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 49100
+            }
+          ]
+        }
+      ]
+    },
+    "4": {
+      "code": "time_attack_event_yellow_001",
+      "name": "Trial by Thunder",
+      "questId": 4001,
+      "tiers": [
+        {
+          "id": 401,
+          "border": 0.03,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54190
+            },
+            {
+              "kind": 0,
+              "amount": 50,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1500
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 12002
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 999004
+            }
+          ]
+        },
+        {
+          "id": 402,
+          "border": 0.06,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54180
+            },
+            {
+              "kind": 0,
+              "amount": 40,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1500
+            },
+            {
+              "kind": 0,
+              "amount": 7,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 999004
+            }
+          ]
+        },
+        {
+          "id": 403,
+          "border": 0.1,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54180
+            },
+            {
+              "kind": 0,
+              "amount": 40,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1500
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 7,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 404,
+          "border": 0.2,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54170
+            },
+            {
+              "kind": 0,
+              "amount": 30,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1000
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 7,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 405,
+          "border": 0.3,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54170
+            },
+            {
+              "kind": 0,
+              "amount": 30,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1000
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 406,
+          "border": 0.4,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54160
+            },
+            {
+              "kind": 0,
+              "amount": 20,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 500
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 407,
+          "border": 0.6,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54160
+            },
+            {
+              "kind": 0,
+              "amount": 20,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 300
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 408,
+          "border": 0.8,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54150
+            },
+            {
+              "kind": 0,
+              "amount": 10,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 150
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 13001
+            }
+          ]
+        },
+        {
+          "id": 409,
+          "border": 1,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54150
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 49100
+            }
+          ]
+        }
+      ]
+    },
+    "5": {
+      "code": "time_attack_event_red_001",
+      "name": "Trial by Fire",
+      "questId": 5001,
+      "tiers": [
+        {
+          "id": 501,
+          "border": 0.03,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54240
+            },
+            {
+              "kind": 0,
+              "amount": 50,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1500
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 12002
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 999004
+            }
+          ]
+        },
+        {
+          "id": 502,
+          "border": 0.06,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54230
+            },
+            {
+              "kind": 0,
+              "amount": 40,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1500
+            },
+            {
+              "kind": 0,
+              "amount": 7,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 999004
+            }
+          ]
+        },
+        {
+          "id": 503,
+          "border": 0.1,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54230
+            },
+            {
+              "kind": 0,
+              "amount": 40,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1500
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 7,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 504,
+          "border": 0.2,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54220
+            },
+            {
+              "kind": 0,
+              "amount": 30,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1000
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 7,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 505,
+          "border": 0.3,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54220
+            },
+            {
+              "kind": 0,
+              "amount": 30,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 1000
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 506,
+          "border": 0.4,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54210
+            },
+            {
+              "kind": 0,
+              "amount": 20,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 500
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 3,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 507,
+          "border": 0.6,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54210
+            },
+            {
+              "kind": 0,
+              "amount": 20,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 300
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 13001
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 999005
+            }
+          ]
+        },
+        {
+          "id": 508,
+          "border": 0.8,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54200
+            },
+            {
+              "kind": 0,
+              "amount": 10,
+              "id": 49100
+            },
+            {
+              "kind": 2,
+              "amount": 150
+            },
+            {
+              "kind": 0,
+              "amount": 1,
+              "id": 13001
+            }
+          ]
+        },
+        {
+          "id": 509,
+          "border": 1,
+          "rewards": [
+            {
+              "kind": 6,
+              "amount": 1,
+              "id": 54200
+            },
+            {
+              "kind": 0,
+              "amount": 5,
+              "id": 49100
+            }
+          ]
+        }
+      ]
+    },
+    "1000": {
+      "code": "time_attack_event_water_001_1",
+      "name": "云水试炼-复刻",
+      "questId": 1000001,
+      "tiers": [
+        {
+          "id": 100001,
+          "border": 0.03,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100002,
+          "border": 0.05,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100003,
+          "border": 0.1,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100004,
+          "border": 0.2,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100005,
+          "border": 0.3,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100006,
+          "border": 0.4,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100007,
+          "border": 0.5,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100008,
+          "border": 0.7,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100009,
+          "border": 1,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        }
+      ]
+    },
+    "1001": {
+      "code": "time_attack_event_white_001_1",
+      "name": "溢光试炼复刻",
+      "questId": 1001001,
+      "tiers": [
+        {
+          "id": 100101,
+          "border": 0.03,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100102,
+          "border": 0.05,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100103,
+          "border": 0.1,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100104,
+          "border": 0.2,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100105,
+          "border": 0.3,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100106,
+          "border": 0.4,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100107,
+          "border": 0.5,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100108,
+          "border": 0.7,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        },
+        {
+          "id": 100109,
+          "border": 1,
+          "rewards": [
+            {
+              "kind": 3,
+              "amount": 20000
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

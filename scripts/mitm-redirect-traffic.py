@@ -11,7 +11,7 @@ API_PORT = 8000
 API_SCHEME = 'http'
 MAGIC_DOMAIN_SUFFIX = ".mitm.it"
 
-prefixes = ["/openapi", "/infodesk", "", '/patch']
+prefixes = ["/openapi", "/infodesk", "", '/patch', '/news/board']
 
 # hostname: prefix_index
 hosts = {
@@ -24,9 +24,15 @@ hosts = {
 
     # na server
     "na.wdfp.kakaogames.com": 2,
+    # the na server's old address: the app sends /asset/version_info here by IP, not by name
+    # (without this the game stops loading with error C31001)
+    "13.125.14.86": 2,
 
     # patch
-    "patch.wdfp.kakaogames.com": 3
+    "patch.wdfp.kakaogames.com": 3,
+
+    # the global app's News button (a web page at /news); StarPoint serves the news board for it
+    "worldflipper.playkakaogames.com": 4
 }
 
 def dns_request(flow: dns.DNSFlow):
@@ -55,5 +61,7 @@ def request(flow: http.HTTPFlow):
         flow.request.scheme = API_SCHEME
 
         prefix = prefixes[prefix_type]
-        if prefix != "":
+        if prefix_type == 4:
+            flow.request.path = prefix
+        elif prefix != "":
             flow.request.path = f"{prefix}{flow.request.path}"

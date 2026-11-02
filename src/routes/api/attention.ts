@@ -3,6 +3,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getAccountPlayers, getPlayerSync, getSession } from "../../data/wdfpData";
 import { generateDataHeaders } from "../../utils";
+import { coopSummonSeconds } from "../../nya/coop";
 
 interface CheckBody {
     viewer_id: number
@@ -65,7 +66,9 @@ const routes = async (fastify: FastifyInstance) => {
                     "polling_delay_normal_seconds_range_max": 10,
                     "polling_delay_battle_seconds_range_min": 1,
                     "polling_delay_battle_seconds_range_max": 15,
-                    "return_attention_max_num": 3
+                    "return_attention_max_num": 3,
+                    // not in the global recording; the game takes it when present (co-op COM wait)
+                    "summon_com_seconds": coopSummonSeconds()
                 }
             }
         })

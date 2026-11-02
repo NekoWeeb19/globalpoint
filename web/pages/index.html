@@ -24,6 +24,39 @@
                 </svg>
                 Dashboard
             </div>
+            <a href="/events"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z" />
+                </svg>
+                Events
+            </a>
+            <a href="/summons" data-nav="summons"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M480-80 371-371 80-480l291-109 109-291 109 291 291 109-291 109L480-80Z" />
+                </svg>
+                Summons
+            </a>
+            <a href="/campaigns" data-nav="campaigns"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-280v80h640v-80H160Zm0-440h88q-5-9-6.5-19t-1.5-21q0-50 35-85t85-35q30 0 55.5 15.5T460-826l20 26 20-26q18-24 44-39t56-15q50 0 85 35t35 85q0 11-1.5 21t-6.5 19h88q33 0 56.5 23.5T880-640v440q0 33-23.5 56.5T800-120H160q-33 0-56.5-23.5T80-200v-440q0-33 23.5-56.5T160-720Zm0 320h640v-240H596l84 114-64 46-136-184-136 184-64-46 82-114H160v240Zm200-320q17 0 28.5-11.5T400-760q0-17-11.5-28.5T360-800q-17 0-28.5 11.5T320-760q0 17 11.5 28.5T360-720Zm240 0q17 0 28.5-11.5T640-760q0-17-11.5-28.5T600-800q-17 0-28.5 11.5T560-760q0 17 11.5 28.5T600-720Z" />
+                </svg>
+                Campaigns
+            </a>
+            <a href="/news" data-nav="news"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120H160Zm0-80h640v-560H160v560Zm80-80h480v-80H240v80Zm0-160h160v-240H240v240Zm240 0h240v-80H480v80Zm0-160h240v-80H480v80ZM160-200v-560 560Z" />
+                </svg>
+                News
+            </a>
             <a href="/player"
                 class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
@@ -43,12 +76,14 @@
                 Source Code
             </a>
         </nav>
-        <article class="w-full">
+        <article class="w-full flex flex-col gap-5">
             <form
                 class="flex flex-col items-center justify-center p-5 border border-outline-variant rounded-3xl w-full gap-5"
                 method="get" action="/api/server/time">
                 <h3 class="text-xl text-on-background font-semibold">Change the server's time to visit past and future content.</h3>
                 <h3 class="text-lg text-on-surface-variant">Time is in UTC, not your local time zone.</h3>
+                <p id="clock-now" class="text-lg text-on-surface" role="status"></p>
+                <p id="clock-note" class="text-sm text-on-surface-variant text-center"></p>
                 <input id="time" name="time" type="datetime-local" value="{{currentServerTime}}" class="bg-surface-container rounded-2xl border border-outline-variant p-3" required />
                 <div class="flex gap-5 justify-center">
                     <button type="submit"
@@ -61,9 +96,276 @@
                         Reset
                     </a>
                 </div>
+                <div class="flex flex-col gap-2 items-center">
+                    <button type="button" id="match-real-time"
+                        class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">
+                        Match real time (keep date)
+                    </button>
+                    <p class="text-sm text-on-surface-variant text-center">Sets the server's time of day to this PC's clock (in UTC) and keeps the server's date, so the server's day turns over with the daily reset.</p>
+                    <p id="match-real-message" class="text-sm text-on-surface-variant text-center" role="status"></p>
+                </div>
+                <script>
+                    (function () {
+                        const button = document.getElementById("match-real-time")
+                        const message = document.getElementById("match-real-message")
+                        button.addEventListener("click", async () => {
+                            button.disabled = true
+                            message.textContent = "Working..."
+                            try {
+                                const response = await fetch("/api/server/time/match-real", { method: "POST" })
+                                const reply = await response.json().catch(() => ({}))
+                                if (!response.ok) throw new Error(reply.message || response.statusText)
+                                location.reload()
+                            } catch (error) {
+                                message.textContent = "Error: " + error.message
+                                button.disabled = false
+                            }
+                        })
+                    })()
+                </script>
             </form>
+
+            <section id="rotation" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                    <h3 class="text-xl text-on-background font-semibold">Banner rotation</h3>
+                    <span id="rotation-badge"
+                        class="px-4 py-1 rounded-full text-sm font-semibold bg-surface-container-high text-on-surface">Loading...</span>
+                </div>
+
+                <div id="rotation-off" class="hidden flex flex-col gap-2 text-on-surface-variant">
+                    <p>The banner rotation is off.</p>
+                    <p>To turn it on, add this to the <code>.env</code> file and restart the server:</p>
+                    <pre class="bg-surface-container rounded-2xl border border-outline-variant p-3 text-on-surface overflow-x-auto">BANNER_ROTATION="true"
+BANNER_ROTATION_HOURS="24"</pre>
+                </div>
+
+                <div id="rotation-on" class="hidden flex flex-col gap-4">
+                    <div class="flex flex-col gap-1">
+                        <p id="rotation-step" class="text-lg text-on-surface"></p>
+                        <p id="rotation-date" class="text-on-surface-variant"></p>
+                        <p id="rotation-next" class="text-on-surface-variant"></p>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <h4 class="font-semibold text-on-background">Banners live right now</h4>
+                        <ul id="rotation-banners" class="flex flex-col gap-2"></ul>
+                    </div>
+
+                    <div class="flex gap-3 flex-wrap">
+                        <button type="button" id="rotation-previous"
+                            class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Previous</button>
+                        <button type="button" id="rotation-next-button"
+                            class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Next</button>
+                        <button type="button" id="rotation-resume"
+                            class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Resume rotation</button>
+                    </div>
+
+                    <form id="rotation-jump" class="flex flex-col gap-2">
+                        <label for="rotation-jump-time" class="font-semibold text-on-background">Jump to a date (UTC)</label>
+                        <div class="flex gap-3 flex-wrap items-center">
+                            <input id="rotation-jump-time" type="datetime-local" required
+                                class="bg-surface-container rounded-2xl border border-outline-variant p-3" />
+                            <button type="submit" id="rotation-jump-button"
+                                class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Jump</button>
+                        </div>
+                        <p class="text-sm text-on-surface-variant">Moves to the banner that started at or before that date, then keeps rotating from there.</p>
+                    </form>
+
+                    <p class="text-sm text-on-surface-variant">Setting the time above pauses the rotation. Reset or Resume rotation hands the date back to it.</p>
+                </div>
+
+                <p id="rotation-message" class="text-sm text-on-surface-variant" role="status"></p>
+            </section>
         </article>
     </div>
+
+    <script>
+        (function () {
+            const $ = (id) => document.getElementById(id)
+            const buttons = ["rotation-previous", "rotation-next-button", "rotation-resume", "rotation-jump-button"]
+            let status = null
+            let busy = false
+            let jumpEdited = false
+
+            const formatDate = (iso) => iso.slice(0, 16).replace("T", " ") + " UTC"
+
+            function formatCountdown(ms) {
+                const total = Math.max(0, Math.floor(ms / 1000))
+                const days = Math.floor(total / 86400)
+                const hours = Math.floor((total % 86400) / 3600)
+                const minutes = Math.floor((total % 3600) / 60)
+                const seconds = total % 60
+                if (days > 0) return days + "d " + hours + "h " + minutes + "m"
+                if (hours > 0) return hours + "h " + minutes + "m"
+                return minutes + "m " + String(seconds).padStart(2, "0") + "s"
+            }
+
+            function setMessage(text) {
+                $("rotation-message").textContent = text || ""
+            }
+
+            function renderBanners(banners) {
+                const list = $("rotation-banners")
+                list.replaceChildren()
+                if (banners.length === 0) {
+                    const item = document.createElement("li")
+                    item.className = "text-on-surface-variant"
+                    item.textContent = "No banners are live at this date."
+                    list.appendChild(item)
+                    return
+                }
+                for (const banner of banners) {
+                    const item = document.createElement("li")
+                    item.className = "flex gap-3 items-center flex-wrap"
+                    const kind = document.createElement("span")
+                    kind.className = "px-3 py-1 rounded-full text-sm bg-surface-container-high text-on-surface"
+                    kind.textContent = banner.type === 1 ? "Armament" : "Unit"
+                    const label = document.createElement("span")
+                    label.className = "text-on-surface"
+                    label.textContent = "Banner #" + banner.id
+                    const dates = document.createElement("span")
+                    dates.className = "text-on-surface-variant"
+                    dates.textContent = banner.startDate.slice(0, 16) + " to " + banner.endDate.slice(0, 16)
+                    item.append(kind, label, dates)
+                    list.appendChild(item)
+                }
+            }
+
+            // with ticking on, the date counts up between refreshes (a paused date ticks too)
+            function showRotationDate() {
+                if (status === null || !status.enabled) return
+                const elapsed = status.ticking ? Date.now() - status.loadedAt : 0
+                $("rotation-date").textContent = "Server date: " + formatDate(new Date(new Date(status.serverDate).getTime() + elapsed).toISOString())
+            }
+
+            function updateCountdown() {
+                if (status === null || !status.enabled) return
+                showRotationDate()
+                if (status.paused) {
+                    $("rotation-next").textContent = "Paused: the date was set by hand, so the rotation is not moving."
+                    return
+                }
+                const remaining = new Date(status.nextChangeAt).getTime() - Date.now()
+                $("rotation-next").textContent = "Next change in " + formatCountdown(remaining)
+            }
+
+            function render(next) {
+                status = next
+                const badge = $("rotation-badge")
+                if (!status.enabled) {
+                    badge.textContent = "Off"
+                    $("rotation-off").classList.remove("hidden")
+                    $("rotation-on").classList.add("hidden")
+                    return
+                }
+                $("rotation-off").classList.add("hidden")
+                $("rotation-on").classList.remove("hidden")
+                badge.textContent = status.paused ? "Paused" : "Running"
+                $("rotation-step").textContent = "Step " + status.step + " of " + status.totalSteps +
+                    " (" + status.stepHours + " hour" + (status.stepHours === 1 ? "" : "s") + " per step)"
+                status.loadedAt = Date.now()
+                showRotationDate()
+                renderBanners(status.liveBanners)
+                $("rotation-resume").disabled = busy || !status.paused
+                if (!jumpEdited) $("rotation-jump-time").value = status.serverDate.slice(0, 16)
+                updateCountdown()
+            }
+
+            function setBusy(value) {
+                busy = value
+                for (const id of buttons) $(id).disabled = value
+                if (!value && status !== null && status.enabled) $("rotation-resume").disabled = !status.paused
+            }
+
+            async function request(path, doneMessage) {
+                if (busy) return
+                setBusy(true)
+                setMessage("")
+                try {
+                    const response = await fetch(path)
+                    const data = await response.json().catch(() => ({}))
+                    if (!response.ok) throw new Error(data.message || response.statusText)
+                    jumpEdited = false
+                    render(data)
+                    setMessage(typeof doneMessage === "function" ? doneMessage(data) : doneMessage)
+                } catch (error) {
+                    setMessage("Error: " + error.message)
+                } finally {
+                    setBusy(false)
+                }
+            }
+
+            async function refresh() {
+                if (busy) return
+                try {
+                    const response = await fetch("/api/server/rotation")
+                    if (!response.ok) throw new Error(response.statusText)
+                    render(await response.json())
+                } catch (error) {
+                    $("rotation-badge").textContent = "Unavailable"
+                    setMessage("Could not load the rotation status: " + error.message)
+                }
+            }
+
+            $("rotation-previous").addEventListener("click", () => request("/api/server/rotation/previous", "Moved to the previous banner."))
+            $("rotation-next-button").addEventListener("click", () => request("/api/server/rotation/next", "Moved to the next banner."))
+            $("rotation-resume").addEventListener("click", () => request("/api/server/rotation/resume", "The rotation is running again."))
+            $("rotation-jump-time").addEventListener("input", () => { jumpEdited = true })
+            $("rotation-jump").addEventListener("submit", (event) => {
+                event.preventDefault()
+                const value = $("rotation-jump-time").value
+                if (value) request("/api/server/rotation/goto?time=" + encodeURIComponent(value), (data) =>
+                    data.serverDate.slice(0, 16) > value
+                        ? "That date is before the first banner in the rotation, so this is the first one."
+                        : "Jumped to the banner for that date.")
+            })
+
+            refresh()
+            setInterval(updateCountdown, 1000)
+            setInterval(() => {
+                // the timer ran out (or it's been a while), so ask the server where the rotation is now
+                if (status !== null && status.enabled && !status.paused && new Date(status.nextChangeAt).getTime() <= Date.now()) refresh()
+            }, 2000)
+            setInterval(refresh, 30000)
+        })()
+
+        // live server clock at the top of the page
+        ;(function () {
+            const $ = (id) => document.getElementById(id)
+            const sources = {
+                rotation: "following the banner rotation",
+                set: "counting from the date you set",
+                real: "using the real time"
+            }
+            let clock = null
+
+            function show() {
+                if (clock === null) return
+                const elapsed = clock.ticking ? Date.now() - clock.loadedAt : 0
+                const date = new Date(new Date(clock.serverDate).getTime() + elapsed)
+                $("clock-now").textContent = "Server time now: " + date.toISOString().slice(0, 19).replace("T", " ") + " UTC"
+            }
+
+            async function load() {
+                try {
+                    const response = await fetch("/api/server/clock")
+                    if (!response.ok) throw new Error(response.statusText)
+                    clock = await response.json()
+                    clock.loadedAt = Date.now()
+                    $("clock-note").textContent = clock.ticking
+                        ? "The clock ticks like a real one, " + sources[clock.mode] + "."
+                        : "The clock is frozen (" + sources[clock.mode] + "). Set SERVER_TIME_TICKS=\"true\" in the .env file and restart to make it tick."
+                    show()
+                } catch (error) {
+                    $("clock-now").textContent = "Could not load the server time: " + error.message
+                }
+            }
+
+            load()
+            setInterval(show, 1000)
+            setInterval(load, 30000)
+        })()
+    </script>
 </body>
 
 </html>

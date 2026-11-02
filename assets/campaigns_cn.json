@@ -1,0 +1,6718 @@
+{
+ "_note": "Built by scripts/gen_cn_campaigns.cjs: the CN game's campaigns global's data doesn't have. Dates in UTC, like global's master dates.",
+ "loginBonuses": {
+  "spring2023": {
+   "type": "Limited",
+   "start": "2023-01-19 04:00:00",
+   "end": "2023-02-03 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "smr_v23": {
+   "type": "Limited",
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-03-15 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "smr_v21_02_1": {
+   "type": "Limited",
+   "start": "2023-05-25 04:00:00",
+   "end": "2023-06-08 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "smr_v21_1": {
+   "type": "Limited",
+   "start": "2023-05-08 21:00:00",
+   "end": "2023-05-23 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "smr_v2022": {
+   "type": "Limited",
+   "start": "2022-05-26 04:00:00",
+   "end": "2022-07-06 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "smr_v2022_2nd": {
+   "type": "Limited",
+   "start": "2022-08-04 04:00:00",
+   "end": "2022-09-07 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 10,
+      "id": 99
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 10,
+      "id": 101
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 3,
+      "amount": 50000
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 10,
+      "id": 99
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 10,
+      "id": 101
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 3,
+      "amount": 50000
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 10,
+      "id": 99
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 10,
+      "id": 101
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 3,
+      "amount": 50000
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 999003
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 10,
+      "id": 99
+     }
+    ]
+   ]
+  },
+  "scollab_event": {
+   "type": "Limited",
+   "start": "2023-07-10 04:00:00",
+   "end": "2023-07-24 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "ny21_2022": {
+   "type": "Limited",
+   "start": "2022-11-17 04:00:00",
+   "end": "2022-11-26 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "newbie_present": {
+   "type": "ActiveUser",
+   "start": "2024-03-07 04:00:00",
+   "end": null,
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": "newbie_present",
+   "days": [
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 70030
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 70030
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 2,
+      "id": 70030
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 70030
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 70030
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 1,
+      "id": 70030
+     }
+    ],
+    [
+     {
+      "kind": 1,
+      "amount": 3,
+      "id": 70030
+     }
+    ]
+   ]
+  },
+  "k_collabo_event": {
+   "type": "Limited",
+   "start": "2024-03-21 04:00:00",
+   "end": "2024-04-04 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "hw_v23": {
+   "type": "Limited",
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "gw23": {
+   "type": "Limited",
+   "start": "2023-04-27 04:00:00",
+   "end": "2023-05-08 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "bcollab_01": {
+   "type": "Limited",
+   "start": "2022-10-31 04:00:00",
+   "end": "2022-11-15 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "anv2023": {
+   "type": "Limited",
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "anv1_2022": {
+   "type": "Limited",
+   "start": "2022-10-13 04:00:00",
+   "end": "2022-11-11 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "rcollab_event_1": {
+   "type": "Limited",
+   "start": "2022-12-15 04:00:00",
+   "end": "2022-12-29 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "rcollab_re01_1": {
+   "type": "Limited",
+   "start": "2023-11-02 04:00:00",
+   "end": "2023-11-16 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "ny22_spring": {
+   "type": "Limited",
+   "start": "2022-01-27 04:00:00",
+   "end": "2022-02-09 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "ny20_2022": {
+   "type": "Limited",
+   "start": "2021-12-30 04:00:00",
+   "end": "2022-01-05 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "qingming_2022": {
+   "type": "Limited",
+   "start": "2022-03-03 04:00:00",
+   "end": "2022-03-16 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  },
+  "halfanv2022": {
+   "type": "Limited",
+   "start": "2022-04-18 21:00:00",
+   "end": "2022-05-10 20:59:59",
+   "yearlyFrom": null,
+   "yearlyUntil": null,
+   "linkedComeback": null,
+   "days": [
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ],
+    [
+     {
+      "kind": 0,
+      "amount": 50
+     }
+    ]
+   ]
+  }
+ },
+ "loginInfo": {
+  "spring2023": {
+   "name": "Lunar New Year Login Reward",
+   "start": "2023-01-19 04:00:00",
+   "end": "2023-02-03 20:59:59",
+   "days": 16,
+   "image": null
+  },
+  "smr_v23": {
+   "name": "Summer Login Reward",
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-03-15 20:59:59",
+   "days": 31,
+   "image": "979e7c6efde8ee367b9cc453f195d9a87f27bdd7"
+  },
+  "smr_v21_02_1": {
+   "name": "Summer Login Perks 2nd",
+   "start": "2023-05-25 04:00:00",
+   "end": "2023-06-08 20:59:59",
+   "days": 15,
+   "image": "86b8256b89de67b7544e976e3928ab65c6e1e18b"
+  },
+  "smr_v21_1": {
+   "name": "Summer Login Perks",
+   "start": "2023-05-08 21:00:00",
+   "end": "2023-05-23 20:59:59",
+   "days": 15,
+   "image": "313e711f96fda0db070ff2f61ad2876a740432f6"
+  },
+  "smr_v2022": {
+   "name": "Summer Vacation Login Perks",
+   "start": "2022-05-26 04:00:00",
+   "end": "2022-07-06 20:59:59",
+   "days": 42,
+   "image": "58c4767264786fb08f9e225b8f27a262bc1690e7"
+  },
+  "smr_v2022_2nd": {
+   "name": "Summer Vacation Login Reward",
+   "start": "2022-08-04 04:00:00",
+   "end": "2022-09-07 20:59:59",
+   "days": 28,
+   "image": "0b48da2b32ae4d0edaa7c20ef72b190e8f64a7eb"
+  },
+  "scollab_event": {
+   "name": "The Melancholy of Haruhi Suzumiya Collab Login Reward",
+   "start": "2023-07-10 04:00:00",
+   "end": "2023-07-24 20:59:59",
+   "days": 15,
+   "image": "a21677c916c62b20098d52b91a1d0ce602afd271"
+  },
+  "ny21_2022": {
+   "name": "New Year's Gift Promo",
+   "start": "2022-11-17 04:00:00",
+   "end": "2022-11-26 20:59:59",
+   "days": 10,
+   "image": "74d072ee500c36ee9a0f5bfbbf25e069b410d846"
+  },
+  "newbie_present": {
+   "name": "Newcomer Login Reward",
+   "start": "2024-03-07 04:00:00",
+   "end": null,
+   "days": 7,
+   "image": "9e5ef6fd7ef7d7bb785a0b490c0cb3fae8e4a810"
+  },
+  "k_collabo_event": {
+   "name": "KonoSuba Collab Login Reward",
+   "start": "2024-03-21 04:00:00",
+   "end": "2024-04-04 20:59:59",
+   "days": 15,
+   "image": "5681bf5a05ff13dd006eae2ac27ef270ab88ada2"
+  },
+  "hw_v23": {
+   "name": "Halloween Login Reward",
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 20:59:59",
+   "days": 15,
+   "image": "f70605b8970021ff16eafcba4fbd546d7c9bc20d"
+  },
+  "gw23": {
+   "name": "Golden Week Login Perks",
+   "start": "2023-04-27 04:00:00",
+   "end": "2023-05-08 20:59:59",
+   "days": 12,
+   "image": "369a8ef0f7c9b7f6ea9b16277381e545b70933de"
+  },
+  "bcollab_01": {
+   "name": "不諦の魔道士記念ログインボーナス",
+   "start": "2022-10-31 04:00:00",
+   "end": "2022-11-15 20:59:59",
+   "days": 16,
+   "image": "b645733b3f4adfd83913497f9662ad63129eebd0"
+  },
+  "anv2023": {
+   "name": "4th Anniversary Login Reward",
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 20:59:59",
+   "days": 17,
+   "image": "426203bb83da31d4591155ee1d8f238d86888191"
+  },
+  "anv1_2022": {
+   "name": "1st Anniversary Login Reward",
+   "start": "2022-10-13 04:00:00",
+   "end": "2022-11-11 20:59:59",
+   "days": 30,
+   "image": "f6d3a916d407f729bcfa4ef4d4952567d6a0f225"
+  },
+  "rcollab_event_1": {
+   "name": "Re:ZERO -Starting Life in Another World- Collab Login Perks",
+   "start": "2022-12-15 04:00:00",
+   "end": "2022-12-29 20:59:59",
+   "days": 15,
+   "image": null
+  },
+  "rcollab_re01_1": {
+   "name": "Re:ZERO -Starting Life in Another World- Collab Login Perks",
+   "start": "2023-11-02 04:00:00",
+   "end": "2023-11-16 20:59:59",
+   "days": 15,
+   "image": "50f254e733e30e1535507c71ca73b21b4ea58ef2"
+  },
+  "ny22_spring": {
+   "name": "Lunar New Year Red Envelope Promo 2022",
+   "start": "2022-01-27 04:00:00",
+   "end": "2022-02-09 20:59:59",
+   "days": 7,
+   "image": "c164f74311bf5adb1a4caf3e19c88792f035c624"
+  },
+  "ny20_2022": {
+   "name": "New Year's Day Red Envelope Promo 2022",
+   "start": "2021-12-30 04:00:00",
+   "end": "2022-01-05 20:59:59",
+   "days": 7,
+   "image": "a4f89047d2b1bf1b0bcabfbc6b6b716729abd0b1"
+  },
+  "qingming_2022": {
+   "name": "Spring Outing Login Reward 2022",
+   "start": "2022-03-03 04:00:00",
+   "end": "2022-03-16 20:59:59",
+   "days": 14,
+   "image": "a7bebb61b2b03b4a14a8582204c286b9a6fe17b6"
+  },
+  "halfanv2022": {
+   "name": "Half-Year Flipperversary Login Rewards",
+   "start": "2022-04-18 21:00:00",
+   "end": "2022-05-10 20:59:59",
+   "days": 21,
+   "image": "a32101ec9e9c9c2d6fd4efcb3790fa5ae8cffc9a"
+  }
+ },
+ "freePulls": [
+  {
+   "id": 9,
+   "name": "The Melancholy of Haruhi Suzumiya Collab! One free unit draw per day",
+   "kind": 1,
+   "start": "2023-07-10 04:00:00",
+   "end": "2023-07-25 20:59:59",
+   "banners": [
+    1574
+   ],
+   "image": null
+  },
+  {
+   "id": 21,
+   "name": "Summer Vacation: one free single draw per day",
+   "kind": 1,
+   "start": "2023-07-14 04:00:00",
+   "end": "2023-08-13 20:59:59",
+   "banners": [
+    187,
+    188,
+    189,
+    190,
+    191,
+    192,
+    700004
+   ],
+   "image": null
+  },
+  {
+   "id": 22,
+   "name": "4th Anniversary! One free 10x unit draw per day",
+   "kind": 2,
+   "start": "2023-11-30 04:00:00",
+   "end": "2023-12-24 20:59:59",
+   "banners": [
+    212,
+    700004,
+    213,
+    214,
+    215,
+    216,
+    217,
+    218,
+    219
+   ],
+   "image": null
+  },
+  {
+   "id": 1000,
+   "name": "The anniversary is almost here! One free unit draw per day",
+   "kind": 1,
+   "start": "2022-09-16 04:00:00",
+   "end": "2022-10-12 20:59:59",
+   "banners": [
+    1520,
+    1519,
+    1521
+   ],
+   "image": null
+  },
+  {
+   "id": 1001,
+   "name": "1st Anniversary! One free 10x unit draw per day",
+   "kind": 2,
+   "start": "2022-10-13 04:00:00",
+   "end": "2022-11-04 15:59:59",
+   "banners": [
+    1522,
+    1523,
+    1524,
+    1525,
+    1526,
+    1527
+   ],
+   "image": null
+  },
+  {
+   "id": 1002,
+   "name": "Happy New Year! One free unit draw per day",
+   "kind": 1,
+   "start": "2022-11-17 04:00:00",
+   "end": "2022-11-25 20:59:59",
+   "banners": [
+    1529,
+    1530
+   ],
+   "image": null
+  },
+  {
+   "id": 1005,
+   "name": "Golden Week! One free draw per day",
+   "kind": 1,
+   "start": "2021-04-29 21:00:00",
+   "end": "2021-05-11 20:59:59",
+   "banners": [
+    10073,
+    59
+   ],
+   "image": null
+  },
+  {
+   "id": 1006,
+   "name": "One free unit draw per day",
+   "kind": 1,
+   "start": "2023-01-19 04:00:00",
+   "end": "2023-01-25 20:59:59",
+   "banners": [
+    1537,
+    1540
+   ],
+   "image": null
+  },
+  {
+   "id": 1007,
+   "name": "One free unit draw per day",
+   "kind": 1,
+   "start": "2023-02-16 04:00:00",
+   "end": "2023-02-20 20:59:59",
+   "banners": [
+    1546,
+    1545
+   ],
+   "image": null
+  },
+  {
+   "id": 1008,
+   "name": "One free unit draw per day",
+   "kind": 1,
+   "start": "2023-02-22 04:00:00",
+   "end": "2023-03-02 20:59:59",
+   "banners": [
+    1547,
+    1546
+   ],
+   "image": null
+  },
+  {
+   "id": 1009,
+   "name": "1.5 Flipperversary Free Daily 10-Pulls Promo",
+   "kind": 2,
+   "start": "2023-03-06 04:00:00",
+   "end": "2023-03-23 15:59:59",
+   "banners": [
+    1549,
+    1550,
+    1551,
+    1548
+   ],
+   "image": null
+  },
+  {
+   "id": 1010,
+   "name": "One free unit draw per day",
+   "kind": 1,
+   "start": "2023-04-20 04:00:00",
+   "end": "2023-05-15 15:59:59",
+   "banners": [
+    1559,
+    1558,
+    1560,
+    1562,
+    1563,
+    1564
+   ],
+   "image": null
+  },
+  {
+   "id": 1011,
+   "name": "Main Quest Chapter 10 finale! One free unit draw per day",
+   "kind": 1,
+   "start": "2023-08-09 04:00:00",
+   "end": "2023-08-20 20:59:59",
+   "banners": [
+    1577,
+    1579
+   ],
+   "image": null
+  },
+  {
+   "id": 1012,
+   "name": "The 2nd anniversary is almost here! One free unit draw per day",
+   "kind": 1,
+   "start": "2023-08-20 21:00:00",
+   "end": "2023-08-30 20:59:59",
+   "banners": [
+    1578,
+    1579,
+    1577
+   ],
+   "image": null
+  },
+  {
+   "id": 1013,
+   "name": "Happy Winter Break! One free unit draw per day",
+   "kind": 1,
+   "start": "2024-01-25 04:00:00",
+   "end": "2024-02-03 20:59:59",
+   "banners": [
+    1603,
+    1601,
+    1602,
+    1604,
+    1605,
+    80001
+   ],
+   "image": null
+  },
+  {
+   "id": 1014,
+   "name": "2.5 Year Flipperversary Free Daily 10-Pulls Promo",
+   "kind": 2,
+   "start": "2024-02-22 04:00:00",
+   "end": "2024-03-07 20:59:59",
+   "banners": [
+    1607,
+    1608,
+    1609,
+    1610,
+    1611,
+    80001,
+    80002
+   ],
+   "image": "c4bf5a970e6b1dde161dbb871bcb4f8c1b49041a"
+  },
+  {
+   "id": 1015,
+   "name": "One free unit draw per day",
+   "kind": 1,
+   "start": "2024-03-28 04:00:00",
+   "end": "2024-04-27 20:59:59",
+   "banners": [
+    1615,
+    1617,
+    1618,
+    1619,
+    1620,
+    1621,
+    80002
+   ],
+   "image": null
+  },
+  {
+   "id": 1016,
+   "name": "3rd Flipperversary Free Daily 10-Pulls Promo",
+   "kind": 2,
+   "start": "2024-07-11 04:00:00",
+   "end": "2024-08-04 20:59:59",
+   "banners": [
+    1635,
+    1636,
+    1637,
+    80003,
+    80004
+   ],
+   "image": "b4a503099e428f37f091738d6c9f07024321542c"
+  },
+  {
+   "id": 1017,
+   "name": "Free 10-Pull Event Celebrating Winter",
+   "kind": 2,
+   "start": "2024-11-07 04:00:00",
+   "end": "2024-11-09 20:59:59",
+   "banners": [
+    1656,
+    1657,
+    80004
+   ],
+   "image": null
+  },
+  {
+   "id": 1018,
+   "name": "3.5 Year Flipperversary! Get 1 free 10-pull every day!",
+   "kind": 2,
+   "start": "2025-01-02 04:00:00",
+   "end": "2025-01-16 20:59:59",
+   "banners": [
+    1668,
+    1669,
+    1670,
+    1671,
+    700004
+   ],
+   "image": "a31632c52db1fe449bcdcc3a26987b6af93095f0"
+  },
+  {
+   "id": 1019,
+   "name": "Summer Vacation: one free single draw per day",
+   "kind": 1,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-03-15 20:59:59",
+   "banners": [
+    1677,
+    1678,
+    1679,
+    1680,
+    1681,
+    1682,
+    1683,
+    1684,
+    700004
+   ],
+   "image": null
+  },
+  {
+   "id": 1020,
+   "name": "4th Anniversary! One free 10x unit draw per day",
+   "kind": 2,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-13 20:59:59",
+   "banners": [
+    1703,
+    700004,
+    1704,
+    1705,
+    1706,
+    1707,
+    1708,
+    1709,
+    1710
+   ],
+   "image": "ab6977350e1382dc7378a6d42bdd8321526b1adc"
+  }
+ ],
+ "gachaCampaigns": {
+  "59": 1005,
+  "187": 21,
+  "188": 21,
+  "189": 21,
+  "190": 21,
+  "191": 21,
+  "192": 21,
+  "212": 22,
+  "213": 22,
+  "214": 22,
+  "215": 22,
+  "216": 22,
+  "217": 22,
+  "218": 22,
+  "219": 22,
+  "1519": 1000,
+  "1520": 1000,
+  "1521": 1000,
+  "1522": 1001,
+  "1523": 1001,
+  "1524": 1001,
+  "1525": 1001,
+  "1526": 1001,
+  "1527": 1001,
+  "1529": 1002,
+  "1530": 1002,
+  "1537": 1006,
+  "1540": 1006,
+  "1545": 1007,
+  "1546": 1008,
+  "1547": 1008,
+  "1548": 1009,
+  "1549": 1009,
+  "1550": 1009,
+  "1551": 1009,
+  "1558": 1010,
+  "1559": 1010,
+  "1560": 1010,
+  "1562": 1010,
+  "1563": 1010,
+  "1564": 1010,
+  "1574": 9,
+  "1577": 1012,
+  "1578": 1012,
+  "1579": 1012,
+  "1601": 1013,
+  "1602": 1013,
+  "1603": 1013,
+  "1604": 1013,
+  "1605": 1013,
+  "1607": 1014,
+  "1608": 1014,
+  "1609": 1014,
+  "1610": 1014,
+  "1611": 1014,
+  "1615": 1015,
+  "1617": 1015,
+  "1618": 1015,
+  "1619": 1015,
+  "1620": 1015,
+  "1621": 1015,
+  "1635": 1016,
+  "1636": 1016,
+  "1637": 1016,
+  "1656": 1017,
+  "1657": 1017,
+  "1668": 1018,
+  "1669": 1018,
+  "1670": 1018,
+  "1671": 1018,
+  "1677": 1019,
+  "1678": 1019,
+  "1679": 1019,
+  "1680": 1019,
+  "1681": 1019,
+  "1682": 1019,
+  "1683": 1019,
+  "1684": 1019,
+  "1703": 1020,
+  "1704": 1020,
+  "1705": 1020,
+  "1706": 1020,
+  "1707": 1020,
+  "1708": 1020,
+  "1709": 1020,
+  "1710": 1020,
+  "10073": 1005,
+  "80001": 1014,
+  "80002": 1015,
+  "80003": 1016,
+  "80004": 1017
+ },
+ "rewardCampaigns": [
+  {
+   "id": 10000000,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 10000001,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 1,
+   "rate": 2,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 10000002,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 2,
+   "rate": 2,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 10000003,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "1"
+   ]
+  },
+  {
+   "id": 10000004,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "2"
+   ]
+  },
+  {
+   "id": 10000005,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "3"
+   ]
+  },
+  {
+   "id": 10000006,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "4"
+   ]
+  },
+  {
+   "id": 10000007,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "5"
+   ]
+  },
+  {
+   "id": 10000008,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "6"
+   ]
+  },
+  {
+   "id": 10000009,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "7"
+   ]
+  },
+  {
+   "id": 10000010,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "8"
+   ]
+  },
+  {
+   "id": 10000011,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "9"
+   ]
+  },
+  {
+   "id": 10000012,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "10"
+   ]
+  },
+  {
+   "id": 10000013,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "11"
+   ]
+  },
+  {
+   "id": 10000014,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "12"
+   ]
+  },
+  {
+   "id": 10000015,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "13"
+   ]
+  },
+  {
+   "id": 10000016,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "14"
+   ]
+  },
+  {
+   "id": 10000017,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "15"
+   ]
+  },
+  {
+   "id": 10000018,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "16"
+   ]
+  },
+  {
+   "id": 10000019,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "17"
+   ]
+  },
+  {
+   "id": 10000020,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "18"
+   ]
+  },
+  {
+   "id": 10000021,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "19"
+   ]
+  },
+  {
+   "id": 10000022,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 10000023,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 1,
+   "rate": 2,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 10000024,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 2,
+   "rate": 2,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 10000025,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "1"
+   ]
+  },
+  {
+   "id": 10000026,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "2"
+   ]
+  },
+  {
+   "id": 10000027,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "3"
+   ]
+  },
+  {
+   "id": 10000028,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "4"
+   ]
+  },
+  {
+   "id": 10000029,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "5"
+   ]
+  },
+  {
+   "id": 10000030,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "6"
+   ]
+  },
+  {
+   "id": 10000031,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "7"
+   ]
+  },
+  {
+   "id": 10000032,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "8"
+   ]
+  },
+  {
+   "id": 10000033,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "9"
+   ]
+  },
+  {
+   "id": 10000034,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "10"
+   ]
+  },
+  {
+   "id": 10000035,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "11"
+   ]
+  },
+  {
+   "id": 10000036,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "12"
+   ]
+  },
+  {
+   "id": 10000037,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "13"
+   ]
+  },
+  {
+   "id": 10000038,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "14"
+   ]
+  },
+  {
+   "id": 10000039,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "15"
+   ]
+  },
+  {
+   "id": 10000040,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "16"
+   ]
+  },
+  {
+   "id": 10000041,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "17"
+   ]
+  },
+  {
+   "id": 10000042,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "18"
+   ]
+  },
+  {
+   "id": 10000043,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "19"
+   ]
+  },
+  {
+   "id": 10000044,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 10000045,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 1,
+   "rate": 2,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 10000046,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 2,
+   "rate": 2,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 10000047,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "1"
+   ]
+  },
+  {
+   "id": 10000048,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "2"
+   ]
+  },
+  {
+   "id": 10000049,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "3"
+   ]
+  },
+  {
+   "id": 10000050,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "4"
+   ]
+  },
+  {
+   "id": 10000051,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "5"
+   ]
+  },
+  {
+   "id": 10000052,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "6"
+   ]
+  },
+  {
+   "id": 10000053,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "7"
+   ]
+  },
+  {
+   "id": 10000054,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "8"
+   ]
+  },
+  {
+   "id": 10000055,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "9"
+   ]
+  },
+  {
+   "id": 10000056,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "10"
+   ]
+  },
+  {
+   "id": 10000057,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "11"
+   ]
+  },
+  {
+   "id": 10000058,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "12"
+   ]
+  },
+  {
+   "id": 10000059,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "13"
+   ]
+  },
+  {
+   "id": 10000060,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "14"
+   ]
+  },
+  {
+   "id": 10000061,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "15"
+   ]
+  },
+  {
+   "id": 10000062,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "16"
+   ]
+  },
+  {
+   "id": 10000063,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "17"
+   ]
+  },
+  {
+   "id": 10000064,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "18"
+   ]
+  },
+  {
+   "id": 10000065,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    7,
+    "1",
+    null,
+    "19"
+   ]
+  },
+  {
+   "id": 22111001,
+   "weekly": false,
+   "start": "2022-11-10 04:00:00",
+   "end": "2022-11-17 03:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 101020901,
+   "weekly": false,
+   "start": "2022-12-22 04:00:00",
+   "end": "2022-12-29 03:59:59",
+   "rewardKind": 0,
+   "rate": 1.5,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 101020902,
+   "weekly": false,
+   "start": "2022-12-22 04:00:00",
+   "end": "2022-12-29 03:59:59",
+   "rewardKind": 0,
+   "rate": 1.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19"
+   ]
+  },
+  {
+   "id": 101032601,
+   "weekly": false,
+   "start": "2023-02-02 04:00:00",
+   "end": "2023-02-09 03:59:59",
+   "rewardKind": 0,
+   "rate": 2,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  }
+ ],
+ "staminaCampaigns": [
+  {
+   "id": 10000045,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 10000046,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 10000047,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "1"
+   ]
+  },
+  {
+   "id": 10000048,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "2"
+   ]
+  },
+  {
+   "id": 10000049,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "3"
+   ]
+  },
+  {
+   "id": 10000050,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "4"
+   ]
+  },
+  {
+   "id": 10000051,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "5"
+   ]
+  },
+  {
+   "id": 10000052,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "6"
+   ]
+  },
+  {
+   "id": 10000053,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "7"
+   ]
+  },
+  {
+   "id": 10000054,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "8"
+   ]
+  },
+  {
+   "id": 10000055,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "9"
+   ]
+  },
+  {
+   "id": 10000056,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "10"
+   ]
+  },
+  {
+   "id": 10000057,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "11"
+   ]
+  },
+  {
+   "id": 10000058,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "12"
+   ]
+  },
+  {
+   "id": 10000059,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "13"
+   ]
+  },
+  {
+   "id": 10000060,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "14"
+   ]
+  },
+  {
+   "id": 10000061,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "15"
+   ]
+  },
+  {
+   "id": 10000062,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "16"
+   ]
+  },
+  {
+   "id": 10000063,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "17"
+   ]
+  },
+  {
+   "id": 10000064,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "18"
+   ]
+  },
+  {
+   "id": 10000065,
+   "weekly": false,
+   "start": "2025-02-13 04:00:00",
+   "end": "2025-02-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "19"
+   ]
+  },
+  {
+   "id": 10000066,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 10000067,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 10000068,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "1"
+   ]
+  },
+  {
+   "id": 10000069,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "2"
+   ]
+  },
+  {
+   "id": 10000070,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "3"
+   ]
+  },
+  {
+   "id": 10000071,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "4"
+   ]
+  },
+  {
+   "id": 10000072,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "5"
+   ]
+  },
+  {
+   "id": 10000073,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "6"
+   ]
+  },
+  {
+   "id": 10000074,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "7"
+   ]
+  },
+  {
+   "id": 10000075,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "8"
+   ]
+  },
+  {
+   "id": 10000076,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "9"
+   ]
+  },
+  {
+   "id": 10000077,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "10"
+   ]
+  },
+  {
+   "id": 10000078,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "11"
+   ]
+  },
+  {
+   "id": 10000079,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "12"
+   ]
+  },
+  {
+   "id": 10000080,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "13"
+   ]
+  },
+  {
+   "id": 10000081,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "14"
+   ]
+  },
+  {
+   "id": 10000082,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "15"
+   ]
+  },
+  {
+   "id": 10000083,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "16"
+   ]
+  },
+  {
+   "id": 10000084,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "17"
+   ]
+  },
+  {
+   "id": 10000085,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "18"
+   ]
+  },
+  {
+   "id": 10000086,
+   "weekly": false,
+   "start": "2025-05-22 04:00:00",
+   "end": "2025-06-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "19"
+   ]
+  },
+  {
+   "id": 10000087,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 10000088,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 10000089,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "1"
+   ]
+  },
+  {
+   "id": 10000090,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "2"
+   ]
+  },
+  {
+   "id": 10000091,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "3"
+   ]
+  },
+  {
+   "id": 10000092,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "4"
+   ]
+  },
+  {
+   "id": 10000093,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "5"
+   ]
+  },
+  {
+   "id": 10000094,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "6"
+   ]
+  },
+  {
+   "id": 10000095,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "7"
+   ]
+  },
+  {
+   "id": 10000096,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "8"
+   ]
+  },
+  {
+   "id": 10000097,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "9"
+   ]
+  },
+  {
+   "id": 10000098,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "10"
+   ]
+  },
+  {
+   "id": 10000099,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "11"
+   ]
+  },
+  {
+   "id": 10000100,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "12"
+   ]
+  },
+  {
+   "id": 10000101,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "13"
+   ]
+  },
+  {
+   "id": 10000102,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "14"
+   ]
+  },
+  {
+   "id": 10000103,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "15"
+   ]
+  },
+  {
+   "id": 10000104,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "16"
+   ]
+  },
+  {
+   "id": 10000105,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "17"
+   ]
+  },
+  {
+   "id": 10000106,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "18"
+   ]
+  },
+  {
+   "id": 10000107,
+   "weekly": false,
+   "start": "2025-06-19 04:00:00",
+   "end": "2025-07-05 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "19"
+   ]
+  },
+  {
+   "id": 22040701,
+   "weekly": false,
+   "start": "2022-04-07 04:00:00",
+   "end": "2022-04-15 03:59:59",
+   "rate": 0.5,
+   "range": [
+    0,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22040702,
+   "weekly": false,
+   "start": "2022-04-07 04:00:00",
+   "end": "2022-04-15 03:59:59",
+   "rate": 0.5,
+   "range": [
+    1,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22040703,
+   "weekly": false,
+   "start": "2022-04-07 04:00:00",
+   "end": "2022-04-15 03:59:59",
+   "rate": 0.5,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22040704,
+   "weekly": false,
+   "start": "2022-04-07 04:00:00",
+   "end": "2022-04-15 03:59:59",
+   "rate": 0.5,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22040705,
+   "weekly": false,
+   "start": "2022-04-07 04:00:00",
+   "end": "2022-04-15 03:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22041901,
+   "weekly": false,
+   "start": "2022-04-19 04:00:00",
+   "end": "2022-05-05 03:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22041902,
+   "weekly": false,
+   "start": "2022-04-19 04:00:00",
+   "end": "2022-05-05 03:59:59",
+   "rate": 0.5,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22041903,
+   "weekly": false,
+   "start": "2022-04-19 04:00:00",
+   "end": "2022-05-05 03:59:59",
+   "rate": 0.5,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22052601,
+   "weekly": false,
+   "start": "2022-05-26 04:00:00",
+   "end": "2022-06-02 03:59:59",
+   "rate": 0.5,
+   "range": [
+    0,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22052602,
+   "weekly": false,
+   "start": "2022-05-26 04:00:00",
+   "end": "2022-06-02 03:59:59",
+   "rate": 0.5,
+   "range": [
+    1,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22052603,
+   "weekly": false,
+   "start": "2022-05-26 04:00:00",
+   "end": "2022-06-02 03:59:59",
+   "rate": 0.5,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22052604,
+   "weekly": false,
+   "start": "2022-05-26 04:00:00",
+   "end": "2022-06-02 03:59:59",
+   "rate": 0.5,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22052605,
+   "weekly": false,
+   "start": "2022-05-26 04:00:00",
+   "end": "2022-06-02 03:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22061601,
+   "weekly": false,
+   "start": "2022-06-16 04:00:00",
+   "end": "2022-06-23 03:59:59",
+   "rate": 0.5,
+   "range": [
+    0,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22061602,
+   "weekly": false,
+   "start": "2022-06-16 04:00:00",
+   "end": "2022-06-23 03:59:59",
+   "rate": 0.5,
+   "range": [
+    1,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22061603,
+   "weekly": false,
+   "start": "2022-06-16 04:00:00",
+   "end": "2022-06-23 03:59:59",
+   "rate": 0.5,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22061604,
+   "weekly": false,
+   "start": "2022-06-16 04:00:00",
+   "end": "2022-06-23 03:59:59",
+   "rate": 0.5,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22061605,
+   "weekly": false,
+   "start": "2022-06-16 04:00:00",
+   "end": "2022-06-23 03:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22082501,
+   "weekly": false,
+   "start": "2022-08-25 04:00:00",
+   "end": "2022-09-01 03:59:59",
+   "rate": 0.5,
+   "range": [
+    0,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22082502,
+   "weekly": false,
+   "start": "2022-08-25 04:00:00",
+   "end": "2022-09-01 03:59:59",
+   "rate": 0.5,
+   "range": [
+    1,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22082503,
+   "weekly": false,
+   "start": "2022-08-25 04:00:00",
+   "end": "2022-09-01 03:59:59",
+   "rate": 0.5,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22082504,
+   "weekly": false,
+   "start": "2022-08-25 04:00:00",
+   "end": "2022-09-01 03:59:59",
+   "rate": 0.5,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22082505,
+   "weekly": false,
+   "start": "2022-08-25 04:00:00",
+   "end": "2022-09-01 03:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22182501,
+   "weekly": false,
+   "start": "2022-09-15 04:00:00",
+   "end": "2022-09-22 03:59:59",
+   "rate": 0.5,
+   "range": [
+    0,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22182502,
+   "weekly": false,
+   "start": "2022-09-15 04:00:00",
+   "end": "2022-09-22 03:59:59",
+   "rate": 0.5,
+   "range": [
+    1,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22182503,
+   "weekly": false,
+   "start": "2022-09-15 04:00:00",
+   "end": "2022-09-22 03:59:59",
+   "rate": 0.5,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22182504,
+   "weekly": false,
+   "start": "2022-09-15 04:00:00",
+   "end": "2022-09-22 03:59:59",
+   "rate": 0.5,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22182505,
+   "weekly": false,
+   "start": "2022-09-15 04:00:00",
+   "end": "2022-09-22 03:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22182510,
+   "weekly": false,
+   "start": "2022-11-17 04:00:00",
+   "end": "2022-12-08 03:59:59",
+   "rate": 0.5,
+   "range": [
+    0,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22182511,
+   "weekly": false,
+   "start": "2022-11-17 04:00:00",
+   "end": "2022-12-08 03:59:59",
+   "rate": 0.5,
+   "range": [
+    1,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22182512,
+   "weekly": false,
+   "start": "2022-11-17 04:00:00",
+   "end": "2022-12-08 03:59:59",
+   "rate": 0.5,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22182513,
+   "weekly": false,
+   "start": "2022-11-17 04:00:00",
+   "end": "2022-12-08 03:59:59",
+   "rate": 0.5,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 22182514,
+   "weekly": false,
+   "start": "2022-11-17 04:00:00",
+   "end": "2022-12-08 03:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 23013101,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 23013102,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 23013103,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "1"
+   ]
+  },
+  {
+   "id": 23013104,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "2"
+   ]
+  },
+  {
+   "id": 23013105,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "3"
+   ]
+  },
+  {
+   "id": 23013106,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "4"
+   ]
+  },
+  {
+   "id": 23013107,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "5"
+   ]
+  },
+  {
+   "id": 23013108,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "6"
+   ]
+  },
+  {
+   "id": 23013109,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "7"
+   ]
+  },
+  {
+   "id": 23013110,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "8"
+   ]
+  },
+  {
+   "id": 23013111,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "9"
+   ]
+  },
+  {
+   "id": 23013112,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "10"
+   ]
+  },
+  {
+   "id": 23013113,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "11"
+   ]
+  },
+  {
+   "id": 23013114,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "12"
+   ]
+  },
+  {
+   "id": 23013115,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "13"
+   ]
+  },
+  {
+   "id": 23013116,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "14"
+   ]
+  },
+  {
+   "id": 23013117,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "15"
+   ]
+  },
+  {
+   "id": 23013118,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "16"
+   ]
+  },
+  {
+   "id": 23013119,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "17"
+   ]
+  },
+  {
+   "id": 23013120,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "18"
+   ]
+  },
+  {
+   "id": 23013121,
+   "weekly": false,
+   "start": "2024-09-12 04:00:00",
+   "end": "2024-09-27 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "19"
+   ]
+  },
+  {
+   "id": 23083101,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    3,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 23083102,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    4,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "id": 23083103,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "1"
+   ]
+  },
+  {
+   "id": 23083104,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "2"
+   ]
+  },
+  {
+   "id": 23083105,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "3"
+   ]
+  },
+  {
+   "id": 23083106,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "4"
+   ]
+  },
+  {
+   "id": 23083107,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "5"
+   ]
+  },
+  {
+   "id": 23083108,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "6"
+   ]
+  },
+  {
+   "id": 23083109,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "7"
+   ]
+  },
+  {
+   "id": 23083110,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "8"
+   ]
+  },
+  {
+   "id": 23083111,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "9"
+   ]
+  },
+  {
+   "id": 23083112,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "10"
+   ]
+  },
+  {
+   "id": 23083113,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "11"
+   ]
+  },
+  {
+   "id": 23083114,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "12"
+   ]
+  },
+  {
+   "id": 23083115,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "13"
+   ]
+  },
+  {
+   "id": 23083116,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "14"
+   ]
+  },
+  {
+   "id": 23083117,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "15"
+   ]
+  },
+  {
+   "id": 23083118,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "16"
+   ]
+  },
+  {
+   "id": 23083119,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "17"
+   ]
+  },
+  {
+   "id": 23083120,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "18"
+   ]
+  },
+  {
+   "id": 23083121,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    7,
+    "1",
+    null,
+    "19"
+   ]
+  },
+  {
+   "id": 23083122,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "1",
+    "1"
+   ]
+  },
+  {
+   "id": 23083123,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "2",
+    "1"
+   ]
+  },
+  {
+   "id": 23083124,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "2",
+    "2"
+   ]
+  },
+  {
+   "id": 23083125,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "2",
+    "3"
+   ]
+  },
+  {
+   "id": 23083126,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "2",
+    "4"
+   ]
+  },
+  {
+   "id": 23083127,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "3",
+    "1"
+   ]
+  },
+  {
+   "id": 23083128,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "3",
+    "2"
+   ]
+  },
+  {
+   "id": 23083129,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "3",
+    "3"
+   ]
+  },
+  {
+   "id": 23083130,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "3",
+    "4"
+   ]
+  },
+  {
+   "id": 23083131,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "5",
+    "1"
+   ]
+  },
+  {
+   "id": 23083132,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "5",
+    "2"
+   ]
+  },
+  {
+   "id": 23083133,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "5",
+    "3"
+   ]
+  },
+  {
+   "id": 23083134,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "5",
+    "4"
+   ]
+  },
+  {
+   "id": 23083135,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "6",
+    "1"
+   ]
+  },
+  {
+   "id": 23083136,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "6",
+    "2"
+   ]
+  },
+  {
+   "id": 23083137,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "6",
+    "3"
+   ]
+  },
+  {
+   "id": 23083138,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "6",
+    "4"
+   ]
+  },
+  {
+   "id": 23083139,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "9",
+    "1"
+   ]
+  },
+  {
+   "id": 23083140,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "9",
+    "2"
+   ]
+  },
+  {
+   "id": 23083141,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "9",
+    "3"
+   ]
+  },
+  {
+   "id": 23083142,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "9",
+    "4"
+   ]
+  },
+  {
+   "id": 23083143,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "10",
+    "1"
+   ]
+  },
+  {
+   "id": 23083144,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "10",
+    "2"
+   ]
+  },
+  {
+   "id": 23083145,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "10",
+    "3"
+   ]
+  },
+  {
+   "id": 23083146,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "10",
+    "4"
+   ]
+  },
+  {
+   "id": 23083147,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "12",
+    "1"
+   ]
+  },
+  {
+   "id": 23083148,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "12",
+    "2"
+   ]
+  },
+  {
+   "id": 23083149,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "12",
+    "3"
+   ]
+  },
+  {
+   "id": 23083150,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "12",
+    "4"
+   ]
+  },
+  {
+   "id": 23083151,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "13",
+    "1"
+   ]
+  },
+  {
+   "id": 23083152,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "13",
+    "2"
+   ]
+  },
+  {
+   "id": 23083153,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "13",
+    "3"
+   ]
+  },
+  {
+   "id": 23083154,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "13",
+    "4"
+   ]
+  },
+  {
+   "id": 23083155,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "14",
+    "1"
+   ]
+  },
+  {
+   "id": 23083156,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "14",
+    "2"
+   ]
+  },
+  {
+   "id": 23083157,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "14",
+    "3"
+   ]
+  },
+  {
+   "id": 23083158,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "14",
+    "4"
+   ]
+  },
+  {
+   "id": 23083159,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "16",
+    "1"
+   ]
+  },
+  {
+   "id": 23083160,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "16",
+    "2"
+   ]
+  },
+  {
+   "id": 23083161,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "16",
+    "3"
+   ]
+  },
+  {
+   "id": 23083162,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "16",
+    "4"
+   ]
+  },
+  {
+   "id": 23083163,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "17",
+    "1"
+   ]
+  },
+  {
+   "id": 23083164,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "17",
+    "2"
+   ]
+  },
+  {
+   "id": 23083165,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "17",
+    "3"
+   ]
+  },
+  {
+   "id": 23083166,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "17",
+    "4"
+   ]
+  },
+  {
+   "id": 23083167,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "19",
+    "1"
+   ]
+  },
+  {
+   "id": 23083168,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "19",
+    "2"
+   ]
+  },
+  {
+   "id": 23083169,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "19",
+    "3"
+   ]
+  },
+  {
+   "id": 23083170,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "19",
+    "4"
+   ]
+  },
+  {
+   "id": 23083171,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "20",
+    "1"
+   ]
+  },
+  {
+   "id": 23083172,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "20",
+    "2"
+   ]
+  },
+  {
+   "id": 23083173,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "20",
+    "3"
+   ]
+  },
+  {
+   "id": 23083174,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "22",
+    "1"
+   ]
+  },
+  {
+   "id": 23083175,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "22",
+    "2"
+   ]
+  },
+  {
+   "id": 23083176,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "22",
+    "3"
+   ]
+  },
+  {
+   "id": 23083177,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "22",
+    "4"
+   ]
+  },
+  {
+   "id": 23083178,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "23",
+    "1"
+   ]
+  },
+  {
+   "id": 23083179,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "23",
+    "2"
+   ]
+  },
+  {
+   "id": 23083180,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "23",
+    "3"
+   ]
+  },
+  {
+   "id": 23083181,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "23",
+    "4"
+   ]
+  },
+  {
+   "id": 23083182,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "24",
+    "1"
+   ]
+  },
+  {
+   "id": 23083183,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "24",
+    "2"
+   ]
+  },
+  {
+   "id": 23083184,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "24",
+    "3"
+   ]
+  },
+  {
+   "id": 23083185,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "24",
+    "4"
+   ]
+  },
+  {
+   "id": 23083186,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "33",
+    "1"
+   ]
+  },
+  {
+   "id": 23083187,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "33",
+    "2"
+   ]
+  },
+  {
+   "id": 23083188,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "33",
+    "3"
+   ]
+  },
+  {
+   "id": 23083189,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "33",
+    "4"
+   ]
+  },
+  {
+   "id": 23083190,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "34",
+    "1"
+   ]
+  },
+  {
+   "id": 23083191,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "34",
+    "2"
+   ]
+  },
+  {
+   "id": 23083192,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "34",
+    "3"
+   ]
+  },
+  {
+   "id": 23083193,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "34",
+    "4"
+   ]
+  },
+  {
+   "id": 23083194,
+   "weekly": false,
+   "start": "2025-03-27 04:00:00",
+   "end": "2025-04-10 15:59:59",
+   "rate": 0.5,
+   "range": [
+    2,
+    "1",
+    "34",
+    "5"
+   ]
+  }
+ ]
+}

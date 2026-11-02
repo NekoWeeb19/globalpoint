@@ -1,10 +1,11 @@
-// Handles mail.
+// Handles Time Attack ranking events ("Speed Run: Trial by ..."). The rank comes from the best clear
+// time against each rank's time border (src/lib/rankingEvent.ts), and receive_reward pays that rank's
+// rewards once.
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { getAccountPlayers, getPlayerQuestProgressSync, getPlayerSingleQuestProgressSync, getSession } from "../../data/wdfpData";
+import { getAccountPlayers, getSession } from "../../data/wdfpData";
 import { generateDataHeaders } from "../../utils";
-import { QuestCategory } from "../../lib/types";
-import { PlayerQuestProgress } from "../../data/types";
+import { getRankingEvent, getRankingSummarySync, receiveRankingRewardSync } from "../../nya/rankingEvent";
 
 interface ReceiveRewardBody {
     api_count: number,
@@ -16,60 +17,6 @@ interface GetSummaryBody {
     viewer_id: number,
     ranking_event_id: number,
     quest_kind: number
-}
-
-const rankingEventIdQuestMap: Record<number, number> = {
-    [1]: 1001,
-    [2]: 2001,
-    [3]: 3001,
-    [4]: 4001,
-    [5]: 5001
-}
-
-const rankingEventTopTimesMs: Record<number, number> = {
-    [1]: 54410,
-    [2]: 25800,
-    [3]: 18880,
-    [4]: 31720,
-    [5]: 6540
-}
-
-/**
- * Generates a ranking summary for a specific player & ranking event.
- * 
- * @param playerId 
- * @param eventId 
- * @returns 
- */
-function getRankingSummary(
-    playerId: number,
-    eventId: number
-): Object | null {
-    // get quest
-    const questId = rankingEventIdQuestMap[eventId]
-    if (questId === undefined) return null;
-
-    const topTime = rankingEventTopTimesMs[eventId] ?? 0
-
-    // get data for the ranking quest
-    const playerQuestData = getPlayerSingleQuestProgressSync(playerId, QuestCategory.RANKING_EVENT_SINGLE, questId)
-    const isAccomplished = playerQuestData !== null && playerQuestData.bestElapsedTimeMs !== undefined && playerQuestData.bestElapsedTimeMs !== null
-
-    return {
-        "best_record": {
-            "elapsed_time_ms": isAccomplished ? playerQuestData.bestElapsedTimeMs ?? 0 : 0,
-            "is_accomplished": isAccomplished,
-            "score": isAccomplished ? playerQuestData.highScore ?? 0 : 0
-        },
-        "leader_character_evolution_img_level": 1,
-        "leader_character_id": 1,
-        "rank_border_top": {
-            "elapsed_time_ms": topTime,
-            "is_accomplished": true,
-            "score": 1110111
-        },
-        "rank_percentage": isAccomplished ? 1 - (topTime / (playerQuestData.bestElapsedTimeMs ?? 1)) : 100
-    }
 }
 
 const routes = async (fastify: FastifyInstance) => {
@@ -99,7 +46,7 @@ const routes = async (fastify: FastifyInstance) => {
         })
 
         // get summary
-        const summary = getRankingSummary(playerId, eventId)
+        const summary = getRankingSummarySync(playerId, eventId)
         if (summary === null) return reply.status(400).send({
             "error": "Bad Request",
             "message": `Summary could not be generated for '${eventId}' and PlayerId '${playerId}'.`
@@ -139,22 +86,18 @@ const routes = async (fastify: FastifyInstance) => {
             "message": "No player bound to account."
         })
 
-        // get summary
-        const summary = getRankingSummary(playerId, eventId)
-        if (summary === null) return reply.status(400).send({
+        if (getRankingEvent(eventId) === null) return reply.status(400).send({
             "error": "Bad Request",
             "message": `Summary could not be generated for '${eventId}' and PlayerId '${playerId}'.`
         })
 
+        // status 1 paid now, 2 already paid, 3 nothing to claim
         reply.header("content-type", "application/x-msgpack")
         return reply.status(200).send({
             "data_headers": generateDataHeaders({
                 viewer_id: viewerId
             }),
-            "data": {
-                "status": 1,
-                ...summary
-            }
+            "data": receiveRankingRewardSync(playerId, eventId)
         })
     })
 }

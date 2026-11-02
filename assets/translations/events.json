@@ -1,0 +1,963 @@
+{
+ "_about": "Event, mission, item and UI text global never translated (post-EoS content). tables: hashed CDN file -> the columns to translate and the exact Japanese/Korean field values to replace. Reruns and augmented global armaments use global's own English. Applied by scripts/gen_translation_mod.cjs.",
+ "tables": {
+  "production/upload/36/ba43197a7ee4dacbd8c1d4a1d829b50c074138": {
+   "name": "score attack events",
+   "cols": [
+    1
+   ],
+   "strings": {
+    "無限演武": "Infinite Arena"
+   }
+  },
+  "production/upload/7f/4ae97c1469441250943eae654fe5e68eaaa64b": {
+   "name": "score attack quests",
+   "cols": [
+    3
+   ],
+   "strings": {
+    "直接攻撃演武": "Direct Attack Arena",
+    "パワフリ演武": "Power Flip Arena",
+    "スキル演武（耐久）": "Skill Arena (Endurance)",
+    "スキル演武": "Skill Arena",
+    "スキル演武（速攻）": "Skill Arena (Blitz)",
+    "直接攻撃演武（耐久）": "Direct Attack Arena (Endurance)"
+   }
+  },
+  "production/upload/9d/ce795ce3b22becb90023d357382ce252193782": {
+   "name": "score attack border rewards",
+   "cols": [
+    3
+   ],
+   "strings": {
+    "ボーダー001": "Border 001",
+    "ボーダー002": "Border 002",
+    "ボーダー003": "Border 003",
+    "ボーダー004": "Border 004",
+    "ボーダー005": "Border 005",
+    "ボーダー006": "Border 006",
+    "ボーダー007": "Border 007",
+    "ボーダー008": "Border 008",
+    "ボーダー009": "Border 009",
+    "ボーダー010": "Border 010",
+    "ボーダー011": "Border 011",
+    "ボーダー012": "Border 012",
+    "ボーダー013": "Border 013",
+    "ボーダー014": "Border 014",
+    "ボーダー015": "Border 015",
+    "ボーダー016": "Border 016",
+    "ボーダー017": "Border 017",
+    "ボーダー018": "Border 018",
+    "ボーダー019": "Border 019",
+    "ボーダー020": "Border 020",
+    "ボーダー021": "Border 021",
+    "ボーダー022": "Border 022",
+    "ボーダー023": "Border 023",
+    "ボーダー024": "Border 024",
+    "ボーダー025": "Border 025",
+    "ボーダー026": "Border 026",
+    "ボーダー027": "Border 027",
+    "ボーダー028": "Border 028",
+    "ボーダー029": "Border 029",
+    "ボーダー030": "Border 030",
+    "ボーダー031": "Border 031",
+    "ボーダー032": "Border 032",
+    "ボーダー033": "Border 033",
+    "ボーダー034": "Border 034",
+    "ボーダー035": "Border 035",
+    "ボーダー036": "Border 036",
+    "ボーダー037": "Border 037",
+    "ボーダー038": "Border 038",
+    "ボーダー039": "Border 039",
+    "ボーダー040": "Border 040",
+    "ボーダー041": "Border 041",
+    "ボーダー042": "Border 042",
+    "ボーダー043": "Border 043",
+    "ボーダー044": "Border 044",
+    "ボーダー045": "Border 045",
+    "ボーダー046": "Border 046",
+    "ボーダー047": "Border 047",
+    "ボーダー048": "Border 048",
+    "ボーダー049": "Border 049",
+    "ボーダー050": "Border 050",
+    "ボーダー051": "Border 051",
+    "ボーダー052": "Border 052",
+    "ボーダー053": "Border 053",
+    "ボーダー054": "Border 054",
+    "ボーダー055": "Border 055",
+    "ボーダー056": "Border 056",
+    "ボーダー057": "Border 057",
+    "ボーダー058": "Border 058",
+    "ボーダー059": "Border 059",
+    "ボーダー060": "Border 060"
+   }
+  },
+  "production/upload/54/627d2316d56f4af528acb6f1c832ceb72d9a6e": {
+   "name": "equipment enhancement kinds",
+   "cols": [
+    3
+   ],
+   "strings": {
+    "プ・リリエの褒章装備強化": "Pur Lilie's Medal Arm. Augmentation"
+   }
+  },
+  "production/upload/68/f187ccb76e9cc852c48b3973df08f0ae61df8c": {
+   "name": "feature unlock dialogs",
+   "cols": [
+    19
+   ],
+   "strings": {
+    "無限演武が遊べるようになりました！ \n\nハイスコアを目指すシングルバトルコンテンツで、豪華報酬を獲得できます！\n\nイベントクエストから遊べるので\nぜひ挑戦してください": "You can now play the Infinite Arena!\n\nAim for a high score in solo battles\nand earn lavish rewards!\n\nFind it under Event Quests\nand give it a try!"
+   }
+  },
+  "production/upload/6b/ef338822b2c963eb40c67b3d43a3b3f911ad73": {
+   "name": "advent event quests",
+   "cols": [
+    2,
+    125
+   ],
+   "strings": {
+    "星喰いデオフラスス ::quest_rank::": "Deofrasus ::quest_rank::",
+    "ブラックドラゴン ::quest_rank::": "Black Dragon ::quest_rank::",
+    "星に願いを": "Wish Upon a Star",
+    "『反撃』の機会を失わない為にも街を死守する方針を固めたナオ達の下に、シブヤにも粛清者が現れたとの情報が入る。どうにかシブヤの人々を助けられないか考えたナオは、揺らぎを利用して迷宮を繋ぐことを提案し、陽動部隊は粛清者の気を引き始めるのだった": "As Nao and the others make ready to hold the line in order to leave themselves a chance to counterattack, reports come in of Purgers entering Shibuya. Desperate to save the civilians in Shibuya, Nao comes up with a plan to use shifts in the Kaleidoscope to form a bridge. A diversionary force is sent to draw the enemy's attention.",
+    "歩兵の粛清者 ::quest_rank::": "Frontline Purger ::quest_rank::",
+    "天蓋都市の反撃": "Palpebra's Counterattack",
+    "迷宮を繋げるのに必要な『星の神器』を借りる為にベルセティアを探して迷宮に赴いたナオは、レオンに窮地を救われる。そこでレオンに救助されていたベルセティア達と遭遇したナオは、真摯な思いでベルセティアを説得し道を作るべく力を行使するのだった": "Nao enters the Kaleidoscope, seeking the Star Relic held by Belsidia to build a bridge. Leon comes to her rescue in the nick of time and finds he's brought along just the person she needs. Nao makes a concerned plea to Belsidia, convincing the woman to lend her aid in the task ahead.",
+    "光の逃走経路": "The Path to Safety",
+    "シブヤで避難誘導を行っていたセイジは、メムラムに避難所を任せて住民達を連れて地下に向かっていた。地上では銀の森の連合を始めとした仲間達による防衛戦が繰り広げられており、地下ではセイジ達の目の前でナオが道を作り出すことに成功するのだった": "While evacuating the people of Shibuya, Seiji leaves Memram to protect their escape while he brings the group underground. Beginning with forces from the Silver Woods, a defensive battle spreads out above, while below, Seiji and the others witness Nao completing the bridge.",
+    "僧正の粛清者 ::quest_rank::": "Purger Sage ::quest_rank::",
+    "異形粛清者 ::quest_rank::": "Modified Purger ::quest_rank::",
+    "深淵より響く": "Echoes in the Abyss",
+    "倒しても続々と天から現れる粛清者達の姿に絶望を感じていたスイゼン達は、突如『下』から放たれた陰の気を感じ取る。同じく呪いの力を感じ取ったナオ達は、チャルアがレシタール達と協力して呪いの力を全く別の力に変質させる瞬間を目撃するのだった": "Despite numerous losses, the Purgers keep coming. Suizen's group begins to despair when suddenly, a dark energy bubbles up from below. Nao and the others believe it to be the power of the curse, but they bear witness to Challua and Regitare using the energy for an entirely different purpose.",
+    "掴め、全ての子達よ。": "Seize Your Destiny",
+    "チャルアによって願いと形を与えられ街の各所に現れた残留思念達と、レシタールによる癒しと粛清者の『転生』封じによって一同は再び希望を見出す。街の人々がまだ誰も諦めていないことを知ったナオ達は、反撃の狼煙を上げるのだった": "Challua's power gives form to lingering emotions, making departed souls appear throughout the city. Regitare provides healing while sealing off the Purgers' power to reincarnate themselves. As Nao looks upon a city filled with those determined to fight on, the time comes to signal a counterattack.",
+    "女帝の粛清者 ::quest_rank::": "Purger Empress ::quest_rank::",
+    "聖夜の雪像Ｇ ::quest_rank::": "Festive Snowy Maws ::quest_rank::",
+    "翠機兵クラーグ ::quest_rank::": "Krag ::quest_rank::",
+    "蒼機兵ヴェルヌス ::quest_rank::": "Vernus ::quest_rank::",
+    "閃機兵アイザン ::quest_rank::": "Eisen ::quest_rank::"
+   }
+  },
+  "production/upload/c7/428142e8bf6ca3dcd9445f67d0c882765710c7": {
+   "name": "advent events",
+   "cols": [
+    2
+   ],
+   "strings": {
+    "水狂の精霊獣": "Maelstrom Spiritbeast",
+    "翠愁の機兵": "Gale Steambot",
+    "蒼歎の機兵": "Tidal Steambot",
+    "クグイとリョウキの特別訓練！": "Kugui and Ryouki's Special Training!",
+    "粛清者討伐戦": "The Purge",
+    "閃哭の機兵": "Luminous Steambot",
+    "魁雷の精霊獣": "Thundering Spiritbeast",
+    "威風の精霊獣": "Slitherwind Spiritbeast",
+    "巫光の精霊獣": "Radiant Spiritbeast",
+    "炎嗟の精霊獣": "Inferno Spiritbeast"
+   }
+  },
+  "production/upload/87/1304471157da89e59ec26eb6df303c1eeafbe6": {
+   "name": "hard multi events",
+   "cols": [
+    2
+   ],
+   "strings": {
+    "共同決戦【翠愁の機兵】": "The Reckoning Gale Steambot",
+    "共同決戦【蒼歎の機兵】": "The Reckoning Tidal Steambot",
+    "共同決戦【閃哭の機兵】": "The Reckoning Luminous Steambot"
+   }
+  },
+  "production/upload/8a/b96162f1210de71fafa87333abe257dc619183": {
+   "name": "hard multi quests",
+   "cols": [
+    2
+   ],
+   "strings": {
+    "翠機兵クラーグ ::quest_rank::": "Krag ::quest_rank::",
+    "蒼機兵ヴェルヌス ::quest_rank::": "Vernus ::quest_rank::",
+    "閃機兵アイザン ::quest_rank::": "Eisen ::quest_rank::"
+   }
+  },
+  "production/upload/f6/a39a6bcf24cb0536a3ebc97d0079908f47e284": {
+   "name": "hard multi daily reward counts",
+   "cols": [
+    4,
+    6
+   ],
+   "strings": {
+    "デイリー報酬受け取り可能回数\n対象クエスト：共同決戦「翠愁の機兵」": "Daily Reward Count\nFor The Reckoning Gale Steambot",
+    "デイリー報酬受け取り可能回数\n対象クエスト：共同決戦「蒼機兵ヴェルヌス」": "Daily Reward Count\nFor The Reckoning Tidal Steambot",
+    "デイリー報酬受け取り可能回数\n対象クエスト：共同決戦「閃哭の機兵」": "Daily Reward Count\nFor The Reckoning Luminous Steambot"
+   }
+  },
+  "production/upload/d1/73e8ff929070d4c0bbef95fa679afcfa1c203f": {
+   "name": "boss names",
+   "cols": [
+    0
+   ],
+   "strings": {
+    "翠機兵クラーグ": "Steambot Krag",
+    "蒼機兵ヴェルヌス": "Steambot Vernus",
+    "閃機兵アイザン": "Steambot Eisen"
+   }
+  },
+  "production/upload/8e/d3874807da6b5881be725cf6198d7a50ead0e0": {
+   "name": "carnival quests",
+   "cols": [
+    3,
+    4
+   ],
+   "strings": {
+    "ハニワカーニバル": "Hanifolk Carnival",
+    "閃火必殺ハニンガー ::quest_rank::": "Flashfire S Hani ::quest_rank::",
+    "閃火強振ハニンガー ::quest_rank::": "Flashfire PF Hani ::quest_rank::",
+    "閃火直撃ハニンガー ::quest_rank::": "Flashfire DH Hani ::quest_rank::"
+   }
+  },
+  "production/upload/b3/155b283c72f27094fc0d8f90100de409816c8e": {
+   "name": "carnival stages",
+   "cols": [
+    1
+   ],
+   "strings": {
+    "閃火必殺ハニンガー": "Flashfire S Hani",
+    "閃火強振ハニンガー": "Flashfire PF Hani",
+    "閃火直撃ハニンガー": "Flashfire DH Hani"
+   }
+  },
+  "production/upload/ec/d8f66b60947ca05643c4080a6cc925c750b9d6": {
+   "name": "enemies",
+   "cols": [
+    1,
+    99,
+    107,
+    108
+   ],
+   "strings": {
+    "閃火必殺ハニンガー": "Flashfire S Hani",
+    "フィールド再展開": "Field Redeploy",
+    "閃火強振ハニンガー": "Flashfire PF Hani",
+    "フィーバーリセット": "Fever Reset",
+    "フィーバー突入でダウン": "Downed on Fever",
+    "閃火直撃ハニンガー": "Flashfire DH Hani",
+    "殺生叫冥": "Deathwail of the Netherworld"
+   }
+  },
+  "production/upload/23/42b64dbbc30952eda56b61310191ea5beea7fa": {
+   "name": "battle gimmick callouts",
+   "cols": [
+    59,
+    62,
+    63,
+    64
+   ],
+   "strings": {
+    "壊せ！": "Smash Me!",
+    "おしおき！": "Punishment!",
+    "恩恵": "Blessing",
+    "絶対壊すな！": "Don't You Dare Smash Me!",
+    "ダイ・オア・ダイ": "Die or Die",
+    "よくできました！": "Well Done!",
+    "壊したね？": "You Smashed It, Didn't You?"
+   }
+  },
+  "production/upload/c5/593f976d7512eeea2f215c5c974287331f1777": {
+   "name": "raid quests",
+   "cols": [
+    3
+   ],
+   "strings": {
+    "乏竜の宴 ::quest_rank::": "Saga of the Starving Dragon ::quest_rank::",
+    "妄羊の宴 ::quest_rank::": "Saga of the Deluded Sheep ::quest_rank::"
+   }
+  },
+  "production/upload/b6/595dedd9cfa79b7e6eccab25dd9a2a81b066a2": {
+   "name": "rush quests",
+   "cols": [
+    4
+   ],
+   "strings": {
+    "中級 1戦目": "Inter. 1",
+    "中級 2戦目": "Inter. 2",
+    "上級 1戦目": "Adv. 1",
+    "上級 2戦目": "Adv. 2",
+    "超級 1戦目": "Godly 1",
+    "超級 2戦目": "Godly 2",
+    "超級 3戦目": "Godly 3",
+    "エンドレスバトル": "Endless Battle"
+   }
+  },
+  "production/upload/3d/702094031bfe5ffac079a0fef5ab59156fa35c": {
+   "name": "story event single quests",
+   "cols": [
+    2
+   ],
+   "strings": {
+    "발매 950일 기념 1일째": "950 Days Celebration Day 1",
+    "발매 950일 기념 2일째": "950 Days Celebration Day 2",
+    "발매 950일 기념 3일째": "950 Days Celebration Day 3",
+    "발매 950일 기념 4일째": "950 Days Celebration Day 4",
+    "발매 950일 기념 5일째": "950 Days Celebration Day 5",
+    "발매 950일 기념 6일째": "950 Days Celebration Day 6",
+    "발매 950일 기념 7일째": "950 Days Celebration Day 7",
+    "발매 950일 기념 8일째": "950 Days Celebration Day 8",
+    "발매 950일 기념 9일째": "950 Days Celebration Day 9",
+    "발매 950일 기념 10일째": "950 Days Celebration Day 10",
+    "발매 900일 기념 1일째": "900 Days Celebration Day 1",
+    "발매 900일 기념 2일째": "900 Days Celebration Day 2",
+    "발매 900일 기념 3일째": "900 Days Celebration Day 3",
+    "발매 900일 기념 4일째": "900 Days Celebration Day 4",
+    "발매 900일 기념 5일째": "900 Days Celebration Day 5",
+    "발매 900일 기념 6일째": "900 Days Celebration Day 6",
+    "발매 900일 기념 7일째": "900 Days Celebration Day 7",
+    "발매 900일 기념 8일째": "900 Days Celebration Day 8",
+    "발매 900일 기념 9일째": "900 Days Celebration Day 9",
+    "발매 900일 기념 10일째": "900 Days Celebration Day 10",
+    "リリース千日記念1日目": "1,000 Days Celebration Day 1",
+    "リリース千日記念2日目": "1,000 Days Celebration Day 2",
+    "リリース千日記念3日目": "1,000 Days Celebration Day 3",
+    "リリース千日記念4日目": "1,000 Days Celebration Day 4",
+    "リリース千日記念5日目": "1,000 Days Celebration Day 5",
+    "リリース千日記念6日目": "1,000 Days Celebration Day 6",
+    "リリース千日記念7日目": "1,000 Days Celebration Day 7",
+    "リリース千日記念8日目": "1,000 Days Celebration Day 8",
+    "リリース千日記念9日目": "1,000 Days Celebration Day 9",
+    "リリース千日記念10日目": "1,000 Days Celebration Day 10"
+   }
+  },
+  "production/upload/12/4b9d15e6e0d859e13b3ad8d4bec9194cd4c609": {
+   "name": "story events",
+   "cols": [
+    2
+   ],
+   "strings": {
+    "발매 950일 기념 퀘스트": "950 Days Celebration Quests",
+    "발매 900일 기념 퀘스트": "900 Days Celebration Quests",
+    "リリース千日記念クエスト": "1,000 Days Celebration Quests"
+   }
+  },
+  "production/upload/79/d0efa595c0ccc8a964c8721dff608bc9e04be3": {
+   "name": "quest attempt counters",
+   "cols": [
+    4,
+    6
+   ],
+   "strings": {
+    "チャレンジシングルバトル挑戦回数\n対象クエスト：Ａ・シープマテリア 超級+": "Big Baaad Golem Godly+\nSolo Boss Challenge Attempt(s)",
+    "チャレンジシングルバトルの挑戦回数\n対象クエスト：Ａ・シープマテリア 超級+\n※挑戦回数は5:00にリセットされます": "Big Baaad Golem Godly+\nSolo Boss Challenge Attempt(s)\nAttempts reset at 5 am",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念1日目": "Quest Attempts\nFor 950 Days Celebration Day 1",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念１日目": "Quest Attempts\nFor 950 Days Celebration Day 1",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念2日目": "Quest Attempts\nFor 950 Days Celebration Day 2",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念２日目": "Quest Attempts\nFor 950 Days Celebration Day 2",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念3日目": "Quest Attempts\nFor 950 Days Celebration Day 3",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念３日目": "Quest Attempts\nFor 950 Days Celebration Day 3",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念4日目": "Quest Attempts\nFor 950 Days Celebration Day 4",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念４日目": "Quest Attempts\nFor 950 Days Celebration Day 4",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念5日目": "Quest Attempts\nFor 950 Days Celebration Day 5",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念５日目": "Quest Attempts\nFor 950 Days Celebration Day 5",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念6日目": "Quest Attempts\nFor 950 Days Celebration Day 6",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念６日目": "Quest Attempts\nFor 950 Days Celebration Day 6",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念7日目": "Quest Attempts\nFor 950 Days Celebration Day 7",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念７日目": "Quest Attempts\nFor 950 Days Celebration Day 7",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念8日目": "Quest Attempts\nFor 950 Days Celebration Day 8",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念８日目": "Quest Attempts\nFor 950 Days Celebration Day 8",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念9日目": "Quest Attempts\nFor 950 Days Celebration Day 9",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念９日目": "Quest Attempts\nFor 950 Days Celebration Day 9",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念10日目": "Quest Attempts\nFor 950 Days Celebration Day 10",
+    "クエスト挑戦回数\n対象クエスト：リリース950日記念１０日目": "Quest Attempts\nFor 950 Days Celebration Day 10",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念1日目": "Quest Attempts\nFor 1,000 Days Celebration Day 1",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念１日目": "Quest Attempts\nFor 1,000 Days Celebration Day 1",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念2日目": "Quest Attempts\nFor 1,000 Days Celebration Day 2",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念２日目": "Quest Attempts\nFor 1,000 Days Celebration Day 2",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念3日目": "Quest Attempts\nFor 1,000 Days Celebration Day 3",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念３日目": "Quest Attempts\nFor 1,000 Days Celebration Day 3",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念4日目": "Quest Attempts\nFor 1,000 Days Celebration Day 4",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念４日目": "Quest Attempts\nFor 1,000 Days Celebration Day 4",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念5日目": "Quest Attempts\nFor 1,000 Days Celebration Day 5",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念５日目": "Quest Attempts\nFor 1,000 Days Celebration Day 5",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念6日目": "Quest Attempts\nFor 1,000 Days Celebration Day 6",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念６日目": "Quest Attempts\nFor 1,000 Days Celebration Day 6",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念7日目": "Quest Attempts\nFor 1,000 Days Celebration Day 7",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念７日目": "Quest Attempts\nFor 1,000 Days Celebration Day 7",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念8日目": "Quest Attempts\nFor 1,000 Days Celebration Day 8",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念８日目": "Quest Attempts\nFor 1,000 Days Celebration Day 8",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念9日目": "Quest Attempts\nFor 1,000 Days Celebration Day 9",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念９日目": "Quest Attempts\nFor 1,000 Days Celebration Day 9",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念10日目": "Quest Attempts\nFor 1,000 Days Celebration Day 10",
+    "クエスト挑戦回数\n対象クエスト：リリース千日記念１０日目": "Quest Attempts\nFor 1,000 Days Celebration Day 10",
+    "チャレンジシングルバトル挑戦回数\n対象クエスト：廃龍イルフリード 超級+": "Il Freed Godly+\nSolo Boss Challenge Attempt(s)",
+    "チャレンジシングルバトルの挑戦回数\n対象クエスト：廃龍イルフリード 超級+\n※挑戦回数は5:00にリセットされます": "Il Freed Godly+\nSolo Boss Challenge Attempt(s)\nAttempts reset at 5 am"
+   }
+  },
+  "production/upload/ac/de425a8da0664edad2bf99feddc5e97ae6741d": {
+   "name": "event missions",
+   "cols": [
+    1
+   ],
+   "strings": {
+    "【異界の流離譚】比翼の使い魔を討伐 ::x_count::": "[Wanderers from Another World] Defeat the Winged Familiars ::x_count:: times",
+    "【ワーフリキャラ総選挙】投票を行う ::x_count::": "[WF Unit Poll] Vote ::x_count:: times",
+    "【土用の丑の日CP】オロチの協力バトルをクリア ::x_count::": "[Midsummer Promo] Clear Orochi (Multiplayer) ::x_count:: times",
+    "【コンバットダイバー】中級1戦目 120秒以内でクリア": "Clear the first Intermediate Grand Gauntlet Battle in 120 seconds or less",
+    "【コンバットダイバー】中級2戦目 120秒以内でクリア": "Clear the second Intermediate Grand Gauntlet Battle in 120 seconds or less",
+    "【コンバットダイバー】上級1戦目 180秒以内でクリア": "Clear the first Advanced Grand Gauntlet Battle in 180 seconds or less",
+    "【コンバットダイバー】上級2戦目 180秒以内でクリア": "Clear the second Advanced Grand Gauntlet Battle in 180 seconds or less",
+    "【コンバットダイバー】超級1戦目 180秒以内でクリア": "Clear the first Godly Grand Gauntlet Battle in 180 seconds or less",
+    "【コンバットダイバー】超級2戦目 180秒以内でクリア": "Clear the second Godly Grand Gauntlet Battle in 180 seconds or less",
+    "【コンバットダイバー】超級3戦目 180秒以内でクリア": "Clear the third Godly Grand Gauntlet Battle in 180 seconds or less",
+    "【コンバットダイバー】ラッシュバトルをクリア ::x_count::": "Clear Grand Gauntlet Rush Battles ::x_count:: times",
+    "【戦陣の宴】イベントに参加する": "Sagas of Conquest: Join the event",
+    "【戦陣の宴】メイン編成をSET編集で編成する": "Sagas of Conquest: Set up your Main party in SET Edit",
+    "【戦陣の宴】サブ1編成をSET編集で編成する": "Sagas of Conquest: Set up your Sub 1 party in SET Edit",
+    "【戦陣の宴】サブ2編成をSET編集で編成する": "Sagas of Conquest: Set up your Sub 2 party in SET Edit",
+    "「バトル開始から180秒以内の自身の棺桶回数が0回」を達成しつつSSクリア": "Clear with an SS rank without being K.O.'d in the first 180 seconds of battle",
+    "「リーダーが攻撃力ダウン状態にならない」を達成しつつSSクリア": "Clear with an SS rank without your Leader being inflicted with attack down",
+    "【ハニワカーニバル】宵闇直撃ハニンガー中級をクリア": "Hanifolk Carnival: Clear Doomshade DH Hani Intermediate",
+    "【ハニワカーニバル】宵闇強振ハニンガー中級をクリア": "Hanifolk Carnival: Clear Doomshade PF Hani Intermediate",
+    "【ハニワカーニバル】宵闇必殺ハニンガー中級をクリア": "Hanifolk Carnival: Clear Doomshade S Hani Intermediate",
+    "【ハニワカーニバル】中級をすべてクリア": "Hanifolk Carnival: Clear All Intermediate Quests",
+    "【ハニワカーニバル】宵闇直撃ハニンガー上級をクリア": "Hanifolk Carnival: Clear Doomshade DH Hani Advanced",
+    "【ハニワカーニバル】宵闇強振ハニンガー上級をクリア": "Hanifolk Carnival: Clear Doomshade PF Hani Advanced",
+    "【ハニワカーニバル】宵闇必殺ハニンガー上級をクリア": "Hanifolk Carnival: Clear Doomshade S Hani Advanced",
+    "【ハニワカーニバル】上級をすべてクリア": "Hanifolk Carnival: Clear All Advanced Quests",
+    "【ハニワカーニバル】宵闇直撃ハニンガー超級をクリア": "Hanifolk Carnival: Clear Doomshade DH Hani Godly",
+    "【ハニワカーニバル】宵闇強振ハニンガー超級をクリア": "Hanifolk Carnival: Clear Doomshade PF Hani Godly",
+    "【ハニワカーニバル】宵闇必殺ハニンガー超級をクリア": "Hanifolk Carnival: Clear Doomshade S Hani Godly",
+    "【ハニワカーニバル】超級をすべてクリア": "Hanifolk Carnival: Clear All Godly Quests",
+    "【粛清者討伐戦】協力バトルをクリア ::x_count::": "The Purge: Clear ::x_count:: multiplayer battles",
+    "【翠愁の機兵】降臨討伐の協力バトルをクリア ::x_count::": "Gale Steambot: Clear ::x_count:: multiplayer battles",
+    "【蒼歎の機兵】降臨討伐の協力バトルをクリア ::x_count::": "Tidal Steambot: Clear ::x_count:: multiplayer battles",
+    "バトル中1度も敵から「リーダー」が「光属性耐性ダウン」を受けずにSSクリア": "Clear with an SS rank without your Leader ever being inflicted with Light resistance down by foes",
+    "【閃哭の機兵】降臨討伐の協力バトルをクリア ::x_count::": "Luminous Steambot: Clear ::x_count:: multiplayer battles"
+   }
+  },
+  "production/upload/76/bc536a599e39f890bb8de4b255ac70f529fffa": {
+   "name": "daily missions",
+   "cols": [
+    1
+   ],
+   "strings": {
+    "【無限演武】いずれかのクエストをクリア": "Infinite Arena: Clear any quest",
+    "【期間限定】比翼の使い魔の協力バトルをクリア ::x_count::": "[Limited Time] Clear ::x_count:: Winged Familiars multiplayer battles",
+    "【期間限定】期間限定のデイリーミッションをすべて達成": "[Limited Time] Clear all limited daily missions",
+    "【粛清者討伐戦】協力バトルをクリア ::x_count::": "The Purge: Clear ::x_count:: multiplayer battles",
+    "【粛清者討伐戦】すべてのデイリーミッションを達成": "The Purge: Clear all daily missions",
+    "【ボスPU】ボスバトルの協力バトルをクリア ::x_count::": "Co-Op Challenge: Clear ::x_count:: multiplayer boss battles",
+    "【翠愁の機兵】降臨討伐の協力バトルをクリア ::x_count::": "Gale Steambot: Clear ::x_count:: multiplayer battles",
+    "【翠愁の機兵】すべてのデイリーミッションを達成": "Gale Steambot: Clear all daily missions",
+    "【蒼歎の機兵】降臨討伐の協力バトルをクリア ::x_count::": "Tidal Steambot: Clear ::x_count:: multiplayer battles",
+    "【蒼歎の機兵】すべてのデイリーミッションを達成": "Tidal Steambot: Clear all daily missions",
+    "【閃哭の機兵】降臨討伐の協力バトルをクリア ::x_count::": "Luminous Steambot: Clear ::x_count:: multiplayer battles",
+    "【閃哭の機兵】すべてのデイリーミッションを達成": "Luminous Steambot: Clear all daily missions"
+   }
+  },
+  "production/upload/87/220b4d797a23acca0491ada95dee23faf5478d": {
+   "name": "campaign missions",
+   "cols": [
+    3
+   ],
+   "strings": {
+    "スタミナを累計 100 消費する": "Use up a total of 100 stamina",
+    "協力バトルをクリア ::x_count::": "Clear ::x_count:: multiplayer battles",
+    "シングルバトルをクリア ::x_count::": "Clear ::x_count:: solo battles",
+    "SSランクでクエストをクリア::x_count::": "Clear ::x_count:: quests with an SS rank",
+    "スキルを発動させる::x_count:: (バトルクリア時加算)": "Use skills ::x_count:: times (Cleared battles only)",
+    "バトル中にダッシュを使用 ::x_count:: (バトルクリア時加算)": "Dash ::x_count:: times (Cleared battles only)",
+    "パワーフリップを発動する::x_count:: (バトルクリア時加算)": "Activate ::x_count:: Power Flips (Cleared battles only)",
+    "敵討伐数::x_count:: (バトルクリア時加算)": "Defeat ::x_count:: foes (Cleared battles only)",
+    "4スキルチェイン以上発動してバトルをクリアする": "Clear a battle with a skill chain of 4 or higher",
+    "初級のミッションをすべてクリア": "Clear all Beginner missions",
+    "スタミナを累計 150 消費する": "Use up a total of 150 stamina",
+    "6スキルチェイン以上発動してバトルをクリアする": "Clear a battle with a skill chain of 6 or higher",
+    "中級のミッションをすべてクリア": "Clear all Intermediate missions",
+    "スタミナを累計 200 消費する": "Use up a total of 200 stamina",
+    "9スキルチェインを発動してバトルをクリアする": "Clear a battle with a skill chain of 9",
+    "上級のミッションをすべてクリア": "Clear all Advanced missions",
+    "ミッションをすべてクリア": "Clear all missions",
+    "스태미나 누적 100 소비하기": "Use up a total of 100 stamina",
+    "협력 배틀 클리어 ::x_count::": "Clear ::x_count:: multiplayer battles",
+    "싱글 배틀 클리어 ::x_count::": "Clear ::x_count:: solo battles",
+    "S+랭크로 퀘스트 클리어::x_count::": "Clear ::x_count:: quests with an S+ rank",
+    "스킬 발동::x_count:: (배틀 클리어 시 가산)": "Use skills ::x_count:: times (Cleared battles only)",
+    "배틀 중 대시 사용 ::x_count:: (배틀 클리어 시 가산)": "Dash ::x_count:: times (Cleared battles only)",
+    "파워 플립 발동::x_count:: (배틀 클리어 시 가산)": "Activate ::x_count:: Power Flips (Cleared battles only)",
+    "적 토벌 수::x_count:: (배틀 클리어 시 가산)": "Defeat ::x_count:: foes (Cleared battles only)",
+    "4 스킬 체인을 발동해 배틀 클리어": "Clear a battle with a skill chain of 4",
+    "초급 미션 모두 클리어": "Clear all Beginner missions",
+    "스태미나 누적 150 소비하기": "Use up a total of 150 stamina",
+    "6 스킬 체인을 발동해 배틀 클리어": "Clear a battle with a skill chain of 6",
+    "중급 미션 모두 클리어": "Clear all Intermediate missions",
+    "스태미나 누적 200 소비하기": "Use up a total of 200 stamina",
+    "9 스킬 체인을 발동해 배틀 클리어": "Clear a battle with a skill chain of 9",
+    "상급 미션 모두 클리어": "Clear all Advanced missions",
+    "미션을 모두 클리어": "Clear all missions"
+   }
+  },
+  "production/upload/6c/601b8fa82fab734b452cf1d42c8ab3750b20e3": {
+   "name": "mission events",
+   "cols": [
+    1,
+    2,
+    5
+   ],
+   "strings": {
+    "트레저 헌터 미션": "Treasure Hunt Mission",
+    "이벤트 미션": "Event Missions",
+    "第1弾,第2弾,第3弾": "Round 1,Round 2,Round 3",
+    "캠페인 미션": "Promo Missions",
+    "第1弾,第2弾": "Round 1,Round 2",
+    "트레저 헌트 미션": "Treasure Hunt Mission",
+    "第1弾,第2弾,第3弾,第4弾,第5弾": "Round 1,Round 2,Round 3,Round 4,Round 5"
+   }
+  },
+  "production/upload/4b/c0a3b255afcf2547cb3affd210d30f8c3c7cdc": {
+   "name": "active mission groups",
+   "cols": [
+    1
+   ],
+   "strings": {
+    "コンテンツガイド": "Content Guide",
+    "100万円プレゼント企画": "¥1,000,000 Giveaway"
+   }
+  },
+  "production/upload/b1/b53fdd934dc5ab6d8bfc1c9132cff75c473c48": {
+   "name": "active missions",
+   "cols": [
+    2,
+    4
+   ],
+   "strings": {
+    "コンテンツガイド": "Content Guide",
+    "コンテンツガイドを始めよう": "Start the Content Guide",
+    "リーダーにシェイロン、2番目メインにラキーシャ、報酬の2つの装備を有効に編成して協力バトルをクリアしよう": "Clear a multiplayer battle with Shuilong as Leader, Rakisha as second Main, and both reward armaments equipped",
+    "シェイロンをレベル80にして協力バトルをクリアしよう": "Raise Shuilong to Lv. 80 and clear a multiplayer battle",
+    "ボスバトル：ルインゴーレム超級を協力バトルでクリアしよう": "Clear the Ruin Golem Godly boss battle in multiplayer",
+    "シェイロンをレベル100にして協力バトルをクリアしよう": "Raise Shuilong to Lv. 100 and clear a multiplayer battle",
+    "シェイロンをリーダーにしてルインゴーレム超級＋をクリアしよう": "Clear Ruin Golem Godly+ with Shuilong as Leader",
+    "シェイロンの４～６アビリティを取得して協力バトルをクリアしよう": "Learn Shuilong's 4th to 6th abilities and clear a multiplayer battle",
+    "いずれかのチャレンジシングルバトル地獄級をクリアしよう": "Clear any Solo Boss Challenge on Hell difficulty",
+    "臨境域 アビスの獣をクリアしよう": "Clear the Necropolis: The Beast of the Abyss",
+    "100万円": "¥1,000,000",
+    "キャラを編成しよう": "Add a unit to your party",
+    "1章をクリアしよう": "Clear Chapter 1",
+    "「みんなでキャラチョイス」に参加しよう": "Take part in the People's Choice Reward",
+    "アビリティを習得しよう": "Learn an ability",
+    "協力バトルをクリアしよう": "Clear a multiplayer battle",
+    "ボスコイン交換所でなにか交換しよう": "Trade for something at the Boss Coin Exchange",
+    "2章をクリアしよう": "Clear Chapter 2",
+    "10連無料ガチャを2回引いてみよう": "Use the free 10-pull twice",
+    "「揺らぎの迷宮 育成アイテム」をクリアしよう": "Clear a Kaleidoscope Training Items quest",
+    "「遥かな王道、継承の騎士道」の「過去より浮かび上がるもの」を見よう": "Watch \"What Rises from the Past\" in \"Distant Succession, the Long Path\""
+   }
+  },
+  "production/upload/7e/d7b7e40759bf5b82c258cf20919c9c2bd5c20e": {
+   "name": "giveaway prizes",
+   "cols": [
+    1,
+    4
+   ],
+   "strings": {
+    "現金100万円": "¥1,000,000 Cash",
+    "100万円 or 無償星導石 x 510,000": "¥1,000,000 or 510,000 Free Lodestar Beads",
+    "現金10万円": "¥100,000 Cash",
+    "10万円 or 無償星導石 x 51,000": "¥100,000 or 51,000 Free Lodestar Beads",
+    "ギフトコード10,000円": "¥10,000 Gift Code",
+    "1万円分ギフトコード": "A gift code worth ¥10,000",
+    "ギフトコード500円": "¥500 Gift Code",
+    "500円分ギフトコード": "A gift code worth ¥500"
+   }
+  },
+  "production/upload/a4/731a843d4dc0c84120bf8c88784c1e74c03baa": {
+   "name": "items",
+   "cols": [
+    1,
+    4
+   ],
+   "strings": {
+    "【ギフト】キャラ交換チケット": "[Gift] Unit Exchange Ticket",
+    "キャラ交換チケットギフトCPで交換対象のキャラ1体と交換できるチケット": "A ticket that can be exchanged for one eligible unit during the Unit Exchange Ticket Gift Promo.",
+    "無限の金貨": "Infinite Gold Denarius",
+    "独特な記号の彫りが入った金貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A gold denarius coin engraved with a peculiar symbol. Popular with collectors and can be traded for items in the shop.",
+    "無限の紫貨": "Infinite Lilac Denarius",
+    "独特な記号の彫りが入った紫貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A lilac denarius coin engraved with a peculiar symbol. Popular with collectors and can be traded for items in the shop.",
+    "プ・リリエの紫褒章": "Pur Lilie's Lilac Medal",
+    "優れた能力を発揮した冒険者に送られるプ・リリエからの褒章。\n\n特殊装備強化に使用します\n\n最大所持数：9999": "A medal Pur Lilie awards to adventurers who have shown excellent ability. Used to augment armaments.\n\nCan only hold a maximum of 9999 at a time.",
+    "プ・リリエの黒曜褒章": "Pur Lilie's Obsidian Medal",
+    "特に優れた能力を発揮した冒険者に送られるプ・リリエからの褒章。\n\n特殊装備強化に使用します\n\n最大所持数：9999": "A medal Pur Lilie awards to adventurers who have shown truly outstanding ability. Used to augment armaments.\n\nCan only hold a maximum of 9999 at a time.",
+    "ダイバーズチェック": "Gauntlet Chips",
+    "VRゲーム『コンバットダイバー』で得られる仮想通貨。バトル記憶をテクニカルレートに応じてポイント化したもの": "A virtual currency obtained through the Grand Gauntlet, a VR game. Currency earned is based on the amount of points obtained during a playthrough.",
+    "クグイの絵巻・梅": "Kugui's Scroll: Plum",
+    "絵巻の彫りが入った銀貨。好事家たちが集めているものを真似て作られているらしい。ショップでアイテムと交換できる": "A silver coin engraved with a picture scroll, apparently made in imitation of the ones collectors prize. Can be traded for items in the shop.",
+    "クグイの絵巻・竹": "Kugui's Scroll: Bamboo",
+    "絵巻の彫りが入った金貨。好事家たちが集めているものを真似て作られているらしい。ショップでアイテムと交換できる": "A gold coin engraved with a picture scroll, apparently made in imitation of the ones collectors prize. Can be traded for items in the shop.",
+    "クグイの絵巻・松": "Kugui's Scroll: Pine",
+    "絵巻の彫りが入った紫貨。好事家たちが集めているものを真似て作られているらしい。ショップでアイテムと交換できる": "A lilac coin engraved with a picture scroll, apparently made in imitation of the ones collectors prize. Can be traded for items in the shop.",
+    "粛清の光輪": "Purger Halo",
+    "粛清者との戦闘跡地から見つかった、歪んだ光輪。ドラゴンの素材と似た性質を持っている。\nイベント：粛清者討伐戦\n交換用アイテム": "A warped halo recovered from the wreckage near Purger battles. Remarkably similar to the particles that make up dragons.\nEvent: The Purge\nExchange Item",
+    "粛清の天輪": "Purger Celestial Ring",
+    "要注意粛清者の残留粒子が固まった光輪。学者達が対策を練る為に集めている。\nイベント：粛清者討伐戦\n交換用アイテム": "A halo in which the residual particles of a special Purger have coalesced. Highly sought after by scholars seeking to develop countermeasures.\nEvent: The Purge Side Stories\nExchange Item",
+    "粛清の心核": "Purger Nexus",
+    "粛清者を倒した場所で稀に発見される結晶。特殊な波長を発しており、要注意個体の粛清者をおびき出す事ができる": "A crystal found on very rare occasions when a Purger is destroyed. Emits a unique signal that can be used to attract special Purgers.",
+    "閃機兵の銀貨": "Silver Eisen Denarius",
+    "閃機兵アイザンの彫りが入った銀貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A silver denarius coin engraved with a relief of Eisen. Popular with collectors and can be traded for items in the shop.",
+    "閃機兵の金貨": "Gold Eisen Denarius",
+    "閃機兵アイザンの彫りが入った金貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A gold denarius coin engraved with a relief of Eisen. Popular with collectors and can be traded for items in the shop.",
+    "閃機兵の紫貨": "Lilac Eisen Denarius",
+    "閃機兵アイザンの彫りが入った紫貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A lilac denarius coin engraved with a relief of Eisen. Popular with collectors and can be traded for items in the shop.",
+    "翠機兵の銀貨": "Silver Krag Denarius",
+    "翠機兵クラーグの彫りが入った銀貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A silver denarius coin engraved with a relief of Krag. Popular with collectors and can be traded for items in the shop.",
+    "翠機兵の金貨": "Gold Krag Denarius",
+    "翠機兵クラーグの彫りが入った金貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A gold denarius coin engraved with a relief of Krag. Popular with collectors and can be traded for items in the shop.",
+    "翠機兵の紫貨": "Lilac Krag Denarius",
+    "翠機兵クラーグの彫りが入った紫貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A lilac denarius coin engraved with a relief of Krag. Popular with collectors and can be traded for items in the shop.",
+    "蒼機兵の銀貨": "Silver Vernus Denarius",
+    "蒼機兵ヴェルヌスの彫りが入った銀貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A silver denarius coin engraved with a relief of Vernus. Popular with collectors and can be traded for items in the shop.",
+    "蒼機兵の金貨": "Gold Vernus Denarius",
+    "蒼機兵ヴェルヌスの彫りが入った金貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A gold denarius coin engraved with a relief of Vernus. Popular with collectors and can be traded for items in the shop.",
+    "蒼機兵の紫貨": "Lilac Vernus Denarius",
+    "蒼機兵ヴェルヌスの彫りが入った紫貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A lilac denarius coin engraved with a relief of Vernus. Popular with collectors and can be traded for items in the shop.",
+    "アロランドネモのソウル": "Aroland Nemo Core",
+    "アビリティソウル": "Ability Core",
+    "ハリサルヴァーのソウル": "Harisalver Core",
+    "ハニツカミのソウル": "Hanimitt Core",
+    "ハニゾウコのソウル": "Hanifridge Core",
+    "ハニビヅツのソウル": "Hanirocket Core",
+    "ハルボーマンのソウル": "Halboman Core"
+   }
+  },
+  "production/upload/49/a073fdd109e00ac9daf801113cb5e19f64a8cf": {
+   "name": "equipment",
+   "cols": [
+    1,
+    7
+   ],
+   "strings": {
+    "アロランドネモ": "Aroland Nemo",
+    "蒼機兵の動力部の部品を流用して作られた絶品。魔核を中心に歯車仕掛が施され、変形により出力を上げる首飾り": "An exquisite piece made from recycled Tidal Steambot engine parts. This necklace is built from gears around a magic core, and transforms to raise its output.",
+    "ハリサルヴァー": "Harisalver",
+    "閃機兵の蒸気管を流用して作られた絶品。蒸気圧で弾丸を更に加速させ、狙ったモノを蜂の巣にしてしまう機械銃": "An exquisite piece made from recycled Luminous Steambot steam pipes. This mechanical gun uses steam pressure to speed its bullets even further, riddling its target with holes.",
+    "ハニツカミ": "Hanimitt",
+    "火のハニワとの激闘で得た絶品。エプロンをしたハニワから貰った、熱さを少しも感じさせない不思議な手袋": "An exquisite piece won in a fierce battle with the Flashfire Hanifolk. A gift from a hani in an apron, these mysterious gloves keep out every bit of heat.",
+    "ハニゾウコ": "Hanifridge",
+    "火のハニワとの激闘で得た絶品。保存庫らしき場所にたくさん突き刺さっていた、凄まじい冷気を発する剣": "An exquisite piece won in a fierce battle with the Flashfire Hanifolk. One of many found stuck in what looked like a storehouse, this sword gives off a fierce chill.",
+    "ハニビヅツ": "Hanirocket",
+    "火のハニワとの激闘で得た絶品。矢弾ではなく火薬を内蔵した棒を撃ち出す為に生み出された大弓": "An exquisite piece won in a fierce battle with the Flashfire Hanifolk. This great bow was made to fire gunpowder-packed sticks instead of arrows.",
+    "ハルボーマン": "Halboman",
+    "翠機兵の翼を流用して作られた絶品。内燃機関の稼働と空力学によって、焔風を纏う超熱斬撃を可能とした機械斧": "An exquisite piece made from recycled Gale Steambot wings. Its combustion engine and aerodynamic design let this mechanical axe deliver superheated slashes wreathed in blazing wind."
+   }
+  },
+  "production/upload/3f/7deacd3130269e59c5b44a9bd68901be13e960": {
+   "name": "augmented equipment",
+   "cols": [
+    2,
+    6
+   ],
+   "strings": {
+    "ハルボーマン・改": "Halboman+",
+    "翠機兵の翼を流用して作られた絶品。内燃機関の稼働と空力学によって、焔風を纏う超熱斬撃を可能とした機械斧": "An exquisite piece made from recycled Gale Steambot wings. Its combustion engine and aerodynamic design let this mechanical axe deliver superheated slashes wreathed in blazing wind.",
+    "アロランドネモ・改": "Aroland Nemo+",
+    "蒼機兵の動力部の部品を流用して作られた絶品。魔核を中心に歯車仕掛が施され、変形により出力を上げる首飾り": "An exquisite piece made from recycled Tidal Steambot engine parts. This necklace is built from gears around a magic core, and transforms to raise its output.",
+    "ハリサルヴァー・改": "Harisalver+",
+    "閃機兵の蒸気管を流用して作られた絶品。蒸気圧で弾丸を更に加速させ、狙ったモノを蜂の巣にしてしまう機械銃": "An exquisite piece made from recycled Luminous Steambot steam pipes. This mechanical gun uses steam pressure to speed its bullets even further, riddling its target with holes.",
+    "天機銃・無双": "Handgun of Celestial Insight+",
+    "『星詠み』という組織が秘していた絶品。南に見える星の名を冠し、持ち主の雷の元素を引き出す異界の銃": "An exquisite piece hidden away by an organization known as the Star Augurs. The gun amplifies thunder magic by drawing on the powers of a star visible in the southern sky.",
+    "天同槍・無双": "Trident of Celestial Fortune+",
+    "『星詠み』という組織が秘していた絶品。南に見える星の名を冠し、持ち主の風の元素を引き出す異界の槍": "An exquisite piece hidden away by an organization known as the Star Augurs. The trident amplifies wind magic by drawing on the powers of a star visible in the southern sky.",
+    "天梁刀・無双": "Blade of Celestial Wisdom+",
+    "『星詠み』という組織が秘していた絶品。南に見える星の名を冠し、持ち主の闇の元素を引き出す異界の刀": "An exquisite piece that was sequestered away by an organization known as the Star Augurs. Named after a constellation in the southern sky, the otherworldly blade draws out the inner darkness lurking within its wielder.",
+    "七殺鞭・無双": "Polis Whip+",
+    "『星詠み』という組織が秘していた絶品。南に見える星の名を冠し、持ち主の火の元素を引き出す異界の鞭": "An exquisite piece hidden away by an organization known as the Star Augurs. Bearing the name of a star in the southern sky, this whip draws out the fire within its wielder's soul.",
+    "天相弓・無双": "Bow of Celestial Service+",
+    "『星詠み』という組織が秘していた絶品。南に見える星の名を冠し、持ち主の水の元素を引き出す異界の弓": "An exquisite piece hidden away by an organization known as the Star Augurs. This bow amplifies water magic by drawing on the powers of a star visible in the southern night sky.",
+    "天府剣・無双": "Blade of Celestial Wealth+",
+    "『星詠み』という組織が秘していた絶品。南に見える星の名を冠し、持ち主の光の元素を引き出す異界の剣": "An exquisite piece hidden away by an organization known as the Star Augurs. The blade amplifies light magic by drawing on the powers of a star visible in the southern sky.",
+    "グリーパァクファーズ・追憶": "Ancient Glove+",
+    "守護者が護る遺跡から発掘された絶品。原理は不明だが、身に付けている間人の身を超えた腕力を与える籠手": "An exquisite piece excavated from ruins under a guardian's watch. This gauntlet imbues its wielder with incredible physical strength, though the source of this empowerment remains a mystery.",
+    "エンペラー・追憶": "Tidal Lord+",
+    "クラーケンの遺骸から仕立てた絶品。帝の名を冠する杖であり、海の支配者に相応しい力を所有者に与える": "An exquisite piece forged from the remains of a mighty kraken. Named after the emperor of the seas, only one who is fit to rule may lay claim to this staff.",
+    "禍樹の露刃・追憶": "Wicked Wood Edge+",
+    "禍樹の樹液と枝から作った絶品。樹脂を磨き上げた刀身は疎らな刃紋を浮かべる": "An exquisite piece created from the sap and branch of a wicked tree. The polished resin blade is decorated by wave-like patterns."
+   }
+  },
+  "production/upload/fe/1035fdd920d54f65f6797bad2d4ac054feb10d": {
+   "name": "event item shop",
+   "cols": [
+    6,
+    7,
+    11
+   ],
+   "strings": {
+    "プ・リリエの紫褒章": "Pur Lilie's Lilac Medal",
+    "優れた能力を発揮した冒険者に送られるプ・リリエからの褒章。\n\n特殊装備強化に使用します\n\n最大所持数：9999": "A medal Pur Lilie awards to adventurers who have shown excellent ability. Used to augment armaments.\n\nCan only hold a maximum of 9999 at a time.",
+    "プ・リリエの黒曜褒章": "Pur Lilie's Obsidian Medal",
+    "特に優れた能力を発揮した冒険者に送られるプ・リリエからの褒章。\n\n特殊装備強化に使用します\n\n最大所持数：9999": "A medal Pur Lilie awards to adventurers who have shown truly outstanding ability. Used to augment armaments.\n\nCan only hold a maximum of 9999 at a time.",
+    "クグイの絵巻・松 × 3": "Kugui's Scroll: Pine × 3",
+    "絵巻の彫りが入った紫貨。好事家たちが集めているものを真似て作られているらしい。ショップでアイテムと交換できる": "A lilac coin engraved with a picture scroll, apparently made in imitation of the ones collectors prize. Can be traded for items in the shop.",
+    "ハニツカミ": "Hanimitt",
+    "火のハニワとの激闘で得た絶品。エプロンをしたハニワから貰った、熱さを少しも感じさせない不思議な手袋": "An exquisite piece won in a fierce battle with the Flashfire Hanifolk. A gift from a hani in an apron, these mysterious gloves keep out every bit of heat.",
+    "ハニゾウコ": "Hanifridge",
+    "火のハニワとの激闘で得た絶品。保存庫らしき場所にたくさん突き刺さっていた、凄まじい冷気を発する剣": "An exquisite piece won in a fierce battle with the Flashfire Hanifolk. One of many found stuck in what looked like a storehouse, this sword gives off a fierce chill.",
+    "ハニビヅツ": "Hanirocket",
+    "火のハニワとの激闘で得た絶品。矢弾ではなく火薬を内蔵した棒を撃ち出す為に生み出された大弓": "An exquisite piece won in a fierce battle with the Flashfire Hanifolk. This great bow was made to fire gunpowder-packed sticks instead of arrows.",
+    "【毎日交換】": "[Daily Deal] ",
+    "【毎日交換】Uranus Element": "[Daily Deal] Uranus Element",
+    "ハルボーマン": "Halboman",
+    "翠機兵の翼を流用して作られた絶品。内燃機関の稼働と空力学によって、焔風を纏う超熱斬撃を可能とした機械斧": "An exquisite piece made from recycled Gale Steambot wings. Its combustion engine and aerodynamic design let this mechanical axe deliver superheated slashes wreathed in blazing wind.",
+    "翠機兵の金貨 × 5": "Gold Krag Denarius × 5",
+    "翠機兵クラーグの彫りが入った金貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A gold denarius coin engraved with a relief of Krag. Popular with collectors and can be traded for items in the shop.",
+    "翠機兵の紫貨 × 3": "Lilac Krag Denarius × 3",
+    "翠機兵クラーグの彫りが入った紫貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A lilac denarius coin engraved with a relief of Krag. Popular with collectors and can be traded for items in the shop.",
+    "【毎日交換】Neptune Element": "[Daily Deal] Neptune Element",
+    "アロランドネモ": "Aroland Nemo",
+    "蒼機兵の動力部の部品を流用して作られた絶品。魔核を中心に歯車仕掛が施され、変形により出力を上げる首飾り": "An exquisite piece made from recycled Tidal Steambot engine parts. This necklace is built from gears around a magic core, and transforms to raise its output.",
+    "蒼機兵の金貨 × 5": "Gold Vernus Denarius × 5",
+    "蒼機兵ヴェルヌスの彫りが入った金貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A gold denarius coin engraved with a relief of Vernus. Popular with collectors and can be traded for items in the shop.",
+    "蒼機兵の紫貨 × 3": "Lilac Vernus Denarius × 3",
+    "蒼機兵ヴェルヌスの彫りが入った紫貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A lilac denarius coin engraved with a relief of Vernus. Popular with collectors and can be traded for items in the shop.",
+    "【毎日交換】Sun Element": "[Daily Deal] Sun Element",
+    "ハリサルヴァー": "Harisalver",
+    "閃機兵の蒸気管を流用して作られた絶品。蒸気圧で弾丸を更に加速させ、狙ったモノを蜂の巣にしてしまう機械銃": "An exquisite piece made from recycled Luminous Steambot steam pipes. This mechanical gun uses steam pressure to speed its bullets even further, riddling its target with holes.",
+    "閃機兵の金貨 × 5": "Gold Eisen Denarius × 5",
+    "閃機兵アイザンの彫りが入った金貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A gold denarius coin engraved with a relief of Eisen. Popular with collectors and can be traded for items in the shop.",
+    "閃機兵の紫貨 × 3": "Lilac Eisen Denarius × 3",
+    "閃機兵アイザンの彫りが入った紫貨。好事家が集めているらしい。ショップでアイテムと交換できる": "A lilac denarius coin engraved with a relief of Eisen. Popular with collectors and can be traded for items in the shop.",
+    "【毎日交換】Jupiter Element": "[Daily Deal] Jupiter Element",
+    "【毎日交換】Mars Element": "[Daily Deal] Mars Element",
+    "【追加】": "[Extra] ",
+    "【追加】Neptune Element": "[Extra] Neptune Element",
+    "【追加】Tidalwave Element": "[Extra] Tidalwave Element",
+    "【追加】Deluge Element": "[Extra] Deluge Element",
+    "【追加】Water Element": "[Extra] Water Element",
+    "【追加】Uranus Element": "[Extra] Uranus Element",
+    "【追加】Gale Element": "[Extra] Gale Element",
+    "【追加】Gust Element": "[Extra] Gust Element",
+    "【追加】Breeze Element": "[Extra] Breeze Element",
+    "【追加】Mana × 1200": "[Extra] Mana × 1200",
+    "【追加】Staminade Swig ": "[Extra] Staminade Swig ",
+    "【追加】Staminade Flask": "[Extra] Staminade Flask"
+   }
+  },
+  "production/upload/38/9ee6ccbe584f8fbb6b346de1ee83e9ebdeda4a": {
+   "name": "item set prizes",
+   "cols": [
+    1,
+    5
+   ],
+   "strings": {
+    "★5星鉄鋼セット": "5★ Starsteel Ingot Set",
+    "★5星鉄鋼 × 1と鍛冶玉 × 3000のセット": "A set of 5★ Starsteel Ingot × 1 and Wrightpiece × 3000.",
+    "10回ガチャチケットセット": "10-Pull Summoning Ticket Set",
+    "10回ガチャチケット × 1とマナ × 50000のセット": "A set of 10-Pull Summoning Ticket × 1 and Mana × 50000.",
+    "スタミナ回復薬(大)セット": "Staminade Jug Set",
+    "スタミナ回復薬(大) × 3とマナ × 300000と鍛冶玉 × 10000のセット": "A set of Staminade Jug × 3, Mana × 300000 and Wrightpiece × 10000.",
+    "スタミナ回復薬(小)セット": "Staminade Swig Set",
+    "スタミナ回復薬(小) × 3とマナ × 100000と鍛冶玉 × 3000のセット": "A set of Staminade Swig × 3, Mana × 100000 and Wrightpiece × 3000."
+   }
+  },
+  "production/upload/b8/293e71f0270514675b9cf950014e2a3b65bc66": {
+   "name": "prize labels",
+   "cols": [
+    1
+   ],
+   "strings": {
+    "★5破星結晶x1": "5★ Astral Gem x1",
+    "★5星鉄鋼x1": "5★ Starsteel Ingot x1",
+    "アルゴーの羅針盤x1": "Argo Compass x1",
+    "キャラ10連ガチャチケx1": "10-Pull Summoning Ticket x1",
+    "装備10連ガチャチケx1": "10-Pull Armament Ticket x1",
+    "エーテルセット": "Ether Set",
+    "キャラガチャチケx5": "Summoning Ticket x5",
+    "装備ガチャチケx5": "Armament Ticket x5",
+    "★4破星結晶x1": "4★ Astral Gem x1",
+    "★4星鉄鋼x1": "4★ Starsteel Ingot x1",
+    "金ドクロx1": "Golden Skull x1",
+    "ログキーx1": "Log Key x1",
+    "エレメントセット": "Element Set",
+    "スタミナ回復薬(中)x5": "Staminade Flask x5",
+    "スタミナ回復薬(小)x5": "Staminade Swig x5",
+    "マナx3000": "Mana x3000",
+    "経験値x3000": "EXP x3000"
+   }
+  },
+  "production/upload/33/12fe29bb65e17203008c1f025ae262faaa0cb0": {
+   "name": "login bonuses",
+   "cols": [
+    3
+   ],
+   "strings": {
+    "글로벌판 감사 로그인 보너스": "Global Version Thank-You Login Bonus",
+    "ゴールデンウィークログインボーナス": "Golden Week Login Bonus"
+   }
+  },
+  "production/upload/74/e7be1b0da0fd069aba147e2fd92da2b427d86e": {
+   "name": "gacha campaigns",
+   "cols": [
+    1
+   ],
+   "strings": {
+    "ゴールデンウィーク記念！1日1回ガチャ無料キャンペーン": "Golden Week Special! Get one free pull every day!",
+    "3.5周年アニバーサリー記念 1日1回10連ガチャ無料キャンペーン": "3.5 Year Flipperversary! Get 1 free 10-pull every day!"
+   }
+  },
+  "production/upload/23/a86a734a68f448904d456371c13b3468d9b7f2": {
+   "name": "special exchange campaigns",
+   "cols": [
+    1,
+    12
+   ],
+   "strings": {
+    "スペシャルキャラ交換ガチャセットキャンペーン5（2021_9）": "Dream Unit Scouting Season (2021_9)",
+    "スペシャルキャラ交換ガチャセットキャンペーン6（2021_11）": "Dream Unit Scouting Season (2021_11)",
+    "キャラ交換チケットギフトCP": "Unit Exchange Ticket Gift Promo",
+    "【ギフト】キャラ交換チケット": "[Gift] Unit Exchange Ticket"
+   }
+  },
+  "production/upload/5f/b02bb9275c4f6ca4ba06fd23b6085e70766ee1": {
+   "name": "people's choice campaigns",
+   "cols": [
+    1
+   ],
+   "strings": {
+    "みんなでキャラチョイス1回目": "People's Choice Reward #1",
+    "다 함께 캐릭터 초이스 2회째": "People's Choice Reward #2",
+    "다 함께 캐릭터 초이스 3회째": "People's Choice Reward #3",
+    "다 함께 캐릭터 초이스 4회째": "People's Choice Reward #4",
+    "다 함께 캐릭터 초이스 5회째": "People's Choice Reward #5",
+    "다 함께 캐릭터 초이스 6회째": "People's Choice Reward #6"
+   }
+  },
+  "production/upload/f3/5dbdf5b3c941d0a975bd5eabb5652fa411ebf9": {
+   "name": "feature guide dialogs",
+   "cols": [
+    1,
+    3
+   ],
+   "strings": {
+    "土用の丑の日キャンペーン開催中！": "The Midsummer Promo is on!",
+    "7月31日 20:59までオロチの消費スタミナが1/2になります\n\nぜひこの期間にクエストに挑戦して\n手に入れたボスコインをボスコイン交換所にて報酬と交換しましょう！\n※イベント詳細はお知らせをご確認ください": "Orochi costs half the stamina until July 31, 20:59!\n\nTake on the quest during this period and\ntrade the Boss Coins you earn for rewards at the Boss Coin Exchange!\n*See the news for event details.",
+    "2023年福袋セット販売中！": "2023 Lucky Bag Sets on sale!",
+    "星導石やガチャチケットが入った\nお得なセットを販売中です\n\nこの期間にぜひご利用ください！": "Value sets with Lodestar Beads\nand Summoning Tickets are on sale!\n\nDon't miss out!",
+    "幽玄域まもなくリセット！": "The Haunt resets soon!",
+    "制覇状況は毎月２０日にリセットされます。\n制覇して星導石や素材を入手しよう！": "Progress resets on the 20th of every month.\nClear it to earn Lodestar Beads and materials!",
+    "キャラ交換チケットギフトCP終了間近！": "Unit Exchange Ticket Gift Promo ending soon!",
+    "キャラ交換チケットギフトCPの開催期間は6月23日 11:59までです\n\nキャラ交換チケットギフトCP画面にて\n交換対象のキャラを交換しましょう！": "The Unit Exchange Ticket Gift Promo runs until June 23, 11:59.\n\nExchange your ticket for an eligible unit\non the Unit Exchange Ticket Gift Promo screen!",
+    "キャラ交換チケットギフトCPの開催期間は7月21日 11:59までです\n\nキャラ交換チケットギフトCP画面にて\n交換対象のキャラを交換しましょう！": "The Unit Exchange Ticket Gift Promo runs until July 21, 11:59.\n\nExchange your ticket for an eligible unit\non the Unit Exchange Ticket Gift Promo screen!",
+    "キャラ交換チケットギフトCPの開催期間は8月21日 11:59までです\n\nキャラ交換チケットギフトCP画面にて\n交換対象のキャラを交換しましょう！": "The Unit Exchange Ticket Gift Promo runs until August 21, 11:59.\n\nExchange your ticket for an eligible unit\non the Unit Exchange Ticket Gift Promo screen!",
+    "キャラ交換チケットギフトCPの開催期間は9月21日 11:59までです\n\nキャラ交換チケットギフトCP画面にて\n交換対象のキャラを交換しましょう！": "The Unit Exchange Ticket Gift Promo runs until September 21, 11:59.\n\nExchange your ticket for an eligible unit\non the Unit Exchange Ticket Gift Promo screen!",
+    "キャラ交換チケットギフトCPの開催期間は10月23日 11:59までです\n\nキャラ交換チケットギフトCP画面にて\n交換対象のキャラを交換しましょう！": "The Unit Exchange Ticket Gift Promo runs until October 23, 11:59.\n\nExchange your ticket for an eligible unit\non the Unit Exchange Ticket Gift Promo screen!",
+    "トレジャーハントミッション終了間近！": "Treasure Hunt Mission ending soon!",
+    "クエストクリアで手に入れたイベントアイテムを\nショップにて報酬と交換しましょう！": "Trade the event items you got from clearing quests\nfor rewards at the shop!"
+   }
+  },
+  "production/upload/70/01d8a0e863f3ce17a59c08ee283ad1fb401f2c": {
+   "name": "mail templates",
+   "cols": [
+    0,
+    1
+   ],
+   "strings": {
+    "ボーダー更新報酬": "Score Border Reward",
+    "「無限演武」のスコアボーダー更新で獲得した ::item:: です": "::item:: earned by passing a score border in the Infinite Arena.",
+    "#祝ワーフリ3周年CPシェア報酬": "#WF3rdFlipperversary Promo Share Reward",
+    "#祝ワーフリ3周年CPのシェア報酬です \n::item::": "Your share reward from the #WF3rdFlipperversary Promo.\n::item::",
+    "#祝ワーフリ3周年CPシェア報酬ボーナス": "#WF3rdFlipperversary Promo Share Reward Bonus",
+    "#祝ワーフリ3周年CPのシェア報酬ボーナスです \n::item::": "Your share reward bonus from the #WF3rdFlipperversary Promo.\n::item::",
+    "#祝ワーフリ3周年CP報酬": "#WF3rdFlipperversary Promo Reward",
+    "#祝ワーフリ3周年CPのポイント交換報酬です \n::item::": "Your point exchange reward from the #WF3rdFlipperversary Promo.\n::item::",
+    "#祝ワーフリ3周年CP登録報酬": "#WF3rdFlipperversary Promo Sign-Up Reward",
+    "#祝ワーフリ3周年CPの登録報酬です  \n::item::": "Your sign-up reward from the #WF3rdFlipperversary Promo.\n::item::",
+    "#祝ワーフリ3周年CP入力報酬": "#WF3rdFlipperversary Promo Code Reward",
+    "#祝ワーフリ3周年CPの入力報酬です \n::item::": "Your code entry reward from the #WF3rdFlipperversary Promo.\n::item::",
+    "100万円プレゼントキャンペーン達成報酬": "¥1,000,000 Giveaway Mission Reward",
+    "100万円プレゼントキャンペーンのミッションクリアの報酬です\n::item::": "Your reward for clearing a ¥1,000,000 Giveaway mission.\n::item::",
+    "戦陣の宴 討伐報酬": "Sagas of Conquest Boss Reward",
+    "「レイドイベント 戦陣の宴」ボス討伐の報酬です\n::item::": "Your reward for defeating a boss in the raid event Sagas of Conquest.\n::item::",
+    "セットアイテム購入特典": "Set Purchase Bonus",
+    "2023年福袋セットを購入した特典です\n::item::": "Your bonus for buying a 2023 Lucky Bag Set.\n::item::",
+    "コンテンツガイド達成報酬": "Content Guide Reward",
+    "コンテンツガイドの課題を達成した報酬です\n::item::": "Your reward for completing a Content Guide task.\n::item::",
+    "100万円キャンペーン報酬": "¥1,000,000 Giveaway Reward",
+    "100万円キャンペーン報酬です \n::item::": "Your ¥1,000,000 Giveaway reward.\n::item::"
+   }
+  },
+  "production/upload/07/0c6e214359ccf27b1cb8078d3fc51aecfe0149": {
+   "name": "skill change notes",
+   "cols": [
+    0
+   ],
+   "strings": {
+    "『鬼神ノ手・共鳴』の威力を強化": "Increase power of Fierce God's Arms: Resonance",
+    "『キトゥンキネシス』の「しばらくの間近づいた敵に火ダメージ 」の効果時間を強化": "Increase the duration of Kittenkinesis's \"Deals Fire damage to nearby foes for a while\" effect",
+    "『パラサイト・アビス』に「闇属性マルチボールにバリア効果」を追加": "Parasite Abyss gains the following effect: Gives Dark multiballs a barrier",
+    "『水禍招来・四罪共工』に「命中した敵に累積水属性耐性ダウン効果」を追加": "Flood Invitation: Four Sins Collaboration gains the following effect: Inflicts a stackable Water resistance debuff on hit foes",
+    "『イノセント・カルマ』の威力を強化": "Increase power of Innocent Karma"
+   }
+  },
+  "production/upload/9e/7f465b2326632cc428ad6b85544ab3c49fc6aa": {
+   "name": "encyclopedia tags",
+   "cols": [
+    0
+   ],
+   "strings": {
+    "雪花結界": "Snowflake Barrier",
+    "ニュクス": "Nick",
+    "エマ": "Emma",
+    "コズミックアイドルパワー": "Cosmic Idol Power",
+    "コズミックグラビアパワー": "Cosmic Gravure Power",
+    "氷桜女学院": "Hizakura Girls' Academy",
+    "ユーニ": "Yuni",
+    "大和の都、その後": "Yamato: Aftermath",
+    "導きの手": "The Guiding Hand"
+   }
+  },
+  "production/upload/ff/8b59b5d7d637f9053da6b231986d45a7210892": {
+   "name": "external link dialogs",
+   "cols": [
+    3
+   ],
+   "strings": {
+    "ワールドフリッパーの公式Twitterページに\n移動します\nよろしいですか？\n\n※別のアプリを開きます": "This will take you to the\nofficial World Flipper Twitter page.\nContinue?\n\n*This will open another app."
+   }
+  },
+  "production/upload/d6/88e4a5f7d84cc422357cc8acbdb72817bc8670": {
+   "name": "UI text (column 2 is English)",
+   "cols": [
+    2
+   ],
+   "strings": {
+    "無限演武は\nプレイヤーランクが::need_player_rank::以上になることで\n解放されます": "The Infinite Arena unlocks\nat player rank ::need_player_rank:: or higher.",
+    "共同決戦は下記を満たすことで解放されます\n・プレイヤーランクが::need_player_rank::以上\n・揺らぎの迷宮 崩壊域「臨境域 アビスの獣」をクリア\n・降臨討伐「翠愁の機兵」の「翠機兵クラーグ 超級」をクリア": "The Reckoning unlocks after completing the following:\n-Being player rank ::need_player_rank:: or higher\n-Clearing the Kaleidoscope: Necropolis -The Beast of the Abyss\n-Clearing The Descension: Gale Steambot - Steambot Krag Godly",
+    "共同決戦は下記を満たすことで解放されます\n・プレイヤーランクが::need_player_rank::以上\n・揺らぎの迷宮 崩壊域「臨境域 アビスの獣」をクリア\n・降臨討伐「蒼歎の機兵」の「蒼機兵ヴェルヌス 超級」をクリア": "The Reckoning unlocks after completing the following:\n-Being player rank ::need_player_rank:: or higher\n-Clearing the Kaleidoscope: Necropolis -The Beast of the Abyss\n-Clearing The Descension: Tidal Steambot - Steambot Vernus Godly",
+    "共同決戦は下記を満たすことで解放されます\n・プレイヤーランクが::need_player_rank::以上\n・揺らぎの迷宮 崩壊域「臨境域 アビスの獣」をクリア\n・降臨討伐「閃哭の機兵」の「閃機兵アイザン 超級」をクリア": "The Reckoning unlocks after completing the following:\n-Being player rank ::need_player_rank:: or higher\n-Clearing the Kaleidoscope: Necropolis -The Beast of the Abyss\n-Clearing The Descension: Luminous Steambot - Steambot Eisen Godly",
+    "강림 토벌 취수의 기병": "The Descension: Gale Steambot",
+    "강림 토벌 창탄의 기병": "The Descension: Tidal Steambot",
+    "강림 토벌 섬곡의 기병": "The Descension: Luminous Steambot",
+    "쿠구이와 료키의 특별훈련!": "Kugui and Ryouki's Special Training!",
+    "공동 결전 취수의 기병": "The Reckoning: Gale Steambot",
+    "공동 결전 창탄의 기병": "The Reckoning: Tidal Steambot",
+    "공동 결전 섬곡의 기병": "The Reckoning: Luminous Steambot",
+    "배틀 아이템 선택": "Select Battle Item",
+    "배틀 아이템을 보유하고 있지 않습니다": "You don't have any battle items.",
+    "아이템 없음": "No Item",
+    "같은 배틀 아이템입니다": "That's the same battle item.",
+    "::name::：ハイスコア更新": "::name:: - New High Score",
+    "獲得報酬": "Rewards",
+    "イベント更新まであと<font color='#ffcc1c'>::time::</font>::unit::": "Next update in <font color='#ffcc1c'>::time::</font>::unit::",
+    "更新まで::time::": "Update in ::time::",
+    "日以上": "+ dy.",
+    "日": " dy.",
+    "時間": " hr.",
+    "分": " min.",
+    "バトル履歴がありません": "No battle history.",
+    "このクエストは<font color=\"#ea354c\">::element::属性キャラのみの\nパーティ</font>で挑戦できます。\nクエストに挑戦するパーティを選択してください。": "You can only use <font color=\"#ea354c\">::element:: element units</font> \nfor this quest. \nPlease select an appropriate party.",
+    "ボーダー報酬": "Border Rewards",
+    "報酬達成スコア ::score::": "Reward score: ::score::",
+    "<font color=\"#FFCD1B\">最高スコア</font>を叩き出せ！": "Go for a <font color=\"#FFCD1B\">high score</font>!",
+    "降臨討伐 揺らぐ彼方のニューゲート": "The Descension: Shifting Tracks, Distant Worlds",
+    "無限演武": "Infinite Arena",
+    "褒章装備強化": "Augment Medal Armament"
+   }
+  }
+ }
+}

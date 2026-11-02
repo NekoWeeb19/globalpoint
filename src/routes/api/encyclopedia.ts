@@ -4,6 +4,19 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getAccountPlayers, getSession } from "../../data/wdfpData";
 import { generateDataHeaders } from "../../utils";
 import encyclopedia from "../../../assets/encyclopedia.json";
+import { cnTableIds, isCnRequest } from "../../lib/cnClient";
+
+// the CN client's entries (cn_ids.json "encyclopedia", entry*100+page), all unlocked and read like global's list;
+// global's list alone leaves the CN-only entries locked
+let cnEncyclopedia: Record<string, { read: boolean }> | null = null
+function encyclopediaFor(cn: boolean): Record<string, { read: boolean }> {
+    if (!cn) return encyclopedia
+    if (cnEncyclopedia === null) {
+        const ids = cnTableIds("encyclopedia")
+        cnEncyclopedia = ids === null ? encyclopedia : Object.fromEntries([...ids].map(id => [String(id), { read: true }]))
+    }
+    return cnEncyclopedia
+}
 
 interface IndexBody {
     api_count: number,
@@ -71,7 +84,7 @@ const routes = async (fastify: FastifyInstance) => {
                 viewer_id: viewerId
             }),
             "data": {
-                "encyclopedia_list": encyclopedia,
+                "encyclopedia_list": encyclopediaFor(isCnRequest(request.originalUrl)),
                 "mail_arrived": false
             }
         })

@@ -1,0 +1,25 @@
+{
+  "units": [
+    {
+      "characterId": 10,
+      "stageKind": 0,
+      "questId": 2009007,
+      "joinType": "quest",
+      "temporary": false
+    },
+    {
+      "characterId": 213013,
+      "stageKind": 0,
+      "questId": 10015003,
+      "joinType": "quest",
+      "temporary": false
+    },
+    {
+      "characterId": 512001,
+      "stageKind": 0,
+      "questId": 1008004,
+      "joinType": "town",
+      "temporary": false
+    }
+  ]
+}

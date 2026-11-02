@@ -2,6 +2,15 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getAccountPlayers, getPlayerSync, getSession, playerOwnsCharacterSync, playerOwnsEquipmentSync, updatePlayerPartySync, updatePlayerSync } from "../../data/wdfpData";
 import { generateDataHeaders } from "../../utils";
 import { PartyCategory } from "../../data/types";
+import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";
+import { withMissionRewards } from "../../nya/mission";
+import { getRaidEventIds, getRaidPartySlotSync } from "../../nya/raid";
+import { CounterEvent, raidMissionEvents } from "../../lib/mission";
+import { favoritePartyFromEdit } from "../../lib/profile";
+import { saveFavoritePartySync } from "../../nya/profile";
+
+/** The party categories of battle parties (normal, carnival, raid, event); others are the profile's. */
+const BATTLE_PARTY_CATEGORIES = new Set<number>([PartyCategory.NORMAL, PartyCategory.CARNIVAL, PartyCategory.RAID, PartyCategory.EVENT])
 
 interface PartyInfoListItem {
     party_edited: boolean
@@ -441,8 +450,9 @@ const routes = async (fastify: FastifyInstance) => {
             "message": "No players bound to account."
         })
 
-        // update main party id if required
-        if (player.partySlot !== body.main_party_id) {
+        // update main party id if required (not for an edit of only the profile's favorite units)
+        const editsBattleParty = body.party_info_list.some(info => BATTLE_PARTY_CATEGORIES.has(info.party_category))
+        if (editsBattleParty && player.partySlot !== body.main_party_id) {
             updatePlayerSync({
                 id: playerId,
                 partySlot: body.main_party_id
@@ -474,6 +484,17 @@ const routes = async (fastify: FastifyInstance) => {
         }
 
         for (const updateInfo of body.party_info_list) {
+            // the profile's "Favorite Units" party comes with a party category of its own (the Chinese
+            // client sends 99; anything that isn't a battle party category is taken as it)
+            if (!BATTLE_PARTY_CATEGORIES.has(updateInfo.party_category)) {
+                const favorite = favoritePartyFromEdit(updateInfo as unknown as Record<string, any>)
+                favorite.characterIds = favorite.characterIds.map(mapOwnedCharacters)
+                favorite.unisonCharacterIds = favorite.unisonCharacterIds.map(mapOwnedCharacters)
+                favorite.equipmentIds = favorite.equipmentIds.map(mapOwnedEquipment)
+                saveFavoritePartySync(playerId, favorite)
+                console.log(`[profile] Player ${playerId}: favorite units saved (party category ${updateInfo.party_category}).`)
+                continue
+            }
             updatePlayerPartySync(
                 playerId,
                 updateInfo.party_id,
@@ -490,14 +511,29 @@ const routes = async (fastify: FastifyInstance) => {
             )
         }
 
+        // active missions: equipment, a unison character or an ability soul may have been set
+        const activeMissionList = trackActiveMissionProgress(playerId, { recompute: [58, 59, 35] })
+
+        // raid event missions: "Set up your Main / Sub 1 / Sub 2 party in SET Edit" (raid parties
+        // are edited with party category 3; the open raid's own mission dates pick the event)
+        const raidEvents: CounterEvent[] = []
+        for (const updateInfo of body.party_info_list) {
+            if (updateInfo.party_category !== PartyCategory.RAID) continue
+            const slot = getRaidPartySlotSync(playerId, updateInfo.party_id)
+            if (slot === null) continue
+            for (const eventId of getRaidEventIds()) raidEvents.push(...raidMissionEvents(eventId, { partySlot: slot }))
+        }
+
         reply.header("content-type", "application/x-msgpack")
         return reply.status(200).send({
             "data_headers": generateDataHeaders({
                 viewer_id: viewerId
             }),
-            "data": {
-                "mail_arrived": false
-            }
+            // Mission screen: "Equip an Ability Core N times"
+            "data": withMissionRewards(playerId, {
+                "mail_arrived": false,
+                ...(activeMissionList.length > 0 ? { "active_mission_list": activeMissionList } : {})
+            }, raidEvents)
         })
     })
 }

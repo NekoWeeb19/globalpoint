@@ -1,3 +1,4 @@
+import practiceQuestsCn from "../../assets/practice_quest_cn.json";
 import adventEventQuests from "../../assets/advent_event_quest.json";
 import bossBattleQuests from "../../assets/boss_battle_quest.json";
 import boxGacha from "../../assets/box_gacha.json";
@@ -19,6 +20,7 @@ import scoreAttackEventQuests from "../../assets/score_attack_event_quest.json";
 import soloTimeAttackEventQuests from "../../assets/solo_time_attack_event_quest.json";
 import storyEventSingleQuests from "../../assets/story_event_single_quest.json";
 import towerDungeonEventQuests from "../../assets/tower_dungeon_event_quest.json";
+import hardMultiEventQuests from "../../assets/hard_multi_event_quest.json";
 import exAbility from "../../assets/ex_ability.json";
 import exBoost from "../../assets/ex_boost.json";
 import exQuests from "../../assets/ex_quest.json";
@@ -26,6 +28,8 @@ import exStatus from "../../assets/ex_status.json";
 import gachas from "../../assets/gacha.json";
 import mainQuests from "../../assets/main_quest.json";
 import manaNodes from "../../assets/mana_node.json";
+import manaNodesCn from "../../assets/mana_node_cn.json";
+import { cnGachaCampaignId } from "../nya/cnCampaigns";
 import rareScoreRewards from "../../assets/rare_score_reward.json";
 import scoreRewards from "../../assets/score_reward.json";
 import gachaCampaigns from "../../assets/gacha_campaign.json";
@@ -37,6 +41,9 @@ import generalShopItems from "../../assets/general_shop.json";
 import starGrainShopItems from "../../assets/star_grain_shop.json";
 import treasureShopItems from "../../assets/treasure_shop.json";
 import rushEventQuestFolders from "../../assets/rush_event_quest_folder.json"
+import { readFileSync, statSync } from "fs";
+import path from "path";
+import { inCnRequest } from "./cnClient";
 import { AssetCharacter, BattleQuest, BossCoinShopItems, BoxGacha, ClearRewards, EventItemShopIdMapItem, EventShopItems, ExAbilities, ExBoostItem, ExBoostItems, ExStatus, Gacha, Gachas, ManaNode, ManaNodes, QuestCategory, RareScoreReward, RareScoreRewardGroups, RawAssetCharacters, RawBoxGachas, RawBoxRewards, RawQuests, Reward, RushEventFolders, ScoreReward, ScoreRewardGroups, ShopItem, ShopItems, ShopType, StoryQuest } from "./types";
 
 /**
@@ -254,6 +261,11 @@ export function getQuestFromCategorySync(
             return getQuestSync((soloTimeAttackEventQuests as RawQuests), questId)
         case QuestCategory.SCORE_ATTACK_EVENT:
             return getQuestSync((scoreAttackEventQuests as RawQuests), questId)
+        case QuestCategory.HARD_MULTI_EVENT:
+            return getQuestSync((hardMultiEventQuests as RawQuests), questId)
+        // CN practice battles (scripts/gen_cn_practice_quests.cjs): no rewards
+        case QuestCategory.PRACTICE:
+            return getQuestSync((practiceQuestsCn as RawQuests), questId)
         default:
             return null
     }
@@ -286,10 +298,10 @@ export function getCharacterManaNodesSync(
     characterId: string | number,
     level: string | number,
 ): Record<string, ManaNode> | null{
-    const characterManaNodes = (manaNodes as ManaNodes)[String(characterId)]
-    if (!characterManaNodes) return null;
-
-    return characterManaNodes[String(level)] || null
+    const board = (manaNodes as ManaNodes)[String(characterId)]?.[String(level)]
+        // boards global never had (CN-only units, 2nd boards added after EoS): scripts/gen_cn_mana_nodes.cjs
+        ?? (manaNodesCn as ManaNodes)[String(characterId)]?.[String(level)]
+    return board || null
 }
 
 /**
@@ -398,7 +410,7 @@ export function getGachaSync(
 export function getGachaCampaignIdSync(
     gachaId: string | number
 ): number | null {
-    return (gachaCampaigns as Record<string, number>)[String(gachaId)] ?? null
+    return (gachaCampaigns as Record<string, number>)[String(gachaId)] ?? cnGachaCampaignId(gachaId)
 }
 
 // shop functions
@@ -409,9 +421,37 @@ export function getGachaCampaignIdSync(
  * @param shopType The type of shop to get the items of.
  * @returns A list of shop items belonging to the specified shop type or null.
  */
+// The CN client's own shops (assets/cn_shops.json, scripts/gen_cn_shops.cjs; re-read when the file
+// changes, as the CN schedule rebuilds it). CN reuses some item ids for other items, so CN requests
+// always use these.
+interface CnShops {
+    general: ShopItems, treasure: ShopItems, starGrain: ShopItems,
+    bossCoin: BossCoinShopItems, bossCoinMap: Record<string, number>,
+    eventItem: EventShopItems, eventItemMap: Record<string, EventItemShopIdMapItem>
+}
+const CN_SHOPS_FILE = path.join(__dirname, "..", "..", "assets", "cn_shops.json")
+let cnShopsCache: { mtimeMs: number, data: CnShops } | null = null
+function cnShops(): CnShops | null {
+    if (!inCnRequest()) return null
+    try {
+        const mtimeMs = statSync(CN_SHOPS_FILE).mtimeMs
+        if (cnShopsCache === null || cnShopsCache.mtimeMs !== mtimeMs) cnShopsCache = { mtimeMs, data: JSON.parse(readFileSync(CN_SHOPS_FILE, "utf8")) }
+        return cnShopsCache.data
+    } catch {
+        return null
+    }
+}
+
 export function getGenericShopItemsSync(
     shopType: ShopType
 ): ShopItems | null {
+    const cn = cnShops()
+    if (cn) switch (shopType) {
+        case ShopType.TREASURE: return cn.treasure
+        case ShopType.GENERAL: return cn.general
+        case ShopType.STAR_GRAIN: return cn.starGrain
+        default: return null
+    }
     switch (shopType) {
         case ShopType.TREASURE:
             return treasureShopItems as ShopItems
@@ -424,8 +464,31 @@ export function getGenericShopItemsSync(
 }
 
 /**
+ * Date fixes for the game's own event shop table (applied once, when the data loads, so a
+ * re-generated assets/event_item_shop.json keeps them).
+ *
+ * The Re:Zero revival (advent event 100006): the client's own tables give the event and its stages
+ * the original event's dates (2022-09-13 to 2022-10-05), but date 45 of its 71 shop items a year
+ * later (2023-09), including all 15 weapons. Those items never showed while the event was open.
+ * They are moved back one year, onto the event's own dates.
+ */
+const EVENT_SHOP_YEAR_FIXES: { eventType: number, eventId: number, fromYear: string, toYear: string }[] = [
+    { eventType: 0, eventId: 100006, fromYear: "2023", toYear: "2022" },
+]
+for (const fix of EVENT_SHOP_YEAR_FIXES) {
+    const items = (eventItemShopItems as EventShopItems)[String(fix.eventType)]?.[String(fix.eventId)] as Record<string, { availableFrom: string, availableUntil: string | null }> | undefined
+    for (const item of Object.values(items ?? {})) {
+        if (!item.availableFrom.startsWith(fix.fromYear)) continue
+        item.availableFrom = fix.toYear + item.availableFrom.slice(4)
+        if (item.availableUntil !== null && item.availableUntil.startsWith(fix.fromYear)) {
+            item.availableUntil = fix.toYear + item.availableUntil.slice(4)
+        }
+    }
+}
+
+/**
  * Gets the items for a specific event shop.
- * 
+ *
  * @param eventType The type of event.
  * @param eventId The ID of the event.
  * @returns A list of shop items or null.
@@ -434,7 +497,7 @@ export function getEventShopItemsSync(
     eventType: number | string,
     eventId: number | string
 ): ShopItems | null {
-    const typeSection = (eventItemShopItems as EventShopItems)[String(eventType)]
+    const typeSection = (cnShops()?.eventItem ?? eventItemShopItems as EventShopItems)[String(eventType)]
     if (typeSection === undefined) return null;
 
     return typeSection[String(eventId)] ?? null
@@ -449,7 +512,7 @@ export function getEventShopItemsSync(
 export function getBossCoinShopItemsSync(
     bossId: number | string
 ): ShopItems | null {
-    return (bossCoinShopItems as BossCoinShopItems)[String(bossId)] ?? null
+    return (cnShops()?.bossCoin ?? bossCoinShopItems as BossCoinShopItems)[String(bossId)] ?? null
 }
 
 /**
@@ -463,6 +526,21 @@ export function getShopItemSync(
     shopType: ShopType,
     itemId: number | string
 ): ShopItem | null {
+    const cn = cnShops()
+    if (cn) switch (shopType) {
+        case ShopType.TREASURE: return cn.treasure[String(itemId)] ?? null
+        case ShopType.GENERAL: return cn.general[String(itemId)] ?? null
+        case ShopType.STAR_GRAIN: return cn.starGrain[String(itemId)] ?? null
+        case ShopType.BOSS_COIN: {
+            const category = cn.bossCoinMap[String(itemId)]
+            return category === undefined ? null : cn.bossCoin[category]?.[String(itemId)] ?? null
+        }
+        case ShopType.EVENT_ITEM: {
+            const where = cn.eventItemMap[String(itemId)]
+            return where === undefined ? null : cn.eventItem[where.eventType]?.[where.eventId]?.[String(itemId)] ?? null
+        }
+        default: return null
+    }
     switch(shopType) {
         case ShopType.TREASURE:
             return (treasureShopItems as ShopItems)[String(itemId)] ?? null

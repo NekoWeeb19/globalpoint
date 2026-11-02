@@ -1,0 +1,356 @@
+// Wiring for the yearly seasonal campaigns (src/lib/campaignSchedule.ts): keeps the choices in
+// .database/campaign_schedule.json, makes the server's copy of the chosen login bonuses yearly,
+// picks the free pull for a banner (a yearly copy that is on wins), resets the copies' free pulls
+// once a real day, adds the chosen reward campaign runs' yearly copies to the server's reward
+// campaigns (stamina campaigns are only shown and charged by the game itself, so they only go in the
+// mod), and has the game's mod (scripts/gen_event_schedule_mod.cjs) rebuilt so the game
+// shows the same.
+
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs"
+import path from "path"
+import seasonalData from "../../assets/seasonal_campaigns.json"
+import loginBonusData from "../../assets/login_bonus.json"
+import gachaData from "../../assets/gacha.json"
+import rewardCampaignData from "../../assets/reward_campaign.json"
+import staminaCampaignData from "../../assets/stamina_campaign.json"
+import getDatabase, { Database } from "../data"
+import {
+    activeFreePullCopy, CampaignRun, campaignCopyId, campaignRuns, CampaignSchedule, currentOrNextRun, describeRun,
+    isWindowOn, KnownRuns, runCopies, TimedCampaign, yearlyClash, FreePullBannerInfo, FreePullCampaign, freePullClash,
+    freePullCopies, FreePullCopy, isFreePullBanner, parseCampaignSchedule, SEASONAL_FREE_PULLS,
+    SEASONAL_LOGIN_BONUSES, yearlyLoginServerColumns, yearlyPart, CN_SEASONAL_LOGIN_BONUSES, CN_SEASONAL_FREE_PULLS, cnFreePullCopyId
+} from "../lib/campaignSchedule"
+import { cnCampaigns, cnOnlyLoginGroups } from "./cnCampaigns"
+import { cnCopyWindow, cnTableIds, inCnRequest } from "../lib/cnClient"
+import { LoginBonusGroup, isLoginBonusGroupOpen } from "../lib/loginBonus"
+import { dayNumber } from "../lib/mission"
+import { getGachaCampaignIdSync } from "../lib/assets"
+import { getServerDate } from "../utils"
+import { addServerDataStep, applyEventScheduleToServerData, getScheduleModStatus, rebuildMod, serverRecordKey } from "./eventSchedule"
+
+interface SeasonalData {
+    loginBonuses: Record<string, { start: string, end: string, days: number, image: string | null }>,
+    freePulls: FreePullCampaign[]
+}
+
+const seasonal = seasonalData as unknown as SeasonalData
+const groups = (loginBonusData as unknown as { groups: Record<string, LoginBonusGroup> }).groups
+const gachas = gachaData as unknown as Record<string, FreePullBannerInfo>
+const SCHEDULE_FILE = path.join(process.cwd(), ".database", "campaign_schedule.json")
+
+// the server's reward campaigns (read by the quest finish, src/routes/api/singleBattleQuest.ts): the
+// game's own rows, then the yearly copies of the chosen runs
+const rewardRows = (rewardCampaignData as unknown as { campaigns: TimedCampaign[] }).campaigns
+const ownRewardCount = rewardRows.length
+const ownRewardRows: readonly TimedCampaign[] = rewardRows.slice()
+const staminaRows = (staminaCampaignData as unknown as { campaigns: TimedCampaign[] }).campaigns
+const tables = {
+    reward: { rows: ownRewardRows, runs: campaignRuns(ownRewardRows) },
+    stamina: { rows: staminaRows, runs: campaignRuns(staminaRows) },
+}
+const knownRuns: KnownRuns = { reward: tables.reward.runs.map(r => r.key), stamina: tables.stamina.runs.map(r => r.key) }
+
+/** A run's name for messages: "Stamina campaign of 2022-12-26". */
+const runName = (kind: "reward" | "stamina", run: CampaignRun) => `${kind === "stamina" ? "Stamina" : "Reward"} campaign of ${run.start.slice(0, 10)}`
+
+let schedule: CampaignSchedule = { yearlyLoginBonuses: [], yearlyFreePulls: [], yearlyRewardRuns: [], yearlyStaminaRuns: [] }
+let lastProblems: string[] = []
+let copies: FreePullCopy[] = []
+
+/** Makes the chosen login bonuses yearly in the server's copy (run after the event schedule moved them). */
+function applyLoginBonuses(moves: Map<string, unknown>) {
+    for (const id of Object.keys(SEASONAL_LOGIN_BONUSES)) {
+        const group = groups[id]
+        if (group === undefined) continue
+        // the event schedule has just put start and end back (or moved them); the yearly window is ours
+        group.yearlyFrom = null
+        group.yearlyUntil = null
+        if (!schedule.yearlyLoginBonuses.includes(id) || group.end === null) continue
+        if (moves.has(serverRecordKey("master/bonus/login_bonus.orderedmap", `${id}/1`))) {
+            // moved dates are already written in UTC
+            group.yearlyFrom = yearlyPart(group.start)
+            group.yearlyUntil = yearlyPart(group.end)
+            group.end = null
+            continue
+        }
+        const columns = yearlyLoginServerColumns(group.start, group.end)
+        if (columns === null) continue
+        Object.assign(group, columns)
+    }
+}
+
+// the CN-only groups' own dates (applyLoginBonuses changes the groups in place)
+const cnLoginOriginal = new Map(Object.entries(cnOnlyLoginGroups()).map(([id, g]) => [id, { start: g.start, end: g.end, yearlyFrom: g.yearlyFrom, yearlyUntil: g.yearlyUntil }]))
+
+/** Makes the chosen CN-only login bonuses yearly (their dates are already the server's UTC). */
+function applyCnLoginBonuses() {
+    const cnGroups = cnOnlyLoginGroups()
+    for (const id of Object.keys(CN_SEASONAL_LOGIN_BONUSES)) {
+        const group = cnGroups[id], original = cnLoginOriginal.get(id)
+        if (group === undefined || original === undefined) continue
+        Object.assign(group, original)
+        if (!schedule.yearlyLoginBonuses.includes(id) || group.end === null) continue
+        group.yearlyFrom = yearlyPart(group.start)
+        group.yearlyUntil = yearlyPart(group.end)
+        group.end = null
+    }
+}
+
+// the CN-only free pulls' yearly copies (for the CN client only: global's has no such campaigns)
+let cnCopies: FreePullCopy[] = []
+const allFreePulls = () => [...seasonal.freePulls, ...cnCampaigns.freePulls] as FreePullCampaign[]
+
+function refreshCopies() {
+    applyCnLoginBonuses()
+    cnCopies = schedule.yearlyFreePulls.flatMap(id => {
+        if (!(id in CN_SEASONAL_FREE_PULLS)) return []
+        const campaign = cnCampaigns.freePulls.find(c => c.id === id)
+        return campaign === undefined ? [] : freePullCopies(campaign as FreePullCampaign, allFreePulls()).map(copy => ({ ...copy, id: cnFreePullCopyId(copy.year, copy.originalId) }))
+    })
+    copies = schedule.yearlyFreePulls.flatMap(id => {
+        if (id in CN_SEASONAL_FREE_PULLS) return []
+        const campaign = seasonal.freePulls.find(c => c.id === id)
+        return campaign === undefined ? [] : freePullCopies(campaign, seasonal.freePulls)
+    })
+    // reward campaign copies: same rows, new dates and ids (the dates are read like the game's own rows)
+    rewardRows.length = ownRewardCount
+    for (const key of schedule.yearlyRewardRuns) {
+        const run = tables.reward.runs.find(r => r.key === key)
+        if (run === undefined) continue
+        for (const window of runCopies(run, tables.reward.runs)) {
+            for (const id of run.ids) {
+                const index = ownRewardRows.findIndex(row => row.id === id)
+                rewardRows.push({ ...ownRewardRows[index], id: campaignCopyId(window.year, index), start: window.start, end: window.end })
+            }
+        }
+    }
+}
+
+function readSchedule() {
+    if (!existsSync(SCHEDULE_FILE)) return
+    try {
+        const parsed = parseCampaignSchedule(JSON.parse(readFileSync(SCHEDULE_FILE, "utf-8")), knownRuns)
+        schedule = parsed.schedule
+        lastProblems = parsed.problems
+        for (const problem of parsed.problems) console.warn(`Yearly campaigns: ${problem} (skipped)`)
+    } catch (error) {
+        console.error(`Could not read the yearly campaigns: ${(error as Error).message}`)
+    }
+}
+
+/** Loads the saved choices and applies them. Call once when the server starts, after initEventSchedule. */
+export function initCampaignSchedule() {
+    readSchedule()
+    addServerDataStep(applyLoginBonuses)
+    refreshCopies()
+    if (schedule.yearlyLoginBonuses.length > 0) applyEventScheduleToServerData()
+    const total = schedule.yearlyLoginBonuses.length + schedule.yearlyFreePulls.length + schedule.yearlyRewardRuns.length + schedule.yearlyStaminaRuns.length
+    if (total > 0) {
+        console.log(`Yearly campaigns: ${schedule.yearlyLoginBonuses.length} login bonus(es), ${schedule.yearlyFreePulls.length} free pull(s), ${schedule.yearlyRewardRuns.length} reward and ${schedule.yearlyStaminaRuns.length} stamina campaign(s) repeat every year.`)
+    }
+}
+
+/**
+ * The free pull campaign for a banner at a server time: a yearly copy that is running wins (on any
+ * regular unit banner), otherwise the game's own campaign for the banner. null when there is none.
+ */
+export function resolveFreePullCampaignId(gachaId: number, serverMs = getServerDate().getTime()): number | null {
+    const gacha = gachas[String(gachaId)]
+    if (gacha !== undefined && isFreePullBanner(gacha)) {
+        const copy = activeFreePullCopy(inCnRequest() ? [...cnCopies, ...copies] : copies, serverMs)
+        if (copy !== null) return copy.id
+    }
+    return getGachaCampaignIdSync(gachaId)
+}
+
+/**
+ * The /load gacha_campaign_list entries for the yearly free pull copy running now: one per regular
+ * unit banner (count 1 = today's pull is still there), on top of the player's saved entries. The
+ * client shows a banner's free pull only when this list has an entry for it.
+ */
+export function freePullCopyEntriesSync(saved: { gacha_id: number, campaign_id: number, count: number }[], serverMs = getServerDate().getTime()) {
+    const cn = inCnRequest()
+    const copy = activeFreePullCopy(cn ? [...cnCopies, ...copies] : copies, serverMs)
+    if (copy === null) return []
+    // the CN client only has the copies in its update's window; an unknown campaign id crashes it (C8601)
+    const window = cn ? cnCopyWindow() : null
+    if (window !== null && (copy.year < window.from || copy.year > window.until)) return []
+    const have = new Set(saved.filter(e => e.campaign_id === copy.id).map(e => e.gacha_id))
+    // only banners the client's own tables have (CN has most of global's plus its own)
+    const cnBanners = cn ? cnTableIds("gacha") : null
+    const hasBanner = (id: string, gacha: unknown) => cn ? cnBanners === null || cnBanners.has(Number(id)) : !(gacha as { cn?: boolean }).cn
+    return Object.entries(gachas)
+        .filter(([id, gacha]) => isFreePullBanner(gacha) && hasBanner(id, gacha) && !have.has(Number(id)))
+        .map(([id]) => ({ gacha_id: Number(id), campaign_id: copy.id, count: 1 }))
+}
+
+/**
+ * The yearly copies' free pulls come back once a real day (reset 05:00 UTC, like the daily missions).
+ * Call at /load before the player data is read. The game's own campaigns are not changed.
+ */
+export function refreshFreePullCopiesSync(playerId: number, realMs = Date.now()): void {
+    const db = getDatabase(Database.WDFP_DATA)
+    const today = dayNumber(realMs)
+    db.transaction(() => {
+        const row = db.prepare(`SELECT last_day FROM players_free_pull_reset WHERE player_id = ?`).get(playerId) as { last_day: number } | undefined
+        if (row !== undefined && row.last_day >= today) return
+        db.prepare(`UPDATE players_gacha_campaigns SET count = 1 WHERE player_id = ? AND campaign_id >= 100000 AND count < 1`).run(playerId)
+        db.prepare(`INSERT INTO players_free_pull_reset (player_id, last_day) VALUES (?, ?)
+            ON CONFLICT (player_id) DO UPDATE SET last_day = excluded.last_day`).run(playerId, today)
+    })()
+}
+
+const iso = (ms: number) => new Date(ms).toISOString()
+const imageUrl = (id: string | null | undefined) => id ? `/api/server/event-image/${id}.png` : null
+
+export interface RunOverview {
+    key: string,
+    name: string,
+    description: string,
+    original: { start: string, end: string },
+    yearly: boolean,
+    skippedYears: number[], // years with no copy (one of the game's runs of this kind is on then)
+    next: { start: string, end: string } | null,
+    active: boolean // on now (its original run, or a copy when it repeats)
+}
+
+export interface CampaignOverview {
+    serverDate: string,
+    loginBonuses: {
+        id: string, name: string, app: "both" | "cn", image: string | null, days: number,
+        original: { start: string, end: string },
+        yearly: boolean,
+        open: boolean,
+        next: { start: string, end: string } | null // the run on now or coming next (when yearly)
+    }[],
+    freePulls: {
+        id: number, name: string, app: "both" | "cn", gameName: string, kind: number,
+        original: { start: string, end: string },
+        yearly: boolean,
+        skippedYears: number[], // years with no copy (a game campaign runs then)
+        next: { start: string, end: string } | null,
+        active: boolean
+    }[],
+    rewardRuns: RunOverview[],
+    staminaRuns: RunOverview[],
+    bannerCount: number,
+    problems: string[],
+    mod: ReturnType<typeof getScheduleModStatus>
+}
+
+/** Everything the dashboard's Campaigns tab shows. */
+export function getCampaignOverview(): CampaignOverview {
+    const now = getServerDate().getTime()
+    const masterIso = (text: string) => {
+        const ms = Date.parse(text.replace(" ", "T") + "+09:00")
+        return isNaN(ms) ? text : iso(ms)
+    }
+    const loginBonuses: CampaignOverview["loginBonuses"] = Object.entries(SEASONAL_LOGIN_BONUSES).flatMap(([id, name]) => {
+        const info = seasonal.loginBonuses[id]
+        if (info === undefined) return []
+        const yearly = schedule.yearlyLoginBonuses.includes(id)
+        const run = yearly ? currentOrNextRun(info.start, info.end, now) : null
+        return [{
+            id, name, app: "both", image: imageUrl(info.image), days: info.days,
+            original: { start: masterIso(info.start), end: masterIso(info.end) },
+            yearly,
+            open: groups[id] !== undefined && isLoginBonusGroupOpen(groups[id], now),
+            next: run === null ? null : { start: iso(run.start), end: iso(run.end) }
+        }]
+    })
+    // the CN game's own seasonal login bonuses (CN client only)
+    for (const [id, name] of Object.entries(CN_SEASONAL_LOGIN_BONUSES)) {
+        const info = cnCampaigns.loginInfo[id], group = cnOnlyLoginGroups()[id]
+        if (info === undefined || group === undefined || info.start === null || info.end === null) continue
+        const yearly = schedule.yearlyLoginBonuses.includes(id)
+        const run = yearly ? currentOrNextRun(info.start, info.end, now) : null
+        loginBonuses.push({
+            id, name, app: "cn", image: imageUrl(info.image), days: info.days,
+            original: { start: masterIso(info.start), end: masterIso(info.end) },
+            yearly,
+            open: isLoginBonusGroupOpen(group, now),
+            next: run === null ? null : { start: iso(run.start), end: iso(run.end) }
+        })
+    }
+    const active = activeFreePullCopy(copies, now)
+    const cnActive = activeFreePullCopy(cnCopies, now)
+    const freePulls = [
+        ...Object.entries(SEASONAL_FREE_PULLS).map(([id, name]) => [id, name, "both"] as const),
+        ...Object.entries(CN_SEASONAL_FREE_PULLS).map(([id, name]) => [id, name, "cn"] as const),
+    ].flatMap(([idText, name, app]) => {
+        const id = Number(idText)
+        const campaign = (app === "cn" ? cnCampaigns.freePulls : seasonal.freePulls).find(c => c.id === id) as FreePullCampaign | undefined
+        if (campaign === undefined) return []
+        const yearly = schedule.yearlyFreePulls.includes(id)
+        const own = freePullCopies(campaign, allFreePulls())
+        const years = new Set(own.map(c => c.year))
+        const firstYear = Number(campaign.start.slice(0, 4))
+        const skippedYears: number[] = []
+        for (let year = firstYear + 1; year <= firstYear + 6; year++) if (!years.has(year)) skippedYears.push(year)
+        const next = own.find(c => Date.parse(c.end.replace(" ", "T") + "+09:00") >= now)
+        return [{
+            id, name, app, gameName: campaign.name, kind: campaign.kind,
+            original: { start: masterIso(campaign.start), end: masterIso(campaign.end) },
+            yearly, skippedYears,
+            next: next === undefined ? null : { start: masterIso(next.start), end: masterIso(next.end) },
+            active: (active !== null && active.originalId === id) || (cnActive !== null && cnActive.originalId === id)
+        }]
+    })
+    const runOverview = (kind: "reward" | "stamina"): RunOverview[] => {
+        const table = tables[kind]
+        const chosen = kind === "reward" ? schedule.yearlyRewardRuns : schedule.yearlyStaminaRuns
+        return table.runs.map(run => {
+            const yearly = chosen.includes(run.key)
+            const own = runCopies(run, table.runs)
+            const years = new Set(own.map(c => c.year))
+            const firstYear = Number(run.start.slice(0, 4))
+            const skippedYears: number[] = []
+            for (let year = firstYear + 1; year <= firstYear + 6; year++) if (!years.has(year)) skippedYears.push(year)
+            const next = own.find(c => Date.parse(c.end.replace(" ", "T") + "+09:00") >= now)
+            const rows = table.rows.filter(row => run.ids.includes(row.id))
+            return {
+                key: run.key, name: runName(kind, run), description: describeRun(kind, rows),
+                original: { start: masterIso(run.start), end: masterIso(run.end) },
+                yearly, skippedYears,
+                next: next === undefined ? null : { start: masterIso(next.start), end: masterIso(next.end) },
+                active: isWindowOn(run, now) || (yearly && own.some(c => isWindowOn(c, now)))
+            }
+        })
+    }
+    return {
+        serverDate: iso(now), loginBonuses, freePulls,
+        rewardRuns: runOverview("reward"), staminaRuns: runOverview("stamina"),
+        bannerCount: Object.values(gachas).filter(isFreePullBanner).length,
+        problems: lastProblems, mod: getScheduleModStatus()
+    }
+}
+
+/**
+ * Saves which seasonal campaigns repeat every year, then updates the server's data and the game's mod.
+ *
+ * @returns null when saved, or why it wasn't.
+ */
+export async function setCampaignSchedule(raw: unknown): Promise<string | null> {
+    const { schedule: next, problems } = parseCampaignSchedule(raw, knownRuns)
+    if (problems.length > 0) return problems[0]
+    const clash = freePullClash(next.yearlyFreePulls, allFreePulls())
+    if (clash !== null) return clash
+    // two runs of the same kind on at once can't both repeat
+    for (const kind of ["reward", "stamina"] as const) {
+        const keys = kind === "reward" ? next.yearlyRewardRuns : next.yearlyStaminaRuns
+        const runs = tables[kind].runs
+        const runClash = yearlyClash(keys.map(key => {
+            const run = runs.find(r => r.key === key)!
+            return { name: runName(kind, run), copies: runCopies(run, runs) }
+        }))
+        if (runClash !== null) return runClash
+    }
+    schedule = next
+    lastProblems = []
+    mkdirSync(path.dirname(SCHEDULE_FILE), { recursive: true })
+    writeFileSync(SCHEDULE_FILE, JSON.stringify(schedule, null, 1))
+    refreshCopies()
+    applyEventScheduleToServerData()
+    await rebuildMod()
+    return null
+}

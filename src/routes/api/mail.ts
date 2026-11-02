@@ -67,6 +67,7 @@ const routes = async (fastify: FastifyInstance) => {
         try {
             const playerId = await viewer_id_to_player_id(viewer_id);
             const data = ProcessMail(playerId, mail_id);
+            reply.header("content-type", "application/x-msgpack")
             return reply.status(200).send({
                 "data_headers": generateDataHeaders({
                     viewer_id
@@ -88,7 +89,8 @@ const routes = async (fastify: FastifyInstance) => {
         const { viewer_id, mail_ids } = request.body as { viewer_id: number, mail_ids: number[] };
         try {
             const playerId = await viewer_id_to_player_id(viewer_id);
-            const data = ProcessAllMails(playerId);
+            const data = ProcessAllMails(playerId, Array.isArray(mail_ids) ? mail_ids : undefined);
+            reply.header("content-type", "application/x-msgpack")
             return reply.status(200).send({
                 "data_headers": generateDataHeaders({
                     viewer_id

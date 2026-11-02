@@ -5,9 +5,32 @@ import { drawGachaSync, rewardPlayerGachaDrawResultSync } from "../../lib/gacha"
 import { getGachaCampaignIdSync, getGachaSync } from "../../lib/assets";
 import { GachaType } from "../../lib/types";
 import { serializeGachaCampaign } from "../../data/utils";
+import { resolveFreePullCampaignId } from "../../nya/campaignSchedule";
 import { UserGachaCampaign } from "../../data/types";
 import { givePlayerCharacterSync } from "../../lib/character";
 import { givePlayerEquipmentSync } from "../../lib/equipment";
+import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";
+import { withMissionRewards } from "../../nya/mission";
+import { COUNTER_KINDS } from "../../lib/mission";
+import { isCnRequest } from "../../lib/cnClient";
+import cnGachaTickets from "../../../assets/cn_gacha_tickets.json";
+
+// The CN client's draw kinds (GachaDrawKindTools / GachaExecDummyRemote in the CN app) differ from
+// global's GachaExecType: 3/4/14 use the banner's own single/10-pull/"crazy" tickets
+// (assets/cn_gacha_tickets.json, scripts/gen_cn_gacha_tickets.cjs), 20 is the "at least 4★" ticket.
+// The client loads the summon movie for the count it expects, so a wrong count crashes it (C8016).
+const CN_TEN_PULL_KINDS = new Set([2, 4, 7, 8, 9, 13, 14])
+const CN_WILDCARD_TICKETS: Record<number, number> = { 9: 999001, 10: 999003, 12: 999005, 13: 999004, 20: 999008 }
+const CN_RARE4_KIND = 20
+function cnTicketItem(gachaId: number, kind: number): number | undefined {
+    const own = (cnGachaTickets as Record<string, { once?: number, ten?: number, crazy?: number }>)[String(gachaId)]
+    switch (kind) {
+        case 3: return own?.once
+        case 4: return own?.ten
+        case 14: return own?.crazy
+        default: return CN_WILDCARD_TICKETS[kind]
+    }
+}
 
 interface ExecBody {
     api_count: number,
@@ -237,6 +260,8 @@ const routes = async (fastify: FastifyInstance) => {
             "message": "No players bound to account."
         })
 
+        const cn = isCnRequest(request.originalUrl)
+
         // get the gacha
         const gachaData = getGachaSync(gachaId)
         if (gachaData === null) return reply.status(400).send({
@@ -291,9 +316,14 @@ const routes = async (fastify: FastifyInstance) => {
             // tickets
             case GachaPaymentType.TICKET: {
                 const isWeapon = type === GachaExecType.MULTI_WEAPON_TICKET
-                const isMulti = type === GachaExecType.MULTI_TICKET || isWeapon
+                const isMulti = cn ? CN_TEN_PULL_KINDS.has(type) : type === GachaExecType.MULTI_TICKET || isWeapon
 
-                const itemId = isMulti ? (isWeapon ? 999004 : 999001) : (isWeapon ? 999005 : 999003)
+                const cnItemId = cn ? cnTicketItem(gachaId, type) : undefined
+                if (cn && cnItemId === undefined) return reply.status(400).send({
+                    "error": "Bad Request",
+                    "message": "No ticket for this summon."
+                })
+                const itemId = cnItemId ?? (isMulti ? (isWeapon ? 999004 : 999001) : (isWeapon ? 999005 : 999003))
 
                 const itemCount = getPlayerItemSync(playerId, itemId)
                 const useTicketCount = Math.max(1, numberOfExec) 
@@ -312,7 +342,8 @@ const routes = async (fastify: FastifyInstance) => {
 
             // free pulls
             case GachaPaymentType.CAMPAIGN: {
-                const gachaCampaignId = getGachaCampaignIdSync(gachaId)
+                // a yearly seasonal copy running now wins (src/nya/campaignSchedule.ts)
+                const gachaCampaignId = resolveFreePullCampaignId(gachaId)
                 if (gachaCampaignId === null) return reply.status(400).send({
                     "error": "Bad Request",
                     "message": "No gacha campaign assigned to gacha."
@@ -342,7 +373,7 @@ const routes = async (fastify: FastifyInstance) => {
 
                 gachaCampaigns.push(serializeGachaCampaign(playerCampaignData))
 
-                const isMulti = type === GachaExecType.CAMPAIGN_MULTI
+                const isMulti = cn ? CN_TEN_PULL_KINDS.has(type) : type === GachaExecType.CAMPAIGN_MULTI
                 pullCount = isMulti ? 10 : 1
                 break;
             }
@@ -358,7 +389,11 @@ const routes = async (fastify: FastifyInstance) => {
             "message": "Not enough beads."
         })
 
-        const drawResult = drawGachaSync(gachaData, pullCount)
+        // CN "at least 4★" ticket: 3★ rolls draw from the 4★ pool instead
+        const drawFrom = cn && type === CN_RARE4_KIND && gachaData.pool[2] !== undefined
+            ? { ...gachaData, pool: { ...gachaData.pool, 3: gachaData.pool[2] } } as typeof gachaData
+            : gachaData
+        const drawResult = drawGachaSync(drawFrom, pullCount)
         const rewardResult = rewardPlayerGachaDrawResultSync(playerId, gachaData, drawResult)
 
         const newGachaExchangePoint = (playerGachaData.gachaExchangePoint ?? 0) + pullCount
@@ -382,13 +417,17 @@ const routes = async (fastify: FastifyInstance) => {
             freeVmoney: playerFreeVmoney
         })
 
+        // active missions: a character may have been obtained
+        const activeMissionList = isCharacterGacha ? trackActiveMissionProgress(playerId, { recompute: [4] }) : []
+
         reply.header("content-type", "application/x-msgpack")
         if (isCharacterGacha) {
             return reply.status(200).send({
                 "data_headers": generateDataHeaders({
                     viewer_id: viewerId
                 }),
-                "data": {
+                // Mission screen: "Recruit N new units" (the recorded reply clears mission 32 here)
+                "data": withMissionRewards(playerId, {
                     "user_info": {
                         "free_vmoney": playerFreeVmoney,
                         "vmoney": playerPaidVmoney
@@ -409,15 +448,17 @@ const routes = async (fastify: FastifyInstance) => {
                         }
                     ],
                     "encyclopedia_info": [],
-                    "mail_arrived": false
-                }
+                    "mail_arrived": false,
+                    ...(activeMissionList.length > 0 ? { "active_mission_list": activeMissionList } : {})
+                }, [{ kind: COUNTER_KINDS.CN_CHARACTER_GACHA_PULLS, amount: pullCount }])
             })
         } else {
             return reply.status(200).send({
                 "data_headers": generateDataHeaders({
                     viewer_id: viewerId
                 }),
-                "data": {
+                // Mission screen: "Obtain N new armaments"
+                "data": withMissionRewards(playerId, {
                     "user_info": {
                         "free_vmoney": playerFreeVmoney,
                         "vmoney": playerPaidVmoney
@@ -439,7 +480,7 @@ const routes = async (fastify: FastifyInstance) => {
                     ],
                     "encyclopedia_info": [],
                     "mail_arrived": false
-                }
+                })
             })
         }
         

@@ -215,6 +215,13 @@ export default function init(
         FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
     )`).run();
 
+    // "cleared as the room host" (used by The Purge to unlock its Empress). NULL = not tracked,
+    // 0 = cleared but not as host, 1 = cleared as host. Added to saves made before it existed.
+    const questProgressColumns = database.prepare(`PRAGMA table_info(players_quest_progress)`).all() as { name: string }[]
+    if (!questProgressColumns.some(column => column.name === "host_finished")) {
+        database.prepare(`ALTER TABLE players_quest_progress ADD COLUMN host_finished INTEGER`).run()
+    }
+
     database.prepare(`CREATE TABLE IF NOT EXISTS players_gacha_info (
         gacha_id INTEGER NOT NULL,
         is_daily_first INTEGER NOT NULL,
@@ -231,6 +238,13 @@ export default function init(
         count INTEGER NOT NULL,
         player_id INTEGER NOT NULL,
         PRIMARY KEY (gacha_id, campaign_id, player_id),
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
+
+    // the real day the yearly free pull copies were last given back (src/nya/campaignSchedule.ts)
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_free_pull_reset (
+        player_id INTEGER PRIMARY KEY,
+        last_day INTEGER NOT NULL,
         FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
     )`).run();
 
@@ -268,6 +282,149 @@ export default function init(
         FOREIGN KEY (mission_id, player_id) REFERENCES players_active_missions (id, player_id) ON DELETE CASCADE,
         FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
     )`).run()
+
+    // Mission screen (regular, daily and event) progress. "period" is the daily period for daily
+    // missions, or the last day counted for login missions. "rewarded_stage" is how many stages
+    // have had their rewards paid.
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_missions (
+        category INTEGER NOT NULL,
+        id INTEGER NOT NULL,
+        progress INTEGER NOT NULL,
+        rewarded_stage INTEGER NOT NULL DEFAULT 0,
+        period TEXT,
+        player_id INTEGER NOT NULL,
+        PRIMARY KEY (category, id, player_id),
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
+
+    // Hanifolk Carnival: each folder's best and last score (with the party used for the last one),
+    // and the total-score rewards already paid.
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_carnival_event_records (
+        event_id INTEGER NOT NULL,
+        folder_id INTEGER NOT NULL,
+        best_score INTEGER NOT NULL,
+        previous_score INTEGER NOT NULL,
+        previous_character_ids TEXT,
+        previous_unison_character_ids TEXT,
+        player_id INTEGER NOT NULL,
+        PRIMARY KEY (event_id, folder_id, player_id),
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
+
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_carnival_event_rewards (
+        event_id INTEGER NOT NULL,
+        reward_id INTEGER NOT NULL,
+        player_id INTEGER NOT NULL,
+        PRIMARY KEY (event_id, reward_id, player_id),
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
+
+    // The Purge (single-player stand-in): the last day a boss event's daily ticket was given.
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_solo_event_tickets (
+        event_id INTEGER NOT NULL,
+        last_day TEXT NOT NULL,
+        player_id INTEGER NOT NULL,
+        PRIMARY KEY (event_id, player_id),
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
+
+    // Raid Event: Sagas of Conquest. Each player has their own raid boss (single-player): progress to
+    // the next kill, total kills, and the total the kill-count rewards were paid up to.
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_raid_events (
+        event_id INTEGER NOT NULL,
+        weighted_kill_count INTEGER NOT NULL DEFAULT 0,
+        total_kill_count INTEGER NOT NULL DEFAULT 0,
+        received_up_to INTEGER NOT NULL DEFAULT 0,
+        player_id INTEGER NOT NULL,
+        PRIMARY KEY (event_id, player_id),
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
+
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_raid_event_quests (
+        event_id INTEGER NOT NULL,
+        quest_id INTEGER NOT NULL,
+        kill_count INTEGER NOT NULL DEFAULT 0,
+        player_id INTEGER NOT NULL,
+        PRIMARY KEY (event_id, quest_id, player_id),
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
+
+    // Daily login bonuses: per bonus group, the last day index given, the real day it was given on,
+    // when (server time, seconds) and whether the client has shown it (/bonus/shown).
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_login_bonus (
+        group_id TEXT NOT NULL,
+        last_index INTEGER NOT NULL,
+        last_day INTEGER NOT NULL,
+        received_at INTEGER NOT NULL,
+        shown INTEGER NOT NULL DEFAULT 0,
+        player_id INTEGER NOT NULL,
+        PRIMARY KEY (group_id, player_id),
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
+
+    // Titles owned (title missions pay them). Title 1 and the one worn always count as owned.
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_degrees (
+        degree_id INTEGER NOT NULL,
+        player_id INTEGER NOT NULL,
+        PRIMARY KEY (degree_id, player_id),
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
+
+    // Profile: which counts the profile shows (all on by default), and the "Favorite Units" party
+    // (a JSON copy of the party as /party/edit sent it).
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_profile (
+        show_owned_character_count INTEGER NOT NULL DEFAULT 1,
+        show_opened_mana_board_second_count INTEGER NOT NULL DEFAULT 1,
+        show_owned_degree_count INTEGER NOT NULL DEFAULT 1,
+        favorite_party TEXT,
+        player_id INTEGER NOT NULL,
+        PRIMARY KEY (player_id),
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
+
+    // Boss Boost: the real day (daily reset numbering) the points were last refilled.
+    // Score Attack battles, one row each (src/nya/scoreAttack.ts); record is the history entry as JSON
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_score_attack_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        event_id INTEGER NOT NULL,
+        record TEXT NOT NULL,
+        player_id INTEGER NOT NULL,
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
+
+    // how often each armament was bought with bond tokens (src/routes/api/exchange.ts)
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_bond_token_exchange (
+        equipment_id INTEGER NOT NULL,
+        exchange_count INTEGER NOT NULL,
+        player_id INTEGER NOT NULL,
+        PRIMARY KEY (equipment_id, player_id),
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
+
+    // the real day the Hard Multi "Daily Reward Count" points were last refilled (src/nya/periodicReward.ts)
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_periodic_reward_refill (
+        last_day INTEGER NOT NULL,
+        player_id INTEGER NOT NULL,
+        PRIMARY KEY (player_id),
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
+
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_boss_boost (
+        last_day INTEGER NOT NULL,
+        player_id INTEGER NOT NULL,
+        PRIMARY KEY (player_id),
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
+
+    // Time Attack ranking events: the tier each player was paid for, so the rewards are paid once.
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_ranking_event_rewards (
+        event_id INTEGER NOT NULL,
+        tier_id INTEGER NOT NULL,
+        best_elapsed_time_ms INTEGER NOT NULL,
+        player_id INTEGER NOT NULL,
+        PRIMARY KEY (event_id, player_id),
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
 
     database.prepare(`CREATE TABLE IF NOT EXISTS players_box_gacha (
         id INTEGER NOT NULL,

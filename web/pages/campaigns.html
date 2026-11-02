@@ -1,0 +1,375 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/public/tailwind.css">
+    <title>Starpoint</title>
+</head>
+
+<body
+    class="bg-background text-on-surface relative mt-16 m-auto max-w-screen-2xl min-h-screen box-border flex flex-col items-start px-3 pb-3">
+    <header class="flex gap-3 items-center md:justify-start justify-center mb-3 w-full">
+        <img src="/public/img/logo.png" class="w-9 h-9">
+        <h1 class="text-4xl mt-4 font-black mb-4 text-on-background">Starpoint</h1>
+    </header>
+    <div class="md:grid md:grid-cols-sidebar flex flex-col gap-5 w-full h-fit">
+        <nav class="px-3 py-5 gap-3 flex flex-col bg-surface-container-low rounded-3xl h-fit w-full">
+            <a href="/"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M520-600v-240h320v240H520ZM120-440v-400h320v400H120Zm400 320v-400h320v400H520Zm-400 0v-240h320v240H120Zm80-400h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z" />
+                </svg>
+                Dashboard
+            </a>
+            <a href="/events" data-nav="events"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z" />
+                </svg>
+                Events
+            </a>
+            <a href="/summons" data-nav="summons"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M480-80 371-371 80-480l291-109 109-291 109 291 291 109-291 109L480-80Z" />
+                </svg>
+                Summons
+            </a>
+            <a href="/campaigns" data-nav="campaigns"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-280v80h640v-80H160Zm0-440h88q-5-9-6.5-19t-1.5-21q0-50 35-85t85-35q30 0 55.5 15.5T460-826l20 26 20-26q18-24 44-39t56-15q50 0 85 35t35 85q0 11-1.5 21t-6.5 19h88q33 0 56.5 23.5T880-640v440q0 33-23.5 56.5T800-120H160q-33 0-56.5-23.5T80-200v-440q0-33 23.5-56.5T160-720Zm0 320h640v-240H596l84 114-64 46-136-184-136 184-64-46 82-114H160v240Zm200-320q17 0 28.5-11.5T400-760q0-17-11.5-28.5T360-800q-17 0-28.5 11.5T320-760q0 17 11.5 28.5T360-720Zm240 0q17 0 28.5-11.5T640-760q0-17-11.5-28.5T600-800q-17 0-28.5 11.5T560-760q0 17 11.5 28.5T600-720Z" />
+                </svg>
+                Campaigns
+            </a>
+            <a href="/news" data-nav="news"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120H160Zm0-80h640v-560H160v560Zm80-80h480v-80H240v80Zm0-160h160v-240H240v240Zm240 0h240v-80H480v80Zm0-160h240v-80H480v80ZM160-200v-560 560Z" />
+                </svg>
+                News
+            </a>
+            <a href="/player"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M40-160v-112q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0 130 15.5T616-378q29 15 46.5 43.5T680-272v112H40Zm720 0v-120q0-44-24.5-84.5T666-434q51 6 96 20.5t84 35.5q36 20 55 44.5t19 53.5v120H760ZM360-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm400-160q0 66-47 113t-113 47q-11 0-28-2.5t-28-5.5q27-32 41.5-71t14.5-81q0-42-14.5-81T544-792q14-5 28-6.5t28-1.5q66 0 113 47t47 113ZM120-240h480v-32q0-11-5.5-20T580-306q-54-27-109-40.5T360-360q-56 0-111 13.5T140-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T440-640q0-33-23.5-56.5T360-720q-33 0-56.5 23.5T280-640q0 33 23.5 56.5T360-560Zm0 320Zm0-400Z" />
+                </svg>
+                Players
+            </a>
+            <a href="https://github.com/Duosion/starpoint"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M320-240 80-480l240-240 57 57-184 184 183 183-56 56Zm320 0-57-57 184-184-183-183 56-56 240 240-240 240Z" />
+                </svg>
+                Source Code
+            </a>
+        </nav>
+        <article class="w-full flex flex-col gap-5 min-w-0">
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3">
+                <h3 class="text-xl text-on-background font-semibold">Yearly campaigns</h3>
+                <p class="text-on-surface-variant">Pick seasonal login bonuses, free pulls, stamina and reward campaigns that come back every year on the same dates (month, day and time), after their original run. Their original run stays as it was. Times are in UTC, on the server's calendar.</p>
+                <p class="text-on-surface-variant">The game picks up a change the next time it logs in: close and reopen it, and it downloads the new dates.</p>
+                <p id="server-now" class="text-lg text-on-surface" role="status"></p>
+                <p id="mod-status" class="text-sm text-on-surface-variant" role="status"></p>
+                <ul id="warnings" class="flex flex-col gap-1 text-sm text-on-surface-variant"></ul>
+                <p class="text-on-surface-variant">Campaigns marked <strong>Both apps</strong> are in both games' data and repeat in both the global and the CN app. Those marked <strong>CN only</strong> are the CN game's own and only show in the CN app. Stamina and reward campaigns below are the shared ones (both apps).</p>
+                <div class="flex flex-wrap gap-2 items-center" role="group" aria-label="Show campaigns for">
+                    <span class="text-on-surface-variant">Show:</span>
+                    <button type="button" data-app-filter="all" class="px-4 py-2 rounded-full">All</button>
+                    <button type="button" data-app-filter="both" class="px-4 py-2 rounded-full">Both apps</button>
+                    <button type="button" data-app-filter="cn" class="px-4 py-2 rounded-full">CN only</button>
+                </div>
+            </section>
+
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <div class="flex flex-col gap-1">
+                    <h3 class="text-xl text-on-background font-semibold">Seasonal login bonuses</h3>
+                    <p class="text-on-surface-variant">Each year's run starts again at day 1. Anniversary, collab and story bonuses aren't listed: they stay as they are.</p>
+                </div>
+                <ul id="login-list" class="flex flex-col gap-2"></ul>
+            </section>
+
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <div class="flex flex-col gap-1">
+                    <h3 class="text-xl text-on-background font-semibold">Seasonal free pulls</h3>
+                    <p id="pull-intro" class="text-on-surface-variant"></p>
+                </div>
+                <ul id="pull-list" class="flex flex-col gap-2"></ul>
+            </section>
+
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <div class="flex flex-col gap-1">
+                    <h3 class="text-xl text-on-background font-semibold">Stamina campaigns</h3>
+                    <p class="text-on-surface-variant">Each one ran once in the game. Pick one to bring it back every year on the same dates. A year where another of the game's stamina campaigns is on then is skipped, and two that would be on at the same time can't both repeat. The game shows and charges the lower stamina itself.</p>
+                </div>
+                <ul id="stamina-list" class="flex flex-col gap-2"></ul>
+            </section>
+
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <div class="flex flex-col gap-1">
+                    <h3 class="text-xl text-on-background font-semibold">Reward campaigns</h3>
+                    <p class="text-on-surface-variant">More items, EXP or mana from quests. Each one ran once in the game; the same rules as stamina campaigns apply, checked against other reward campaigns.</p>
+                </div>
+                <ul id="reward-list" class="flex flex-col gap-2"></ul>
+            </section>
+
+            <section class="sticky bottom-3 flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3 bg-background">
+                <div class="flex flex-wrap gap-3">
+                    <button type="button" id="save"
+                        class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Save</button>
+                    <button type="button" id="undo"
+                        class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Undo changes</button>
+                </div>
+                <p id="message" class="text-sm text-on-surface-variant" role="status"></p>
+            </section>
+
+        </article>
+    </div>
+
+    <script>
+        (function () {
+            const $ = (id) => document.getElementById(id)
+            for (const link of document.querySelectorAll("[data-nav]")) {
+                if (link.dataset.nav !== "campaigns") continue
+                link.className = "px-5 py-3 flex gap-3 items-center bg-primary rounded-full w-full font-bold text-on-primary text-lg"
+                link.querySelector("svg").setAttribute("class", "fill-on-primary")
+            }
+
+            let data = null, loadedAt = Date.now(), busy = false, appFilter = "all"
+            const appBadge = (app) => badge(app === "cn" ? "CN only" : "Both apps", false)
+            const shown = (item) => appFilter === "all" || (item.app ?? "both") === appFilter
+            for (const button of document.querySelectorAll("[data-app-filter]")) {
+                button.addEventListener("click", () => { appFilter = button.dataset.appFilter; renderFilter(); renderLists() })
+            }
+            function renderFilter() {
+                for (const button of document.querySelectorAll("[data-app-filter]")) {
+                    const on = button.dataset.appFilter === appFilter
+                    button.className = "px-4 py-2 rounded-full " + (on ? "bg-primary text-on-primary font-bold" : "bg-surface-container-high text-on-surface")
+                    button.setAttribute("aria-pressed", String(on))
+                }
+            }
+            renderFilter()
+            // what the page shows as picked (the saved choices, until changed here)
+            let logins = new Set(), pulls = new Set(), staminas = new Set(), rewards = new Set(), dirty = false
+
+            const serverNow = () => data === null ? Date.now() : new Date(data.serverDate).getTime() + (Date.now() - loadedAt)
+            const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            const pad = (n) => String(n).padStart(2, "0")
+            const dayText = (iso) => { const d = new Date(iso); return MONTHS[d.getUTCMonth()] + " " + d.getUTCDate() + " " + pad(d.getUTCHours()) + ":" + pad(d.getUTCMinutes()) }
+            const fullText = (iso) => new Date(iso).toISOString().slice(0, 16).replace("T", " ")
+            const yearlyText = (range) => "every year, " + dayText(range.start) + " to " + dayText(range.end) + " UTC"
+
+            function badge(text, strong) {
+                const span = document.createElement("span")
+                span.className = "px-3 py-1 rounded-full text-sm " + (strong ? "bg-primary text-on-primary" : "bg-surface-container-high text-on-surface")
+                span.textContent = text
+                return span
+            }
+
+            function row(options) {
+                const item = document.createElement("li")
+                item.className = "flex flex-wrap gap-3 items-center p-3 rounded-2xl bg-surface-container-low"
+                const label = document.createElement("label")
+                label.className = "flex flex-wrap gap-3 items-center min-w-0 cursor-pointer"
+                const pick = document.createElement("input")
+                pick.type = "checkbox"
+                pick.className = "w-5 h-5 shrink-0"
+                pick.checked = options.checked
+                pick.disabled = busy
+                pick.setAttribute("aria-label", "Repeat " + options.name + " every year")
+                pick.addEventListener("change", () => options.onChange(pick.checked))
+                label.appendChild(pick)
+                if (options.image) {
+                    const img = document.createElement("img")
+                    img.src = options.image
+                    img.alt = ""
+                    img.loading = "lazy"
+                    img.className = "w-48 max-w-full rounded-xl"
+                    label.appendChild(img)
+                }
+                const text = document.createElement("div")
+                text.className = "flex flex-col gap-1 min-w-0"
+                const title = document.createElement("div")
+                title.className = "flex flex-wrap gap-2 items-center"
+                const name = document.createElement("span")
+                name.className = "text-on-surface font-semibold"
+                name.textContent = options.name
+                title.append(name, ...options.badges)
+                text.appendChild(title)
+                for (const line of options.lines) {
+                    const span = document.createElement("span")
+                    span.className = "text-on-surface-variant text-sm"
+                    span.textContent = line
+                    text.appendChild(span)
+                }
+                label.appendChild(text)
+                item.appendChild(label)
+                return item
+            }
+
+            function changed(set, id, on) {
+                if (on) set.add(id); else set.delete(id)
+                dirty = true
+                $("message").textContent = "Not saved yet."
+                renderLists()
+            }
+
+            function renderClock() {
+                if (data === null) return
+                $("server-now").textContent = "Server time now: " + new Date(serverNow()).toISOString().slice(0, 19).replace("T", " ") + " UTC"
+            }
+
+            function runLine(item) {
+                if (!item.yearly || !item.next) return null
+                return (Date.parse(item.next.start) <= serverNow() ? "This year's run: " : "Next run: ") + fullText(item.next.start) + " to " + fullText(item.next.end) + " UTC"
+            }
+
+            // stamina or reward campaign runs
+            function renderRuns(listId, runs, picked) {
+                const list = $(listId)
+                list.replaceChildren()
+                if (appFilter === "cn") return // shared runs only
+                for (const item of runs) {
+                    const on = picked.has(item.key)
+                    const badges = []
+                    if (item.active) badges.push(badge("On now", true))
+                    if (item.yearly) badges.push(badge("Repeats every year", false))
+                    const lines = [
+                        item.description,
+                        "Original run: " + fullText(item.original.start) + " to " + fullText(item.original.end) + " UTC"
+                    ]
+                    if (on) lines.push("Repeats " + yearlyText(item.original))
+                    if (on && item.skippedYears.length > 0) lines.push("Skipped in " + item.skippedYears.join(", ") + " (another of the game's campaigns of this kind is on then)")
+                    const run = runLine(item)
+                    if (run) lines.push(run)
+                    list.appendChild(row({ name: item.name, image: null, checked: on, badges, lines, onChange: (value) => changed(picked, item.key, value) }))
+                }
+            }
+
+            function renderLists() {
+                if (data === null) return
+                const loginList = $("login-list")
+                loginList.replaceChildren()
+                for (const bonus of data.loginBonuses) {
+                    if (!shown(bonus)) continue
+                    const on = logins.has(bonus.id)
+                    const badges = [appBadge(bonus.app), badge(bonus.days + " days", false)]
+                    if (bonus.open) badges.push(badge("On now", true))
+                    if (bonus.yearly) badges.push(badge("Repeats every year", false))
+                    const lines = ["Original run: " + fullText(bonus.original.start) + " to " + fullText(bonus.original.end) + " UTC"]
+                    if (on) lines.push("Repeats " + yearlyText(bonus.original))
+                    const run = runLine(bonus)
+                    if (run) lines.push(run)
+                    loginList.appendChild(row({ name: bonus.name, image: bonus.image, checked: on, badges, lines, onChange: (value) => changed(logins, bonus.id, value) }))
+                }
+                $("pull-intro").textContent = "A copy runs every later year on the same dates and works on any of the " + data.bannerCount + " regular unit banners that is open then (not armament or special banners). A year where one of the game's own free pull campaigns runs at that time is skipped. Two that would run at the same time can't both repeat."
+                const pullList = $("pull-list")
+                pullList.replaceChildren()
+                for (const pull of data.freePulls) {
+                    if (!shown(pull)) continue
+                    const on = pulls.has(pull.id)
+                    const badges = [appBadge(pull.app), badge(pull.kind === 2 ? "Free 10-pull a day" : "Free pull a day", false)]
+                    if (pull.active) badges.push(badge("On now", true))
+                    if (pull.yearly) badges.push(badge("Repeats every year", false))
+                    const lines = [
+                        "In the game: " + pull.gameName,
+                        "Original run: " + fullText(pull.original.start) + " to " + fullText(pull.original.end) + " UTC (its own banners only)"
+                    ]
+                    if (on) lines.push("Repeats " + yearlyText(pull.original))
+                    if (on && pull.skippedYears.length > 0) lines.push("Skipped in " + pull.skippedYears.join(", ") + " (a game campaign runs then)")
+                    const run = runLine(pull)
+                    if (run) lines.push(run)
+                    pullList.appendChild(row({ name: pull.name, image: null, checked: on, badges, lines, onChange: (value) => changed(pulls, pull.id, value) }))
+                }
+                renderRuns("stamina-list", data.staminaRuns, staminas)
+                renderRuns("reward-list", data.rewardRuns, rewards)
+                $("save").disabled = busy || !dirty
+                $("undo").disabled = busy || !dirty
+            }
+
+            function renderStatus() {
+                const mod = data.mod
+                $("mod-status").textContent = mod.state === "building" ? mod.message
+                    : mod.state === "failed" ? mod.message
+                    : mod.message ? "Last update: " + mod.message : ""
+                const warnings = $("warnings")
+                warnings.replaceChildren()
+                for (const text of data.problems) {
+                    const item = document.createElement("li")
+                    item.textContent = "Note: " + text
+                    warnings.appendChild(item)
+                }
+            }
+
+            function accept(reply) {
+                data = reply
+                loadedAt = Date.now()
+                if (!dirty) {
+                    logins = new Set(data.loginBonuses.filter(b => b.yearly).map(b => b.id))
+                    pulls = new Set(data.freePulls.filter(p => p.yearly).map(p => p.id))
+                    staminas = new Set(data.staminaRuns.filter(r => r.yearly).map(r => r.key))
+                    rewards = new Set(data.rewardRuns.filter(r => r.yearly).map(r => r.key))
+                }
+                renderStatus()
+                renderClock()
+                renderLists()
+            }
+
+            async function load() {
+                try {
+                    const response = await fetch("/api/server/campaigns")
+                    if (!response.ok) throw new Error(response.statusText)
+                    accept(await response.json())
+                } catch (error) {
+                    $("server-now").textContent = "Could not load the campaigns: " + error.message
+                }
+            }
+
+            $("save").addEventListener("click", async () => {
+                if (busy) return
+                busy = true
+                renderLists()
+                $("message").textContent = "Saving and updating the game's data files..."
+                try {
+                    const response = await fetch("/api/server/campaigns", {
+                        method: "POST", headers: { "content-type": "application/json" },
+                        body: JSON.stringify({ yearlyLoginBonuses: [...logins], yearlyFreePulls: [...pulls], yearlyRewardRuns: [...rewards], yearlyStaminaRuns: [...staminas] })
+                    })
+                    const reply = await response.json().catch(() => ({}))
+                    if (!response.ok) throw new Error(reply.message || response.statusText)
+                    dirty = false
+                    accept(reply)
+                    $("message").textContent = data.mod.state === "failed" ? data.mod.message : "Saved. Reopen the game to see it."
+                } catch (error) {
+                    $("message").textContent = "Error: " + error.message
+                } finally {
+                    busy = false
+                    renderLists()
+                }
+            })
+            $("undo").addEventListener("click", () => {
+                dirty = false
+                $("message").textContent = ""
+                accept(data)
+            })
+
+            load()
+            setInterval(renderClock, 1000)
+            setInterval(() => { if (!busy && !dirty) load() }, 30000)
+        })()
+    </script>
+</body>
+
+</html>

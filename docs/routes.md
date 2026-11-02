@@ -15,7 +15,7 @@ Symbol | Meaning
 ### ``na.wdfp.kakaogames.com/latest/api/index.php``
 Endpoint | Status
 :------- | :-------
-[/active_mission/receive](./routes/active_mission_receive.md) | :no_entry:
+[/active_mission/receive](./routes/active_mission_receive.md) | :warning:
 [/asset/get_path](./routes/asset_get_path.md) | :warning:
 [/asset/version_info](./routes/asset_version_info.md) | :warning:
 [/attention/check](./routes/attention_check.md) | :white_check_mark:

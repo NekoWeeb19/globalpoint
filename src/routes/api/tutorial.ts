@@ -54,7 +54,7 @@ const routes = async (fastify: FastifyInstance) => {
 
         // mark tutorial as having been completed
         for (const tutorialId of tutorialIds) {
-            // TODO: add checking for if the tutorial is already triggered.
+            // a tutorial that's already saved is skipped (the insert ignores duplicates)
             insertPlayerTriggeredTutorialSync(playerId, tutorialId)
         }
 
@@ -96,10 +96,21 @@ const routes = async (fastify: FastifyInstance) => {
 
         // check if tutorial is already completed
         const completedTutorial = getPlayerTriggeredTutorialsSync(playerId)
-        if (completedTutorial.find((value: number) => value === 12)) return reply.status(400).send({
-            "error": "Bad Request",
-            "message": "Tutorial already completed"
-        })
+        // already completed: answer with the last step (17, the tutorial's end) and change nothing. A
+        // reinstalled game (no local tutorial flag) asks "Have you already played the tutorial?" and then
+        // sends the skip steps for an account that finished it long ago. A 400 here stopped it with error
+        // H400; answering with the next step left it inside the tutorial (C8601, tutorial units).
+        if (completedTutorial.find((value: number) => value === 12)) {
+            reply.header("content-type", "application/x-msgpack")
+            return reply.status(200).send({
+                "data_headers": generateDataHeaders({ viewer_id: viewerId }),
+                "data": {
+                    "step": 17,
+                    "mail_arrived": false,
+                    "start_time": getServerTime()
+                }
+            })
+        }
 
         // update player
         const currentStep = player.tutorialStep

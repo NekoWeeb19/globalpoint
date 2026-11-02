@@ -1,0 +1,4681 @@
+{
+  "groups": {
+    "normal": {
+      "type": "Normal",
+      "start": "2018-08-29 05:00:00",
+      "end": "2021-08-28 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 1,
+            "id": 11001
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 1,
+            "id": 11001
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "start_dash": {
+      "type": "Limited",
+      "start": "2021-07-24 05:00:00",
+      "end": "2021-08-11 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 200
+          }
+        ]
+      ]
+    },
+    "xmas22": {
+      "type": "Limited",
+      "start": "2024-05-01 14:00:00",
+      "end": "2024-05-17 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "xmas21": {
+      "type": "Limited",
+      "start": "2023-08-14 14:00:00",
+      "end": "2023-08-28 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "valentine21": {
+      "type": "Limited",
+      "start": "2022-10-07 05:00:00",
+      "end": "2022-10-14 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "ucollab_01": {
+      "type": "Limited",
+      "start": "2024-03-17 14:00:00",
+      "end": "2024-04-01 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "spring2021": {
+      "type": "Limited",
+      "start": "2022-11-05 05:00:00",
+      "end": "2022-11-21 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "smr_v22": {
+      "type": "Limited",
+      "start": "2024-02-01 14:00:00",
+      "end": "2024-03-03 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "smr_v21_02": {
+      "type": "Limited",
+      "start": "2023-03-25 14:00:00",
+      "end": "2023-04-09 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "smr_v21": {
+      "type": "Limited",
+      "start": "2023-02-25 05:00:00",
+      "end": "2023-03-12 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "smr_v20": {
+      "type": "Limited",
+      "start": "2022-03-18 05:00:00",
+      "end": "2022-04-29 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "ny22": {
+      "type": "Limited",
+      "start": "2023-09-13 14:00:00",
+      "end": "2023-09-30 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "ny21": {
+      "type": "Limited",
+      "start": "2022-08-29 05:00:00",
+      "end": "2022-09-08 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "normal_2022": {
+      "type": "Normal",
+      "start": "2024-01-17 05:00:00",
+      "end": "2067-08-29 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 6,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1500
+          },
+          {
+            "kind": 4,
+            "amount": 5000
+          },
+          {
+            "kind": 1,
+            "amount": 25,
+            "id": 100000
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 1,
+            "id": 10001
+          }
+        ]
+      ]
+    },
+    "hw_v22": {
+      "type": "Limited",
+      "start": "2024-04-11 14:00:00",
+      "end": "2024-04-29 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "hw_v21_02": {
+      "type": "Limited",
+      "start": "2023-06-24 14:00:00",
+      "end": "2023-06-28 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "hw_v21_01": {
+      "type": "Limited",
+      "start": "2023-06-15 14:00:00",
+      "end": "2023-06-24 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "gw22": {
+      "type": "Limited",
+      "start": "2023-12-26 14:00:00",
+      "end": "2024-01-05 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "gw21": {
+      "type": "Limited",
+      "start": "2022-12-26 05:00:00",
+      "end": "2023-01-07 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "goodbye_login": {
+      "type": "Limited",
+      "start": "2024-05-28 14:00:00",
+      "end": "2024-07-25 14:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 600
+          }
+        ]
+      ]
+    },
+    "comebackpresent": {
+      "type": "ComebackAlways",
+      "start": "2023-07-25 05:00:00",
+      "end": null,
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 1000
+          },
+          {
+            "kind": 1,
+            "amount": 1,
+            "id": 999001
+          },
+          {
+            "kind": 1,
+            "amount": 1,
+            "id": 999004
+          },
+          {
+            "kind": 1,
+            "amount": 30,
+            "id": 101
+          },
+          {
+            "kind": 4,
+            "amount": 30000
+          },
+          {
+            "kind": 3,
+            "amount": 30000
+          },
+          {
+            "kind": 1,
+            "amount": 1,
+            "id": 10003
+          }
+        ]
+      ]
+    },
+    "comeback_01": {
+      "type": "Comeback",
+      "start": "2022-12-17 05:00:00",
+      "end": "2023-02-20 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 150
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 150
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 150
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 150
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 150
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 150
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 150
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 150
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 150
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 150
+          }
+        ]
+      ]
+    },
+    "chapter10_fin": {
+      "type": "Limited",
+      "start": "2023-06-28 14:00:00",
+      "end": "2023-07-09 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "anv3_present": {
+      "type": "ActiveUser",
+      "start": "2024-04-28 14:00:00",
+      "end": "2024-06-04 13:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": "anv3_comeback",
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 6000
+          },
+          {
+            "kind": 1,
+            "amount": 10,
+            "id": 500000
+          },
+          {
+            "kind": 1,
+            "amount": 1,
+            "id": 10003
+          },
+          {
+            "kind": 1,
+            "amount": 1,
+            "id": 12002
+          }
+        ]
+      ]
+    },
+    "anv3_comeback": {
+      "type": "Comeback",
+      "start": "2024-04-28 14:00:00",
+      "end": "2024-06-04 13:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 4000
+          },
+          {
+            "kind": 1,
+            "amount": 200,
+            "id": 99
+          },
+          {
+            "kind": 3,
+            "amount": 800000
+          },
+          {
+            "kind": 4,
+            "amount": 1000000
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 1500
+          },
+          {
+            "kind": 1,
+            "amount": 500,
+            "id": 1
+          },
+          {
+            "kind": 1,
+            "amount": 500,
+            "id": 5
+          },
+          {
+            "kind": 1,
+            "amount": 500,
+            "id": 9
+          },
+          {
+            "kind": 1,
+            "amount": 500,
+            "id": 13
+          },
+          {
+            "kind": 1,
+            "amount": 500,
+            "id": 46
+          },
+          {
+            "kind": 1,
+            "amount": 500,
+            "id": 42
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 1500
+          },
+          {
+            "kind": 1,
+            "amount": 400,
+            "id": 2
+          },
+          {
+            "kind": 1,
+            "amount": 400,
+            "id": 6
+          },
+          {
+            "kind": 1,
+            "amount": 400,
+            "id": 10
+          },
+          {
+            "kind": 1,
+            "amount": 400,
+            "id": 14
+          },
+          {
+            "kind": 1,
+            "amount": 400,
+            "id": 47
+          },
+          {
+            "kind": 1,
+            "amount": 400,
+            "id": 43
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 1500
+          },
+          {
+            "kind": 1,
+            "amount": 200,
+            "id": 3
+          },
+          {
+            "kind": 1,
+            "amount": 200,
+            "id": 7
+          },
+          {
+            "kind": 1,
+            "amount": 200,
+            "id": 11
+          },
+          {
+            "kind": 1,
+            "amount": 200,
+            "id": 15
+          },
+          {
+            "kind": 1,
+            "amount": 200,
+            "id": 48
+          },
+          {
+            "kind": 1,
+            "amount": 200,
+            "id": 44
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 1500
+          },
+          {
+            "kind": 1,
+            "amount": 50,
+            "id": 4
+          },
+          {
+            "kind": 1,
+            "amount": 50,
+            "id": 8
+          },
+          {
+            "kind": 1,
+            "amount": 50,
+            "id": 12
+          },
+          {
+            "kind": 1,
+            "amount": 50,
+            "id": 16
+          },
+          {
+            "kind": 1,
+            "amount": 50,
+            "id": 49
+          },
+          {
+            "kind": 1,
+            "amount": 50,
+            "id": 45
+          }
+        ]
+      ]
+    },
+    "anv2022": {
+      "type": "Limited",
+      "start": "2024-04-28 14:00:00",
+      "end": "2024-05-15 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "anv2half2": {
+      "type": "Limited",
+      "start": "2024-01-17 14:00:00",
+      "end": "2024-02-01 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ]
+      ]
+    },
+    "anv2half": {
+      "type": "Limited",
+      "start": "2024-01-02 14:00:00",
+      "end": "2024-01-17 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ]
+      ]
+    },
+    "anv2021": {
+      "type": "Limited",
+      "start": "2023-07-25 14:00:00",
+      "end": "2023-08-14 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "anv1half": {
+      "type": "Limited",
+      "start": "2023-01-22 05:00:00",
+      "end": "2023-02-22 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "anv2020": {
+      "type": "Limited",
+      "start": "2022-07-25 05:00:00",
+      "end": "2022-08-24 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "login_bonus_gw": {
+      "type": "Limited",
+      "start": "2024-10-29 14:00:00",
+      "end": null,
+      "yearlyFrom": "04-28 12:00:00",
+      "yearlyUntil": "05-08 04:59:59",
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "countdown_anv": {
+      "type": "Limited",
+      "start": "2024-11-15 14:00:00",
+      "end": null,
+      "yearlyFrom": "05-15 12:00:00",
+      "yearlyUntil": "05-31 04:59:59",
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ]
+      ]
+    },
+    "login_bonus_anv": {
+      "type": "Limited",
+      "start": "2024-12-01 14:00:00",
+      "end": null,
+      "yearlyFrom": "05-31 12:00:00",
+      "yearlyUntil": "06-17 04:59:59",
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 100
+          }
+        ]
+      ]
+    },
+    "zcollab_event": {
+      "type": "Limited",
+      "start": "2022-05-13 05:00:00",
+      "end": "2022-05-30 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "rcollab_event": {
+      "type": "Limited",
+      "start": "2021-09-13 05:00:00",
+      "end": "2021-09-28 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "rcollab_re01": {
+      "type": "Limited",
+      "start": "2022-09-13 05:00:00",
+      "end": "2022-09-28 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "ny20": {
+      "type": "Limited",
+      "start": "2021-08-28 05:00:00",
+      "end": "2021-09-05 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "normal_ny20_jan": {
+      "type": "Normal",
+      "start": "2021-08-28 05:00:00",
+      "end": "2021-09-28 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 2,
+            "amount": 1,
+            "id": 333001
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 1,
+            "id": 11001
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 1,
+            "id": 11001
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 1,
+            "id": 11001
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 1,
+            "id": 11001
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "normal_2020": {
+      "type": "Normal",
+      "start": "2021-09-28 05:00:00",
+      "end": "2024-01-17 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 1,
+            "id": 11001
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 1,
+            "id": 11001
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 1,
+            "amount": 5,
+            "id": 101
+          }
+        ],
+        [
+          {
+            "kind": 3,
+            "amount": 1000
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "halfanv2020": {
+      "type": "Limited",
+      "start": "2022-01-22 05:00:00",
+      "end": "2022-02-12 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    },
+    "gw2020": {
+      "type": "Limited",
+      "start": "2021-12-26 05:00:00",
+      "end": "2022-01-09 04:59:59",
+      "yearlyFrom": null,
+      "yearlyUntil": null,
+      "linkedComeback": null,
+      "days": [
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ],
+        [
+          {
+            "kind": 0,
+            "amount": 50
+          }
+        ]
+      ]
+    }
+  }
+}

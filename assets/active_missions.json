@@ -1,0 +1,1191 @@
+{
+  "_note": "Active (step-up) missions. Rewards decoded from the Chinese Starpoint fork's mission_active_reward.json; 11010, 11020, 11070 and 11090 were checked against a recorded global response. The rest are unverified against global. \"requirements\" is the progress each stage needs to unlock (also from the Chinese tables); only the unlock tool on the player page uses it. \"patterns\" is how each mission counts progress (from the Chinese tables) and \"targets\" lists the missions each \"complete all\" mission counts. \"characterTargets\" is the character a \"obtain this character\" mission needs. \"questRules\" says which quests count for each quest or battle mission (patterns 57, 23, 65 and 66): \"categories\" are the quest categories, and the rest select quest IDs (first/second/third are the digits of a main, EX or boss quest ID; eventIds/questNumbers are the thousands and the last three digits of the other IDs). \"minDifficulty\" is the lowest boss difficulty, the last digit of a boss quest ID.",
+  "requirements": {
+    "11010": {
+      "1": 1
+    },
+    "11020": {
+      "1": 1
+    },
+    "11030": {
+      "1": 1
+    },
+    "11040": {
+      "1": 1
+    },
+    "11050": {
+      "1": 1
+    },
+    "11060": {
+      "1": 1
+    },
+    "11070": {
+      "1": 1
+    },
+    "11080": {
+      "1": 1
+    },
+    "11090": {
+      "1": 1
+    },
+    "11100": {
+      "1": 1
+    },
+    "11110": {
+      "1": 10
+    },
+    "12010": {
+      "1": 1
+    },
+    "12020": {
+      "1": 1
+    },
+    "12030": {
+      "1": 40
+    },
+    "12040": {
+      "1": 1
+    },
+    "12050": {
+      "1": 1
+    },
+    "12060": {
+      "1": 1
+    },
+    "12070": {
+      "1": 1
+    },
+    "12080": {
+      "1": 3
+    },
+    "12090": {
+      "1": 1
+    },
+    "12100": {
+      "1": 1
+    },
+    "12110": {
+      "1": 10
+    },
+    "13010": {
+      "1": 1
+    },
+    "13020": {
+      "1": 6
+    },
+    "13030": {
+      "1": 1
+    },
+    "13040": {
+      "1": 1
+    },
+    "13050": {
+      "1": 1
+    },
+    "13060": {
+      "1": 1
+    },
+    "13070": {
+      "1": 1
+    },
+    "13080": {
+      "1": 1
+    },
+    "13090": {
+      "1": 1
+    },
+    "13100": {
+      "1": 1
+    },
+    "13110": {
+      "1": 10
+    },
+    "14010": {
+      "1": 1
+    },
+    "14020": {
+      "1": 1
+    },
+    "14030": {
+      "1": 1
+    },
+    "14040": {
+      "1": 1
+    },
+    "14050": {
+      "1": 1
+    },
+    "14060": {
+      "1": 1
+    },
+    "14070": {
+      "1": 1
+    },
+    "14080": {
+      "1": 1
+    },
+    "14090": {
+      "1": 1
+    },
+    "14100": {
+      "1": 1
+    },
+    "14110": {
+      "1": 10
+    }
+  },
+  "missions": {
+    "11010": {
+      "name": "step_up_1_character_episode",
+      "title": "Read a character story",
+      "group": "Beginner",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 101,
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "11020": {
+      "name": "step_up_1_equip_equipment",
+      "title": "Equip a character with equipment",
+      "group": "Beginner",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 100000,
+            "amount": 150
+          }
+        ]
+      }
+    },
+    "11030": {
+      "name": "step_up_1_equip_upgrade",
+      "title": "Awaken equipment once",
+      "group": "Beginner",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 100000,
+            "amount": 150
+          }
+        ]
+      }
+    },
+    "11040": {
+      "name": "step_up_1_unison_character_set",
+      "title": "Set up a Unison character",
+      "group": "Beginner",
+      "stages": {
+        "1": [
+          {
+            "type": "exp_pool",
+            "amount": 500
+          }
+        ]
+      }
+    },
+    "11050": {
+      "name": "step_up_1_main_1_clear",
+      "title": "Clear Main Quest Chapter 1",
+      "group": "Beginner",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 999005,
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "11060": {
+      "name": "step_up_1_any_daily_element",
+      "title": "Clear any-element Daily Dungeon",
+      "group": "Beginner",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 1,
+            "amount": 10
+          },
+          {
+            "type": "item",
+            "id": 5,
+            "amount": 10
+          },
+          {
+            "type": "item",
+            "id": 9,
+            "amount": 10
+          }
+        ]
+      }
+    },
+    "11070": {
+      "name": "step_up_1_mana_board",
+      "title": "Unlock an ability on the Mana Board",
+      "group": "Beginner",
+      "stages": {
+        "1": [
+          {
+            "type": "free_mana",
+            "amount": 2000
+          }
+        ]
+      }
+    },
+    "11080": {
+      "name": "step_up_1_daily_exp_mana",
+      "title": "Clear the Daily Exp & Mana Dungeon",
+      "group": "Beginner",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 13,
+            "amount": 10
+          },
+          {
+            "type": "item",
+            "id": 46,
+            "amount": 10
+          },
+          {
+            "type": "item",
+            "id": 42,
+            "amount": 10
+          }
+        ]
+      }
+    },
+    "11090": {
+      "name": "step_up_1_inject_exp",
+      "title": "Strengthen a character with Level Enhancement",
+      "group": "Beginner",
+      "stages": {
+        "1": [
+          {
+            "type": "exp_pool",
+            "amount": 1000
+          }
+        ]
+      }
+    },
+    "11100": {
+      "name": "step_up_1_main_2_clear",
+      "title": "Clear Main Quest Chapter 2",
+      "group": "Beginner",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 999003,
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "11110": {
+      "name": "step_up_1_all_clear",
+      "title": "Complete all Beginner missions",
+      "group": "Beginner",
+      "stages": {
+        "1": [
+          {
+            "type": "free_vmoney",
+            "amount": 300
+          }
+        ]
+      }
+    },
+    "12010": {
+      "name": "step_up_2_treasure_shop",
+      "title": "Buy an item in the Treasure Shop",
+      "group": "Elementary",
+      "stages": {
+        "1": [
+          {
+            "type": "free_mana",
+            "amount": 5000
+          }
+        ]
+      }
+    },
+    "12020": {
+      "name": "step_up_2_main_3_clear",
+      "title": "Clear Main Quest Chapter 3",
+      "group": "Elementary",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 999005,
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "12030": {
+      "name": "step_up_2_character_level",
+      "title": "Raise a character to Lv. 40 or higher",
+      "group": "Elementary",
+      "stages": {
+        "1": [
+          {
+            "type": "exp_pool",
+            "amount": 3000
+          }
+        ]
+      }
+    },
+    "12040": {
+      "name": "step_up_2_character_evolve",
+      "title": "Evolve a character",
+      "group": "Elementary",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 2,
+            "amount": 10
+          },
+          {
+            "type": "item",
+            "id": 6,
+            "amount": 10
+          },
+          {
+            "type": "item",
+            "id": 10,
+            "amount": 10
+          }
+        ]
+      }
+    },
+    "12050": {
+      "name": "step_up_2_main_4_clear",
+      "title": "Clear Main Quest Chapter 4",
+      "group": "Elementary",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 999003,
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "12060": {
+      "name": "step_up_2_daily_exp_mana_50",
+      "title": "Clear the Lv. 50 Daily Dungeon",
+      "group": "Elementary",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 102,
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "12070": {
+      "name": "step_up_2_ex_1_clear",
+      "title": "Clear Expert Quest Chapter 1",
+      "group": "Elementary",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 14,
+            "amount": 10
+          },
+          {
+            "type": "item",
+            "id": 47,
+            "amount": 10
+          },
+          {
+            "type": "item",
+            "id": 43,
+            "amount": 10
+          }
+        ]
+      }
+    },
+    "12080": {
+      "name": "step_up_2_boss_battle",
+      "title": "Clear a Boss Battle 3 times",
+      "group": "Elementary",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 49000,
+            "amount": 100
+          }
+        ]
+      }
+    },
+    "12090": {
+      "name": "step_up_2_boss_battle_middle",
+      "title": "Clear an Intermediate Boss Battle",
+      "group": "Elementary",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 49001,
+            "amount": 50
+          }
+        ]
+      }
+    },
+    "12100": {
+      "name": "step_up_2_yuragi_hokai",
+      "title": "Clear the gate to the deep layers in the Collapse realm",
+      "group": "Elementary",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 99,
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "12110": {
+      "name": "step_up_2_all_clear",
+      "title": "Complete all Elementary missions",
+      "group": "Elementary",
+      "stages": {
+        "1": [
+          {
+            "type": "free_vmoney",
+            "amount": 300
+          }
+        ]
+      }
+    },
+    "13010": {
+      "name": "step_up_3_main_5_clear",
+      "title": "Clear Main Quest Chapter 5",
+      "group": "Intermediate",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 999003,
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "13020": {
+      "name": "step_up_3_character_evolve",
+      "title": "Evolve 6 characters",
+      "group": "Intermediate",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 10002,
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "13030": {
+      "name": "step_up_3_main_6_clear",
+      "title": "Clear Main Quest Chapter 6",
+      "group": "Intermediate",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 999005,
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "13040": {
+      "name": "step_up_3_character_over_limit",
+      "title": "Raise a character's level cap",
+      "group": "Intermediate",
+      "stages": {
+        "1": [
+          {
+            "type": "exp_pool",
+            "amount": 5000
+          }
+        ]
+      }
+    },
+    "13050": {
+      "name": "step_up_3_daily_exp_mana_60",
+      "title": "Clear the Lv. 60 Daily Dungeon",
+      "group": "Intermediate",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 102,
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "13060": {
+      "name": "step_up_3_yuragi_hokai_50",
+      "title": "Clear a Lv. 50 stage in the Collapse realm",
+      "group": "Intermediate",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 99,
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "13070": {
+      "name": "step_up_3_yuragi_yugen",
+      "title": "Clear a stage in the Profound realm",
+      "group": "Intermediate",
+      "stages": {
+        "1": [
+          {
+            "type": "free_mana",
+            "amount": 10000
+          }
+        ]
+      }
+    },
+    "13080": {
+      "name": "step_up_3_boss_battle_upper",
+      "title": "Clear an Advanced Boss Battle",
+      "group": "Intermediate",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 49001,
+            "amount": 100
+          }
+        ]
+      }
+    },
+    "13090": {
+      "name": "step_up_3_main_1_6_complete",
+      "title": "Clear every Main Quest up to Chapter 6 with SS rank",
+      "group": "Intermediate",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 3,
+            "amount": 5
+          },
+          {
+            "type": "item",
+            "id": 7,
+            "amount": 5
+          },
+          {
+            "type": "item",
+            "id": 11,
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "13100": {
+      "name": "step_up_3_boss_coin_exchange_equip",
+      "title": "Exchange for equipment at the Boss Coin exchange",
+      "group": "Intermediate",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 15,
+            "amount": 5
+          },
+          {
+            "type": "item",
+            "id": 48,
+            "amount": 5
+          },
+          {
+            "type": "item",
+            "id": 44,
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "13110": {
+      "name": "step_up_3_all_clear",
+      "title": "Complete all Intermediate missions",
+      "group": "Intermediate",
+      "stages": {
+        "1": [
+          {
+            "type": "free_vmoney",
+            "amount": 300
+          }
+        ]
+      }
+    },
+    "14010": {
+      "name": "step_up_4_try_practice",
+      "title": "Take on a Practice Battle",
+      "group": "Advanced",
+      "stages": {
+        "1": [
+          {
+            "type": "exp_pool",
+            "amount": 8000
+          }
+        ]
+      }
+    },
+    "14020": {
+      "name": "step_up_4_main_7_clear",
+      "title": "Clear Main Quest Chapter 7",
+      "group": "Advanced",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 999003,
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "14030": {
+      "name": "step_up_4_main_1_6_ex_complete",
+      "title": "Clear every Expert Quest up to Chapter 6 with SS rank",
+      "group": "Advanced",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 999005,
+            "amount": 2
+          }
+        ]
+      }
+    },
+    "14040": {
+      "name": "step_up_4_boss_battle_upper_plus",
+      "title": "Clear an Advanced+ Boss Battle",
+      "group": "Advanced",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 49002,
+            "amount": 100
+          }
+        ]
+      }
+    },
+    "14050": {
+      "name": "step_up_4_equipment_upgrade_to_5",
+      "title": "Awaken equipment to Lv. 5",
+      "group": "Advanced",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 4,
+            "amount": 5
+          },
+          {
+            "type": "item",
+            "id": 8,
+            "amount": 5
+          },
+          {
+            "type": "item",
+            "id": 12,
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "14060": {
+      "name": "step_up_4_use_ability_soul",
+      "title": "Equip a character with an Ability Soul",
+      "group": "Advanced",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 16,
+            "amount": 5
+          },
+          {
+            "type": "item",
+            "id": 49,
+            "amount": 5
+          },
+          {
+            "type": "item",
+            "id": 45,
+            "amount": 5
+          }
+        ]
+      }
+    },
+    "14070": {
+      "name": "step_up_4_obtain_bond_token",
+      "title": "Obtain a Bond Token",
+      "group": "Advanced",
+      "stages": {
+        "1": [
+          {
+            "type": "free_mana",
+            "amount": 15000
+          }
+        ]
+      }
+    },
+    "14080": {
+      "name": "step_up_4_join_katana_ghost",
+      "title": "Obtain the character Murakumo",
+      "group": "Advanced",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 11003,
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "14090": {
+      "name": "step_up_4_yuragi_hokai_60",
+      "title": "Clear a Lv. 60 stage in the Collapse realm",
+      "group": "Advanced",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 99,
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "14100": {
+      "name": "step_up_4_yuragi_hokai_70",
+      "title": "Clear a Lv. 70 stage in the Collapse realm",
+      "group": "Advanced",
+      "stages": {
+        "1": [
+          {
+            "type": "item",
+            "id": 102,
+            "amount": 4
+          }
+        ]
+      }
+    },
+    "14110": {
+      "name": "step_up_4_all_clear",
+      "title": "Complete all Advanced missions",
+      "group": "Advanced",
+      "stages": {
+        "1": [
+          {
+            "type": "free_vmoney",
+            "amount": 600
+          }
+        ]
+      }
+    }
+  },
+  "patterns": {
+    "11010": 21,
+    "11020": 58,
+    "11030": 34,
+    "11040": 59,
+    "11050": 57,
+    "11060": 23,
+    "11070": 62,
+    "11080": 23,
+    "11090": 63,
+    "11100": 57,
+    "11110": 13,
+    "12010": 45,
+    "12020": 57,
+    "12030": 5,
+    "12040": 61,
+    "12050": 57,
+    "12060": 23,
+    "12070": 57,
+    "12080": 23,
+    "12090": 23,
+    "12100": 23,
+    "12110": 13,
+    "13010": 57,
+    "13020": 61,
+    "13030": 57,
+    "13040": 9,
+    "13050": 23,
+    "13060": 23,
+    "13070": 23,
+    "13080": 23,
+    "13090": 66,
+    "13100": 64,
+    "13110": 13,
+    "14010": 65,
+    "14020": 57,
+    "14030": 66,
+    "14040": 23,
+    "14050": 36,
+    "14060": 35,
+    "14070": 8,
+    "14080": 4,
+    "14090": 23,
+    "14100": 23,
+    "14110": 13
+  },
+  "targets": {
+    "11110": [
+      11010,
+      11020,
+      11030,
+      11040,
+      11050,
+      11060,
+      11070,
+      11080,
+      11090,
+      11100
+    ],
+    "12110": [
+      12010,
+      12020,
+      12030,
+      12040,
+      12050,
+      12060,
+      12070,
+      12080,
+      12090,
+      12100
+    ],
+    "13110": [
+      13010,
+      13020,
+      13030,
+      13040,
+      13050,
+      13060,
+      13070,
+      13080,
+      13090,
+      13100
+    ],
+    "14110": [
+      14010,
+      14020,
+      14030,
+      14040,
+      14050,
+      14060,
+      14070,
+      14080,
+      14090,
+      14100
+    ]
+  },
+  "characterTargets": {
+    "14080": 141003
+  },
+  "questRules": {
+    "11050": {
+      "categories": [
+        1
+      ],
+      "first": [
+        1
+      ],
+      "second": [
+        8
+      ],
+      "third": [
+        4
+      ]
+    },
+    "11060": {
+      "categories": [
+        6
+      ]
+    },
+    "11080": {
+      "categories": [
+        14
+      ],
+      "eventIds": [
+        1
+      ]
+    },
+    "11100": {
+      "categories": [
+        1
+      ],
+      "first": [
+        2
+      ],
+      "second": [
+        9
+      ],
+      "third": [
+        7
+      ]
+    },
+    "12020": {
+      "categories": [
+        1
+      ],
+      "first": [
+        3
+      ],
+      "second": [
+        13
+      ],
+      "third": [
+        3
+      ]
+    },
+    "12050": {
+      "categories": [
+        1
+      ],
+      "first": [
+        4
+      ],
+      "second": [
+        11
+      ],
+      "third": [
+        5
+      ]
+    },
+    "12060": {
+      "categories": [
+        14
+      ],
+      "eventIds": [
+        1
+      ],
+      "questNumbers": [
+        5
+      ]
+    },
+    "12070": {
+      "categories": [
+        4
+      ],
+      "first": [
+        1
+      ],
+      "second": [
+        8
+      ],
+      "third": [
+        1
+      ]
+    },
+    "12080": {
+      "categories": [
+        2
+      ]
+    },
+    "12090": {
+      "categories": [
+        2
+      ],
+      "minDifficulty": 2
+    },
+    "12100": {
+      "categories": [
+        13
+      ],
+      "eventIds": [
+        1
+      ],
+      "questNumbers": [
+        1
+      ]
+    },
+    "13010": {
+      "categories": [
+        1
+      ],
+      "first": [
+        5
+      ],
+      "second": [
+        13
+      ],
+      "third": [
+        4
+      ]
+    },
+    "13030": {
+      "categories": [
+        1
+      ],
+      "first": [
+        6
+      ],
+      "second": [
+        10
+      ],
+      "third": [
+        6
+      ]
+    },
+    "13050": {
+      "categories": [
+        14
+      ],
+      "eventIds": [
+        1
+      ],
+      "questNumbers": [
+        6
+      ]
+    },
+    "13060": {
+      "categories": [
+        13
+      ],
+      "eventIds": [
+        1
+      ],
+      "questNumbers": [
+        2,
+        5,
+        8,
+        11,
+        14,
+        17
+      ]
+    },
+    "13070": {
+      "categories": [
+        20
+      ],
+      "eventIds": [
+        1
+      ]
+    },
+    "13080": {
+      "categories": [
+        2
+      ],
+      "minDifficulty": 3
+    },
+    "13090": {
+      "categories": [
+        1
+      ],
+      "first": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    "14010": {
+      "categories": [
+        15
+      ]
+    },
+    "14020": {
+      "categories": [
+        1
+      ],
+      "first": [
+        7
+      ],
+      "second": [
+        14
+      ],
+      "third": [
+        4
+      ]
+    },
+    "14030": {
+      "categories": [
+        4
+      ],
+      "first": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    "14040": {
+      "categories": [
+        2
+      ],
+      "minDifficulty": 5
+    },
+    "14090": {
+      "categories": [
+        13
+      ],
+      "eventIds": [
+        1
+      ],
+      "questNumbers": [
+        3,
+        6,
+        9,
+        12,
+        15,
+        18
+      ]
+    },
+    "14100": {
+      "categories": [
+        13
+      ],
+      "eventIds": [
+        1
+      ],
+      "questNumbers": [
+        4,
+        7,
+        10,
+        13,
+        16,
+        19
+      ]
+    }
+  }
+}

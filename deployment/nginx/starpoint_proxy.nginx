@@ -142,3 +142,25 @@ server {
                 proxy_pass ${STARPOINT_REMOTE_URL}/infodesk$request_uri;
         }
 }
+
+# The global client's News button opens https://worldflipper.playkakaogames.com/news in a web view:
+# StarPoint's news board (the dashboard's News tab). It uses the same certificate as na.wdfp; a
+# phone that doesn't trust it can still open the board at http://<starpoint>/news/board.
+server {
+        listen 80;
+        listen [::]:80;
+        listen 443 ssl;
+        listen [::]:443 ssl;
+
+        server_name worldflipper.playkakaogames.com;
+
+        ssl_certificate ${STARPOINT_PUBKEY_PREFIX}_wdfp_global.crt;
+        ssl_certificate_key $STARPOINT_PRIVATEKEY;
+
+        location / {
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-For $remote_addr;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_pass ${STARPOINT_REMOTE_URL}/news/board;
+        }
+}

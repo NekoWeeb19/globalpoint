@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import getDatabase, { Database } from ".";
-import { generateViewerId, getServerTime } from "../utils";
+import { generateViewerId, getServerDate, getServerTime } from "../utils";
 import { Account, DailyChallengePointListCampaign, DailyChallengePointListEntry, MergedPlayerData, PartyCategory, Player, PlayerActiveMission, PlayerBoxGacha, PlayerBoxGachaDrawnReward, PlayerCharacter, PlayerCharacterBondToken, PlayerCharacterExBoost, PlayerDrawnQuest, PlayerEquipment, PlayerGachaCampaign, PlayerGachaInfo, PlayerMultiSpecialExchangeCampaign, PlayerParty, PlayerPartyGroup, PlayerPeriodicRewardPoint, PlayerQuestProgress, PlayerRushEvent, PlayerRushEventClearedFolders, PlayerRushEventPlayedParty, PlayerStartDashExchangeCampaign, RawAccount, RawDailyChallengePointListCampaign, RawDailyChallengePointListEntry, RawPlayer, RawPlayerActiveMission, RawPlayerActiveMissionStage, RawPlayerBoxGacha, RawPlayerCharacter, RawPlayerCharacterBondToken, RawPlayerCharacterManaNode, RawPlayerClearedRegularMission, RawPlayerDrawnQuest, RawPlayerEquipment, RawPlayerGachaCampaign, RawPlayerGachaInfo, RawPlayerItem, RawPlayerMultiSpecialExchangeCampaign, RawPlayerOption, RawPlayerParty, RawPlayerPartyGroup, RawPlayerQuestProgress, RawPlayerRushEvent, RawPlayerRushEventClearedFolder, RawPlayerRushEventPlayedParty, RawPlayerRushEventRanking, RawPlayerStartDashExchangeCampaign, RawPlayerTriggeredTutorial, RawSession, RushEventBattleType, GetRushEventEndlessRankingListResult, Session, SessionType, UserRushEventEndlessBattleRanking, UserRushEventPlayedParty } from "./types";
 import { deserializeBoolean, deserializeNumberList, getDefaultPlayerData, serializeBoolean, serializeNumberList } from "./utils";
 import { getPlayerRushEventEndlessBattleRankingSync } from "../lib/rush";
@@ -696,8 +696,10 @@ export function insertPlayerTriggeredTutorialSync(
     playerId: number,
     tutorialId: number
 ) {
+    // OR IGNORE: the game reports a tutorial again when it's already saved (and an imported save can list
+    // one twice). A plain INSERT failed there, and the 500 sent the game back to the title screen.
     db.prepare(`
-    INSERT INTO players_triggered_tutorials (id, player_id)
+    INSERT OR IGNORE INTO players_triggered_tutorials (id, player_id)
     VALUES (?, ?)
     `).run(tutorialId, playerId)
 }
@@ -982,14 +984,17 @@ export function updatePlayerCharacterBondTokenSync(
     characterId: number | string,
     bondToken: PlayerCharacterBondToken
 ) {
+    // only the token of this mana board: without the board in the WHERE, finishing board 1 also
+    // made board 2's token ready, and receiving one marked both received
     db.prepare(`
     UPDATE players_characters_bond_tokens
     SET status = ?
-    WHERE player_id = ? AND character_id = ?
+    WHERE player_id = ? AND character_id = ? AND mana_board_index = ?
     `).run(
         bondToken.status,
         playerId,
-        Number(characterId)
+        Number(characterId),
+        bondToken.manaBoardIndex
     )
 }
 
@@ -1816,7 +1821,8 @@ function buildPlayerQuestProgress(
         finished: deserializeBoolean(raw.finished),
         highScore: raw.high_score,
         clearRank: raw.clear_rank,
-        bestElapsedTimeMs: raw.best_elapsed_time_ms
+        bestElapsedTimeMs: raw.best_elapsed_time_ms,
+        ...(raw.host_finished === null || raw.host_finished === undefined ? {} : { hostFinished: raw.host_finished === 1 })
     }
 }
 
@@ -1831,7 +1837,7 @@ export function getPlayerQuestProgressSync(
 ): Record<string, PlayerQuestProgress[]> {
 
     const rawProgress = db.prepare(`
-    SELECT section, quest_id, finished, high_score, clear_rank, best_elapsed_time_ms
+    SELECT section, quest_id, finished, high_score, clear_rank, best_elapsed_time_ms, host_finished
     FROM players_quest_progress
     WHERE player_id = ?
     `).all(playerId) as RawPlayerQuestProgress[]
@@ -1866,7 +1872,7 @@ export function getPlayerSingleQuestProgressSync(
 ): PlayerQuestProgress | null {
 
     const rawProgress = db.prepare(`
-    SELECT section, quest_id, finished, high_score, clear_rank, best_elapsed_time_ms
+    SELECT section, quest_id, finished, high_score, clear_rank, best_elapsed_time_ms, host_finished
     FROM players_quest_progress
     WHERE player_id = ? AND section = ? AND quest_id = ?
     `).get(playerId, Number(section), Number(questId)) as RawPlayerQuestProgress
@@ -2373,6 +2379,35 @@ export function getPlayerActiveMissionsSync(
     }
 
     return final
+}
+
+/**
+ * Marks a stage of an active mission as received, creating the mission row if the player
+ * does not have one yet.
+ * 
+ * @param playerId The player's ID.
+ * @param missionId The ID of the mission.
+ * @param stageId The ID of the stage that was received.
+ * @param progress The progress value to save when the mission row has to be created.
+ */
+export function markPlayerActiveMissionStageReceivedSync(
+    playerId: number,
+    missionId: number | string,
+    stageId: number | string,
+    progress: number
+) {
+    db.transaction(() => {
+        db.prepare(`
+        INSERT OR IGNORE INTO players_active_missions (id, progress, player_id)
+        VALUES (?, ?, ?)
+        `).run(Number(missionId), progress, playerId)
+
+        db.prepare(`
+        INSERT INTO players_active_missions_stages (id, status, player_id, mission_id)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT (id, mission_id, player_id) DO UPDATE SET status = excluded.status
+        `).run(Number(stageId), serializeBoolean(true), playerId, Number(missionId))
+    })()
 }
 
 /**
@@ -4490,14 +4525,47 @@ export function deletePlayerSync(
     db.prepare(`DELETE FROM players WHERE id = ?`).run(playerId)
 }
 
+/**
+ * Deletes an account completely, in one transaction: its players (every players_* table cascades
+ * from players), its sessions (logins and viewer id) and the account itself. Used by
+ * /tool/unregister ("unregister guest" in the game).
+ *
+ * @returns The ids of the players that were deleted.
+ */
+export function deleteAccountSync(
+    accountId: number
+): number[] {
+    return db.transaction(() => {
+        const playerIds = (db.prepare(`SELECT id FROM players WHERE account_id = ?`).all(accountId) as { id: number }[]).map(row => row.id)
+        db.prepare(`DELETE FROM players WHERE account_id = ?`).run(accountId)
+        db.prepare(`DELETE FROM sessions WHERE account_id = ?`).run(accountId)
+        db.prepare(`DELETE FROM accounts WHERE id = ?`).run(accountId)
+        return playerIds
+    })()
+}
+
+/**
+ * Adds the EXP the pool refilled since it was last collected (1 per minute, at most expPoolMax at a
+ * time), and moves the pool's timestamp to now.
+ *
+ * Both are measured on the SERVER date, the same clock the game counts the refill with (it gets
+ * exp_pooled_time and the servertime header). getServerTime(date) can't be used here: while a server
+ * date is set it returns that date and ignores its argument, so the difference was always 0 and the
+ * pool never refilled, while the game, seeing the date jump (a rotation step), offered refilled EXP
+ * the server didn't have ("Not enough exp" and back to the title screen).
+ */
 export function collectPlayerDataPooledExpSync(
     player: Player,
-    dateNow: Date = new Date()
+    dateNow: Date = getServerDate()
 ) {
-    const serverTimeNow = getServerTime(dateNow)
-    const poolTime = getServerTime(player.expPooledTime)
-    const diff = Math.max(0, serverTimeNow - poolTime)
+    const diff = Math.floor((dateNow.getTime() - player.expPooledTime.getTime()) / 1000)
 
+    // the server date went back (the dashboard), or the timestamp is from another clock (older
+    // saves kept the real date): start counting again from now, with nothing added
+    if (diff < 0) {
+        updatePlayerSync({ id: player.id, expPooledTime: dateNow })
+        return
+    }
     if (60 > diff) return;
 
     updatePlayerSync({

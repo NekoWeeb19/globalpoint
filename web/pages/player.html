@@ -24,6 +24,39 @@
                 </svg>
                 Dashboard
             </a>
+            <a href="/events"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z" />
+                </svg>
+                Events
+            </a>
+            <a href="/summons" data-nav="summons"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M480-80 371-371 80-480l291-109 109-291 109 291 291 109-291 109L480-80Z" />
+                </svg>
+                Summons
+            </a>
+            <a href="/campaigns" data-nav="campaigns"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-280v80h640v-80H160Zm0-440h88q-5-9-6.5-19t-1.5-21q0-50 35-85t85-35q30 0 55.5 15.5T460-826l20 26 20-26q18-24 44-39t56-15q50 0 85 35t35 85q0 11-1.5 21t-6.5 19h88q33 0 56.5 23.5T880-640v440q0 33-23.5 56.5T800-120H160q-33 0-56.5-23.5T80-200v-440q0-33 23.5-56.5T160-720Zm0 320h640v-240H596l84 114-64 46-136-184-136 184-64-46 82-114H160v240Zm200-320q17 0 28.5-11.5T400-760q0-17-11.5-28.5T360-800q-17 0-28.5 11.5T320-760q0 17 11.5 28.5T360-720Zm240 0q17 0 28.5-11.5T640-760q0-17-11.5-28.5T600-800q-17 0-28.5 11.5T560-760q0 17 11.5 28.5T600-720Z" />
+                </svg>
+                Campaigns
+            </a>
+            <a href="/news" data-nav="news"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120H160Zm0-80h640v-560H160v560Zm80-80h480v-80H240v80Zm0-160h160v-240H240v240Zm240 0h240v-80H480v80Zm0-160h240v-80H480v80ZM160-200v-560 560Z" />
+                </svg>
+                News
+            </a>
             <a href="/player"
                 class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
@@ -87,6 +120,145 @@
                     Send Mail (in session)
                 </button>
             </form>
+            <form
+                class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5"
+                method="get" action="/api/server/activeMission">
+                <h3 class="text-xl text-on-background font-semibold mt-2">Active missions (testing)</h3>
+                <p class="text-on-surface-variant text-center">Unlock a mission's reward, then restart the game and claim it from the missions screen.</p>
+                <div class="flex flex-row items-center justify-center">
+                    <input id="activeMissionPlayerId" name="playerId" value="{{playerId}}" type="hidden" />
+                    <select class="my-select" id="activeMissionId" name="missionId" required>
+                            <optgroup label="Beginner">
+                                <option value="11010">11010 - Read a character story</option>
+                                <option value="11020">11020 - Equip a character with equipment</option>
+                                <option value="11030">11030 - Awaken equipment once</option>
+                                <option value="11040">11040 - Set up a Unison character</option>
+                                <option value="11050">11050 - Clear Main Quest Chapter 1</option>
+                                <option value="11060">11060 - Clear any-element Daily Dungeon</option>
+                                <option value="11070">11070 - Unlock an ability on the Mana Board</option>
+                                <option value="11080">11080 - Clear the Daily Exp &amp; Mana Dungeon</option>
+                                <option value="11090">11090 - Strengthen a character with Level Enhancement</option>
+                                <option value="11100">11100 - Clear Main Quest Chapter 2</option>
+                                <option value="11110">11110 - Complete all Beginner missions</option>
+                            </optgroup>
+                            <optgroup label="Elementary">
+                                <option value="12010">12010 - Buy an item in the Treasure Shop</option>
+                                <option value="12020">12020 - Clear Main Quest Chapter 3</option>
+                                <option value="12030">12030 - Raise a character to Lv. 40 or higher</option>
+                                <option value="12040">12040 - Evolve a character</option>
+                                <option value="12050">12050 - Clear Main Quest Chapter 4</option>
+                                <option value="12060">12060 - Clear the Lv. 50 Daily Dungeon</option>
+                                <option value="12070">12070 - Clear Expert Quest Chapter 1</option>
+                                <option value="12080">12080 - Clear a Boss Battle 3 times</option>
+                                <option value="12090">12090 - Clear an Intermediate Boss Battle</option>
+                                <option value="12100">12100 - Clear the gate to the deep layers in the Collapse realm</option>
+                                <option value="12110">12110 - Complete all Elementary missions</option>
+                            </optgroup>
+                            <optgroup label="Intermediate">
+                                <option value="13010">13010 - Clear Main Quest Chapter 5</option>
+                                <option value="13020">13020 - Evolve 6 characters</option>
+                                <option value="13030">13030 - Clear Main Quest Chapter 6</option>
+                                <option value="13040">13040 - Raise a character&#x27;s level cap</option>
+                                <option value="13050">13050 - Clear the Lv. 60 Daily Dungeon</option>
+                                <option value="13060">13060 - Clear a Lv. 50 stage in the Collapse realm</option>
+                                <option value="13070">13070 - Clear a stage in the Profound realm</option>
+                                <option value="13080">13080 - Clear an Advanced Boss Battle</option>
+                                <option value="13090">13090 - Clear every Main Quest up to Chapter 6 with SS rank</option>
+                                <option value="13100">13100 - Exchange for equipment at the Boss Coin exchange</option>
+                                <option value="13110">13110 - Complete all Intermediate missions</option>
+                            </optgroup>
+                            <optgroup label="Advanced">
+                                <option value="14010">14010 - Take on a Practice Battle</option>
+                                <option value="14020">14020 - Clear Main Quest Chapter 7</option>
+                                <option value="14030">14030 - Clear every Expert Quest up to Chapter 6 with SS rank</option>
+                                <option value="14040">14040 - Clear an Advanced+ Boss Battle</option>
+                                <option value="14050">14050 - Awaken equipment to Lv. 5</option>
+                                <option value="14060">14060 - Equip a character with an Ability Soul</option>
+                                <option value="14070">14070 - Obtain a Bond Token</option>
+                                <option value="14080">14080 - Obtain the character Murakumo</option>
+                                <option value="14090">14090 - Clear a Lv. 60 stage in the Collapse realm</option>
+                                <option value="14100">14100 - Clear a Lv. 70 stage in the Collapse realm</option>
+                                <option value="14110">14110 - Complete all Advanced missions</option>
+                            </optgroup>
+                    </select>
+                </div>
+                <div class="flex gap-3 flex-wrap justify-center">
+                    <button type="submit" name="action" value="unlock"
+                        class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity">
+                        Unlock
+                    </button>
+                    <button type="submit" name="action" value="reset"
+                        class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">
+                        Reset
+                    </button>
+                </div>
+            </form>
+            <section
+                class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5">
+                <h3 class="text-xl text-on-background font-semibold mt-2">Daily login bonus (testing)</h3>
+                <p class="text-on-surface-variant text-center">The login bonus comes once a real day (reset 05:00 UTC), whatever the server date. This lets you collect it again now: press it, then close and reopen the game.</p>
+                <button type="button" id="loginBonusAgain" data-player-id="{{playerId}}"
+                    class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">
+                    Give login bonus again
+                </button>
+                <p id="loginBonusMessage" class="text-sm text-on-surface-variant text-center" role="status"></p>
+            </section>
+            <script>
+                (function () {
+                    const button = document.getElementById("loginBonusAgain")
+                    const message = document.getElementById("loginBonusMessage")
+                    button.addEventListener("click", async () => {
+                        button.disabled = true
+                        message.textContent = "Working..."
+                        try {
+                            const response = await fetch("/api/server/loginBonus/again", {
+                                method: "POST", headers: { "content-type": "application/json" },
+                                body: JSON.stringify({ playerId: Number(button.dataset.playerId) })
+                            })
+                            const reply = await response.json().catch(() => ({}))
+                            if (!response.ok) throw new Error(reply.message || response.statusText)
+                            message.textContent = reply.message
+                        } catch (error) {
+                            message.textContent = "Error: " + error.message
+                        } finally {
+                            button.disabled = false
+                        }
+                    })
+                })()
+            </script>
+            <section
+                class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5">
+                <h3 class="text-xl text-on-background font-semibold mt-2">Reinstalled game</h3>
+                <p class="text-on-surface-variant text-center">After reinstalling the game (for example the StarPoint-patched app), it logs in as a new guest. Press this first: the next new guest login within 30 minutes loads this player instead of starting over.</p>
+                <button type="button" id="accountClaim" data-player-id="{{playerId}}"
+                    class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">
+                    Link my reinstalled game to this player
+                </button>
+                <p id="accountClaimMessage" class="text-sm text-on-surface-variant text-center" role="status"></p>
+            </section>
+            <script>
+                (function () {
+                    const button = document.getElementById("accountClaim")
+                    const message = document.getElementById("accountClaimMessage")
+                    button.addEventListener("click", async () => {
+                        button.disabled = true
+                        message.textContent = "Working..."
+                        try {
+                            const response = await fetch("/api/server/account/claim", {
+                                method: "POST", headers: { "content-type": "application/json" },
+                                body: JSON.stringify({ playerId: Number(button.dataset.playerId) })
+                            })
+                            const reply = await response.json().catch(() => ({}))
+                            if (!response.ok) throw new Error(reply.message || response.statusText)
+                            message.textContent = reply.message
+                        } catch (error) {
+                            message.textContent = "Error: " + error.message
+                        } finally {
+                            button.disabled = false
+                        }
+                    })
+                })()
+            </script>
         </article>
     </div>
 </body>

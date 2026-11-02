@@ -6,8 +6,9 @@ import { getCharacterDataSync, getExAbilityPoolsSync, getExBoostItemSync, getExS
 import { generateDataHeaders } from "../../utils"
 import { randomInt } from "crypto"
 import { clientSerializeDate } from "../../data/utils"
-import { characterExpCaps } from "../../lib/character"
+import { expCapsForRequest } from "../../lib/character"
 import { characterMaxOverLimits } from "./character"
+import { inCnRequest } from "../../lib/cnClient"
 
 interface ExBoostDrawBody {
     character_id: number,
@@ -106,9 +107,15 @@ const drawExpBoost = async (request: FastifyRequest, reply: FastifyReply, autoAc
         "message": "Not enough of item."
     })
 
-    // ensure that the requested character is level 100
+    // the CN client allows EX Boost once a unit is fully uncapped (level cap 100), whatever its current
+    // level (OwnedCharacterLogic.canExBoost / ExBoostWindow.getExBoostState); global needs level 100
     const rarity = characterAssetData.rarity
-    if (characterExpCaps[rarity][characterMaxOverLimits[rarity]] > characterData.exp) return reply.status(400).send({
+    if (inCnRequest()) {
+        if (characterData.overLimitStep < characterMaxOverLimits[rarity]) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Character not fully uncapped."
+        })
+    } else if (expCapsForRequest()[rarity][characterMaxOverLimits[rarity]] > characterData.exp) return reply.status(400).send({
         "error": "Bad Request",
         "message": "Character not level 100."
     })

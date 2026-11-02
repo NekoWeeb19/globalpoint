@@ -137,8 +137,8 @@ export interface RawPlayerCharacterManaNode {
 export enum PartyCategory {
     EMPTY,
     NORMAL,
-    EMPTY2,
-    EMPTY3,
+    CARNIVAL, // Hanifolk Carnival parties (the Chinese fork uses 2 as well)
+    RAID, // raid parties (the Chinese fork uses 3 as well)
     EVENT
 }
 
@@ -215,6 +215,7 @@ export interface RawPlayerQuestProgress {
     high_score?: number
     clear_rank?: number
     best_elapsed_time_ms?: number
+    host_finished?: number | null
 }
 
 export interface PlayerQuestProgress {
@@ -223,6 +224,8 @@ export interface PlayerQuestProgress {
     highScore?: number
     clearRank?: number
     bestElapsedTimeMs?: number
+    /** Cleared as the room host (undefined when not tracked). */
+    hostFinished?: boolean
 }
 
 export interface RawPlayerGachaInfo {
@@ -605,6 +608,7 @@ export interface UserQuestProgress {
     high_score?: number
     best_elapsed_time_ms?: number
     clear_rank?: number
+    host_finished?: boolean
 }
 
 export interface UserGachaInfo {

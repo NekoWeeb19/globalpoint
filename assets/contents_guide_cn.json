@@ -1,0 +1,526 @@
+{
+ "missions": {
+  "20001": {
+   "name": "contents_guide_start",
+   "text": "开始内容指南",
+   "rule": {
+    "kind": 74,
+    "mode": 3
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "character",
+      "id": 121033,
+      "amount": 1
+     }
+    ]
+   }
+  },
+  "20002": {
+   "name": "formation_make",
+   "text": "将\"无情武神 谢胧\"为队长,通关协力战斗吧",
+   "rule": {
+    "kind": 70,
+    "mode": 2,
+    "leader": 121033
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "item",
+      "id": 500000,
+      "amount": 6
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20001,
+    "stage": 1
+   }
+  },
+  "20003": {
+   "name": "upbuild_chara",
+   "text": "将\"无情武神 谢胧\"升到Lv80并通关协力战斗",
+   "rule": {
+    "kind": 72,
+    "mode": 2,
+    "character": 121033,
+    "minLevel": 80
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "free_vmoney",
+      "amount": 250
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20002,
+    "stage": 1
+   }
+  },
+  "20004": {
+   "name": "vs_ruin_golem",
+   "text": "领主战：通关废墟魔像超级的协力战斗",
+   "rule": {
+    "kind": 23,
+    "mode": 2,
+    "range": [
+     2,
+     "1",
+     "6",
+     "3"
+    ]
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "item",
+      "id": 10003,
+      "amount": 8
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20003,
+    "stage": 1
+   }
+  },
+  "20005": {
+   "name": "boostup_chara",
+   "text": "将\"无情武神 谢胧\"升到Lv100并通关协力战斗",
+   "rule": {
+    "kind": 73,
+    "mode": 2,
+    "character": 121033,
+    "minLevel": 100
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "item",
+      "id": 14006,
+      "amount": 2
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20004,
+    "stage": 1
+   }
+  },
+  "20006": {
+   "name": "vs_challenge_single",
+   "text": "将\"无情武神 谢胧\"编为队长并通关\"单人挑战 废墟魔像\"的超级+",
+   "rule": {
+    "kind": 70,
+    "mode": 1,
+    "range": [
+     14,
+     "1",
+     null,
+     "3"
+    ],
+    "leader": 121033
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "item",
+      "id": 53,
+      "amount": 94
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20005,
+    "stage": 1
+   }
+  },
+  "20007": {
+   "name": "manaboard_open",
+   "text": "在\"无情武神 谢胧\"拥有能力4~6的情况下通关协力战斗",
+   "rule": {
+    "kind": 71,
+    "mode": 2,
+    "character": 121033,
+    "abilitySlots": [
+     "4",
+     "5",
+     "6"
+    ]
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "free_vmoney",
+      "amount": 500
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20006,
+    "stage": 1
+   }
+  },
+  "20008": {
+   "name": "vs_challenge_single_hell",
+   "text": "通关任意一个地狱级难度的单人挑战讨伐战斗",
+   "rule": {
+    "kind": 23,
+    "mode": 1,
+    "range": [
+     14,
+     "1",
+     null,
+     "2,4,6,8,10,12"
+    ]
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "free_vmoney",
+      "amount": 750
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20007,
+    "stage": 1
+   }
+  },
+  "20009": {
+   "name": "vs_abyss_beast",
+   "text": "通关临境域 深渊之兽",
+   "rule": {
+    "kind": 23,
+    "mode": 1,
+    "range": [
+     7,
+     "1",
+     null,
+     "38"
+    ]
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "free_vmoney",
+      "amount": 1500
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20008,
+    "stage": 1
+   }
+  },
+  "20010": {
+   "name": "multi_battle",
+   "text": "通关任意一次战斗",
+   "rule": {
+    "kind": 23,
+    "mode": 3
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "character",
+      "id": 211003,
+      "amount": 1
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20001,
+    "stage": 1
+   }
+  },
+  "20011": {
+   "name": "red_character_battle",
+   "text": "使用任意火属性角色通关一次战斗",
+   "rule": {
+    "kind": 89,
+    "mode": 3,
+    "element": 0
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "equipment",
+      "id": 5010012,
+      "amount": 5
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20010,
+    "stage": 1
+   }
+  },
+  "20012": {
+   "name": "red_character_equpiment_battle",
+   "text": "使用任意火属性角色与火属性武器通关一次战斗",
+   "rule": {
+    "kind": 89,
+    "mode": 3,
+    "element": 0
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "character",
+      "id": 231003,
+      "amount": 1
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20011,
+    "stage": 1
+   }
+  },
+  "20013": {
+   "name": "yellow_character_battle",
+   "text": "使用任意雷属性角色通关一次战斗",
+   "rule": {
+    "kind": 89,
+    "mode": 3,
+    "element": 2
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "equipment",
+      "id": 5020017,
+      "amount": 5
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20012,
+    "stage": 1
+   }
+  },
+  "20014": {
+   "name": "yellow_character_equpiment_battle",
+   "text": "使用任意雷属性角色与雷属性武器通关一次战斗",
+   "rule": {
+    "kind": 89,
+    "mode": 3,
+    "element": 2
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "character",
+      "id": 211002,
+      "amount": 1
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20013,
+    "stage": 1
+   }
+  },
+  "20015": {
+   "name": "element_down_battle",
+   "text": "使用\"能够对敌人造成属性抗性降低的角色\"通关一次战斗",
+   "rule": {
+    "kind": 90,
+    "mode": 3,
+    "anyOf": [
+     121165,
+     131140,
+     151159,
+     161021,
+     161165,
+     211062,
+     251008
+    ]
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "character",
+      "id": 221002,
+      "amount": 1
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20014,
+    "stage": 1
+   }
+  },
+  "20016": {
+   "name": "treatment_battle",
+   "text": "使用\"技能中含有回复/恢复/再生效果的角色\"通关一次战斗",
+   "rule": {
+    "kind": 90,
+    "mode": 3,
+    "anyOf": [
+     111123,
+     121008,
+     121051,
+     121117,
+     121123,
+     121159,
+     121183,
+     121189,
+     131116,
+     131164,
+     141002,
+     141007,
+     141141,
+     141177,
+     141189,
+     151004,
+     151009,
+     151014,
+     151027,
+     151057,
+     151105,
+     151111,
+     151141,
+     151147,
+     151171,
+     161027,
+     161039,
+     161045,
+     161051,
+     161087,
+     161123,
+     161129,
+     161147,
+     161177,
+     161189,
+     161195,
+     211050,
+     213001,
+     213013,
+     221002,
+     221054,
+     221066,
+     231063,
+     231075,
+     241051,
+     243007,
+     243019,
+     251003,
+     251008,
+     251010,
+     251023,
+     251047,
+     251053,
+     251071,
+     261001,
+     261017,
+     261023,
+     261029,
+     261065,
+     311005,
+     311012,
+     321004,
+     321010,
+     321011,
+     331012,
+     331013,
+     341002,
+     351001,
+     351015,
+     361003,
+     512004
+    ]
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "character",
+      "id": 241009,
+      "amount": 1
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20015,
+    "stage": 1
+   }
+  },
+  "20017": {
+   "name": "skillfull_battle",
+   "text": "使用\"开局3个技能槽充满的队伍\"通关一次战斗",
+   "rule": {
+    "kind": 91,
+    "mode": 3
+   },
+   "requirements": {
+    "1": 1
+   },
+   "stages": {
+    "1": [
+     {
+      "type": "character",
+      "id": 251003,
+      "amount": 1
+     }
+    ]
+   },
+   "prerequisite": {
+    "mission": 20016,
+    "stage": 1
+   }
+  }
+ }
+}

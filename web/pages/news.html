@@ -1,0 +1,258 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/public/tailwind.css">
+    <title>Starpoint</title>
+</head>
+
+<body
+    class="bg-background text-on-surface relative mt-16 m-auto max-w-screen-2xl min-h-screen box-border flex flex-col items-start px-3 pb-3">
+    <header class="flex gap-3 items-center md:justify-start justify-center mb-3 w-full">
+        <img src="/public/img/logo.png" class="w-9 h-9">
+        <h1 class="text-4xl mt-4 font-black mb-4 text-on-background">Starpoint</h1>
+    </header>
+    <div class="md:grid md:grid-cols-sidebar flex flex-col gap-5 w-full h-fit">
+        <nav class="px-3 py-5 gap-3 flex flex-col bg-surface-container-low rounded-3xl h-fit w-full">
+            <a href="/"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M520-600v-240h320v240H520ZM120-440v-400h320v400H120Zm400 320v-400h320v400H520Zm-400 0v-240h320v240H120Zm80-400h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z" />
+                </svg>
+                Dashboard
+            </a>
+            <a href="/events" data-nav="events"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z" />
+                </svg>
+                Events
+            </a>
+            <a href="/summons" data-nav="summons"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M480-80 371-371 80-480l291-109 109-291 109 291 291 109-291 109L480-80Z" />
+                </svg>
+                Summons
+            </a>
+            <a href="/campaigns" data-nav="campaigns"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-280v80h640v-80H160Zm0-440h88q-5-9-6.5-19t-1.5-21q0-50 35-85t85-35q30 0 55.5 15.5T460-826l20 26 20-26q18-24 44-39t56-15q50 0 85 35t35 85q0 11-1.5 21t-6.5 19h88q33 0 56.5 23.5T880-640v440q0 33-23.5 56.5T800-120H160q-33 0-56.5-23.5T80-200v-440q0-33 23.5-56.5T160-720Zm0 320h640v-240H596l84 114-64 46-136-184-136 184-64-46 82-114H160v240Zm200-320q17 0 28.5-11.5T400-760q0-17-11.5-28.5T360-800q-17 0-28.5 11.5T320-760q0 17 11.5 28.5T360-720Zm240 0q17 0 28.5-11.5T640-760q0-17-11.5-28.5T600-800q-17 0-28.5 11.5T560-760q0 17 11.5 28.5T600-720Z" />
+                </svg>
+                Campaigns
+            </a>
+            <a href="/news" data-nav="news"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120H160Zm0-80h640v-560H160v560Zm80-80h480v-80H240v80Zm0-160h160v-240H240v240Zm240 0h240v-80H480v80Zm0-160h240v-80H480v80ZM160-200v-560 560Z" />
+                </svg>
+                News
+            </a>
+            <a href="/player"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M40-160v-112q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0 130 15.5T616-378q29 15 46.5 43.5T680-272v112H40Zm720 0v-120q0-44-24.5-84.5T666-434q51 6 96 20.5t84 35.5q36 20 55 44.5t19 53.5v120H760ZM360-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm400-160q0 66-47 113t-113 47q-11 0-28-2.5t-28-5.5q27-32 41.5-71t14.5-81q0-42-14.5-81T544-792q14-5 28-6.5t28-1.5q66 0 113 47t47 113ZM120-240h480v-32q0-11-5.5-20T580-306q-54-27-109-40.5T360-360q-56 0-111 13.5T140-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T440-640q0-33-23.5-56.5T360-720q-33 0-56.5 23.5T280-640q0 33 23.5 56.5T360-560Zm0 320Zm0-400Z" />
+                </svg>
+                Players
+            </a>
+            <a href="https://github.com/Duosion/starpoint"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M320-240 80-480l240-240 57 57-184 184 183 183-56 56Zm320 0-57-57 184-184-183-183 56-56 240 240-240 240Z" />
+                </svg>
+                Source Code
+            </a>
+        </nav>
+        <article class="w-full flex flex-col gap-5 min-w-0">
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3">
+                <h2 class="text-2xl text-on-background font-semibold">News</h2>
+                <p class="text-on-surface-variant">Write announcements for the players. The CN app shows them on its in-game News board, under the tab of the category you pick. The global app's News button opens <a class="underline" href="/news/board" target="_blank" rel="noopener">the news page</a> (through the proxy, as worldflipper.playkakaogames.com/news).</p>
+                <p class="text-on-surface-variant">Players see a new post the next time they open News.</p>
+            </section>
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <h3 id="form-title" class="text-xl text-on-background font-semibold">New post</h3>
+                <form id="form" class="flex flex-col gap-4">
+                    <label class="flex flex-col gap-1">
+                        <span class="text-on-surface">Title</span>
+                        <input id="title" type="text" maxlength="120" required class="w-full rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3">
+                    </label>
+                    <label class="flex flex-col gap-1">
+                        <span class="text-on-surface">Text</span>
+                        <span class="text-sm text-on-surface-variant">Plain text. Leave a blank line between paragraphs.</span>
+                        <textarea id="body" rows="8" required class="w-full rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3"></textarea>
+                    </label>
+                    <label class="flex flex-col gap-1">
+                        <span class="text-on-surface">Category (the CN app's News tab)</span>
+                        <select id="category" class="w-full rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3"></select>
+                    </label>
+                    <fieldset class="flex flex-col gap-2">
+                        <legend class="text-on-surface mb-1">Show in</legend>
+                        <label class="flex gap-3 items-center text-on-surface"><input type="checkbox" id="app-global" class="w-5 h-5" checked> Global app</label>
+                        <label class="flex gap-3 items-center text-on-surface"><input type="checkbox" id="app-cn" class="w-5 h-5" checked> CN app</label>
+                    </fieldset>
+                    <div class="flex flex-wrap gap-3">
+                        <button type="submit" id="save"
+                            class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center disabled:opacity-40 disabled:pointer-events-none">Post</button>
+                        <button type="button" id="cancel" hidden
+                            class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center">Cancel editing</button>
+                    </div>
+                    <p id="message" class="text-sm text-on-surface-variant" role="status"></p>
+                </form>
+            </section>
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <h3 class="text-xl text-on-background font-semibold">Posts</h3>
+                <ul id="list" class="flex flex-col gap-2"></ul>
+            </section>
+        </article>
+    </div>
+    <script>
+        (function () {
+            const $ = (id) => document.getElementById(id)
+            for (const link of document.querySelectorAll("[data-nav]")) {
+                if (link.dataset.nav !== "news") continue
+                link.className = "px-5 py-3 flex gap-3 items-center bg-primary rounded-full w-full font-bold text-on-primary text-lg"
+                link.querySelector("svg").setAttribute("class", "fill-on-primary")
+            }
+            let data = { posts: [], categories: {} }, editing = null, busy = false
+
+            function badge(text) {
+                const span = document.createElement("span")
+                span.className = "px-3 py-1 rounded-full text-sm bg-surface-container-high text-on-surface"
+                span.textContent = text
+                return span
+            }
+            function button(text, onClick) {
+                const b = document.createElement("button")
+                b.type = "button"
+                b.className = "text-sm border border-outline-variant text-on-surface h-[32px] px-[16px] rounded-full hover:bg-surface-container-high"
+                b.textContent = text
+                b.addEventListener("click", onClick)
+                return b
+            }
+
+            function renderCategories() {
+                const select = $("category")
+                if (select.options.length > 0) return
+                for (const [id, name] of Object.entries(data.categories)) {
+                    const option = document.createElement("option")
+                    option.value = id
+                    option.textContent = name
+                    select.appendChild(option)
+                }
+            }
+
+            function renderList() {
+                const list = $("list")
+                list.replaceChildren()
+                if (data.posts.length === 0) {
+                    const empty = document.createElement("li")
+                    empty.className = "text-on-surface-variant"
+                    empty.textContent = "No posts yet."
+                    list.appendChild(empty)
+                    return
+                }
+                for (const post of data.posts) {
+                    const item = document.createElement("li")
+                    item.className = "flex flex-col gap-2 p-4 rounded-2xl bg-surface-container-low"
+                    const top = document.createElement("div")
+                    top.className = "flex flex-wrap gap-2 items-center"
+                    const title = document.createElement("span")
+                    title.className = "text-on-surface font-semibold"
+                    title.textContent = post.title
+                    top.append(title, badge(data.categories[post.category] ?? "?"), ...post.apps.map(app => badge(app === "cn" ? "CN app" : "Global app")))
+                    const meta = document.createElement("span")
+                    meta.className = "text-sm text-on-surface-variant"
+                    meta.textContent = "Posted " + post.date.slice(0, 16).replace("T", " ") + " UTC"
+                    const text = document.createElement("p")
+                    text.className = "text-on-surface-variant whitespace-pre-line"
+                    text.textContent = post.body.length > 300 ? post.body.slice(0, 300) + "…" : post.body
+                    const actions = document.createElement("div")
+                    actions.className = "flex gap-2"
+                    actions.append(button("Edit", () => edit(post)), button("Delete", () => remove(post)))
+                    item.append(top, meta, text, actions)
+                    list.appendChild(item)
+                }
+            }
+
+            function edit(post) {
+                editing = post.id
+                $("form-title").textContent = "Edit post"
+                $("save").textContent = "Save changes"
+                $("cancel").hidden = false
+                $("title").value = post.title
+                $("body").value = post.body
+                $("category").value = String(post.category)
+                $("app-global").checked = post.apps.includes("global")
+                $("app-cn").checked = post.apps.includes("cn")
+                $("message").textContent = ""
+                $("title").focus()
+            }
+            function reset() {
+                editing = null
+                $("form").reset()
+                $("app-global").checked = true
+                $("app-cn").checked = true
+                $("form-title").textContent = "New post"
+                $("save").textContent = "Post"
+                $("cancel").hidden = true
+            }
+
+            async function send(path, body) {
+                const response = await fetch(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
+                const reply = await response.json().catch(() => ({}))
+                if (!response.ok) throw new Error(reply.message || response.statusText)
+                data = reply
+                renderList()
+            }
+
+            async function remove(post) {
+                if (busy || !confirm('Delete "' + post.title + '"? Players won\'t see it any more.')) return
+                busy = true
+                try {
+                    await send("/api/server/news/delete", { id: post.id })
+                    if (editing === post.id) reset()
+                    $("message").textContent = "Deleted."
+                } catch (error) {
+                    $("message").textContent = "Error: " + error.message
+                } finally { busy = false }
+            }
+
+            $("form").addEventListener("submit", async (event) => {
+                event.preventDefault()
+                if (busy) return
+                const apps = [...($("app-global").checked ? ["global"] : []), ...($("app-cn").checked ? ["cn"] : [])]
+                busy = true
+                $("save").disabled = true
+                try {
+                    await send("/api/server/news", { id: editing ?? undefined, title: $("title").value, body: $("body").value, category: Number($("category").value), apps })
+                    $("message").textContent = editing === null ? "Posted." : "Saved."
+                    reset()
+                } catch (error) {
+                    $("message").textContent = "Error: " + error.message
+                } finally {
+                    busy = false
+                    $("save").disabled = false
+                }
+            })
+            $("cancel").addEventListener("click", () => { reset(); $("message").textContent = "" })
+
+            fetch("/api/server/news").then(r => r.json()).then(reply => { data = reply; renderCategories(); renderList() })
+                .catch(error => { $("message").textContent = "Could not load the news: " + error.message })
+        })()
+    </script>
+</body>
+
+</html>

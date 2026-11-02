@@ -1,8 +1,10 @@
+import storyJoinData from "../../assets/story_join_character.json"
+import { StoryJoinData, townPickupHistory } from "../lib/storyJoin"
 import { getCharacterDataSync } from "../lib/assets"
-import { getDateFromServerTime, getServerTime } from "../utils"
+import { getDateFromServerTime, epochOf, getServerTime } from "../utils"
 import { ClientPlayerData, DailyChallengePointListEntry, MergedPlayerData, PartyCategory, Player, PlayerBoxGacha, PlayerCharacter, PlayerCharacterBondToken, PlayerDrawnQuest, PlayerEquipment, PlayerGachaCampaign, PlayerGachaInfo, PlayerMultiSpecialExchangeCampaign, PlayerParty, PlayerPartyGroup, PlayerQuestProgress, PlayerRushEvent, PlayerRushEventPlayedParty, PlayerStartDashExchangeCampaign, RushEventBattleType, UserBoxGacha, UserCharacter, UserCharacterBondTokenStatus, UserEquipment, UserGachaCampaign, UserPartyGroup, UserPartyGroupTeam, UserQuestProgress, UserRushEvent, UserRushEventPlayedParty, UserRushEventPlayedPartyList, UserTutorial } from "./types"
 
-import { availableAssetVersion } from "../routes/api/asset"
+import { getAvailableAssetVersion } from "../routes/api/asset"
 import { deserializePlayerRushEventPlayedParty, deserializeRushEvent, getPlayerActiveMissionsSync, getPlayerBoxGachasSync, getPlayerCharactersManaNodesSync, getPlayerCharactersSync, getPlayerClearedRegularMissionListSync, getPlayerDailyChallengePointListSync, getPlayerDrawnQuestsSync, getPlayerEquipmentListSync, getPlayerGachaCampaignListSync, getPlayerGachaInfoListSync, getPlayerItemsSync, getPlayerMultiSpecialExchangeCampaignsSync, getPlayerOptionsSync, getPlayerPartyGroupListSync, getPlayerPeriodicRewardPointsSync, getPlayerQuestProgressSync, getPlayerRushEventListClearedFoldersSync, getPlayerRushEventListPlayedPartiesSync, getPlayerRushEventListSync, getPlayerStartDashExchangeCampaignsSync, getPlayerSync, getPlayerTriggeredTutorialsSync, serializePlayerRushEventPlayedParty } from "./wdfpData"
 
 export interface SerializePlayerDataOptions {
@@ -218,7 +220,9 @@ export function serializePlayerData(
                 "clear_rank": progress.clearRank,
                 "finished": progress.finished,
                 "high_score": progress.highScore,
-                "quest_id": progress.questId
+                "quest_id": progress.questId,
+                // only for stages where it is tracked (The Purge), so other entries are unchanged
+                ...(progress.hostFinished === undefined ? {} : { "host_finished": progress.hostFinished })
             })
         }
         userQuestProgress[section] = list
@@ -270,7 +274,7 @@ export function serializePlayerData(
             "star_crumb": playerData.starCrumb,
             "bond_token": playerData.bondToken,
             "exp_pool": playerData.expPool,
-            "exp_pooled_time": getServerTime(playerData.expPooledTime),
+            "exp_pooled_time": epochOf(playerData.expPooledTime),
             "leader_character_id": playerData.leaderCharacterId,
             "party_slot": playerData.partySlot,
             "degree_id": playerData.degreeId,
@@ -305,7 +309,8 @@ export function serializePlayerData(
         "user_party_group_list": userPartyGroupList,
         "item_list": toSerialize.itemList,
         "user_equipment_list": userEquipmentList,
-        "user_character_from_town_history": [],
+        // the Starview Village units already picked up (owned), as the global server lists them
+        "user_character_from_town_history": townPickupHistory(storyJoinData as StoryJoinData, Object.keys(toSerialize.characterList).map(Number)),
         "quest_progress": userQuestProgress,
         "last_main_quest_id": null,
         "gacha_info_list": toSerialize.gachaInfoList.map(gachaInfo => {
@@ -316,7 +321,7 @@ export function serializePlayerData(
                 "gacha_exchange_point": gachaInfo.gachaExchangePoint
             }
         }),
-        "available_asset_version": availableAssetVersion,
+        "available_asset_version": getAvailableAssetVersion(),
         "should_prompt_takeover_registration": false,
         "has_unread_news_item": false,
         "user_option": toSerialize.userOption,

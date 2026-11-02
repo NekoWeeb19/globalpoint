@@ -1,0 +1,326 @@
+{
+ "_note": "Voice lines (master/character/character_speech, record -> text) for the CN client's units global never had, written in global's style from CN's text (the Black Clover units from CN's Japanese). Names follow global (CN->global name map from the unit and speaker tables). scripts/gen_cn_unit_cells.cjs turns them into cells.",
+ "lines": {
+  "111069": {
+   "0": "This place is SO much fun! There's something new to discover every day. I'm completely satisfied!",
+   "1": "We have to eat before we go adventuring. How does that old saying go? \"An army marches on its...\" whatever. Hurry, bring all the good food!",
+   "2": "Say, are there any bandits around here? Think about it—if they're the bad guys, we don't have to hold back. We can just go raid them, right?",
+   "3": "Aaah, that was a blast! I wonder what fun stuff will happen tomorrow! Huh? Why are you all collapsed on the floor?",
+   "4": "Today we're exploring a brand-new area! Of course, everyone's coming. No objections. An adventure's only worth it if we all go!",
+   "5": "Kyon, your shield's falling apart. How are you supposed to defend with that? I'll pick out a sturdier one for you next time...",
+   "6": "I'm Haruhi Suzumiya, leader of the SOS Brigade! I have no interest in ordinary humans. Are you an alien? A time traveler? An esper? Or someone from another world?",
+   "7": "You guys are pretty capable! I like you! I'll make an exception and let you join the SOS Brigade as honorary members of our Other World Branch!"
+  },
+  "111117": {
+   "0": "You've all been so kind to me, so as thanks, allow me to teach you the Way of Explosion! Come now, don't be shy! Let's EXPLOSION!",
+   "1": "Megumin isn't a nickname—it's my real name. By the way, my mother is Yuiyui and my father is Hyoizaburoh! Wonderful names, aren't they?",
+   "2": "Starview and Palpebra are both wonderful! The food is delicious, and they have everything. If only there were somewhere I could cast Explosion freely, it'd be perfect...!",
+   "3": "This is how Crimson Demons introduce themselves! \"My name is Stella! She who connects worlds in the town where the stars fall!\" Now, shout it out with me!",
+   "4": "I've taken another step down the path of Explosion...! But it's not nearly enough! Next time, I'll pass on the Way of Explosion to Light and Nimbus!",
+   "5": "Heh heh heh, it seems I have kindred spirits here too. The Shrine Maiden of the Dark Void King, the Archmage who freezes time and fate... and the Flame Dragon King! Oh, they're so cool!",
+   "6": "My name is Megumin! The foremost Explosion user of the Crimson Demons! You're truly fortunate to have met me! Rest easy and leave everything to me!",
+   "7": "Ohhh! I feel it! I feel it! A tremendous power is surging through me! Everyone, watch closely! The greatest explosion to ever shake this world!"
+  },
+  "111171": {
+   "0": "That road was a little scary, but also really pretty. Couette can't share that view with anyone, and that makes her feel a little lonely.",
+   "1": "Playing together, studying together, chatting together. Oooh... there's just so much Couette wants to do.",
+   "2": "Hey, hey, listen! Yesterday, Couette rode Koma and Rooma out to sea! And then the whales and dolphins went WHOOSH—and jumped right out! It was so much fun!",
+   "3": "Couette promised Jessica that next time, they'll go play in Luik's dreams together. A boy's dreams must be full of amazing adventures. Couette can't wait!",
+   "4": "As long as you don't give up, dreams come true. Couette wants to be like big sis Belsidia— a woman with destructive power! Definitely... for sure... probably...",
+   "5": "Hmm, the world must be like cloth stuck on a ball. And that ball floats on the Sea of the Abyss— Oooh, it's faster to just show you! Look!",
+   "6": "Hehehehe. Couette is so excited right now. This is gonna be an amazing summer. Couette can't wait to rush off to meet all her new friends!",
+   "7": "From now on, more and more people will follow after Couette and everyone. So— Couette can't stop now, no way!"
+  },
+  "111177": {
+   "0": "H-How's this power armor? I think... I did a pretty great job on it! I-It looks cool, right? Huh?",
+   "1": "Alk and the others are so amazing and so cool... Strong, kind, and willing to be friends with someone like me. If only... I could be like them— I-Is that too much to ask? Ahaha...",
+   "2": "E-Everyone... What do I do?! I have no idea what to give her for our second anniversary! Should I give her clothes? Or maybe— Huh? W-Where are you all going? Everyone?!",
+   "3": "In sickness and in health, I'll stay by your side, and forever—l-love... love you! What?! S-Say it again?! That's way too embarrassing!",
+   "4": "Shota... Alk... Nova... I've caused you so much trouble this time! I'm so sorry!!! Ugh... sniff... I'm sorry! And thank you for your blessings...",
+   "5": "Th-The ring will fit perfectly. Because I... um... well... I measured Mary's finger while she was asleep...",
+   "6": "H-Hello, I'm Wilfred! Why am I dressed like this? Th-This is armor I made to become stronger! Because... I want to propose to the one I love!",
+   "7": "I... want to start a family with you. Happiness, loneliness, love, and worry— I want to share all of it with you. Mary, will you marry me?"
+  },
+  "111183": {
+   "0": "All of it is but a game to pass the time... If only that were so.",
+   "1": "The great Holy Dragon and the cursed Underworld Dragon have both grown so arrogant... Perhaps they need to be forged anew, hm?",
+   "2": "Damn it... That Stella... I thought she had become an ordinary person... but she hasn't changed in the slightest... She smiles more? She was always like this!",
+   "3": "Nothing but madness awaits in other worlds. Last time, a fool and an idiot swapped souls. I speak of Denah and Teurgis. Hmph. It is never dull, I'll grant you that.",
+   "4": "Alk, whatever you may say, you are a warrior. Someday, you will need my flames. Heh... I do not believe a word of your spineless talk.",
+   "5": "This Council of Six Dragons was dreadfully dull... The agenda was Schult's marital squabble, and Rustamov being scolded by Anbach... Tedious... utterly... tedious...",
+   "6": "My flames neither die nor spread. They burn on until they consume me. Come... try me! Behold the inferno that turns all to ash!",
+   "7": "Regret, destiny... they mean nothing to me. Should anything dare stand in our way, I will burn it all to cinders! Is that not right, my friend?"
+  },
+  "121057": {
+   "0": "The multiverse... the World Flipper... Excessive interference should be avoided, but there are many highly interesting phenomena here.",
+   "1": "What I use is not magic. To be precise, it is data manipulation. It differs... slightly from this world's magic.",
+   "2": "Haruhi Suzumiya is more excited than ever. Therefore, this world is also at risk of being rewritten. Vigilance is required.",
+   "3": "Compared to my original world, I can exert my power more easily in this one. In concrete terms, every day is very fulfilling.",
+   "4": "All kinds of viewpoints and ideas... The books of this world are very interesting. I wish to stay here until I have read them all.",
+   "5": "Permission to rest. If possible, I would like him to join me... No. That was a misstatement. Please forget it.",
+   "6": "I am a humanoid interface for contacting organic lifeforms, created by the Data Integration Thought Entity that governs the universe.",
+   "7": "There are any number of ways to return to our world, but now is not the time. We must properly fulfill the duty we took on when we came to this world."
+  },
+  "121123": {
+   "0": "I want to hurry back to our world, defeat the Demon King, and return to heaven! Alk, you'll help us find a way back too, right?",
+   "1": "I'm a great goddess! A distinguished elite! Waaah... Why doesn't anyone believe me?! Stellaaa! You're the only one on my side!",
+   "2": "Kazuma, I've realized something... As long as we stay in Starview, Alk cooks for us. Which means even if I don't go out and work... Ah, yes. I'm very sorry, Mr. Alk. I'll work, I'll work!",
+   "3": "Take this—Flower Bird Wind Moon~! Hehe—how's that, Stella? Amazing, right? Look, how about this one? Watch me, watch me~♪",
+   "4": "In the Axis Order, all is forgiven... Even the most notorious slackers are forgiven. Anyway, if you ever want to confess, I'm always happy to listen!",
+   "5": "Hey, hey, let's go play in Palpebra! Finding a way home? Hmph, no need to rush. I'm sure it'll work out soon. After all, you have the great Aqua and everyone!",
+   "6": "Behold, the goddess of water and Archpriest, the great Aqua, has descended! Even in another world, you'd better respect and pamper me!",
+   "7": "I grant you all the blessing of the goddess Aqua. In exchange, I'll be counting on you all from now on!"
+  },
+  "121171": {
+   "0": "It's so hot... This sucks... It's noisy everywhere... Has everyone lost their minds...?",
+   "1": "Ah... You don't need to worry about Luik. He said something before about having a few girls on his mind. Like Stinelle, and Emma...",
+   "2": "Damn it, what's the deal... Acting like an idiot, gambling and drinking... He used to be so cool—why... Huh? Of course I can't stand that guy!",
+   "3": "What are your parents even thinking? Mr. Kenichi suddenly invited me out for ramen last time— N-No, I mean... if I call everyone by their last name, it gets confusing... M-Mind your own business!",
+   "4": "Pfft! Aaargh—enough! I said stop splashing water in my face! Ugh... I don't get why you're all so happy... Fine, fine, I'm coming!",
+   "5": "Hah, hah... Hold on a sec! Why is that mushroom here too?! Get it out of here—eek! D-Don't come any closer—waaaaah?!",
+   "6": "Haaaaaah... It's so hot... so noisy... Why am I even here...?",
+   "7": "Geez... If it weren't for you, I'd never have come to a place like this. So... don't make me regret it."
+  },
+  "121177": {
+   "0": "Everyone! Thank you for your blessings~♡ I'll be happy, I promise♡♡ Hehe♡ Hehehehehehe~♡♡♡",
+   "1": "Don't worry, Nimbus♡ I'm not the kind of woman who slacks off once she's married! I'll keep researching hair growth potions so I can be fluffy, just the way you like♡",
+   "2": "What's wrong, Shywe~? Are you jealous~? Hehehe, I guess I'll have to help you out~! I'll throw the bouquet your way, so do your best to catch it~",
+   "3": "Darling... Thank you for the beautiful wedding. I'm so happy. Please watch over me from a faraway world... Someday... I'll marry Nimbus too!",
+   "4": "Look, look~♡ It's a mini Nimbus doll~♡ Super cute, right? It moves, it has the functions of a Devourer of Stars, and it even shows up in my dreams♡",
+   "5": "At the wedding, I was so happy I almost cried, and I had this strangely nostalgic feeling... Why was that? Oh well... Whatever! I'm already so happy! Right, Nimbus♡",
+   "6": "Kyaaah! Amazing, amazing, amazing! There are two Nimbuses—it's like a dream...♡ Parallel worlds? I don't really get it. But anyway, we're getting married♡",
+   "7": "I, the bride Sohvi, swear to love every Nimbus in existence♡♡♡ It's okay, Nimbus♡ Don't worry. Of all the Nimbuses, I love you the most♡♡"
+  },
+  "121183": {
+   "0": "Welcome, welcome! This is the Palpebra Central Guild HQ! If you need anything, just ask★",
+   "1": "Oh, this little one? That's right, it's my partner! Its name is Pu-chi★ Its species? According to Schult, it's apparently a dragon. Surprising, right...?",
+   "2": "Here are today's recommended requests★ To help boost my performance review, please work hard, and make sure to come back safe~!",
+   "3": "Yawn... So sleepy... Ugh, writing budget requests is so hard~... Miss Hikawa! Could you say \"Wake up!\" to me?! Huh? No? Please, just this once~!",
+   "4": "Hah... A promotion... A promotion, huh. I really got promoted. I just never thought I'd actually become a department head... Wah! Miss Sharon~! Help me~!",
+   "5": "Yes, I understand. Ah... that's true~ Once you have kids, even the adventures you're used to can feel worrying... Bu-ut★ Rest assured! Palpebra actually has daycares partnered with the Guild—",
+   "6": "I'm the head of the Labyrinth Explorer Life Safety Improvement PR Department! Pur Lilie~★ Leave adventurer support to me! It'll boost my performance review, too!",
+   "7": "There's really not much I can do. I'll definitely hit more setbacks than successes. But... this is what I want to do★ Alright, time to get to work!"
+  },
+  "121189": {
+   "0": "The forest world, so many more people now. So many things, will change. The forest, will shrink too. But, it will never vanish! It's okay! So, Challua is excited!",
+   "1": "Trick or Treat—♪ Treats? Tricks? Hmmmmm... Challua wants both!",
+   "2": "Everyone, look here. Living people, go that way. Dead people, go this way. If you mix them up, big trouble...",
+   "3": "Challua really wants... to eat more of Alk's cooking. But the problem... is salt! Most trees, can't handle salt... Maybe Challua... needs to transform again?",
+   "4": "Spring is cherry blossoms. Summer is sunflowers. Autumn is pumpkins. Winter is holiday trees— Every season, a different Challua.",
+   "5": "Challua had fun today too! Tomorrow... what should we play?",
+   "6": "Challua, is a child of the forest. Child of the World Tree! Living people, dead people, monsters, sprites! Everyone, everyone! Challua will, show you the way♪",
+   "7": "The sun and the stars, the night and Challua, will tell you, okay? It's okay! Tomorrow, will be fun too, for sure!"
+  },
+  "123001": {
+   "0": "I'm royalty... and a member of the Black Bulls. I'll protect everyone!",
+   "1": "Light... used to be human...? And he was a super-strong hero...? He doesn't look like it at all...!",
+   "2": "Where did that idiot Asta go?! Huh... Training? Yuno too? Some things never change.",
+   "3": "So the Guild protects the city. Hmm... I suppose it's like the Magic Knight squads of the Clover Kingdom.",
+   "4": "Palpebra sells lots of cute things? Maybe I'll go shopping with Stella.",
+   "5": "Maybe I should buy some souvenirs for everyone in the Black Bulls...",
+   "6": "Noelle Silva. A member of the Black Bulls, same as Asta. I'll be in your care for a while. Nice to meet you, properly this time.",
+   "7": "So there are people in this world who acknowledge me, too... ...Then I know exactly what I have to do!"
+  },
+  "131164": {
+   "0": "Whoa... I'd heard about it, but this place is incredible... Oh, right! I need to buy souvenirs for Lu and Sven!",
+   "1": "Hmm... Kuro and the others told me to go out and see the world... but everything here is so amazing... It's making my head spin...",
+   "2": "That's bad... right? Really bad, right? Nimbus says he's going to win drink money on the slot machines... but if he loses, he'll definitely drown his sorrows. That's bad, right?!",
+   "3": "I've figured it out. Playing is a kind of learning too—it's not a waste of time! So I'm going to make sure I have no regrets and enjoy this summer to the fullest!",
+   "4": "Geez... Magnos never changes... Alright! I'll show you around the island! With me around... you won't be scared, right?",
+   "5": "Ah, look, Mr. Alk! Look, look! Miss Echo helped me take this... Photos are so amazing! I look pretty cool in this one, right?!",
+   "6": "Leave it to me! This is a rare chance to learn about the world at the resort! So I don't waste any time, I already made a schedule!",
+   "7": "Somehow, it feels like I spent more time playing than learning... Hehe... If Mom found out, she'd definitely be mad at me..."
+  },
+  "131170": {
+   "0": "Look, look, aren't these wings sooo cool~?! Here, here, and here! Look! Hehe~ Right? Super cool~~~~?",
+   "1": "Aww~ Shota and Nova can't drink... Oh! Then they can just get an alcohol-processing organ installed like me, right?! The surgery doesn't hurt at all! How about it?",
+   "2": "Use the knowledge I gained in my world to start a new business in another world! Make a fortune! I'm the best! I was sure it'd all go according to plan. Turns out, things didn't quite work out~",
+   "3": "Nom nom nom... Alk! Another bowl of curry! Huh~? Don't worry! I'll definitely pay off my tab! Later, for sure! Next time, for sure!",
+   "4": "I've figured it out... If we package Light as a reincarnated-hero beast-boy streamer, he'll be a smash hit! Let's... become producers!",
+   "5": "Congrats on the wedding, Nimbus! Here, a gift and some booze! Never thought it'd be Sohvi~ Anyway, be happy— Owww! Why'd you hit me?!",
+   "6": "Sorry to keep you waiting! I'm here! Check out this wing rig! Isn't it way too cool~? Now we can soar together, partner!",
+   "7": "Being with you all is so much fun! Let's keep charging ahead together, partners! No matter what trouble we run into, we'll figure something out!"
+  },
+  "131176": {
+   "0": "If there's anything you need shot down, just say so. The harder, the better. That's what gets me going. An apple on your head? Easy.",
+   "1": "Raise the gun, activate the artificial eye, take aim. Then, finger on the trigger. In that moment, I become the gun. It's just... wonderful.",
+   "2": "I don't cause trouble for ordinary people. That's my line. Our fights are just part of corporate conflict. Hurting civilians only damages a company's value. It's pointless... So even I hold back.",
+   "3": "I'm going to Shibuya for a checkup today... Tink and the others will check my Recla chip. The group that gave me the chip collapsed long ago, so I'm glad they're around. Well... I guess I stole it.",
+   "4": "Nimbus... I want to go to Nao's brother's shop. Can you take me? He's the boss of Starview, right? I did just move in here without asking... and I'm too shy to say hello on my own.",
+   "5": "I'm back, Starview. Heh... This trip was fun, too.",
+   "6": "Charlene, sniper. Can you... keep me entertained?",
+   "7": "This town really is wonderful. So many interesting people and things. Heh... I look forward to working with you."
+  },
+  "131182": {
+   "0": "Good grief. First I turned into a beast, and now I'm a kid again. Honestly, I just want to be a grown-up already.",
+   "1": "Bonnie? Um, look, I know you're confused, but this is the real me. That beast form was the strange one—wait, you say this is just right? Just right for what? What are you planning to do to me?!",
+   "2": "I'm still not used to this body... When kids play for real, where does their endless stamina come from? I trained for years, and I'm the first one to collapse...",
+   "3": "You're there, aren't you, Belsidia? Ah! You're running away again— You're the one stalking me, so why are you running?! Geez... She's hopeless...",
+   "4": "Uh... No, you're right, Stella. In this form, drinking isn't a good idea! But I can just change back! With Renoir's potion— No?! Why?! N-No fair! I want a drink—",
+   "5": "Alright, are you ready, Nimbus? Heh... I let my guard down last time, but I've learned your moves now! It won't happen again— Hm? What's so funny? You're up next, Alk!",
+   "6": "Whew, keeping up with those kids and all their excess energy is tough work. Even if I'm not a hero anymore... I can still watch over a few kids!",
+   "7": "Again—no matter how many times— as long as you want to move toward the future, I promise you! This time, it's my turn to protect you all!"
+  },
+  "141129": {
+   "0": "Palpebra has a magic academy? What kind of magic do its students use? I'm curious...",
+   "1": "There are people who use magic in this world too, right? ...I'd like to see that.",
+   "2": "Asta is my rival. I won't lose to him.",
+   "3": "I'm like Asta? ...No way. I'm not some hot-blooded idiot like him.",
+   "4": "Alk, doing laundry now? My wind magic can dry it in an instant. I used to do it all the time.",
+   "5": "If you ever come to the Clover Kingdom, look for the Golden Dawn. I'm sure I can help.",
+   "6": "My name is Yuno. I'm a mage of the Golden Dawn. If there's anything I can do, let me know.",
+   "7": "I can get even stronger. I won't lose to Asta. I'm the one who'll become the Wizard King."
+  },
+  "141177": {
+   "0": "Shota isn't my destined one... That's exactly why I have to follow the proper steps of romance!",
+   "1": "I'm so glad Shota likes this swimsuit too♡ Of course, it's a style I like...♡ But I also ran strict statistics to pick a design that subconsciously draws Shota's eyes♡ It was hard work♡",
+   "2": "Hey, Nagihara, can you remember? Last year... who was the woman who turned down Shota when he hit on her? I'd like to have a little chat with her. Well? Do you remember? Do you? Do you? Do you?",
+   "3": "Wow, wow~! This doll looks just like Dorothea and Marianne~! So cute~~~~! Yep, I have to buy it as a souvenir!",
+   "4": "I really caused Zantetsu a lot of trouble. Next time he uses his seppuku device, please let me know. In return, I'll do my very best as his second! I think I'd be pretty good at it!",
+   "5": "Um... Shota? C-Could we practice... holding hands... just a little? Ah—hehe, hehehe~...♡ You're too tempting... I can't take it...♡",
+   "6": "Waaah~♡♡♡ I can finally go to the beach I've dreamed of♡ with Shota...♡♡♡ Ah—no, no, no, no. I have to have a proper romance.",
+   "7": "I always thought... I had to overcome everything first. I was so sure I'd made up my mind... Thank you, Shota... Words can't express how I feel... I love you more than anything."
+  },
+  "141183": {
+   "0": "Thank you for training with me again today, sir! I'll stay sharp and give it my all!",
+   "1": "What I want to do... what I want to do... Hmm... Thinking about it, that really is a tough question. I do love moving around and fighting people...",
+   "2": "I never thought I'd be able to use magic. This gear is really amazing... But the developer at the Academy said it's even more amazing that I can fully master it... Is that so?",
+   "3": "Um, now that I'm used to this gear, I understand. Mr. Taiga's martial arts aren't magic anymore... They're superpowers, aren't they? D-Do I have to learn that too?!",
+   "4": "Next time, the beastfolk are teaming up to put on a show themed after the Cosmic Emperor Puppet Wars! Please come and watch!",
+   "5": "Um, Miss Diletta, Mr. Ricardo, there's something I'd like to discuss with you! We want to put on a show at the arena in the ocean world—",
+   "6": "I received new gear for training! H-How does it look? Do I look more the part now? I still lack experience, but I'll do my best!",
+   "7": "In the end, what I love most is fighting for other people's smiles. Now I can say it with pride... This is what makes me shine!"
+  },
+  "141189": {
+   "0": "This power has all sorts of uses. But to me, it's just a handy tool for street performance. It can't truly breathe life into a painting. There are no shortcuts to getting better. How fun!",
+   "1": "Hey, Ryouki, Kugui! Help me out here! How do I put it? I painted a hundred cats, and they all ran off somewhere... I-I know it's my fault! Help me, would you? Please?",
+   "2": "Life sure is unpredictable. A few years back I met yokai, and now I'm in another world. Feels like I've had a lifetime of surprises and fun. In other words, I've got two lives now! What a deal!",
+   "3": "These \"digital\" art tools are wonderful! As long as you remember to save often, you can make all the changes you want! So convenient! Makes me want to paint everything over from scratch!",
+   "4": "Another world beyond the Abyss... Wonderful, it sounds fun just hearing about it! When my life's nearing its end, maybe I'll go take a look over there!",
+   "5": "Oh, Lady Former Goddess. I hear you're writing a book? What do you say—how about I do the illustrations? Painting the stories of people from every world would be the greatest honor a painter could ask for!",
+   "6": "Ohhh! So this is Starview! Very nice. The stars are gorgeous. This view would make one fine painting. I'll be in your care, disciples! Treat me well!",
+   "7": "This world, the world beyond, even other worlds. There's still so much left for my brush to capture. I can hardly sit still. Now then, what shall I paint next!"
+  },
+  "141201": {
+   "0": "Yes, I know. I'll say it. The battle—well, it's true that it's over... But! How am I supposed to say it when Alk is smiling like that?! Honestly, stop smiling!",
+   "1": "My blade can grow even sharper— I'm truly happy to know that. But... I never knew... that some people won't admit it out of fear...",
+   "2": "Hehehe, thank you, Stella. You really do love dresses. Then, next time, why not try some Shibuya clothes— No problem! Leave the mission to catch Hanabi to me♪",
+   "3": "Lady Marguerite! Where is Lady Marguerite?! She... she's a swordswoman too! And her swordplay is truly beautiful— What?! She's not in the expedition? Wh-Why~",
+   "4": "Now, please stand right here. You've grown up too, Alk, so— like this... see? Our eyes are almost level now♪",
+   "5": "Worlds I don't know, opponents I can talk with... There are so, so many of them! Come on! Will you spar with me?",
+   "6": "I made an excuse—asked Alk to practice with me before the ball. I could feel him waver through his hand. At that moment... I thought I had a real chance! Ugh~... But I was the one who backed down...",
+   "7": "I am Celtie. The Star Knight who protects all— Even if I become a light that others fear... I will still take up my sword!",
+   "8": "I am a sword... and yet, I am not steel. So please, watch me, until the day this blade points to the beyond!"
+  },
+  "151057": {
+   "0": "Uwawawa... We really did come to another world. W-Will we ever be able to go back?",
+   "1": "In this world... I can't use (classified). Because of (classified), I can't help anyone at all. Sigh~...",
+   "2": "S-S-S-Suzumiya! What's that in your hand...? Is that this world's bunny girl outfit?! Uwaaaaaah~!",
+   "3": "We'll go back to our world eventually, right? Then we'll have to say goodbye to Alk and everyone... Sniff... Suddenly I feel a little sad.",
+   "4": "I was really nervous at first... but with everyone from the SOS Brigade here, it feels like we're on a trip, and it's become fun little by little♪",
+   "5": "I trained so hard, but I didn't get any stronger. But please, let me try once more... Mikuru Beam! Eh, Light?! D-Don't die~!",
+   "6": "Um, well... I'm Mikuru Asahina. Because of (classified) and (classified), I might not be much help... B-But! I'll definitely do my best!",
+   "7": "I-I was helpful to everyone, right? If so, I'm really glad. I'm not much, but I'll keep doing my best♪"
+  },
+  "151111": {
+   "0": "Kazuma and the others, honestly... They're just as lazy in another world... It seems I must shoulder the burden of this party.",
+   "1": "You're always so kind to us, I can't help feeling guilty. Please don't hesitate—use me however you like!",
+   "2": "The monsters of this world have such interesting ways of attacking. This piercing pain... It's addicting! Light... What's wrong? Why the strange face?",
+   "3": "No matter how heavy the enemy's blows, I will take every last one. So... use me as a shield or as bait, I don't mind! And if I fail, scold me as much as you please!",
+   "4": "...?! L-L-Lalatina?! Please, don't call me by that name. It's s-so embarrassing...!",
+   "5": "I hope that even after we find a way back, we can travel freely between both worlds. Of course, it's because adventuring with you is so thrilling. I-I don't mean anything else by it!",
+   "6": "I am Darkness. I'm not good at attacking, but I'm confident in my defense. Please, let me take the front line!",
+   "7": "I'm grateful from the bottom of my heart that you'd let me join you. As a knight, I will repay you on the battlefield! Don't hold back—use me as a shield or bait!"
+  },
+  "151182": {
+   "0": "Those voices don't echo in my head anymore. Their hearts are no longer inside me... I wonder if they're... resting in peace.",
+   "1": "I wonder how tall I'll grow... Maybe even taller than Nimbus?",
+   "2": "Shota... Shota is so very Shota. Teurgis feels a bit like him, but Shota is especially Shota-like— Ahaha, now I'm confused too.",
+   "3": "Hehe... Here? It's right here, isn't it? Scritch, scritch~~~~! Hahaha! You finally gave up and showed me your belly— Ow! Geez~ No biting!",
+   "4": "Flirting? Hmm... It's fun, I guess? If you tell girls they're cute or pretty, they get really happy. Why can't Alk and Shota just say it?",
+   "5": "Now, I can say it from the bottom of my heart. Thank you for meeting me. I'm counting on you from here on... my friends!",
+   "6": "The scars of reality and the choices I couldn't make will never go away... But... I'll still do whatever I can. I'm counting on you again, my accomplice.",
+   "7": "Alk, Shota! Look, look! Cats can stretch this long! Come on, you come over here too. This is so much fun!"
+  },
+  "161141": {
+   "0": "The Adventurers' Guild kinda looks like the Black Bulls' hideout. Ours is messier, though...",
+   "1": "With the World Flipper, you can go to other worlds?! Whoaaaaa!! That's amazing!!",
+   "2": "I'll make sure I live up to the name of a mage in this world too!",
+   "3": "The Adventurers' Guild folks are all amazing... ...But the Black Bulls' senpai are all amazing too, you know! I wanna introduce them to Alk and everyone someday!",
+   "4": "Whoaaa!! Alk's food is sooo gooood!! Great with a sword AND a great cook? Not bad. But I won't lose either!",
+   "5": "Adventure! Training! And Alk's cooking! Man, every day is so fulfilling!",
+   "6": "From Hage Village at the edge of the kingdom, I'm Asta of the Black Bulls Magic Knights! Nice to meet you!!",
+   "7": "Going on adventures with amazing people like you guys is a blast! Let's keep it up!"
+  },
+  "161195": {
+   "0": "Starview... it really is a wonderful place. All kinds of people come together here and work hand in hand, and not only that— here! I can talk as much as I want! Isn't that amazing?!",
+   "1": "Spy work suited me pretty well... but you can't exactly chat leisurely on the job. Maybe that's why I turned out like this. A backlash, perhaps.",
+   "2": "Wow! Oh my! You look great today too! Since coming here, I've gotten into fashion, so if you don't mind, could you tell me what clothes and accessories you like—ah, I'm so sorry! I did it again...",
+   "3": "Assistance, covert recon, or combat—leave any of it to me! Talking with people is my specialty, but I can keep quiet just fine too.",
+   "4": "In one form or another, we all come to an end. The wider your world, the more people you don't want to lose— Heh... I wonder why. It's terrifying, and yet a little happy, too.",
+   "5": "Ahh~ Romance is so wonderful. Just hearing other people talk about it makes me happy! Oh... Me? Hehehe, what should I say to make you happy?",
+   "6": "Chatrina... former intelligence agent. I'm at your command and ready to serve. Um... may I say a little more? I've! Been! Dying to talk with you all~!",
+   "7": "Please keep putting me to work. So that I can forge the future together with everyone... No, because I want to forge the future with everyone— maybe that's it? Hehe."
+  },
+  "161201": {
+   "0": "I'm not a good little kid like you lot. Anyway, I'll help you. But... what happens after that isn't my problem.",
+   "1": "Hmm—my hair's going to keep growing now anyway... Maybe I should just cut it all short? Sakuya, what do you think?",
+   "2": "No sense of taste?! W-Who said that?! Sure, I like things super sweet and super spicy... and I don't hate what you made either— Huh? What? Don't get cocky!",
+   "3": "The Brigade's already off traveling freely. No, I didn't do anything. It was that idiot fox and you meddling. So, um... you really helped. Thanks.",
+   "4": "Sometimes I feel weird stares in Palpebra— Huh? A Stella Fan Club? Team Leve?! What is wrong with those guys? Are they idiots?!",
+   "5": "It's nothing. At this point, there's nothing I need to say to Stella or Nova. As long as they're happy, that's enough.",
+   "6": "Don't get the wrong idea. I'm not planning on becoming your friend. But helping out now and then isn't out of the question— This is delicious! Huh... It's really delicious...",
+   "7": "Well then, time to head out. I haven't had nearly enough fun yet. Let's go, as different as we are— and dream a whole lot more together."
+  },
+  "213007": {
+   "0": "Sorry for making you go along with Haruhi's whims. But if you try to boss her around, she just runs circles around you... So I'll help you out however I can.",
+   "1": "By the way, have you seen Asahina? She invited me to a tea party just now. Said someone taught her how to brew this world's tea.",
+   "2": "I know this is an unknown world for Nagato and Koizumi too. So in the end, we'll just have to adapt on our own... This is even more nerve-racking than usual, geez.",
+   "3": "Still, this world really is something. Not that I'm agreeing with Haruhi, but I think I get why she's so excited.",
+   "4": "Come to think of it, we've caused you all nothing but trouble, Alk. I can't do much, but if you ever need me, I'll do what I can.",
+   "5": "Having so many friends feels kind of new. We rarely connect with anyone outside the SOS Brigade, let alone sit around chatting like this.",
+   "6": "Ah... I'm the one they call Kyon. I might cause you a lot of trouble, but nice to meet you.",
+   "7": "No way, I got this strong?! Haruhi's probably got something to do with it, but I never imagined it'd go this far!"
+  },
+  "261053": {
+   "0": "I never imagined I'd meet real people from another world... There's truly never a dull moment with Suzumiya.",
+   "1": "I never thought we'd leave our world... Hahaha, this situation is quite serious, but we might as well throw caution to the wind and enjoy it.",
+   "2": "There's something mysterious about Alk's cooking. His skill is outstanding, of course. But somehow, everything he makes tastes so familiar.",
+   "3": "At first I was terribly worried we'd run into danger, but now I have to thank Suzumiya for bringing us here. Otherwise, how could I have met so many good friends?",
+   "4": "What if a closed space appears right now? It's true I can't contact the Agency at the moment, but I'm sure it'll be fine, because I have reliable friends by my side.",
+   "5": "Taking up a shield on the front line, he's different from usual... No, I should say he's more reliable than ever.",
+   "6": "A pleasure to meet you. I'm Itsuki Koizumi. I'm a low-ranking member of a certain Agency. So while I assist you, I'll continue my duties there too. Is that alright?",
+   "7": "I trust you wholeheartedly. After all, you're a dear friend of mine. So, I look forward to working with you from here on."
+  },
+  "263015": {
+   "0": "Sigh. Those girls... still doing whatever they want in this world! Sorry, Alk. If you can't stand it, just tell me. I'll set them straight when we get back.",
+   "1": "Isn't there any cool gear that suits me? Like a legendary holy sword, or armor that blocks every attack... Ideally, something that makes me strong just by putting it on!",
+   "2": "This world is full of strong people! We've always just bluffed our way through. Are we really okay...? No... We can do it! We can definitely do it! Probably...",
+   "3": "Hey, Light... Just between us, how popular do heroes get? Ever had a harem situation? Please, tell me honestly! Come on, come on!",
+   "4": "I used to think that world was a total nightmare... but looking back, I kind of miss it. Maybe someday I'll miss this world too. Yeah... So I'd better enjoy it while I can!",
+   "5": "I want a cool finishing move too! Huh, training? Can't you learn skills with skill points in this world? Ugh—forget it then!",
+   "6": "Let me introduce myself again—I'm Kazuma Satou! This time, I'm seriously hoping for the thrilling adventures like in games and anime, and a romantic encounter with a proper beautiful girl!",
+   "7": "Maybe I'm just fated to end up in other worlds. If that's the case, I'll enjoy this otherworldly journey to the fullest! So, I'm counting on you from here on!"
+  },
+  "700000": {
+   "0": "(Text under adjustment)",
+   "1": "(Text under adjustment)",
+   "2": "(Text under adjustment)"
+  },
+  "700015": {
+   "0": "(Text under adjustment)",
+   "1": "(Text under adjustment)",
+   "2": "(Text under adjustment)"
+  },
+  "700016": {
+   "0": "(Text under adjustment)",
+   "1": "(Text under adjustment)",
+   "2": "(Text under adjustment)"
+  },
+  "999999": {
+   "0": "(Text under adjustment)",
+   "1": "(Text under adjustment)",
+   "2": "(Text under adjustment)"
+  }
+ }
+}

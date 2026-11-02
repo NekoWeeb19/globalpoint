@@ -1,6 +1,7 @@
 import { clientSerializeDate } from "../data/utils";
 import { getPlayerCharacterSync, getPlayerSync, givePlayerItemSync, insertPlayerCharacterSync, updatePlayerCharacterSync, updatePlayerSync } from "../data/wdfpData";
 import { getCharacterDataSync } from "./assets";
+import { inCnRequest } from "./cnClient";
 import { AddExpList, AddExpListItem, ClientReturnBondTokenStatus, ClientReturnBondTokenStatusList, ClientReturnCharacter, Element, GivePlayerCharacterResult, RewardPlayerCharacterExpResult } from "./types";
 
 export const characterExpCaps: Record<number, number[]> = {
@@ -58,7 +59,24 @@ export const characterExpCaps: Record<number, number[]> = {
         266988, // level 90
         323488, // level 95
         379988, // level 100
-    ], 
+    ],
+}
+
+/**
+ * The same caps for the CN client. CN has one EXP curve for every rarity
+ * (master/character/character_level, equal to global's 1-3* curve), so its 4* and 5* units reach each
+ * level with less EXP than global's (CN level 100 = 308043 EXP, global 5* = 379988). Each rarity keeps
+ * its own levels (5*: 80, 85 ... 100); only the EXP at each level comes from the shared curve.
+ */
+export const cnCharacterExpCaps: Record<number, number[]> = Object.fromEntries(Object.entries(characterExpCaps).map(([rarity, caps]) => {
+    const oneStar = characterExpCaps[1] // levels 40, 45 ... 100
+    const firstIndex = (Number(rarity) - 1) * 2 // the rarity's first cap level (40 + (rarity - 1) * 10) in that list
+    return [rarity, caps.map((_, i) => oneStar[firstIndex + i])]
+}))
+
+/** The caps for the client making the current request: CN's curve for the CN client, global's otherwise. */
+export function expCapsForRequest(): Record<number, number[]> {
+    return inCnRequest() ? cnCharacterExpCaps : characterExpCaps
 }
 
 const dupeItemRewards: Record<number, Record<Element, number>> = {

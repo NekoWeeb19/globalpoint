@@ -1,0 +1,1013 @@
+{
+ "_note": "Hand fixes applied last by scripts/apply_cn_translations.cjs: 'rows' put whole rows in place (table -> key -> text), 'cells' set single cells (table -> key -> column or 'record:column' -> text), 'replace' changes text in every row of a table (table -> [[from, to], ...]). For English that doesn't fit the CN client's layout (it was sized for short Chinese).",
+ "rows": {
+  "production/upload/d6/88e4a5f7d84cc422357cc8acbdb72817bc8670": {
+   "growth_fund_page_laite": "Rank 1-70",
+   "growth_fund_page_laite_treasury1": "Rank 80+",
+   "growth_fund_page_laite_treasury2": "Rank 180+",
+   "growth_fund_page_main_quest": "Main",
+   "growth_fund_page_ex_quest": "EX",
+   "ability_description_target_sum_of_additional": " total",
+   "growth_fund_not_buy_ex": "EX Quest Fund not bought",
+   "stamina": "Stamina "
+  }
+ },
+ "replace": {
+  "production/upload/f3/25c0dc93612b029f042efe127499b91564dd29": [
+   [
+    ",Path of EXP & Mana \\(Lv\\. ?(\\d+)\\),",
+    ",EXP & Mana Lv$1,",
+    "re"
+   ]
+  ],
+  "production/upload/70/01d8a0e863f3ce17a59c08ee283ad1fb401f2c": [
+   [
+    "an S[+] rank in (Speed Run|Time Attack): ",
+    "an SS rank in $1: ",
+    "re"
+   ]
+  ],
+  "production/upload/89/e5c25c791e2a9527422c186084a1793218c2ac": [
+   [
+    "an S[+] rank in (Speed Run|Time Attack): ",
+    "an SS rank in $1: ",
+    "re"
+   ]
+  ],
+  "production/upload/b1/b53fdd934dc5ab6d8bfc1c9132cff75c473c48": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/4b/c0a3b255afcf2547cb3affd210d30f8c3c7cdc": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/80/77e5e596bc2a742f1c6f0bd4dc284d2b49abd9": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/c5/2827bf5ce0da89fd5ca549726f4a86688b293c": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/95/457b6834cc9ed88882e34efcab9752141fc22e": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/87/220b4d797a23acca0491ada95dee23faf5478d": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/f0/384fdda81c52ef893a40a84628b3d8351bb6bb": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/76/bc536a599e39f890bb8de4b255ac70f529fffa": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/4d/3ecc694d68402d31b33273a8f926ede81c1836": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/80/2761ae9d4128367f37ab8e8737438b0ae7ed5b": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/24/26f681749ee57efda6d70cdce15c25529a433e": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/ac/de425a8da0664edad2bf99feddc5e97ae6741d": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/63/e25a0d9a998256da0a4172a938d48eaaab3579": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/3c/e288454403a9010d303ac05bf63ba8e8ecd636": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/2e/d37e46628002a822f073905451b446da78b506": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/2a/95c08dab64f4f391d63c8819b00df8ba398cea": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/ed/41efac3e58dbfcf4bdd2e05c0c2c20be91d52a": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/2c/ddd123150abe24a2b41999fed155bbdd965b3f": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/f2/c791b020852f7486cf69f0c5a1e32a25a9d7b3": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/4c/9fbbc5bbfa2cde99648e27dbe798dd7b185799": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/8e/9b2a20cf3c93eabef4720f481179470234ae50": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/50/90c781abb2837c6ee0a93b783ca9f0f74d4efe": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/f3/df983cd680817470150c5bd3a7cfb745cab71b": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ],
+  "production/upload/69/4c4d2ac72e893f5c982fbbfa59640ad1ab4151": [
+   [
+    "ブラックドラゴンの協力バトルをクリア ::x_count::",
+    "Clear ::x_count:: Black Dragon multiplayer battles"
+   ],
+   [
+    "Form a skill chain of ::x_count::",
+    "Form a ::x_count::-skill chain"
+   ],
+   [
+    "([^,\n]) ::x_count::(?=,|\n|$)",
+    "$1 ::x_count:: times",
+    "re"
+   ]
+  ]
+ },
+ "cells": {
+  "production/upload/91/79892d704f88d98191c00548bce106402ad5b5": {
+   "heavenly_three_skill_invoker/1": {
+    "1": "Exclusive skill"
+   }
+  },
+  "production/upload/92/dcd1cc81f29794f0606ffe39f68d4e8740c8fa": {
+   "kyon": {
+    "0": "Kyon"
+   },
+   "suzumiya_haruhi": {
+    "0": "Haruhi Suzumiya"
+   },
+   "asahina_mikuru": {
+    "0": "Mikuru Asahina"
+   },
+   "nagato_yuki": {
+    "0": "Yuki Nagato"
+   },
+   "koizumi_ituki": {
+    "0": "Itsuki Koizumi"
+   },
+   "kazuma": {
+    "0": "Kazuma"
+   },
+   "mob_angry_swordsman": {
+    "0": "Angry Swordsman"
+   },
+   "mob_angry_spearman": {
+    "0": "Angry Spearman"
+   },
+   "alk_and_kazuma": {
+    "0": "Alk & Kazuma"
+   },
+   "mob_sexy_lady": {
+    "0": "Rather Alluring Lady"
+   },
+   "mob_strong_male": {
+    "0": "Brawny Guy"
+   },
+   "mob_fascinate_male": {
+    "0": "Bewitching Guy"
+   },
+   "aqua": {
+    "0": "Aqua"
+   },
+   "mob_aqua_fan": {
+    "0": "Fan"
+   },
+   "aqua_and_kazuma": {
+    "0": "Aqua & Kazuma"
+   },
+   "megumin": {
+    "0": "Megumin"
+   },
+   "darkness": {
+    "0": "Darkness"
+   },
+   "mob_guildknights_female": {
+    "0": "Female Guild Knight"
+   },
+   "mob_guildknights_male": {
+    "0": "Male Guild Knight"
+   },
+   "apprentice_knight": {
+    "0": "Apprentice Knight"
+   },
+   "alesy": {
+    "0": "Elsie"
+   },
+   "immortal": {
+    "0": "The Undead"
+   },
+   "great_tree_spirit": {
+    "0": "Great Tree Spirit"
+   },
+   "mother_of_babies": {
+    "0": "Baby's Mother"
+   },
+   "father_of_babies": {
+    "0": "Baby's Father"
+   },
+   "hw20_sing_android_and_reaper_girl": {
+    "0": "Dia & Falsche"
+   },
+   "zeppu": {
+    "0": "Zeppu"
+   },
+   "frontier_people": {
+    "0": "Frontier Folk"
+   },
+   "frontier_children": {
+    "0": "Frontier Children"
+   },
+   "farland_aristocrat": {
+    "0": "Farlands Noble"
+   },
+   "ghost_child_voice": {
+    "0": "Child's Voice"
+   },
+   "artificialeye_sniper": {
+    "0": "Charlene"
+   },
+   "artificialeye_sniper_of_snipers": {
+    "0": "Sniper"
+   },
+   "men_of_the_underworld": {
+    "0": "Shady Men"
+   },
+   "captains_of_the_underworld": {
+    "0": "Underworld Squad Leader"
+   },
+   "voice_of_mom": {
+    "0": "Mom's Voice"
+   },
+   "voice_of_dad": {
+    "0": "Dad's Voice"
+   },
+   "my_favorite_voice": {
+    "0": "My Favorite Voice"
+   },
+   "manager_of_moon_bunny_civil_police": {
+    "0": "Moon Bunny Private Police Manager"
+   },
+   "wirfled_little_playable": {
+    "0": "Young Wilfred"
+   },
+   "mob_adventurer_baldo": {
+    "0": "Baldo the Adventurer"
+   },
+   "school_uniform_boy": {
+    "0": "Young Man in a School Uniform"
+   },
+   "gentle_lady": {
+    "0": "Kind Lady"
+   },
+   "gentlemen": {
+    "0": "Kind Gentleman"
+   },
+   "fluffy_merchants": {
+    "0": "Fluffy Merchants"
+   },
+   "fluffy_priests": {
+    "0": "Fluffy Priest"
+   },
+   "darling_plush": {
+    "0": "Darling Plush"
+   },
+   "darling_shiro": {
+    "0": "Darling Nimbus"
+   },
+   "darling_shiro_and_white_tiger": {
+    "0": "Nimbus & Darling Nimbus"
+   },
+   "bill_collector_replia": {
+    "0": "Replia Debt Collector"
+   },
+   "scoutman": {
+    "0": "Talent Scout"
+   },
+   "blindfold_agent": {
+    "0": "Chatrina"
+   },
+   "blindfold_agent_childhood": {
+    "0": "Young Chatrina"
+   },
+   "dispatch_team_member": {
+    "0": "Dispatch Team Member"
+   },
+   "blindfold_agent_noname": {
+    "0": "Woman in Black"
+   },
+   "human_male_exsoldier": {
+    "0": "Human Veteran"
+   },
+   "demon_male_exsoldier": {
+    "0": "Fiend Veteran"
+   },
+   "girl_with_flower": {
+    "0": "Girl with Flowers"
+   },
+   "paula": {
+    "0": "Paula"
+   },
+   "talkative_girl": {
+    "0": "Chatty Girl"
+   },
+   "mother_with_daughter": {
+    "0": "Mother with Daughter"
+   },
+   "exchange_program_student": {
+    "0": "Exchange Student"
+   },
+   "exchange_program_couple": {
+    "0": "Exchange Student Couple"
+   },
+   "turnoffed_adventurer": {
+    "0": "Disgusted Adventurer"
+   },
+   "rumor_lover_girl": {
+    "0": "Rumor-Loving Woman"
+   },
+   "gossip_girl": {
+    "0": "Gossip-Loving Woman"
+   },
+   "calm_lion_boy_fan": {
+    "0": "Calm Teo Fan"
+   },
+   "ardent_lion_boy_fan": {
+    "0": "Ardent Teo Fan"
+   },
+   "human_female_guest": {
+    "0": "Human Customer"
+   },
+   "female_tourist": {
+    "0": "Female Tourist"
+   },
+   "female_beast_tourist": {
+    "0": "Beastfolk Customer"
+   },
+   "senior_wealthy_fath": {
+    "0": "Scott's Father"
+   },
+   "mob_honor_classmate_name": {
+    "0": "Jessica"
+   },
+   "mob_summoner_little_classmate": {
+    "0": "Couette's Classmate"
+   },
+   "mob_rebuildisland_staff": {
+    "0": "Paradise Isle Staff"
+   },
+   "mob_interact_program_student": {
+    "0": "Exchange Student"
+   },
+   "priest_prince_playable_fake_b": {
+    "0": "Mar?den"
+   },
+   "priest_prince_playable_fake_c": {
+    "0": "?Marden"
+   },
+   "fake_mighty_striker": {
+    "0": "Fake Fist King"
+   },
+   "starbreak_hunter_meteor23_cheerful_unknown": {
+    "0": "Cheerful Voice"
+   },
+   "palpebra_merchants": {
+    "0": "Palpebra Merchant"
+   },
+   "palpebra_Ice_cream_shop": {
+    "0": "Palpebra Ice Cream Shop Owner"
+   },
+   "blade_dancer_wt23_clearly_unknown": {
+    "0": "Clear, Ringing Voice"
+   },
+   "stray_cat": {
+    "0": "Stray Cat"
+   },
+   "cat_tribe_villager": {
+    "0": "Cat Clan Villager"
+   },
+   "role_of_swordsman": {
+    "0": "Troupe Member Playing a Swordsman"
+   },
+   "abominable_person": {
+    "0": "Ill-Omened One"
+   },
+   "underling_of_stella_copy": {
+    "0": "Leve's Underling"
+   },
+   "kowloon_mafia": {
+    "0": "Kowloon Mafia"
+   },
+   "frightened_woman": {
+    "0": "Frightened Woman"
+   },
+   "frightened_woman_unknown": {
+    "0": "Fri?htened Wo?an"
+   },
+   "heretical_priestess": {
+    "0": "Heretic Priestess"
+   },
+   "heretical_priestess_unknown": {
+    "0": "He?etic Pri?stess"
+   },
+   "eldid": {
+    "0": "Eltide"
+   },
+   "droop_knight": {
+    "0": "Dejected Knight"
+   },
+   "demon_tribe_boy": {
+    "0": "Fiend Boy"
+   },
+   "yuzu": {
+    "0": "Yuzu"
+   },
+   "zebiru_and_jude": {
+    "0": "Zebil & Jed"
+   },
+   "zebiru": {
+    "0": "Zebil"
+   },
+   "jude": {
+    "0": "Jed"
+   },
+   "brigade_member": {
+    "0": "Troupe Member"
+   },
+   "ran_cat_cafe": {
+    "0": "Former Shibuya Cat Café Owner"
+   },
+   "fascinated_knight": {
+    "0": "Enthralled Knight"
+   },
+   "mob_enemy_pirates_voice": {
+    "0": "Gravelly Voice"
+   }
+  },
+  "production/upload/50/f0ad7ce9c5606a87557c24e0a958f87bdae08c": {
+   "11111701": {
+    "3": "Explosions Upon Another World, Too!",
+    "123": "Since the slime incident, Megumin hasn't had a chance to cast explosion magic and is very unhappy about it. Learning she wants everyone to enjoy explosion magic too, Alk goes to the Guild and wins her regular chances to cast it."
+   },
+   "11111702": {
+    "3": "Holy Forgiveness Upon This Urge!",
+    "123": "After casting explosion magic, Megumin has to be carried home by Kazuma due to the side effects. But halfway there, she's suddenly hit by the need to pee. The group hurries toward Starview, only to be blocked by a flock of sheep. Thanks to everyone's efforts, Megumin's dignity is somehow saved."
+   },
+   "11111703": {
+    "3": "A True Explosion Upon This Comrade!",
+    "123": "The Guild suspects Megumin in an assault case. To clear her name, she goes with Alk and the others to where the victims were attacked, and meets the real culprit. Megumin reforms the culprit with a true explosion, but a guild knight sees her casting it, and she's taken away by the Guild again."
+   },
+   "11117101": {
+    "3": "Otherworld Exchange Program",
+    "123": "Couette decides to join the otherworld exchange program and go to Paradise Isle to meet children from every world. During combat training, Couette senses hostility from her classmate Jessica. Even so, she's determined to have a wonderful summer."
+   },
+   "11117102": {
+    "3": "An Invitation to Dream",
+    "123": "During an alchemy workshop, Jessica unconsciously uses a trace of the abyss's power and causes an explosion. Couette protects her, but Jessica's careless words leave Couette very hurt. In a dream of the abyss, Couette meets Jessica again and learns her true feelings, bringing the two closer."
+   },
+   "11117103": {
+    "3": "The Road Ahead of Them",
+    "123": "Jessica learns Couette will leave the academy next year, and just then, Couette suddenly senses a rift opening on the seabed. The group heads to the seabed together. After pulling Nao out of the rift, Couette and Nao repair it together. The commotion helps Jessica grow a lot, and afterward she declares to Couette that she'll catch up to her. And so, the two grow even closer."
+   },
+   "11117701": {
+    "3": "First Proposal Operation",
+    "123": "Wanting to start a family with Mary, Wilfred wants to become stronger. So he builds a power suit that doubles as his graduation project. But during a test, the suit's emotion amplifier makes him lose control, and he scoops up Mary, who's having tea outside, and flies off."
+   },
+   "11117702": {
+    "3": "Crossed Cheers",
+    "123": "Wilfred never received his parents' love growing up, so he has no confidence he can build a happy family with Mary. Using the suit's hidden mode, everyone finally gets Wilfred to say what's in his heart, and Mary tells him her feelings too. Back to normal at last, Wilfred proposes to Mary once more."
+   },
+   "11117703": {
+    "3": "The Future I Want to Talk About with You",
+    "123": "After graduating from the Voluntas Arcane Arts Academy, Wilfred and Mary go looking for a wedding venue together and talk about all sorts of things for after the wedding. Afterward, Wilfred happily tells Alk and the others about their decision."
+   },
+   "11118301": {
+    "3": "The Ancient Dragon, and After",
+    "123": "After Alk and the others leave, Vagner holds back his impatience and waits for his moment. But even giving it his all, he's too late to save his friends, which leaves him dejected. Unable to watch, Rustamov goes to encourage him, and Vagner finally regains his will to fight."
+   },
+   "11118302": {
+    "3": "Starview's Flame Dragon King",
+    "123": "Watched over by the friends he couldn't protect, Vagner sets out with Nao and the others to explore otherworlds. To deal with Devourers of Stars attacking the ship, Vagner flies out alone to face them. Even covered in wounds, he wishes for the power to protect his friends. That wish lets him break through his dragon vessel and gain new power."
+   },
+   "11118303": {
+    "3": "Burn Myself Out",
+    "123": "The apprentice knight girl Elsie challenges Vagner time and again, and he tells her not to make excuses for herself. Just then, countless Devourer of Stars terminals attack. Vagner destroys the ones attacking the two of them, leaves Elsie to guide the villagers to safety, and sets out with his companions to wipe out the enemy."
+   },
+   "12112301": {
+    "3": "Blessings Upon This Adorable Goddess!",
+    "123": "Hearing Aqua has followers in Palpebra, a doubtful Alk and the others follow her there and meet a group calling themselves the Goddess Aqua Fan Club. However, they only see Aqua as a friend, not a goddess to worship. Learning the truth, Aqua wails over and over for everyone to respect her more."
+   },
+   "12112302": {
+    "3": "Refreshment Upon These New Friends!",
+    "123": "Aqua and Kazuma accidentally break Alk's favorite plate, and head to Palpebra to buy a new one and destroy the evidence, only to run into Alk. Alk sees through them and takes the chance to boss them around. In the end, the two demand minced meat and onion omelets for dinner and head back to Starview with Alk."
+   },
+   "12112303": {
+    "3": "Praise Upon This Unchanging Goddess!",
+    "123": "While exploring the labyrinth with Alk and the others, Kazuma and Aqua get pulled into a magic circle by a labyrinth magician. After some twists and turns, Aqua's dead-serious nonsense makes the magician retreat on his own. Back on the surface, Alk suggests holding a party, and everyone heads back to Starview together."
+   },
+   "12117101": {
+    "3": "Summer Begins",
+    "123": "Shota wants to invite Ryuichi on vacation. Ryuichi refuses, but Shota had already asked Luik to invite him too, so Ryuichi has no choice but to go to the beach. Though he can't stand the midsummer heat, he encourages Luik, who's nervous at his first time at the sea, and they play in the water together."
+   },
+   "12117102": {
+    "3": "A Present No Longer the Same",
+    "123": "After seeing Luik and the others off for their social studies, Ryuichi gets a call for help from Alk and goes to help at the short-staffed beach house. Along the way, he realizes the relationships around him have changed without him noticing. It confuses him, but he decides to accept it all, little by little."
+   },
+   "12117103": {
+    "3": "A Future That Won't End",
+    "123": "Seeing Scott work so hard to win his father's approval stirs an indescribable feeling in Ryuichi, and when Scott's father comes to the beach house to make trouble, Ryuichi steps in. After this, Ryuichi finally realizes the strength within himself. Back in Starview, he tells his family how he feels, and decides to keep moving toward the world he chose."
+   },
+   "12117701": {
+    "3": "Honey & Darling",
+    "123": "Alk and the others receive a video announcing Sohvi and Nimbus's wedding, which deeply unsettles them. Sure enough, Sohvi brings back a parallel-universe Nimbus she met in the abyss and decides to marry that baffling being, who is quite keen on the wedding too. And so, the wedding preparations proceed in an orderly fashion."
+   },
+   "12117702": {
+    "3": "Bridal Mission",
+    "123": "Nimbus is tormented by this other possible self. Meanwhile, Sohvi is busy preparing for the wedding. With help from the people she saved while researching hair-growth medicine, the wedding finally goes ahead. But halfway through, the parallel Nimbus runs off from the venue with Sohvi, throwing everyone into a panic."
+   },
+   "12117703": {
+    "3": "Love of Possibilities",
+    "123": "The parallel Nimbus wants to take Sohvi back to his world, but Sohvi says the one she loves most is this world's Nimbus. In the end, everyone sends the parallel Nimbus back to his own world. However, the fur he left behind keeps everyone busy cleaning up after him."
+   },
+   "12118301": {
+    "3": "My Battlefield",
+    "123": "When the Purgers attack Palpebra, Lilie fights down her anxiety and fear and helps the residents evacuate. After the longest day in Palpebra's history finally ends, Lilie is frustrated she couldn't fight, but resolves to rebuild a battlefield of her own."
+   },
+   "12118302": {
+    "3": "A Major Request",
+    "123": "Called to a meeting room, Lilie finds bigwigs from every world waiting for her. She's very nervous at first, but learns they need her power for a plan to help Stella and the others. Encouraged by the orphanage children, Lilie decides to do everything she can and work hard alongside her companions."
+   },
+   "12118303": {
+    "3": "So I Can Say Welcome Home",
+    "123": "Lilie hears from Lulusha that the Voluntas dragon warship has returned. She rushes to the ship and reunites with Stella and the others, back safe and sound. With peaceful days finally back, today too Lilie stands at the Guild counter, supporting every adventurer with her smile."
+   },
+   "12118901": {
+    "3": "Challua the Mage",
+    "123": "Autumn comes to Palpebra again. Because Challua and the others used their power to connect with the far side of the abyss during the great battle, Palpebra is now full of the lingering thoughts of the dead. So, taking a cue from Cinderella, Challua transforms into a mage, determined to take the dead back to the world beyond."
+   },
+   "12118902": {
+    "3": "The Magic of Greetings",
+    "123": "So those departing won't be afraid anymore, Challua and the others hold a Halloween parade in Palpebra, sending the lingering thoughts that said goodbye to family and friends back beyond the abyss. Stella and Alk also get to meet the heroes who were once vessels of the sword. As the two say goodbye, Stella sees smiles on their faces."
+   },
+   "12118903": {
+    "3": "The Undead King and the Spirit",
+    "123": "After long regret, the man who once destroyed the world finds a tiny green sprout in the ash and snow. That sprout grows into a great tree that covers the world, leaving love for the man. Challua Challuwa is a spirit child born from that world tree. Today too, she'll bless those who've known strife and hatred yet still choose to create love."
+   },
+   "13116401": {
+    "3": "A Boy and the Summer Sea!",
+    "123": "Teo decides to leave his overprotective Magnos behind and go with everyone to Paradise Isle for the otherworld exchange program. He's determined to study hard here, but everyone enjoying the beach, including Nimbus lost in gambling, makes him feel out of place. Confused, and wanting to understand what Claw really meant, Teo decides to take a job Esmeralda offers."
+   },
+   "13116402": {
+    "3": "A Boy's Desire",
+    "123": "Esmeralda is willing to help Teo learn about Paradise Isle, on the condition that he becomes the top seller among the beach vendors. At first, business doesn't go well. But after taking advice from Alice and Marguerite, he sells out his share, and starts to understand what his own world was missing."
+   },
+   "13116403": {
+    "3": "Continued: The Boy, the Sea, and...",
+    "123": "Through the job, Teo finds his own answer. Esmeralda wants him as her subordinate, but Teo turns her down, saying he already has a master. Back at the beach, he thanks the companions who helped him, then happily tells Helga and the others who arrived later about his summer."
+   },
+   "13117001": {
+    "123": "Just as Alk and the others wonder why they haven't seen Teurgis lately, he shows up in flashy flight armor and invites Alk to soar the skies with him. After the two enjoy their flight to the fullest, a debt collector spots Teurgis, and he has to flee in a panic."
+   },
+   "13117002": {
+    "123": "Teurgis and the others place well in the FlyEdge competition and even get an offer from a talent scout. Afterward, Teurgis cheers up a gloomy Nova. In the end, though, Teurgis turns the scout down, deciding to earn money with his friends to buy expensive wings he can use without surgery."
+   },
+   "13117003": {
+    "123": "Teurgis takes a request to put down the Updaters' organization and corners its leader together with his companions. But the client, Käsivars, had long seen through the Updaters' goal, and turns the tables by making them his customers. After the job, Teurgis and his companions return to their noisy everyday life."
+   },
+   "13117601": {
+    "3": "Eyes of Calm and Passion",
+    "123": "Caught up in Qualia City's underworld conflicts, Nimbus meets Charlene, the sniper nicknamed the Reaper, and is puzzled by how badly she wants to fight him. On his way home from a drinking party, Nimbus runs into Charlene again as she's being hunted by her organization. So he brings her back to Starview."
+   },
+   "13117602": {
+    "3": "Bringer of Joy",
+    "123": "Charlene gets the custom weapon she ordered from the PBC development team and goes pirate hunting in the ocean world with Roselia. But during the operation, Fraxis catches the group and gives them a lecture. Still, Charlene smiles contentedly and says life here is truly a lot of fun."
+   },
+   "13117603": {
+    "3": "Beyond the Deadline",
+    "123": "Learning her old organization has put a bounty on her and Nimbus, Charlene decides to settle her personal business before setting out, and goes with her companions to destroy the organization. After setting out on the otherworld expedition, with companions willing to fight by her side, Charlene enjoys battles of her own."
+   },
+   "13118201": {
+    "3": "Things That End",
+    "123": "Light helps supervise children gathering herbs in the otherworld exchange program, and is very happy to see the children, led by Arum, growing up. That night, as Light talks with Belsidia in the forest, Capella suddenly appears and kidnaps Belsidia."
+   },
+   "13118202": {
+    "3": "Death Thoughts",
+    "123": "To rescue Belsidia, Light goes to Couette to borrow her power. But this was all part of Capella's plan, and Couette is captured too. Fortunately, Light forcibly cuts open a dragon path and finds the two. That turns the battle around, and in the end Capella admits defeat."
+   },
+   "13118203": {
+    "3": "Your Story",
+    "123": "Capella leaps into the abyss ready to die, but Light, Rooma and the others catch up, persuade her and bring her out of the abyss. Afterward, Light tells Alk and the others he hadn't seen in a long while what happened, and laughs and chats with his friends in the same old atmosphere."
+   },
+   "14117701": {
+    "3": "The Girl Who Went Astray",
+    "123": "Shota invites Yukariko to the beach, and she agrees at once and enjoys the seaside trip with him. That night, Yukariko and Shota go to patrol the beach. They decide to try dating again, but a passing mother and daughter's conversation reminds Yukariko of her mother. She silently tells herself she'll never become like her mother."
+   },
+   "14117702": {
+    "3": "The Burn Born of Freedom",
+    "123": "Yukariko and Shota enjoy date after date as a couple, finally arriving at a cape known as a date hotspot. Just as things are going well, Yukariko's thought-form suddenly goes out of control. This makes her see her own contradictions, and unable to hide how shaken she is, she runs away."
+   },
+   "14117703": {
+    "3": "Someday, Together Forever",
+    "123": "Yukariko is tormented by her mother's shadow. Then Zantetsu arrives and points out what she truly feels, and for a moment Yukariko can't control her emotions. Once she calms down, she decides to break up with Shota to overcome her mother's curse. But Shota, thinking about their differences, says they should set aside being a couple and take things slowly. Yukariko accepts, and decides to move forward with Shota one step at a time."
+   },
+   "14118301": {
+    "3": "What Came After",
+    "123": "After the battle at the Palace of Stars, Fluffy still hasn't found what she wants to do. So she accepts Taiga's invitation and becomes his disciple, aiming to be \"the strongest.\" But during training, she realizes getting stronger isn't what she wants. So she resolves to find what she wants to do by tomorrow."
+   },
+   "14118302": {
+    "3": "Lost and Found Answers",
+    "123": "While Fluffy is still agonizing over what to do, Eclair appears and invites her to the arena to fight in place of a fighter who dropped out. Facing the huge crowd, Fluffy realizes what she wants is to make people smile through fighting. After the match, she tells Eclair she wants to join Platinum Legends."
+   },
+   "14118303": {
+    "3": "A Smile for You",
+    "123": "Fluffy officially joins Platinum Legends as a hotly anticipated prodigy fighter, and her popularity steadily grows. To repay Platinum Legends, she asks Nimbus and others for advice and decides to add showmanship to her fights. At the official match, Fluffy's script really does get the crowd even more fired up."
+   },
+   "14118901": {
+    "3": "The Art-Mad Painter Enters a New Realm",
+    "123": "Gramp Zigza easily masters the power Ryouki and Kugui worked so hard to gain, then on sheer momentum crosses the Hidden World and sets off for other worlds. Ryouki and the others search every world, finally find him in the Farlands, and pin him in place just as he's about to set off again."
+   },
+   "14118902": {
+    "3": "The Art-Mad Painter Faces the Truth",
+    "123": "Gramp Zigza's careless actions cause yokai disturbances in the ocean world and the Farlands. With help from Suizen and the others, he finally cleans up the mess. So that the newborn yokai and the locals can live in harmony, he paints an actor portrait modeled on a certain fox girl."
+   },
+   "14118903": {
+    "3": "The Art-Mad Painter Presses On",
+    "123": "Arriving in the desert world, Gramp Zigza nearly collapses in the desert before being rescued by Tahweel's passing caravan. At the village, he uses his power to put on painting shows for the frontier folk. Then he stops a child trying to steal a painting, and starts teaching the villagers to paint, starting with him. When his disciples come to fetch him with interesting work, he sets off on his journey again."
+   },
+   "14120101": {
+    "3": "Sword Wind Brings Awe",
+    "123": "Learning the Starsayers plan to sacrifice the entire Farlands to summon a Devourer of Stars, Celtie decides to return to House of Tris to save her homeland. But her parent Eltide still fears and rejects her sword. So Celtie and Hanabi cook up a scheme."
+   },
+   "14120102": {
+    "3": "Sword & Strength",
+    "123": "Celtie brings her Starview companions to the Farlands aboard the Voluntas dragon warship, and raises her sword to rally the despairing knights. Her words move the knights and restore their fighting spirit. Then Celtie and the knights stand together against their homeland's crisis."
+   },
+   "14120103": {
+    "3": "Sword Wind, to the Beyond",
+    "123": "After saving the Farlands, Celtie turns down Ciel's invitation and returns to where she belongs: Starview. She decides to join the Otherworld Exploration Team, and deftly dodges confessing to Alk. Determined to keep fighting her battle of love, Celtie steps toward the future."
+   },
+   "15111101": {
+    "3": "Work Upon This Loyal Knight!",
+    "123": "Darkness comes to the Guild to take requests and earn a living. However, she can't fulfill her duties as a knight well, which leaves her depressed. So Alk's party takes her along on an escort request. On the job, the sight of Darkness blissfully getting attacked by monsters short-circuits Light's brain."
+   },
+   "15111102": {
+    "3": "Blessings Upon This Clumsy Knight!",
+    "123": "Misunderstanding something Kazuma said, Darkness tries to help Alk's party, but keeps failing and looks for a chance to make up for it. Fighting monsters, she even changes her usual fighting style. The group tells her she just needs to be herself. Hearing that, Darkness happily charges into a horde of monsters."
+   },
+   "15111103": {
+    "3": "Respect Upon This Gentle Knight!",
+    "123": "Darkness and the others take a tutoring job at the Guild, teaching a merchant's son John martial arts and etiquette. But John's rudeness to Kazuma and the others truly angers Darkness. After learning what John really thinks, though, Darkness encourages him and the lessons properly begin."
+   },
+   "15118201": {
+    "3": "Diverging Lives",
+    "123": "Nova visits the public cemetery with Alk. The mistakes made by Remna, who was also himself, and being the only one saved fill Nova with guilt. Learning how he feels, Alk takes him to a pancake shop in Palpebra. Seeing the shop owner living on so strongly, Nova resolves to help rebuild Palpebra."
+   },
+   "15118202": {
+    "3": "Stars Together",
+    "123": "To atone, Nova works hard helping the people of Palpebra rebuild. At Nihilyana and Seiji's suggestion, he joins the Guild's urban development discussion meeting. Seeing people strive forward, Nova decides to build a better city with like-minded companions, and proposes a facility to protect stray cats and dogs."
+   },
+   "15118203": {
+    "3": "Journey of the Stars",
+    "123": "Through his time with the townspeople, Nova realizes again how much he loves Palpebra, and frees himself from his guilt. After a whole day of fun with Alk and his band of rascal friends, Nova sees Remna off, and decides to keep living with the people he loves most."
+   },
+   "16119501": {
+    "3": "A Former Spy in a New World",
+    "123": "Chatrina, a former spy who loves chatting more than anything, serves Lilith as her guard and messenger. One day, she meets Paula, a girl who lost her mother. Learning Paula wishes to grow her mother's favorite flowers, Chatrina decides to help her grow them so she'll have no more regrets."
+   },
+   "16119502": {
+    "3": "When Flowers Bloom",
+    "123": "The one Paula loves invites her to come to another world, but afraid of losing someone again, she turns them down. Hearing this, Chatrina is troubled, but after talking with Light and the others, she realizes her own true wish and decides to find Paula and talk with her properly."
+   },
+   "16119503": {
+    "3": "The Moment We Bud Together",
+    "123": "As a friend, Chatrina hears Paula's true wish, then asks Amelia and the others for help and sends Paula to the one she loves. After all this, Chatrina finds what she wants to do, and decides to help people at a new job by doing what she loves most: chatting."
+   },
+   "16120101": {
+    "3": "A Star Sets Out",
+    "123": "Leve brings Sakuya, who wants to see Starview, to town, and meets Stella again. Faced with Stella's welcome, Leve says Starview isn't a place she belongs. To find something she can do, Leve sets out on a journey with Sakuya."
+   },
+   "16120102": {
+    "3": "The Star-Crossing Troupe",
+    "123": "In the ocean world, Leve defeats a gang and rescues the \"ill-omened\" people it abused and shunned. Unable to abandon those powerless to change their circumstances, she decides to take them with her. Later, with help from Inaho and others, the people around Leve who had nowhere to belong form the Star-Crossing Troupe."
+   },
+   "16120103": {
+    "3": "The Same Dream",
+    "123": "Inaho decides Leve will star in a joint performance by the troupe and the yokai theater troupe. But Leve can't understand why her role, Princess Tiara, can believe in her bond with the orphans, and is very confused. Still, guided by Sakuya, Leve finishes the performance. So everyone can see the same dream, Leve decides to take a step of her own."
+   },
+   "26301501": {
+    "3": "Success Upon This Business!",
+    "123": "Kazuma repairs weapons adventurers threw away and opens a weapon stall. But wanting easy money, he sells cursed weapons to adventurers and gets confronted by them. At Alk's suggestion, Kazuma talks his way out of it. However, having gotten a taste of success, Kazuma soon causes new trouble."
+   },
+   "26301502": {
+    "3": "Joy Upon This Seeker!",
+    "123": "In search of premium ingredients, Alk and Kazuma head into a secret mountain realm. But the precious ingredient they find after many hardships is snatched by a bird. Back in Starview, Kazuma says hardship taught him happiness was right beside him all along, but Alk is ready to drag him off for the next ingredient, making Kazuma scream."
+   },
+   "26301503": {
+    "3": "Peace Upon This Free Service!",
+    "123": "To use a free trial ticket only valid for two, Kazuma tricks Alk into going to a certain massage parlor. However, the service isn't what Kazuma hoped for, leaving him outraged. Back in Starview, Aqua and the other two find Kazuma's membership card, and he gets thoroughly scolded."
+   }
+  },
+  "production/upload/d6/88e4a5f7d84cc422357cc8acbdb72817bc8670": {
+   "pass_mission_level_text": {
+    "0": "Level"
+   },
+   "pass_mission_point_text": {
+    "0": "Points"
+   },
+   "ability_description_target_separator_or": {
+    "0": " and "
+   },
+   "ability_description_target_enemy": {
+    "0": " enemies"
+   },
+   "ability_description_condition_content_character_slayer": {
+    "0": "::percent_up_down:: to damage against ::constraint:: for ::target::"
+   },
+   "ability_description_common_content_character_slayer": {
+    "0": "::percent_up_down:: to damage against ::constraint:: for ::target::"
+   },
+   "mission_phrase_count": {
+    "0": "::count::"
+   },
+   "application_option_character_picture_mode_button": {
+    "0": "Change Art"
+   }
+  },
+  "production/upload/b1/b53fdd934dc5ab6d8bfc1c9132cff75c473c48": {
+   "20002": {
+    "4": "Clear a multiplayer battle with Shuilong as Leader"
+   }
+  }
+ }
+}

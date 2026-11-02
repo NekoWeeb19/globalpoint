@@ -15,10 +15,10 @@ start cmd.exe /k "cd /d "%BASEPATH%" && npm install && npx tsc && npm run dev"
 
 :: Check if mitmproxy is installed in the install directory
 if exist "%MITMPROXYFOLDER%\mitmproxy.exe" (
-    start cmd.exe /k "cd /d "%MITMPROXYFOLDER%" && .\mitmproxy.exe --set connection_strategy=lazy --allow-hosts gc-openapi-zinny3.kakaogames.com --allow-hosts gc-infodesk-zinny3.kakaogames.com --allow-hosts na.wdfp.kakaogames.com --allow-hosts patch.wdfp.kakaogames.com -s ..\scripts\mitm-redirect-traffic.py -p 8080"
+    start cmd.exe /k "cd /d "%MITMPROXYFOLDER%" && .\mitmproxy.exe --set connection_strategy=lazy --allow-hosts gc-openapi-zinny3.kakaogames.com --allow-hosts gc-infodesk-zinny3.kakaogames.com --allow-hosts na.wdfp.kakaogames.com --allow-hosts patch.wdfp.kakaogames.com --allow-hosts 13.125.14.86 -s ..\scripts\mitm-redirect-traffic.py -p 8080"
 ) else (
     if exist "C:\Program Files\mitmproxy\bin\mitmproxy.exe" (
-        start cmd.exe /k "cd /d "%MITMPROXYSCRIPTFOLDER%" && "C:\Program Files\mitmproxy\bin\mitmproxy.exe" --set connection_strategy=lazy --allow-hosts gc-openapi-zinny3.kakaogames.com --allow-hosts gc-infodesk-zinny3.kakaogames.com --allow-hosts na.wdfp.kakaogames.com --allow-hosts patch.wdfp.kakaogames.com -s mitm-redirect-traffic.py -p 8080"
+        start cmd.exe /k "cd /d "%MITMPROXYSCRIPTFOLDER%" && "C:\Program Files\mitmproxy\bin\mitmproxy.exe" --set connection_strategy=lazy --allow-hosts gc-openapi-zinny3.kakaogames.com --allow-hosts gc-infodesk-zinny3.kakaogames.com --allow-hosts na.wdfp.kakaogames.com --allow-hosts patch.wdfp.kakaogames.com --allow-hosts 13.125.14.86 -s mitm-redirect-traffic.py -p 8080"
     ) else (
         start cmd.exe /k "cd /d "%MITMPROXYSCRIPTFOLDER%" && echo mitmproxy is not installed in the '.mitmproxy' folder. Install from https://mitmproxy.org/downloads."
     )

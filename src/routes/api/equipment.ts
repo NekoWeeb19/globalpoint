@@ -6,6 +6,8 @@ import { generateDataHeaders } from "../../utils";
 import { clientSerializeEquipment } from "../../lib/equipment";
 import { PlayerEquipment, UserEquipment } from "../../data/types";
 import { ClientError, viewer_id_to_player_id } from "../../nya/utils";
+import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";
+import { withMissionRewards } from "../../nya/mission";
 
 interface SetProtectionBody {
     protection: boolean
@@ -203,9 +205,13 @@ const upgrade_equipment = async (playerId: number, equipmentList: { equipmentId:
     updatePlayerItemSync(playerId, wrightpieceItemId, newWrightPieces);
     returnItemList[wrightpieceItemId] = newWrightPieces;
 
+    // active missions: equipment upgrades, and equipment at the maximum level
+    const activeMissionList = trackActiveMissionProgress(playerId, { recompute: [34, 36] });
+
     return {
         "equipment_list": returnEquipmentList,
         "item_list": returnItemList,
+        "active_mission_list": activeMissionList,
     }
 }
 
@@ -339,8 +345,9 @@ const routes = async (fastify: FastifyInstance) => {
         const body = request.body as UpgradeBody;
 
         try {
+            const playerId = await viewer_id_to_player_id(body.viewer_id)
             const result = await upgrade_equipment(
-                await viewer_id_to_player_id(body.viewer_id),
+                playerId,
                 [{
                     equipmentId: body.equipment_id,
                     count: body.upgrade_count,
@@ -354,11 +361,13 @@ const routes = async (fastify: FastifyInstance) => {
                 "data_headers": generateDataHeaders({
                     viewer_id: body.viewer_id
                 }),
-                "data": {
+                // Mission screen: armament awakenings, Lv. 5 armaments (the recorded reply clears 67 and 68 here)
+                "data": withMissionRewards(playerId, {
                     "equipment_list": result.equipment_list,
                     "item_list": result.item_list,
-                    "mail_arrived": false
-                }
+                    "mail_arrived": false,
+                    ...(result.active_mission_list.length > 0 ? { "active_mission_list": result.active_mission_list } : {})
+                })
             })
         } catch (e: any) {
             if (e instanceof ClientError) return reply.status(400).send({
@@ -380,11 +389,12 @@ const routes = async (fastify: FastifyInstance) => {
                 "data_headers": generateDataHeaders({
                     viewer_id
                 }),
-                "data": {
+                "data": withMissionRewards(playerId, {
                     "equipment_list": result.equipment_list,
                     "item_list": result.item_list,
-                    "mail_arrived": false
-                }
+                    "mail_arrived": false,
+                    ...(result.active_mission_list.length > 0 ? { "active_mission_list": result.active_mission_list } : {})
+                })
             })
         } catch (e: any) {
             if (e instanceof ClientError) return reply.status(400).send({

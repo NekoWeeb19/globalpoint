@@ -2,7 +2,7 @@
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getAccountPlayers, getPlayerBoxGachaDrawnRewardsSync, getPlayerBoxGachaSync, getPlayerItemSync, getPlayerSync, getSession, insertPlayerBoxGachaDrawnRewardSync, insertPlayerBoxGachaSync, playerOwnsEquipmentSync, updatePlayerBoxGachaDrawnRewardSync, updatePlayerBoxGachaSync, updatePlayerEquipmentSync, updatePlayerItemSync, updatePlayerPartyGroupSync } from "../../data/wdfpData";
-import { generateDataHeaders, getServerTime } from "../../utils";
+import { generateDataHeaders, epochOf, getServerTime } from "../../utils";
 import { getBoxGachaSync } from "../../lib/assets";
 import { drawBoxGachaSync, rewardPlayerBoxGachaResultSync } from "../../lib/gacha";
 import { BoxGachaBoxes } from "../../lib/types";
@@ -308,7 +308,7 @@ const routes = async (fastify: FastifyInstance) => {
                 "user_info": {
                     "free_mana": player.freeMana + (rewardResult?.user_info.free_mana ?? 0),
                     "exp_pool": player.expPool + (rewardResult?.user_info.exp_pool ?? 0),
-                    "exp_pooled_time": getServerTime(player.expPooledTime),
+                    "exp_pooled_time": epochOf(player.expPooledTime),
                 },
                 "drawn_reward_list": drawnRewards.map(reward => {
                     return {

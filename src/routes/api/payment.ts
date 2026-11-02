@@ -35,6 +35,21 @@ const routes = async (fastify: FastifyInstance) => {
             }
         })
     })
+
+    // "Check Lodestar Beads & Mana" > Detail (CN client): paid beads and mana bought, by store product
+    // id -> count. Nothing is ever bought with real money here, so both are empty.
+    fastify.post("/detail_items", async (request: FastifyRequest, reply: FastifyReply) => {
+        const viewerId = Number((request.body as { viewer_id?: number } | undefined)?.viewer_id)
+        if (!viewerId || !(await getSession(String(viewerId)))) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Invalid viewer id."
+        })
+        reply.header("content-type", "application/x-msgpack")
+        return reply.status(200).send({
+            "data_headers": generateDataHeaders({ viewer_id: viewerId }),
+            "data": { "mana_detail_items": {}, "vmoney_detail_items": {} }
+        })
+    })
 }
 
 export default routes;
