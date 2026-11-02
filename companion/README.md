@@ -81,6 +81,19 @@ needs no download.
 The phone needs ~10 GB free for the copy, and the same again while the game moves the files in
 (`/sdcard` to the game's private storage is a copy on most phones).
 
+### Comics without a PC on the same Wi-Fi
+
+Comics are served by the companion's server from its own data folder, so they can't come with the
+game's files. Instead, a **comics pack**: on a PC with the comics, run
+`node scripts/build_comics_pack.cjs comics.zip` (from the server folder; the comics folder can also be
+given as a second argument). It writes one stored zip (~1.4 GB) whose first entry,
+`starpoint-comics-pack.json`, marks it as a pack, then `.cdn/comics/...`, and prints its size and
+SHA-256. Copy it to the phone (e.g. Downloads) and press **Comics pack...** in Game data: the system
+file picker opens (no storage permission needed), the pack is checked, free space is checked, and the
+comics are unpacked into the companion's data folder while the server keeps running. Files already
+there with the same size are skipped, so pressing it again resumes. Afterwards the app offers to
+delete the pack (where the file's location allows that; otherwise it says to delete it in Files).
+
 ### Getting your save out (and back in)
 
 The save is the companion's data folder `files/data/.database` (`wdfp_data.db` plus the json state

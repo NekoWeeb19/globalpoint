@@ -149,6 +149,79 @@ final class DataTransfer {
         Item(String path, long size, File out) { this.path = path; this.size = size; this.out = out; }
     }
 
+    /** First entry of a comics pack (scripts/build_comics_pack.cjs). */
+    static final String COMICS_MARKER = "starpoint-comics-pack.json";
+
+    /** What a comics pack import did. */
+    static final class PackResult { int written, skipped; long packBytes; }
+
+    /**
+     * Unpacks a comics pack into files/data/.cdn/comics. Files already there with the same size are
+     * skipped, so a stopped import resumes. The server may keep running: it reads the comics folder per
+     * request, and every file is written next to its place first, then renamed.
+     */
+    static PackResult importComicsPack(Context c, Uri uri, Progress p) throws Exception {
+        File data = ServerFiles.dataDir(c);
+        File comics = new File(data, ".cdn/comics");
+        long total = -1;
+        try (android.content.res.AssetFileDescriptor fd = c.getContentResolver().openAssetFileDescriptor(uri, "r")) {
+            if (fd != null) total = fd.getLength();
+        } catch (Exception ignored) { }
+        PackResult result = new PackResult();
+        result.packBytes = total;
+        try (InputStream raw = c.getContentResolver().openInputStream(uri);
+             CountingStream counted = new CountingStream(new BufferedInputStream(raw, 1 << 20));
+             ZipInputStream zip = new ZipInputStream(counted)) {
+            ZipEntry first = zip.getNextEntry();
+            if (first == null || !COMICS_MARKER.equals(first.getName())) {
+                throw new IOException("this isn't a comics pack (make one on the PC with: node scripts/build_comics_pack.cjs comics.zip)");
+            }
+            JSONObject info = new JSONObject(new String(readAll(zip), "UTF-8"));
+            if (!"starpoint-comics-pack".equals(info.optString("kind"))) throw new IOException("this isn't a comics pack");
+            long bytes = info.optLong("bytes", 0);
+            // room for what isn't here yet (files already in place are skipped)
+            long have = folderSize(comics);
+            comics.mkdirs();
+            long free = new StatFs(data.getPath()).getAvailableBytes();
+            long need = Math.max(0, bytes - have) + (64L << 20);
+            if (free < need) {
+                throw new IOException(String.format(Locale.US, "Not enough free space: the comics need %.1f GB, %.1f GB free.", need / 1073741824.0, free / 1073741824.0));
+            }
+            ZipEntry entry;
+            long last = 0;
+            while ((entry = zip.getNextEntry()) != null) {
+                if (entry.isDirectory()) continue;
+                String name = entry.getName().replace('\\', '/');
+                if (!name.startsWith(".cdn/comics/")) continue;
+                File out = target(data, name);
+                if (out == null) continue;
+                long size = entry.getSize();
+                if (size >= 0 && out.exists() && out.length() == size) {
+                    result.skipped++;
+                } else {
+                    long[] ignore = {0};
+                    copy(zip, out, size, ignore, total, (m, d, t) -> { }, name);
+                    result.written++;
+                }
+                long now = System.currentTimeMillis();
+                if (now - last > 250) {
+                    p.update("Comics: " + (result.written + result.skipped) + " / " + info.optInt("files") + " files", counted.count, total);
+                    last = now;
+                }
+            }
+        }
+        if (result.written + result.skipped == 0) throw new IOException("the pack holds no comics");
+        p.update("Done", total, total);
+        return result;
+    }
+
+    private static long folderSize(File dir) {
+        long n = 0;
+        File[] list = dir.listFiles();
+        if (list != null) for (File f : list) n += f.isDirectory() ? folderSize(f) : f.length();
+        return n;
+    }
+
     /** Downloads the chosen data from a PC's StarPoint (host like 192.168.1.20:8000). Returns the number of files downloaded. */
     static int downloadFromPc(Context c, String host, Options o, Progress p) throws Exception {
         File data = ServerFiles.dataDir(c);

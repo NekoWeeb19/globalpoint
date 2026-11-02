@@ -125,6 +125,8 @@ fastify.addHook('onSend', (request, reply, payload, done) => {
                 done(null, payload)
         }
     } catch (error) {
+        // a reply that can't be packed: say why (the plain object is refused by fastify right after)
+        console.error(`[msgpack] ${request.method} ${request.url}: ${(error as Error)?.stack ?? error}`)
         done(null, payload)
     }
 

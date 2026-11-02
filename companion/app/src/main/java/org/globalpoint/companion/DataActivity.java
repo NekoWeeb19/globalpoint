@@ -33,7 +33,7 @@ import java.util.Locale;
  * first, since the save may be replaced.
  */
 public class DataActivity extends Activity {
-    private static final int PICK_ZIP = 1;
+    private static final int PICK_ZIP = 1, PICK_COMICS = 3;
 
     private final Handler ui = new Handler(Looper.getMainLooper());
     private TextView summary, status;
@@ -41,7 +41,7 @@ public class DataActivity extends Activity {
     private EditText host;
     private static final String GAME = "com.leiting.wf";
     private CheckBox save, patches, images, comics, schedule, game;
-    private Button download, importZip;
+    private Button download, importZip, comicsPack;
     private SharedPreferences prefs;
     private ScrollView scroll;
 
@@ -86,6 +86,17 @@ public class DataActivity extends Activity {
             startActivityForResult(i, PICK_ZIP);
         });
 
+        u.heading("Comics without a PC");
+        u.text("A comics pack (~1.4 GB, made on a PC with scripts/build_comics_pack.cjs) copied to this phone, "
+                + "e.g. into Downloads. It's unpacked into the server's comics folder; the server can keep running.", 13);
+        comicsPack = u.button("Comics pack...", () -> {
+            Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            i.setType("*/*");
+            i.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"application/zip", "application/x-zip-compressed", "application/octet-stream"});
+            startActivityForResult(i, PICK_COMICS);
+        });
+
         bar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
         bar.setMax(1000);
         bar.setVisibility(View.GONE);
@@ -118,6 +129,7 @@ public class DataActivity extends Activity {
         }
         download.setEnabled(!on);
         importZip.setEnabled(!on);
+        comicsPack.setEnabled(!on);
         bar.setVisibility(on ? View.VISIBLE : View.GONE);
     }
 
@@ -223,23 +235,59 @@ public class DataActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent result) {
         super.onActivityResult(requestCode, resultCode, result);
-        if (requestCode != PICK_ZIP || resultCode != RESULT_OK || result == null || result.getData() == null) return;
+        if (resultCode != RESULT_OK || result == null || result.getData() == null) return;
         Uri uri = result.getData();
+        if (requestCode == PICK_COMICS) {
+            run(() -> {
+                DataTransfer.PackResult r = DataTransfer.importComicsPack(this, uri, this::progress);
+                ui.post(() -> offerDelete(uri, r.packBytes));
+                return "Comics ready: " + r.written + " file(s) unpacked" + (r.skipped > 0 ? ", " + r.skipped + " already here" : "")
+                        + ". They show in the game under Menu > Other > Comics.";
+            }, false);
+            return;
+        }
+        if (requestCode != PICK_ZIP) return;
         run(() -> {
             int n = DataTransfer.importZip(this, uri, this::progress);
             return "Imported " + n + " file(s). Press Start on the main screen.";
         });
     }
 
+    /** After a comics pack import: offer to delete the pack, if the place it came from allows that. */
+    private void offerDelete(Uri uri, long bytes) {
+        boolean canDelete = false;
+        try (android.database.Cursor cur = getContentResolver().query(uri, new String[]{android.provider.DocumentsContract.Document.COLUMN_FLAGS}, null, null, null)) {
+            if (cur != null && cur.moveToFirst()) canDelete = (cur.getInt(0) & android.provider.DocumentsContract.Document.FLAG_SUPPORTS_DELETE) != 0;
+        } catch (Exception ignored) { }
+        String size = bytes > 0 ? String.format(Locale.US, " (%.1f GB)", bytes / 1073741824.0) : "";
+        if (!canDelete) {
+            status.append("\n\nThe pack" + size + " can be deleted now. This app isn't allowed to delete it there, so delete it in your Files app.");
+            return;
+        }
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Delete the comics pack?")
+                .setMessage("The comics are unpacked, so the pack" + size + " isn't needed any more.")
+                .setPositiveButton("Delete", (d, w) -> {
+                    boolean deleted = false;
+                    try { deleted = android.provider.DocumentsContract.deleteDocument(getContentResolver(), uri); } catch (Exception ignored) { }
+                    status.append(deleted ? "\n\nThe pack was deleted." : "\n\nCouldn't delete the pack; delete it in your Files app.");
+                })
+                .setNegativeButton("Keep", null)
+                .show();
+    }
+
     interface Job { String run() throws Exception; }
 
-    private void run(Job job) {
+    private void run(Job job) { run(job, true); }
+
+    /** Runs a job off the main thread; stopServer: stop the server first (when the save may be replaced). */
+    private void run(Job job, boolean stopServer) {
         busy(true);
         scroll.post(() -> scroll.fullScroll(View.FOCUS_DOWN));
         new Thread(() -> {
             String result;
             try {
-                if (ServerProbe.ownProcess(this)) {
+                if (stopServer && ServerProbe.ownProcess(this)) {
                     progress("Stopping the server first...", 0, -1);
                     ServerProbe.stopAndWait(this);
                 }
