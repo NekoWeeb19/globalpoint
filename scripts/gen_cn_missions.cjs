@@ -22,8 +22,11 @@ const { CATEGORIES, parseRewardRow } = require("./gen_missions.cjs")
 const { hashed, readCn } = require("./cn_read.cjs")
 
 const ROOT = path.join(__dirname, "..")
-const OUT = path.join(ROOT, "assets", "missions_cn.json")
-const SCHEDULED = path.join(ROOT, ".cdn", "cn_schedule_files")
+const { cdnDir, generatedDir } = require("./cn_archives.cjs")
+const OUT = path.join(generatedDir(), "missions_cn.json")
+// the package's copy, for the "distinct" lists when CN_GENERATED_DIR has none yet
+const SHIPPED = path.join(ROOT, "assets", "missions_cn.json")
+const SCHEDULED = path.join(cdnDir(), "cn_schedule_files")
 const TRANSLATED = require("./cn_archives.cjs").cnTextDir()
 
 // CN layouts: global's plus three columns before the dates
@@ -77,7 +80,8 @@ async function cnTable(logical) {
     const missions = {}, distinct = {}
     // "distinct" needs global's mission tables (.cdn/en); without them (a shared package) the lists
     // already in assets/missions_cn.json are kept: they don't depend on the schedule
-    const previous = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, "utf8")).distinct ?? {} : {}
+    const previousFile = [OUT, SHIPPED].find(f => fs.existsSync(f))
+    const previous = previousFile ? JSON.parse(fs.readFileSync(previousFile, "utf8")).distinct ?? {} : {}
     const globalTable = async table => { try { return await readTable(table, false) } catch { return null } }
     const untracked = {}
     const tables = [

@@ -15,7 +15,8 @@ const { zip } = require("./gen_translation_mod.cjs")
 const { readHashedFile } = require("./cdn_rows.cjs")
 
 const ROOT = path.join(__dirname, "..")
-const OUT = path.join(ROOT, ".cdn", "cn_patches")
+const { cdnDir } = require("./cn_archives.cjs")
+const OUT = path.join(cdnDir(), "cn_patches")
 const LIMIT = 20 * 1024 * 1024
 
 // global's translation mod overrides some hashed files
@@ -23,7 +24,7 @@ let modFiles = null
 async function globalFile(hashedPath) {
     if (modFiles === null) {
         modFiles = new Map()
-        const modZip = path.join(ROOT, ".cdn", "mods", "translations.zip")
+        const modZip = path.join(cdnDir(), "mods", "translations.zip")
         if (fs.existsSync(modZip)) {
             const unzipper = require("unzipper")
             const dir = await unzipper.Open.file(modZip)
@@ -42,7 +43,7 @@ let globalIndexCache = null
 async function globalIndex() {
     if (globalIndexCache) return globalIndexCache
     const unzipper = require("unzipper")
-    const dir = path.join(ROOT, ".cdn", "en")
+    const dir = path.join(cdnDir(), "en")
     const ver = n => (n.match(/-(\d+\.\d+\.\d+)-\d+-[0-9a-f]+\.zip$/) || [])[1] || "0"
     const cmp = (a, b) => a.split(".").map(Number).reduce((r, x, i) => r || x - Number(b.split(".")[i] || 0), 0)
     const zips = []

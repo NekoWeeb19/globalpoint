@@ -21,6 +21,23 @@ function cnTextDir() {
     return path.resolve(path.join(__dirname, ".."), process.env.CN_TRANSLATED_DIR || path.join(".cdn", "cn_text"))
 }
 
+/** The server's game-files folder (CDN_DIR, relative to the repo folder, else .cdn), as src/lib/cnClient.ts
+ *  cdnDir(): StarPoint's CN patches and the schedule's built tables go in it. */
+function cdnDir() {
+    return path.resolve(path.join(__dirname, ".."), process.env.CDN_DIR || ".cdn")
+}
+
+/** The server's saved state (.database in the folder the server runs in, as the server itself uses). */
+function dataDir() {
+    return path.join(process.cwd(), ".database")
+}
+
+/** Where the schedule writes the server's CN data (missions_cn, cn_shops, pass_card_cn .json):
+ *  CN_GENERATED_DIR (relative to the repo folder), else the repo's assets folder. */
+function generatedDir() {
+    return path.resolve(path.join(__dirname, ".."), process.env.CN_GENERATED_DIR || "assets")
+}
+
 /** Zip file paths, oldest first. */
 function cnZips(dir = cnDir()) {
     const zips = []
@@ -32,4 +49,4 @@ function cnZips(dir = cnDir()) {
     return zips.map(z => z.file)
 }
 
-module.exports = { cnZips, cnDir, cnTextDir }
+module.exports = { cnZips, cnDir, cnTextDir, cdnDir, dataDir, generatedDir }

@@ -30,6 +30,7 @@ import mainQuests from "../../assets/main_quest.json";
 import manaNodes from "../../assets/mana_node.json";
 import manaNodesCn from "../../assets/mana_node_cn.json";
 import { cnGachaCampaignId } from "../nya/cnCampaigns";
+import { cnGeneratedFile } from "./cnGenerated";
 import rareScoreRewards from "../../assets/rare_score_reward.json";
 import scoreRewards from "../../assets/score_reward.json";
 import gachaCampaigns from "../../assets/gacha_campaign.json";
@@ -429,13 +430,14 @@ interface CnShops {
     bossCoin: BossCoinShopItems, bossCoinMap: Record<string, number>,
     eventItem: EventShopItems, eventItemMap: Record<string, EventItemShopIdMapItem>
 }
-const CN_SHOPS_FILE = path.join(__dirname, "..", "..", "assets", "cn_shops.json")
+const cnShopsFile = () => cnGeneratedFile("cn_shops.json")
 let cnShopsCache: { mtimeMs: number, data: CnShops } | null = null
 function cnShops(): CnShops | null {
     if (!inCnRequest()) return null
     try {
-        const mtimeMs = statSync(CN_SHOPS_FILE).mtimeMs
-        if (cnShopsCache === null || cnShopsCache.mtimeMs !== mtimeMs) cnShopsCache = { mtimeMs, data: JSON.parse(readFileSync(CN_SHOPS_FILE, "utf8")) }
+        const file = cnShopsFile()
+        const mtimeMs = statSync(file).mtimeMs
+        if (cnShopsCache === null || cnShopsCache.mtimeMs !== mtimeMs) cnShopsCache = { mtimeMs, data: JSON.parse(readFileSync(file, "utf8")) }
         return cnShopsCache.data
     } catch {
         return null

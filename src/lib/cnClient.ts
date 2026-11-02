@@ -201,10 +201,21 @@ export function cnPathList(host: string, resVer: string | undefined): CnPathFile
         return { info: info(target, false), full: null, diff: null, asset_version_hash: "" }
     }
     if (known) {
-        const diff = updates
-            .filter(d => compareVersions(d.version, resVer!) > 0)
-            .map(d => ({ ...d, archive: forAndroid(d.archive, base) }))
-        return { info: info(resVer!, false), full: null, diff, asset_version_hash: "" }
+        // the client takes an update only when its original_version is the version it has: follow the
+        // chain from resVer. A version the chain skips (patches squashed into one since the client last
+        // updated) gets the update that covers it, labelled as starting from the client's version; a
+        // patch holds the newest copy of every file it changes since its own start, so that is safe.
+        const diff: typeof updates = []
+        let current = resVer!
+        while (compareVersions(current, target) < 0) {
+            const next = updates.find(d => d.original_version === current && compareVersions(d.version, current) > 0)
+                ?? updates.find(d => compareVersions(d.version, current) > 0 && compareVersions(d.original_version, current) <= 0)
+            if (!next) break
+            diff.push({ ...next, original_version: current, archive: forAndroid(next.archive, base) })
+            current = next.version
+        }
+        if (current === target) return { info: info(resVer!, false), full: null, diff, asset_version_hash: "" }
+        // no way from resVer to the newest version: download everything, as a fresh install
     }
     return {
         info: info(file.info.client_asset_version, true),
