@@ -86,10 +86,11 @@ public class DataActivity extends Activity {
             startActivityForResult(i, PICK_ZIP);
         });
 
-        u.heading("Comics without a PC");
-        u.text("A comics pack (~1.4 GB, made on a PC with scripts/build_comics_pack.cjs) copied to this phone, "
-                + "e.g. into Downloads. It's unpacked into the server's comics folder; the server can keep running.", 13);
-        comicsPack = u.button("Comics pack...", () -> {
+        u.heading("No PC? Import a pack");
+        u.text("A data pack (~1.8 GB: everything above except your save and the full game files) or a comics pack "
+                + "(~1.4 GB), copied to this phone, e.g. into Downloads. Packs are made on a PC with "
+                + "scripts/build_pack.cjs. A data pack never touches your save.", 13);
+        comicsPack = u.button("Import pack...", () -> {
             Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             i.addCategory(Intent.CATEGORY_OPENABLE);
             i.setType("*/*");
@@ -239,10 +240,28 @@ public class DataActivity extends Activity {
         Uri uri = result.getData();
         if (requestCode == PICK_COMICS) {
             run(() -> {
-                DataTransfer.PackResult r = DataTransfer.importComicsPack(this, uri, this::progress);
-                ui.post(() -> offerDelete(uri, r.packBytes));
-                return "Comics ready: " + r.written + " file(s) unpacked" + (r.skipped > 0 ? ", " + r.skipped + " already here" : "")
-                        + ". They show in the game under Menu > Other > Comics.";
+                String kind = DataTransfer.packKind(this, uri);
+                if (kind == null) throw new java.io.IOException("this isn't a StarPoint pack (make one on a PC with: node scripts/build_pack.cjs data|comics <out.zip>)");
+                DataTransfer.PackResult r;
+                String done;
+                if (kind.equals("data")) {
+                    // the schedules and patches are replaced: the server must not be running meanwhile
+                    if (ServerProbe.ownProcess(this)) {
+                        progress("Stopping the server first...", 0, -1);
+                        ServerProbe.stopAndWait(this);
+                    }
+                    r = DataTransfer.importDataPack(this, uri, this::progress);
+                    done = "Data pack imported (game files version " + r.version + "): " + r.written + " file(s) unpacked"
+                            + (r.skipped > 0 ? ", " + r.skipped + " already here" : "") + (r.removed > 0 ? ", " + r.removed + " old file(s) removed" : "")
+                            + ". Your save wasn't touched. Back on the main screen the server starts.";
+                } else {
+                    r = DataTransfer.importComicsPack(this, uri, this::progress);
+                    done = "Comics ready: " + r.written + " file(s) unpacked" + (r.skipped > 0 ? ", " + r.skipped + " already here" : "")
+                            + ". They show in the game under Menu > Other > Comics.";
+                }
+                DataTransfer.PackResult finished = r;
+                ui.post(() -> offerDelete(uri, finished.packBytes));
+                return done;
             }, false);
             return;
         }
@@ -265,8 +284,8 @@ public class DataActivity extends Activity {
             return;
         }
         new android.app.AlertDialog.Builder(this)
-                .setTitle("Delete the comics pack?")
-                .setMessage("The comics are unpacked, so the pack" + size + " isn't needed any more.")
+                .setTitle("Delete the pack?")
+                .setMessage("It's unpacked, so the pack" + size + " isn't needed any more.")
                 .setPositiveButton("Delete", (d, w) -> {
                     boolean deleted = false;
                     try { deleted = android.provider.DocumentsContract.deleteDocument(getContentResolver(), uri); } catch (Exception ignored) { }

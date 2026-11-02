@@ -81,18 +81,26 @@ needs no download.
 The phone needs ~10 GB free for the copy, and the same again while the game moves the files in
 (`/sdcard` to the game's private storage is a copy on most phones).
 
-### Comics without a PC on the same Wi-Fi
+### No PC on the same Wi-Fi: packs
 
-Comics are served by the companion's server from its own data folder, so they can't come with the
-game's files. Instead, a **comics pack**: on a PC with the comics, run
-`node scripts/build_comics_pack.cjs comics.zip` (from the server folder; the comics folder can also be
-given as a second argument). It writes one stored zip (~1.4 GB) whose first entry,
-`starpoint-comics-pack.json`, marks it as a pack, then `.cdn/comics/...`, and prints its size and
-SHA-256. Copy it to the phone (e.g. Downloads) and press **Comics pack...** in Game data: the system
-file picker opens (no storage permission needed), the pack is checked, free space is checked, and the
-comics are unpacked into the companion's data folder while the server keeps running. Files already
-there with the same size are skipped, so pressing it again resumes. Afterwards the app offers to
-delete the pack (where the file's location allows that; otherwise it says to delete it in Files).
+Two kinds of pack, made on a PC with `node scripts/build_pack.cjs data|comics <out.zip>` and copied to
+the phone (e.g. Downloads). **Import pack...** in Game data opens the system file picker (no storage
+permission), recognises the pack by its first entry, checks free space, unpacks it with progress
+(files already there with the same size are skipped, so it resumes), and then offers to delete the
+pack where its location allows that.
+- **Data pack** (`build_pack.cjs data out.zip --from <clean package folder> [--slim <slim CN folder>]`,
+  ~1.8 GB): what "Download from PC" brings without the save and the full game files. That is the CN
+  version files, the slim CN tables + names.txt, the English tables, StarPoint's patch zips (a game
+  older than the newest patch downloads them from the phone; schedule rebuilds read their art), the
+  generated schedule files (cn_schedule_files), dashboard pictures and the schedule/news files. The
+  server is stopped while it's imported. It never touches the save or account files. Files in the
+  folders it replaces that it doesn't hold are removed: earlier schedule edits on the phone, and the
+  regenerated tables in `data/.generated`. So the phone starts in the pack's (clean) state. Build it
+  from a clean package, not a personal server with its own schedule edits. With game files at an older
+  version (e.g. an OBB at 1.4.203 and a pack at 1.4.209), the game downloads the difference once from
+  the phone (1.58 GB); a matching OBB needs none.
+- **Comics pack** (`build_pack.cjs comics out.zip`, or `build_comics_pack.cjs`, ~1.4 GB): the server's
+  comics folder. The server keeps running while it's imported.
 
 ### Getting your save out (and back in)
 

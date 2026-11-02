@@ -152,8 +152,114 @@ final class DataTransfer {
     /** First entry of a comics pack (scripts/build_comics_pack.cjs). */
     static final String COMICS_MARKER = "starpoint-comics-pack.json";
 
-    /** What a comics pack import did. */
-    static final class PackResult { int written, skipped; long packBytes; }
+    /** First entry of a data pack (scripts/build_pack.cjs data). */
+    static final String DATA_MARKER = "starpoint-data-pack.json";
+
+    /** What a pack import did. */
+    static final class PackResult { int written, skipped, removed; long packBytes; String version = ""; }
+
+    /** "comics", "data", or null when the file isn't a pack: read from its first entry. */
+    static String packKind(Context c, Uri uri) {
+        try (InputStream raw = c.getContentResolver().openInputStream(uri);
+             ZipInputStream zip = new ZipInputStream(new BufferedInputStream(raw, 1 << 16))) {
+            ZipEntry first = zip.getNextEntry();
+            if (first == null) return null;
+            if (COMICS_MARKER.equals(first.getName())) return "comics";
+            if (DATA_MARKER.equals(first.getName())) return "data";
+        } catch (Exception ignored) { }
+        return null;
+    }
+
+    /**
+     * Unpacks a data pack (the basics, schedule-edit data, patch zips, pictures) into files/data, with the
+     * server stopped. Never touches the save or account files: from .database only the files the pack
+     * says it replaces. Afterwards leftovers in the folders it replaces (e.g. from earlier schedule edits
+     * on this phone) are removed, so the server starts in the pack's state.
+     */
+    static PackResult importDataPack(Context c, Uri uri, Progress p) throws Exception {
+        File data = ServerFiles.dataDir(c);
+        data.mkdirs();
+        long total = -1;
+        try (android.content.res.AssetFileDescriptor fd = c.getContentResolver().openAssetFileDescriptor(uri, "r")) {
+            if (fd != null) total = fd.getLength();
+        } catch (Exception ignored) { }
+        PackResult result = new PackResult();
+        result.packBytes = total;
+        java.util.Set<String> inPack = new java.util.HashSet<>();
+        JSONObject info;
+        try (InputStream raw = c.getContentResolver().openInputStream(uri);
+             CountingStream counted = new CountingStream(new BufferedInputStream(raw, 1 << 20));
+             ZipInputStream zip = new ZipInputStream(counted)) {
+            ZipEntry first = zip.getNextEntry();
+            if (first == null || !DATA_MARKER.equals(first.getName())) throw new IOException("this isn't a data pack");
+            info = new JSONObject(new String(readAll(zip), "UTF-8"));
+            if (!"starpoint-data-pack".equals(info.optString("kind"))) throw new IOException("this isn't a data pack");
+            result.version = info.optString("gameFilesVersion");
+            JSONObject replaces = info.optJSONObject("replaces");
+            java.util.Set<String> databaseFiles = new java.util.HashSet<>();
+            JSONArray db = replaces == null ? null : replaces.optJSONArray("database");
+            if (db != null) for (int i = 0; i < db.length(); i++) databaseFiles.add(".database/" + db.getString(i));
+            long free = new StatFs(data.getPath()).getAvailableBytes();
+            long need = info.optLong("bytes", 0) + (64L << 20);
+            if (free < need) {
+                throw new IOException(String.format(Locale.US, "Not enough free space: the pack needs up to %.1f GB, %.1f GB free.", need / 1073741824.0, free / 1073741824.0));
+            }
+            ZipEntry entry;
+            long last = 0;
+            while ((entry = zip.getNextEntry()) != null) {
+                if (entry.isDirectory()) continue;
+                String name = entry.getName().replace('\\', '/');
+                boolean database = name.startsWith(".database/");
+                if (database ? !databaseFiles.contains(name) : !name.startsWith(".cdn/")) continue; // never the save
+                File out = target(data, name);
+                if (out == null) continue;
+                inPack.add(name);
+                long size = entry.getSize();
+                if (!database && size >= 0 && out.exists() && out.length() == size) {
+                    result.skipped++;
+                } else {
+                    long[] ignore = {0};
+                    copy(zip, out, size, ignore, total, (m, d, t) -> { }, name);
+                    result.written++;
+                }
+                long now = System.currentTimeMillis();
+                if (now - last > 250) {
+                    p.update("Data: " + (result.written + result.skipped) + " / " + info.optInt("files") + " files", counted.count, total);
+                    last = now;
+                }
+            }
+            // leftovers: schedule files the pack doesn't have (the server's defaults apply), and files in
+            // the replaced folders that aren't in the pack
+            for (String name : databaseFiles) if (!inPack.contains(name) && new File(data, name).delete()) result.removed++;
+            JSONArray folders = replaces == null ? null : replaces.optJSONArray("folders");
+            if (folders != null) for (int i = 0; i < folders.length(); i++) {
+                String folder = folders.getString(i);
+                if (!folder.startsWith(".cdn/") && !folder.equals(".generated")) continue;
+                result.removed += removeOthers(new File(data, folder), folder, inPack);
+            }
+        }
+        if (result.written + result.skipped == 0) throw new IOException("the pack holds no data");
+        p.update("Done", total, total);
+        return result;
+    }
+
+    /** Deletes the files under dir (shown as at/...) that aren't in keep; returns how many. */
+    private static int removeOthers(File dir, String at, java.util.Set<String> keep) {
+        int n = 0;
+        File[] list = dir.listFiles();
+        if (list == null) return 0;
+        for (File f : list) {
+            String name = at + "/" + f.getName();
+            if (f.isDirectory()) {
+                n += removeOthers(f, name, keep);
+                String[] left = f.list();
+                if (left != null && left.length == 0) f.delete();
+            } else if (!keep.contains(name) && f.delete()) {
+                n++;
+            }
+        }
+        return n;
+    }
 
     /**
      * Unpacks a comics pack into files/data/.cdn/comics. Files already there with the same size are
