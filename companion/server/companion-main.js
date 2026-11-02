@@ -24,36 +24,23 @@ for (const stream of [process.stdout, process.stderr]) {
 console.log(`\n--- ${new Date().toISOString()} starting (node ${process.version}, ${process.versions.mobile ?? "?"}, ${process.arch})`)
 process.on("uncaughtException", error => { console.error("[companion] uncaught:", error && error.stack || error) })
 
-// the server reads some files relative to the working folder (.database, .cdn/comics, web/...)
-// and some relative to its code (.cdn/cn_patches): run in the data folder and link the rest
-const link = (target, at) => {
-    try { fs.lstatSync(at) } catch { try { fs.symlinkSync(target, at, "dir") } catch (e) { console.error(`[companion] link ${at}: ${e.message}`) } }
-}
+// The server and its schedule scripts keep everything they write in the working folder (.database),
+// CDN_DIR (game updates, schedule files) and CN_GENERATED_DIR (regenerated CN tables), all in the
+// data folder below. The server folder (replaced on every app update) is only read.
+
 // Android has no /tmp: temporary files (e.g. the save snapshot in src/routes/companion.ts) go here
 const tmp = path.join(dataDir, ".tmp")
 fs.mkdirSync(tmp, { recursive: true })
 process.env.TMPDIR = tmp
 
 // the comics placeholder is read from <working folder>/web
-link(path.join(serverDir, "web"), path.join(dataDir, "web"))
-// the schedule scripts write the game updates to <server folder>/.cdn (build_cn_patch.cjs,
-// gen_cn_event_schedule.cjs), and the server folder is replaced on every app update: keep them in data
-link(path.join(dataDir, ".cdn"), path.join(serverDir, ".cdn"))
-// the server keeps .database in its working folder, but gen_cn_event_schedule.cjs reads and writes
-// <server folder>/.database (server_time, cn_copy_window, event/campaign_schedule.json)
-link(path.join(dataDir, ".database"), path.join(serverDir, ".database"))
-// same for the server's CN tables a schedule change regenerates (gen_cn_missions/pass_card/shops.cjs)
-const keptAssets = path.join(dataDir, ".assets")
-fs.mkdirSync(keptAssets, { recursive: true })
-for (const name of ["missions_cn.json", "pass_card_cn.json", "cn_shops.json"]) {
-    const bundled = path.join(serverDir, "assets", name), kept = path.join(keptAssets, name)
-    try {
-        if (fs.lstatSync(bundled).isSymbolicLink()) continue
-        if (!fs.existsSync(kept)) fs.copyFileSync(bundled, kept)
-        fs.rmSync(bundled)
-        fs.symlinkSync(kept, bundled)
-    } catch (e) { console.error(`[companion] keep ${name}: ${e.message}`) }
-}
+const web = path.join(dataDir, "web")
+try { fs.lstatSync(web) } catch { try { fs.symlinkSync(path.join(serverDir, "web"), web, "dir") } catch (e) { console.error(`[companion] link web: ${e.message}`) } }
+
+// companion 0.2 kept the regenerated CN tables in data/.assets
+const generated = path.join(dataDir, ".generated")
+try { if (fs.existsSync(path.join(dataDir, ".assets")) && !fs.existsSync(generated)) fs.renameSync(path.join(dataDir, ".assets"), generated) } catch { }
+fs.mkdirSync(generated, { recursive: true })
 process.chdir(dataDir)
 
 // settings: <data>/.env if the player made one, else phone defaults (same names as the PC .env)
@@ -63,6 +50,7 @@ const defaults = {
     CDN_DIR: path.join(dataDir, ".cdn"),
     CN_CDN_DIR: path.join(dataDir, ".cdn", "cn"),
     CN_TRANSLATED_DIR: path.join(dataDir, ".cdn", "cn_text"),
+    CN_GENERATED_DIR: generated,
     SERVER_START_DATE: "2021-07-24T05:00:00Z",
     LISTEN_HOST: "127.0.0.1",
     LISTEN_PORT: "8000",

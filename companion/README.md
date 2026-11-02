@@ -28,8 +28,12 @@ package server:
   slim tables. It regenerated the server's CN missions, passes and shops and wrote game update
   1.4.210: 48 files, 4.5 MB, the same 48 files a full-archive build gives. It took about 7 minutes on
   the emulator.
-- Not seen in game: that client was at 1.4.206 from an older package. It downloads the package's
-  squashed 1.4.209 (built from 1.4.54) but keeps reporting 1.4.206 and asks again; see Next steps.
+- After the main session's update-chain fix (sharing-package 9c16acc), the same 1.4.206 client took
+  1.4.209 once. A second phone-side edit ("A Not-So-Silent Night", 37 data rows plus its summon
+  banner) built 1.4.211, the game downloaded 1.4.210 + 1.4.211 (9 MB) from the companion, and the
+  title shows ResVer 1.4.211 with no download on restart.
+- The moved events themselves couldn't be checked in game on this new account: Events is locked at
+  rank 2, and the moved summon banner was already open in the Portal before the move.
 
 ## For players
 
@@ -127,16 +131,11 @@ Since `sharing-package` (828a2ff), `scripts/run_script.cjs` runs these scripts a
 and on the phone a dashboard schedule edit rebuilds the CN update this way. The global-app mod is
 skipped when `<CDN_DIR>/en/entities` is missing, as on the phone.
 
-A few scripts still use the server folder instead of the working folder / `CDN_DIR`. On the phone
-the server folder is replaced on every app update, so `companion-main.js` links them into the data
-folder:
-
-| Script | Uses | Link |
-|---|---|---|
-| `build_cn_patch.cjs`, `gen_cn_event_schedule.cjs` | `<server>/.cdn/cn_patches`, `.cdn/cn_schedule_files` | `server/.cdn` → `data/.cdn` |
-| `gen_cn_event_schedule.cjs` | `<server>/.database/` (server_time, cn_copy_window, schedules) | `server/.database` → `data/.database` |
-| `gen_cn_missions/pass_card/shops.cjs` | `<server>/assets/missions_cn.json`, `pass_card_cn.json`, `cn_shops.json` | each file → `data/.assets/` |
-| comics placeholder (`src/routes/api/comic.ts`) | `<working folder>/web` | `data/web` → `server/web` |
+Since 9c16acc the scripts write where the server reads: `.database` in the working folder, game
+updates and schedule files under `CDN_DIR`, and the regenerated CN tables (missions, shops, passes)
+in `CN_GENERATED_DIR`. On the phone all three are in the data folder, so the server folder (replaced
+on every app update) is only read. The one link left is `data/web` → `server/web`, for the comics
+placeholder (`src/routes/api/comic.ts` reads `<working folder>/web`).
 
 ## 4. What the phone server needs (the slim set)
 
@@ -197,7 +196,7 @@ answers. If something else answers on 8000 (e.g. a PC through `adb reverse`), th
 **Phone defaults** (override in `files/data/.env`, same names as the PC `.env`):
 `LISTEN_HOST=127.0.0.1` (co-op follows it since `sharing-package`), `LISTEN_PORT=8000`,
 `COOP_HOST=127.0.0.1`, `CDN_DIR=data/.cdn`, `CN_CDN_DIR=data/.cdn/cn`,
-`CN_TRANSLATED_DIR=data/.cdn/cn_text`, `SERVER_START_DATE=2021-07-24T05:00:00Z`, and
+`CN_TRANSLATED_DIR=data/.cdn/cn_text`, `CN_GENERATED_DIR=data/.generated`, `SERVER_START_DATE=2021-07-24T05:00:00Z`, and
 `TMPDIR=data/.tmp` (Android has no `/tmp`; the save snapshot needs it).
 
 ### Build
@@ -244,15 +243,10 @@ On this PC: SDK `F:\wf-android-sdk` (junction at `F:\WF client\tools\android-sdk
 
 ## 6. Next steps
 
-1. **Updating a client from an older package** (main session, `src/lib/cnClient.ts`):
-   - A client at 1.4.206 (an earlier package's last patch) is offered the squashed 1.4.209
-     (`from` 1.4.54) plus 1.4.210. It downloads them (`custom_notify download_true`) but keeps
-     reporting `res_ver=1.4.206` and asks again on every start.
-   - Likely cause: the CN client only applies an update whose `original_version` matches its own.
-   - Fresh installs, the package's normal path, aren't affected.
-2. **Server folder vs working folder:** the scripts in the table in section 3 could use
-   `process.cwd()` for `.database` and `cdnDir()` for `.cdn` (and keep their generated assets
-   outside the code), so the companion's links can go.
+1. **Seeing a moved event in game:** check on an account past the Events unlock rank (the
+   user's main save, or a test save imported with Import save).
+2. **Comics placeholder:** if `src/routes/api/comic.ts` read the logo from the server folder, the
+   last `web` link could go.
 3. **Rebuild time:** a schedule edit takes ~7 minutes on the emulator. The game's requests keep
    being answered (worker thread), but players should be told to wait before reopening the game.
 4. **Real-phone test on Android 12+:** keep-alive with the game in front for an hour, screen off,
