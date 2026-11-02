@@ -2,7 +2,7 @@
 
 An Android app that runs the real StarPoint server on the phone, on `127.0.0.1:8000`, so the patched
 CN game (the 127.0.0.1 build) plays with no PC: no root, no adb, no Shizuku. This is Phase 3 of the
-sharing plan. Stage 1 was the feasibility prototype; stage 2 (this version, 0.2) adds the screens a
+sharing plan. Stage 1 was the feasibility prototype; stage 2 (0.2) added the screens a
 player needs.
 
 **Status:** tested on LDPlayer (Android 9, x86_64) against the user's game (build 20, all files
