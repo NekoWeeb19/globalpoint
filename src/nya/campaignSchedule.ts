@@ -157,7 +157,7 @@ export function initCampaignSchedule() {
 export function resolveFreePullCampaignId(gachaId: number, serverMs = getServerDate().getTime()): number | null {
     const gacha = gachas[String(gachaId)]
     if (gacha !== undefined && isFreePullBanner(gacha)) {
-        const copy = activeFreePullCopy(inCnRequest() ? [...cnCopies, ...copies] : copies, serverMs)
+        const copy = activeFreePullCopy(copiesForClient(), serverMs)
         if (copy !== null) return copy.id
     }
     return getGachaCampaignIdSync(gachaId)
@@ -175,24 +175,33 @@ export function resolveFreePullCampaignId(gachaId: number, serverMs = getServerD
  */
 export function cnKnownFreePullEntries<T extends { campaign_id: number }>(list: T[]): T[] {
     if (!inCnRequest()) return list
+    return list.filter(entry => !isFreePullCopyId(entry.campaign_id) || cnUpdateHasCopy(entry.campaign_id))
+}
+
+/**
+ * Whether the CN client's update has a yearly free pull copy. The update builder (scripts/gen_cn_event_schedule.cjs)
+ * decides which years get a copy, also counting CN's own free pulls as clashes, so the server's list can name a
+ * copy the update skipped (e.g. on the clock set to a free pull's original year): such a copy is never offered.
+ */
+function cnUpdateHasCopy(id: number): boolean {
     const built = cnBuiltFreePullCopies()
+    if (built !== null) return built.has(id)
+    // an update from before the copies were recorded: global copies are year * 100 + id, in the copy window
     const window = cnCopyWindow()
-    return list.filter(entry => {
-        if (!isFreePullCopyId(entry.campaign_id)) return true
-        if (built !== null) return built.has(entry.campaign_id)
-        // an update from before the copies were recorded: global copies are year * 100 + id
-        const year = Math.floor(entry.campaign_id / 100)
-        return window !== null && entry.campaign_id < 1_000_000 && year >= window.from && year <= window.until
-    })
+    const year = Math.floor(id / 100)
+    return window !== null && id < 1_000_000 && year >= window.from && year <= window.until
+}
+
+/** The yearly copies the requesting client can be given (the CN client: only the ones in its update). */
+function copiesForClient(): FreePullCopy[] {
+    if (!inCnRequest()) return copies
+    return [...cnCopies, ...copies].filter(copy => cnUpdateHasCopy(copy.id))
 }
 
 export function freePullCopyEntriesSync(saved: { gacha_id: number, campaign_id: number, count: number }[], serverMs = getServerDate().getTime()) {
     const cn = inCnRequest()
-    const copy = activeFreePullCopy(cn ? [...cnCopies, ...copies] : copies, serverMs)
+    const copy = activeFreePullCopy(copiesForClient(), serverMs)
     if (copy === null) return []
-    // the CN client only has the copies in its update's window; an unknown campaign id crashes it (C8601)
-    const window = cn ? cnCopyWindow() : null
-    if (window !== null && (copy.year < window.from || copy.year > window.until)) return []
     const have = new Set(saved.filter(e => e.campaign_id === copy.id).map(e => e.gacha_id))
     // only banners the client's own tables have (CN has most of global's plus its own)
     const cnBanners = cn ? cnTableIds("gacha") : null
