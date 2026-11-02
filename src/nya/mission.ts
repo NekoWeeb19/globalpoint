@@ -12,6 +12,7 @@ import missionData from "../../assets/missions.json"
 import { readFileSync, statSync } from "fs"
 import path from "path"
 import { inCnRequest } from "../lib/cnClient"
+import { cnGeneratedFile } from "../lib/cnGenerated"
 import questStamina from "../../assets/quest_stamina.json"
 import mainQuests from "../../assets/main_quest.json"
 import exQuests from "../../assets/ex_quest.json"
@@ -66,15 +67,16 @@ const globalData = missionData as unknown as MissionData
 // with each CN schedule update, so read again when the file changes). Most ids are the same missions
 // as global's; the few ids global uses for another mission ("distinct") are saved under
 // id + CN_DISTINCT_OFFSET so the two never share progress.
-const CN_MISSIONS_FILE = path.join(__dirname, "..", "..", "assets", "missions_cn.json")
+const cnMissionsFile = () => cnGeneratedFile("missions_cn.json")
 const CN_DISTINCT_OFFSET = 1_000_000_000
 let cnCache: { mtimeMs: number, data: MissionData, distinct: Map<number, Set<number>> } | null = null
 
 function cnMissionData() {
     try {
-        const mtimeMs = statSync(CN_MISSIONS_FILE).mtimeMs
+        const file = cnMissionsFile()
+        const mtimeMs = statSync(file).mtimeMs
         if (cnCache === null || cnCache.mtimeMs !== mtimeMs) {
-            const raw = JSON.parse(readFileSync(CN_MISSIONS_FILE, "utf8"))
+            const raw = JSON.parse(readFileSync(file, "utf8"))
             const distinct = new Map<number, Set<number>>()
             for (const [category, ids] of Object.entries(raw.distinct ?? {})) distinct.set(Number(category), new Set(ids as number[]))
             cnCache = { mtimeMs, data: raw as MissionData, distinct }

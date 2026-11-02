@@ -5,7 +5,7 @@
 // when it changes (the CN schedule rebuilds it when a pass is moved on the Events tab).
 
 import { readFileSync, statSync } from "fs"
-import path from "path"
+import { cnGeneratedFile } from "../lib/cnGenerated"
 import getDatabase, { Database } from "../data"
 import type { MissionReward } from "../lib/mission"
 
@@ -15,12 +15,13 @@ export interface PassRewardDefinition { pass: number, level: number, free: Missi
 export interface PassPointPack { name: string, beads: number, points: number, limit: number | null }
 interface PassData { passes: Record<string, PassDefinition>, rewards: Record<string, PassRewardDefinition>, pointPacks?: Record<string, PassPointPack> }
 
-const DATA_FILE = path.join(__dirname, "..", "..", "assets", "pass_card_cn.json")
+const dataFile = () => cnGeneratedFile("pass_card_cn.json")
 let cache: { mtimeMs: number, data: PassData } | null = null
 function passData(): PassData {
     try {
-        const mtimeMs = statSync(DATA_FILE).mtimeMs
-        if (cache === null || cache.mtimeMs !== mtimeMs) cache = { mtimeMs, data: JSON.parse(readFileSync(DATA_FILE, "utf8")) as PassData }
+        const file = dataFile()
+        const mtimeMs = statSync(file).mtimeMs
+        if (cache === null || cache.mtimeMs !== mtimeMs) cache = { mtimeMs, data: JSON.parse(readFileSync(file, "utf8")) as PassData }
         return cache.data
     } catch {
         return { passes: {}, rewards: {} }

@@ -15,8 +15,9 @@ const R = require("./cdn_rows.cjs")
 const { hashed, readCn } = require("./cn_read.cjs")
 
 const ROOT = path.join(__dirname, "..")
-const OUT = path.join(ROOT, "assets", "pass_card_cn.json")
-const SCHEDULED = path.join(ROOT, ".cdn", "cn_schedule_files")
+const { cdnDir, generatedDir } = require("./cn_archives.cjs")
+const OUT = path.join(generatedDir(), "pass_card_cn.json")
+const SCHEDULED = path.join(cdnDir(), "cn_schedule_files")
 const TRANSLATED = require("./cn_archives.cjs").cnTextDir()
 
 const NONE = v => v === undefined || v === "" || v === "(None)"

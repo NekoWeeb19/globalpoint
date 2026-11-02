@@ -58,7 +58,8 @@ const { build } = require("./build_cn_patch.cjs")
 const ROOT = path.join(__dirname, "..")
 const CN_DIR = require("./cn_archives.cjs").cnDir()
 const TRANSLATED = process.argv[2] ?? require("./cn_archives.cjs").cnTextDir()
-const PATCHES = path.join(ROOT, ".cdn", "cn_patches", "patches.json")
+const { cdnDir, dataDir } = require("./cn_archives.cjs")
+const PATCHES = path.join(cdnDir(), "cn_patches", "patches.json")
 const OFFSET = 8 * 3600 * 1000
 const DATE = /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/g
 const parse = t => { const ms = Date.parse(t.replace(" ", "T") + "Z"); return isNaN(ms) ? null : ms - OFFSET }
@@ -154,7 +155,7 @@ function passBannerWindows(trees, { banner, pass, id }) {
 /** The game clock now (.database/server_time.json, src/lib/serverClock.ts), else real time. */
 function gameNowMs() {
     try {
-        const clock = JSON.parse(fs.readFileSync(path.join(ROOT, ".database", "server_time.json"), "utf8"))
+        const clock = JSON.parse(fs.readFileSync(path.join(dataDir(), "server_time.json"), "utf8"))
         if (typeof clock.serverMs === "number") return clock.pinned || typeof clock.realMs !== "number" ? clock.serverMs : clock.serverMs + (Date.now() - clock.realMs)
     } catch { }
     return Date.now()
@@ -177,8 +178,8 @@ function applyYearlyCampaigns(trees, files) {
     const gameYear = new Date(gameNowMs()).getUTCFullYear()
     const window = { from: gameYear - 1, until: gameYear + 1 }
     const inWindow = w => w.year >= window.from && w.year <= window.until
-    fs.writeFileSync(path.join(ROOT, ".database", "cn_copy_window.json"), JSON.stringify(window))
-    const scheduleFile = path.join(ROOT, ".database", "campaign_schedule.json")
+    fs.writeFileSync(path.join(dataDir(), "cn_copy_window.json"), JSON.stringify(window))
+    const scheduleFile = path.join(dataDir(), "campaign_schedule.json")
     const runTables = { reward: read("assets/reward_campaign.json").campaigns, stamina: read("assets/stamina_campaign.json").campaigns }
     const runs = { reward: C.campaignRuns(runTables.reward), stamina: C.campaignRuns(runTables.stamina) }
     const known = { reward: runs.reward.map(r => r.key), stamina: runs.stamina.map(r => r.key) }
@@ -259,7 +260,7 @@ async function main() {
         catalog.events.push(...cnCatalog.events.filter(e => !known.has(e.key)))
         catalog.tables = { ...cnCatalog.tables, ...catalog.tables }
     }
-    const scheduleFile = path.join(ROOT, ".database", "event_schedule.json")
+    const scheduleFile = path.join(dataDir(), "event_schedule.json")
     const raw = fs.existsSync(scheduleFile) ? JSON.parse(fs.readFileSync(scheduleFile, "utf8")) : { entries: [] }
     const { schedule } = parseSchedule(raw, catalog)
     const { moves } = planRowMoves(catalog, schedule)
@@ -399,7 +400,7 @@ async function main() {
     const last = patches.length ? patches[patches.length - 1].version : "1.4.54"
     const v = last.split(".").map(Number); v[2]++
     const version = v.join(".")
-    const outDir = path.join(ROOT, ".cdn", "cn_schedule_files")
+    const outDir = path.join(cdnDir(), "cn_schedule_files")
     fs.rmSync(outDir, { recursive: true, force: true })
     const list = []
     for (const [file, tree] of trees) {

@@ -22,7 +22,7 @@ const { readCnTable } = require("./cn_read.cjs")
 
 const ROOT = path.join(__dirname, "..")
 const OUT = path.join(ROOT, "assets", "campaigns_cn.json")
-const IMAGES_OUT = path.join(ROOT, ".cdn", "dashboard_images")
+const IMAGES_OUT = path.join(require("./cn_archives.cjs").cdnDir(), "dashboard_images")
 const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
 const TYPES = ["Normal", "Limited", "Comeback", "ComebackAlways", "ActiveUser"]
 const NONE = v => v === undefined || v === "" || v === "(None)"

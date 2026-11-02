@@ -12,8 +12,9 @@ const unzipper = require("unzipper")
 const { build } = require("./build_cn_patch.cjs")
 
 const ROOT = path.join(__dirname, "..")
-const DIR = path.join(ROOT, ".cdn", "cn_patches")
-const TMP = path.join(ROOT, ".cdn", "cn_patches_squash")
+const { cdnDir } = require("./cn_archives.cjs")
+const DIR = path.join(cdnDir(), "cn_patches")
+const TMP = path.join(cdnDir(), "cn_patches_squash")
 const BASE = "1.4.54"
 const cmp = (a, b) => a.split(".").map(Number).reduce((r, x, i) => r || x - Number(b.split(".")[i] || 0), 0)
 
