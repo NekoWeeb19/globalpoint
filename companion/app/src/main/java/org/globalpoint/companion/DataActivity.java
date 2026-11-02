@@ -1,7 +1,15 @@
 package org.globalpoint.companion;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.Settings;
+import android.view.WindowManager;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,7 +39,8 @@ public class DataActivity extends Activity {
     private TextView summary, status;
     private ProgressBar bar;
     private EditText host;
-    private CheckBox save, patches, images, comics, schedule;
+    private static final String GAME = "com.leiting.wf";
+    private CheckBox save, patches, images, comics, schedule, game;
     private Button download, importZip;
     private SharedPreferences prefs;
     private ScrollView scroll;
@@ -60,7 +69,12 @@ public class DataActivity extends Activity {
         comics = u.check("Comics (~1.4 GB)", prefs.getBoolean("optComics", false));
         schedule = u.check("Event schedule editing (~140 MB; lets the dashboard move events)", prefs.getBoolean("optSchedule", true));
         patches = u.check("Game updates (~2 GB; only if the game still has to download them)", prefs.getBoolean("optPatches", false));
+        game = u.check("Full game files (~10 GB; first install, game not installed yet or never downloaded)", prefs.getBoolean("optGame", false));
+        u.text("Full game files go in StarPoint/game on the phone's storage. The game (build 21 or newer) moves "
+                + "them into its own storage when it starts, so it needs no download. This app and the game both need "
+                + "\"All files access\" for it. Keep this screen open until it's done.", 13);
         download = u.button("Download from PC", this::startDownload);
+        u.button("Allow World Flipper \"All files access\"", this::openGameAccess);
 
         u.heading("Or import a data zip");
         u.text("A zip with .database/ and .cdn/ folders (and optionally .env), e.g. from the shared package.", 13);
@@ -86,7 +100,22 @@ public class DataActivity extends Activity {
 
     private void refresh() { summary.setText(DataTransfer.summary(this)); }
 
+    private WifiManager.WifiLock wifiLock;
+
     private void busy(boolean on) {
+        // a full game copy takes a while: keep the screen and Wi-Fi awake meanwhile
+        if (on) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            try {
+                WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+                wifiLock = wifi.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "companion:copy");
+                wifiLock.acquire();
+            } catch (Exception ignored) { wifiLock = null; }
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            if (wifiLock != null && wifiLock.isHeld()) wifiLock.release();
+            wifiLock = null;
+        }
         download.setEnabled(!on);
         importZip.setEnabled(!on);
         bar.setVisibility(on ? View.VISIBLE : View.GONE);
@@ -104,18 +133,91 @@ public class DataActivity extends Activity {
         String address = host.getText().toString().trim();
         if (address.isEmpty()) { status.setText("Enter the PC's address first."); return; }
         prefs.edit().putString("pcHost", address).putBoolean("optSave", save.isChecked()).putBoolean("optImages", images.isChecked())
-                .putBoolean("optComics", comics.isChecked()).putBoolean("optPatches", patches.isChecked()).putBoolean("optSchedule", schedule.isChecked()).apply();
+                .putBoolean("optComics", comics.isChecked()).putBoolean("optPatches", patches.isChecked()).putBoolean("optSchedule", schedule.isChecked())
+                .putBoolean("optGame", game.isChecked()).apply();
+        if (game.isChecked() && !canWriteStorage()) { askStorage(); return; }
         DataTransfer.Options o = new DataTransfer.Options();
         o.save = save.isChecked();
         o.images = images.isChecked();
         o.comics = comics.isChecked();
         o.patches = patches.isChecked();
         o.schedule = schedule.isChecked();
+        o.game = game.isChecked();
         run(() -> {
             int n = DataTransfer.downloadFromPc(this, address, o, this::progress);
-            return "Downloaded " + n + " file(s). Back on the main screen the server starts."
-                    + (o.notes.isEmpty() ? "" : "\n\nNote from the PC:\n" + o.notes);
+            String next = o.game
+                    ? "\n\nThe game files are in " + DataTransfer.gameDropOff() + ". Next:\n"
+                      + "1. Install World Flipper (build 21 or newer) if it isn't yet.\n"
+                      + "2. Allow it \"All files access\" (button above; the game never asks by itself).\n"
+                      + "3. Start the server here, then open the game: it moves the files in (a few minutes) and needs no download."
+                    : " Back on the main screen the server starts.";
+            return "Downloaded " + n + " file(s)." + next + (o.notes.isEmpty() ? "" : "\n\nNote from the PC:\n" + o.notes);
         });
+    }
+
+    /** Whether this app may write the game's drop-off folder in shared storage. */
+    private boolean canWriteStorage() {
+        if (Build.VERSION.SDK_INT >= 30) return Environment.isExternalStorageManager();
+        return checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /** Set while the player is in the permission screen: the download goes on once they're back with it allowed. */
+    private boolean waitingForStorage;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (waitingForStorage && canWriteStorage()) {
+            waitingForStorage = false;
+            startDownload();
+        } else if (waitingForStorage) {
+            waitingForStorage = false;
+            status.setText("\"All files access\" is still off, so the game files can't be copied. Allow it, or untick Full game files.");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
+        super.onRequestPermissionsResult(requestCode, permissions, results);
+        if (requestCode != 2) return;
+        waitingForStorage = false;
+        if (canWriteStorage()) startDownload();
+        else status.setText("Storage access is off, so the game files can't be copied. Allow it, or untick Full game files.");
+    }
+
+    private void askStorage() {
+        waitingForStorage = Build.VERSION.SDK_INT >= 30;
+        if (Build.VERSION.SDK_INT >= 30) {
+            status.setText("Allow \"All files access\" for StarPoint Companion, come back and press Download again.");
+            try {
+                startActivity(new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + getPackageName())));
+            } catch (ActivityNotFoundException e) {
+                startActivity(new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION));
+            }
+        } else {
+            status.setText("Allow storage access, then press Download again.");
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
+        }
+    }
+
+    /** Opens the game's own storage permission screen (it reads the drop-off folder but never asks). */
+    private void openGameAccess() {
+        try {
+            getPackageManager().getPackageInfo(GAME, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            status.setText("World Flipper isn't installed yet: install it first, then press this again.");
+            return;
+        }
+        try {
+            if (Build.VERSION.SDK_INT >= 30) {
+                startActivity(new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + GAME)));
+            } else {
+                status.setText("In the game's app info, open Permissions and allow Storage.");
+                startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + GAME)));
+            }
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + GAME)));
+        }
     }
 
     @Override

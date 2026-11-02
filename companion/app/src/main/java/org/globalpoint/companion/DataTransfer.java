@@ -2,6 +2,9 @@ package org.globalpoint.companion;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Environment;
+import android.os.StatFs;
+import android.util.JsonReader;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -20,7 +24,14 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -28,13 +39,14 @@ import java.util.zip.ZipInputStream;
  * Brings the server's data into files/data: from a zip (any zip whose entries are .database/...,
  * .cdn/... or .env, also inside one top folder), or from a PC running StarPoint over Wi-Fi
  * (GET /companion/manifest and /companion/file, src/routes/companion.ts). The server must be
- * stopped while the save (.database) is replaced.
+ * stopped while the save (.database) is replaced. From a PC it can also copy the game's full set of
+ * files into the game's drop-off folder (/sdcard/StarPoint/game/, needs "All files access").
  */
 final class DataTransfer {
     interface Progress { void update(String message, long done, long total); }
 
     static final class Options {
-        boolean save, patches, images, comics, schedule;
+        boolean save, patches, images, comics, schedule, game;
         /** Filled by downloadFromPc: what the PC said it couldn't provide. */
         String notes = "";
     }
@@ -120,50 +132,180 @@ final class DataTransfer {
         return count;
     }
 
+    /** The game's drop-off folder: game build 21+ moves what's in it into its own storage at its next start. */
+    static File gameDropOff() { return new File(Environment.getExternalStorageDirectory(), "StarPoint/game"); }
+
+    /** Where a manifest path goes: the data folder, or the game's drop-off folder for game/... */
+    private static File place(File data, String name) throws IOException {
+        if (!name.startsWith("game/")) return target(data, name);
+        File root = gameDropOff();
+        File out = new File(root, name.substring("game/".length()));
+        if (!out.getCanonicalPath().startsWith(root.getCanonicalPath() + File.separator)) return null;
+        return out;
+    }
+
+    private static final class Item {
+        final String path; final long size; final File out;
+        Item(String path, long size, File out) { this.path = path; this.size = size; this.out = out; }
+    }
+
     /** Downloads the chosen data from a PC's StarPoint (host like 192.168.1.20:8000). Returns the number of files downloaded. */
     static int downloadFromPc(Context c, String host, Options o, Progress p) throws Exception {
         File data = ServerFiles.dataDir(c);
         data.mkdirs();
+        // the game files are ~138k small requests: keep connections open and fetch several at a time
+        System.setProperty("http.keepAlive", "true");
+        System.setProperty("http.maxConnections", String.valueOf(THREADS + 2));
         String base = "http://" + host.trim().replaceFirst("^https?://", "").replaceAll("/+$", "");
         p.update("Asking " + base + " for the file list...", 0, -1);
-        String query = "?save=" + (o.save ? 1 : 0) + "&patches=" + (o.patches ? 1 : 0) + "&images=" + (o.images ? 1 : 0) + "&comics=" + (o.comics ? 1 : 0) + "&schedule=" + (o.schedule ? 1 : 0);
-        JSONObject manifest = new JSONObject(new String(get(base + "/companion/manifest" + query), "UTF-8"));
-        JSONArray files = manifest.getJSONArray("files");
-        long total = manifest.optLong("totalSize", -1);
-        JSONArray notes = manifest.optJSONArray("notes");
-        if (notes != null) for (int i = 0; i < notes.length(); i++) o.notes += (o.notes.isEmpty() ? "" : "\n") + notes.getString(i);
+        String query = "?save=" + (o.save ? 1 : 0) + "&patches=" + (o.patches ? 1 : 0) + "&images=" + (o.images ? 1 : 0) + "&comics=" + (o.comics ? 1 : 0)
+                + "&schedule=" + (o.schedule ? 1 : 0) + "&game=" + (o.game ? 1 : 0);
 
-        // skip files already here with the same size, except the save and schedules (always fresh)
-        List<JSONObject> todo = new ArrayList<>();
-        long skipped = 0;
-        for (int i = 0; i < files.length(); i++) {
-            JSONObject f = files.getJSONObject(i);
-            File out = target(data, f.getString("path"));
-            if (out == null) continue;
-            boolean always = f.getString("path").startsWith(".database/");
-            if (!always && out.exists() && out.length() == f.getLong("size")) { skipped += f.getLong("size"); continue; }
-            todo.add(f);
+        // read as a stream: with the game files the list has ~138k entries
+        List<String[]> files = new ArrayList<>();
+        Map<String, String> env = new LinkedHashMap<>();
+        long total = -1;
+        HttpURLConnection mc = open(base + "/companion/manifest" + query);
+        try (JsonReader r = new JsonReader(new InputStreamReader(new BufferedInputStream(mc.getInputStream(), 1 << 16), "UTF-8"))) {
+            r.beginObject();
+            while (r.hasNext()) {
+                String key = r.nextName();
+                if (key.equals("files")) {
+                    r.beginArray();
+                    while (r.hasNext()) {
+                        String path = null; long size = -1;
+                        r.beginObject();
+                        while (r.hasNext()) {
+                            String k = r.nextName();
+                            if (k.equals("path")) path = r.nextString();
+                            else if (k.equals("size")) size = r.nextLong();
+                            else r.skipValue();
+                        }
+                        r.endObject();
+                        if (path != null) files.add(new String[]{path, String.valueOf(size)});
+                    }
+                    r.endArray();
+                } else if (key.equals("totalSize")) {
+                    total = r.nextLong();
+                } else if (key.equals("notes")) {
+                    r.beginArray();
+                    while (r.hasNext()) o.notes += (o.notes.isEmpty() ? "" : "\n") + r.nextString();
+                    r.endArray();
+                } else if (key.equals("env")) {
+                    r.beginObject();
+                    while (r.hasNext()) { String k = r.nextName(); env.put(k, r.nextString()); }
+                    r.endObject();
+                } else {
+                    r.skipValue();
+                }
+            }
+            r.endObject();
+        } finally {
+            mc.disconnect();
         }
-        long[] done = {skipped};
-        for (JSONObject f : todo) {
-            String path = f.getString("path");
-            File out = target(data, path);
-            HttpURLConnection conn = open(base + "/companion/file?path=" + URLEncoder.encode(path, "UTF-8"));
-            try (InputStream in = conn.getInputStream()) {
-                copy(in, out, f.getLong("size"), done, total, p, path);
-            } finally {
-                conn.disconnect();
+
+        // skip files already here with the same size, except the save and schedules (always fresh);
+        // the game's info.json comes last, so the game never takes a half-filled folder as finished
+        List<Item> todo = new ArrayList<>();
+        Item gameInfo = null;
+        long skipped = 0, gameMissing = 0;
+        int checked = 0;
+        for (String[] f : files) {
+            String path = f[0];
+            long size = Long.parseLong(f[1]);
+            File out = place(data, path);
+            if (out == null) continue;
+            if (++checked % 2000 == 0) p.update("Checking what's already here... " + checked + " / " + files.size(), 0, -1);
+            Item item = new Item(path, size, out);
+            if (path.equals("game/info.json")) { gameInfo = item; continue; }
+            boolean always = path.startsWith(".database/");
+            if (!always && out.exists() && out.length() == size) { skipped += size; continue; }
+            todo.add(item);
+            if (path.startsWith("game/")) gameMissing += size;
+        }
+        if (gameInfo != null) {
+            File dir = gameDropOff();
+            dir.mkdirs();
+            if (!dir.isDirectory()) throw new IOException("Can't make " + dir + ": allow this app \"All files access\" first.");
+            long free = new StatFs(dir.getPath()).getAvailableBytes();
+            // the game later moves the files into its own storage, so it needs the room once more at that point
+            if (free < gameMissing + (512L << 20)) {
+                throw new IOException(String.format(Locale.US, "Not enough free space for the game files: %.1f GB more needed, %.1f GB free.",
+                        gameMissing / 1073741824.0, free / 1073741824.0));
+            }
+            new File(dir, "info.json").delete();
+        }
+
+        AtomicLong done = new AtomicLong(skipped);
+        AtomicInteger count = new AtomicInteger();
+        AtomicReference<Exception> failed = new AtomicReference<>();
+        ExecutorService pool = Executors.newFixedThreadPool(THREADS);
+        for (Item item : todo) {
+            pool.execute(() -> {
+                if (failed.get() != null) return;
+                try {
+                    fetch(base, item, done);
+                    count.incrementAndGet();
+                } catch (Exception e) {
+                    failed.compareAndSet(null, e);
+                }
+            });
+        }
+        pool.shutdown();
+        long t = total;
+        while (!pool.awaitTermination(300, TimeUnit.MILLISECONDS)) {
+            p.update("Copying " + count.get() + " / " + todo.size() + " files", done.get(), t);
+        }
+        if (failed.get() != null) throw failed.get();
+        if (gameInfo != null) { fetch(base, gameInfo, done); count.incrementAndGet(); }
+
+        if (!env.isEmpty()) mergeEnv(new File(data, ".env"), env);
+        p.update("Done", total, total);
+        return count.get();
+    }
+
+    private static final int THREADS = 6;
+
+    /** One file, tried up to 3 times (a long copy over Wi-Fi may meet a dropped connection). */
+    private static void fetch(String base, Item item, AtomicLong done) throws IOException {
+        String url = base + "/companion/file?path=" + URLEncoder.encode(item.path, "UTF-8");
+        for (int attempt = 1; ; attempt++) {
+            try {
+                HttpURLConnection conn = open(url);
+                // read to the end and close without disconnect(), so the connection is reused
+                try (InputStream in = conn.getInputStream()) {
+                    copy(in, item.out, item.size, done);
+                }
+                return;
+            } catch (IOException e) {
+                if (attempt >= 3) throw new IOException(item.path + ": " + e.getMessage(), e);
+                try { Thread.sleep(1000L * attempt); } catch (InterruptedException ie) { throw new IOException("stopped"); }
             }
         }
+    }
 
-        JSONObject env = manifest.optJSONObject("env");
-        if (env != null && env.length() > 0) {
-            Map<String, String> values = new LinkedHashMap<>();
-            for (java.util.Iterator<String> it = env.keys(); it.hasNext(); ) { String k = it.next(); values.put(k, env.getString(k)); }
-            mergeEnv(new File(data, ".env"), values);
+    private static void copy(InputStream in, File out, long size, AtomicLong done) throws IOException {
+        File parent = out.getParentFile();
+        if (!parent.isDirectory() && !parent.mkdirs() && !parent.isDirectory()) throw new IOException("can't make " + parent);
+        File part = new File(out.getPath() + ".part");
+        byte[] buffer = new byte[64 * 1024];
+        long got = 0;
+        try (OutputStream os = new FileOutputStream(part)) {
+            int n;
+            while ((n = in.read(buffer)) > 0) { os.write(buffer, 0, n); got += n; done.addAndGet(n); }
+        } catch (IOException e) {
+            done.addAndGet(-got);
+            part.delete();
+            throw e;
         }
-        p.update("Done", total, total);
-        return todo.size();
+        if (size >= 0 && got != size) {
+            done.addAndGet(-got);
+            part.delete();
+            throw new IOException("got " + got + " of " + size + " bytes");
+        }
+        beforeWrite(out);
+        out.delete();
+        if (!part.renameTo(out)) throw new IOException("can't write " + out);
     }
 
     /** Sets these keys in a .env file, keeping its other lines. */

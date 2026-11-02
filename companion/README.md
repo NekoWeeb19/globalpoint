@@ -43,6 +43,8 @@ package server:
    - **Download from PC**: start StarPoint on your PC and enter its address as the phone sees it
      (e.g. `192.168.1.20:8000`). Tick "My save" to bring your account. Dashboard pictures (~80 MB),
      comics (~1.4 GB) and game updates (~2 GB, only if the game still has to download them) are optional.
+     **Full game files** (~10 GB, 138k files) is for a phone whose game has never downloaded its files
+     (see below).
    - **Choose zip...**: a data zip made with `node companion/tools/make-data-zip.cjs` (or shipped in the package).
 3. Back on the main screen the server starts by itself ("Start the server when this app opens").
    Press **Let the server run in the background** once, so the phone doesn't stop it.
@@ -50,6 +52,24 @@ package server:
 
 Buttons: **Dashboard** opens the server's dashboard inside the app; **Open in browser** opens it in
 the phone's browser.
+
+### First install: the game's files from the PC
+
+A freshly installed game asks its server for the full ~10 GB download, and the companion doesn't
+keep those files. Instead, **Full game files** copies them from the PC's StarPoint over Wi-Fi into
+the game's drop-off folder, `StarPoint/game` on the phone's storage. Game build 21 and newer moves
+that folder into its own storage at its next start (a few minutes, with an on-screen counter) and then
+needs no download.
+1. In **Game data**, tick **Full game files** (plus **My save** etc.) and press **Download from PC**.
+   The first time, the app sends you to "All files access" (Android 11+) or asks for storage
+   (Android 6-10): allow it, come back and press Download again. Keep the screen open; it keeps
+   Wi-Fi awake meanwhile. Files already there are skipped, so pressing it again resumes.
+2. Install World Flipper (build 21+) if it isn't yet, and press **Allow World Flipper "All files
+   access"**: the game reads the drop-off folder but never asks for the permission by itself.
+3. Start the server and open the game.
+
+The phone needs ~10 GB free for the copy, and the same again while the game moves the files in
+(`/sdcard` to the game's private storage is a copy on most phones).
 
 ### Getting your save out (and back in)
 
@@ -149,6 +169,7 @@ placeholder (`src/routes/api/comic.ts` reads `<working folder>/web`).
 | Dashboard pictures (optional) | `.cdn/dashboard_images/` | 81 MB |
 | A game that's behind (optional) | `.cdn/cn_patches/<version>/…` patch zips | 2.1 GB |
 | Dashboard schedule edits (optional) | slim CN folder (`tables/`, `names.txt`, from `scripts/gen_cn_slim.cjs`) as `.cdn/cn/`, English tables as `.cdn/cn_text/` | ~140 MB |
+| A game with no files yet (optional, not kept by the server) | `/sdcard/StarPoint/game/` (`info.json` + `download/production/...`) | 10.2 GB |
 
 **Phone to PC route:** `src/routes/companion.ts` (registered at `/companion` in `src/server.ts`). It
 reads the CN paths through `cnCdnRoot()`/`cnPatchDir()` and edits nothing else.
@@ -161,6 +182,15 @@ reads the CN paths through `cnCdnRoot()`/`cnPatchDir()` and edits nothing else.
   `<CDN_DIR>/cn_slim`. If none exists, the reply carries a note telling the player to run
   `node scripts/gen_cn_slim.cjs .cdn/cn_slim` on the PC. It also adds the English tables from
   `CN_TRANSLATED_DIR`.
+- `game=1` adds the game's full set of files under `game/` (the phone maps it to
+  `/sdcard/StarPoint/game/`; layout in `scripts/client_mod/STORAGE_LAYOUT.txt` on the storage
+  drop-off branch). They are the entries of CN's base zips (no iOS), CN's updates in order, then
+  StarPoint's patch zips in order, newest copy winning: 138,092 files at 1.4.203. The index comes
+  from the zips' central directories (about 1.5 s) and is kept until the patches change. Each file is
+  streamed straight out of its zip (inflated on the fly), so the PC keeps no unpacked copy.
+  `game/info.json` is generated (version = the server's newest patch, `cnAssetVersion()`; baseUrl
+  `http://127.0.0.1:8000/cn/cdn/`) and the phone writes it last, so a half-filled folder is never
+  taken as finished. The phone downloads with 6 connections at once and retries a file up to 3 times.
 
 `companion/tools/make-data-zip.cjs` builds the same set as an import zip from a running server: 17.5 MB
 with a save, no comics or pictures.
@@ -240,6 +270,25 @@ switching between them needs an uninstall, which deletes the companion's data (e
 On this PC: SDK `F:\wf-android-sdk` (junction at `F:\WF client\tools\android-sdk`), Gradle cache
 `GRADLE_USER_HOME=F:\WF client\tools\gradle-home`, nodejs-mobile in `F:\WF client\tools\`,
 `F:\wf-tools` → `F:\WF client\tools`.
+
+### Android versions (the real phones: Android 12 and 16)
+
+Everything above was tested on LDPlayer, Android 9. App targets SDK 34, min SDK 24. What the code
+does for newer Android, and what only a real phone can confirm:
+
+| Android | What applies | In the app | Only a real phone can confirm |
+|---|---|---|---|
+| 11+ | Shared storage needs "All files access" (`MANAGE_EXTERNAL_STORAGE`) | Download opens the app's All files access page, and continues by itself when the player comes back with it allowed (re-checked in `onResume`). The game (target 30, declares the permission) gets its page from **Allow World Flipper "All files access"**; `<queries>` makes the game visible to the app | Both settings pages open; the copy writes `/sdcard/StarPoint/game`; the game's drop-off move works with All files access (the game side was only tested on Android 9) |
+| 12+ | A foreground service can't be started from the background | The server is started only from the app's screen (Start, auto-start on open). A restart after a crash is allowed when the app may ignore battery optimizations (**Let the server run in the background**); without it, the refused start is caught and logged ("open the companion and press Start") instead of crashing | Crash restart with and without the battery exemption; OEM task killers |
+| 13+ | Notifications need `POST_NOTIFICATIONS` | Asked once on the main screen. If denied, the server still runs; only the notification (and its Stop button) is hidden | The prompt shows; the service keeps running with it denied |
+| 14+ | Foreground services need a type | `specialUse` with its subtype property and `FOREGROUND_SERVICE_SPECIAL_USE`; `startForeground(..., FOREGROUND_SERVICE_TYPE_SPECIAL_USE)` | It starts on 14+ and stays up with the game in front for an hour, screen off |
+| 15+ | Time limits for `dataSync`/`mediaProcessing` services | Not used (`specialUse` has no time limit) | — |
+| 16 | 16 KB memory pages on some phones | nodejs-mobile 24.20.0 is built for 16 KB pages. The app's own `libcompanion-bridge.so` was 4 KB aligned (NDK r27d's default) until 0.3, which sets `APP_SUPPORT_FLEXIBLE_PAGE_SIZES`; all three libraries are now 16 KB aligned (`llvm-readelf -l`, `zipalign -c -P 16`) | The app starts Node on the Android 16 phone. Behaviour changes for apps targeting 35/36 (forced edge-to-edge etc.) don't apply at target 34 |
+
+Also phone-only: Wi-Fi speed for the ~10 GB game copy (6 connections at once; the screen and Wi-Fi
+are kept awake while the Game data screen is open, but leaving the screen may let Android pause the
+copy; pressing Download again resumes, finished files are skipped), and free space for the copy plus
+the game's move.
 
 ## 6. Next steps
 

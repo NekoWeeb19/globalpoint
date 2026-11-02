@@ -51,7 +51,7 @@ public class ServerService extends Service {
             stopSelf();
             return START_NOT_STICKY;
         }
-        goForeground();
+        if (!goForeground()) { stopSelf(); return START_NOT_STICKY; }
         synchronized (ServerService.class) {
             if (!nodeStarted) {
                 nodeStarted = true;
@@ -101,7 +101,7 @@ public class ServerService extends Service {
         return false;
     }
 
-    private void goForeground() {
+    private boolean goForeground() {
         NotificationManager nm = getSystemService(NotificationManager.class);
         Notification.Builder b;
         if (Build.VERSION.SDK_INT >= 26) {
@@ -119,8 +119,18 @@ public class ServerService extends Service {
                 .addAction(new Notification.Action.Builder(null, "Stop", stop).build())
                 .setOngoing(true)
                 .build();
-        if (Build.VERSION.SDK_INT >= 34) startForeground(1, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
-        else startForeground(1, n);
+        try {
+            if (Build.VERSION.SDK_INT >= 34) startForeground(1, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+            else startForeground(1, n);
+            return true;
+        } catch (RuntimeException e) {
+            // Android 12+ refuses a foreground start from the background (e.g. a restart after a crash)
+            // unless the app may ignore battery optimizations ("Let the server run in the background")
+            Log.e("companion", "can't go foreground", e);
+            ServerFiles.log(this, "[companion] Android didn't let the server start in the background (" + e.getClass().getSimpleName()
+                    + "). Open the companion and press Start; \"Let the server run in the background\" lets it restart by itself.");
+            return false;
+        }
     }
 
     @Override

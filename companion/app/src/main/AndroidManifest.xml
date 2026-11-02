@@ -6,13 +6,24 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- full game files go in the game's drop-off folder, /sdcard/StarPoint/game (DataTransfer) -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+
+    <!-- to open the game's own All files access screen -->
+    <queries>
+        <package android:name="com.leiting.wf" />
+    </queries>
 
     <application
         android:label="StarPoint Companion"
         android:icon="@mipmap/ic_launcher"
         android:theme="@android:style/Theme.DeviceDefault"
         android:usesCleartextTraffic="true"
-        android:allowBackup="false">
+        android:allowBackup="false"
+        android:requestLegacyExternalStorage="true">
 
         <activity
             android:name=".MainActivity"
