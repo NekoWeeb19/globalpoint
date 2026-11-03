@@ -218,6 +218,8 @@ const routes = async (fastify: FastifyInstance) => {
         if (row.status !== STATUS.ENTERED) return bad(reply, "The ticket was already bought.")
         const bought = buyTicket(playerId, campaign.ticketItem, campaign.price)
         if (bought === null) return bad(reply, "Not enough paid beads.")
+        // the bundle also holds a wildcard 10-pull unit ticket
+        bought.item_list[WILDCARD_TEN_PULL.character] = givePlayerItemSync(playerId, WILDCARD_TEN_PULL.character, 1)
         setRow(playerId, "startDash", { ...row, status: STATUS.TICKET })
         console.log(`[exchange] Player ${playerId}: bought the Start Dash ticket for ${campaign.price} paid beads`)
         return send(reply, body.viewer_id, { ...bought, start_dash_exchange_campaign_list: startDashListSync(playerId) })
