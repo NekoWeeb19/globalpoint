@@ -404,6 +404,8 @@ async function main() {
     // (its logical name isn't known; this is its stored path, found by the unit -> date rows matching each
     // unit's "finish Mana Board 2" title mission)
     const MB2_OPEN = "production/upload/bc/0bc800f482670f3ec8a7f2fee9b9deeeca3a04"
+    // the CN game's start (China time); launch units with board 2 before it are moved to later waves
+    const LAUNCH_MB2_FROM = "2019-12-01 00:00:00"
     const mb2InUse = new Set((() => { try { return JSON.parse(fs.readFileSync(path.join(dataDir(), "cn_mb2_in_use.json"), "utf8")).map(String) } catch { return [] } })())
     const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...kitTables, MB2_OPEN, ...Object.keys(DUNGEON_FIXES)])].sort()
     const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
@@ -456,9 +458,21 @@ async function main() {
         if (file === MB2_OPEN) {
             const dates = {}
             let kept = 0
-            for (const { path: keys, leaf } of R.leaves(tree)) {
+            // CN opens board 2 of its launch units (89) from 2015, before the game starts: they open on the 2nd to
+            // 5th earliest board 2 dates after the start instead, split evenly in unit id order
+            const rows = R.leaves(tree)
+            const firstOf = l => R.splitCsv(l.leaf.text.replace(/\n$/, ""))[0]
+            const later = [...new Set(rows.map(firstOf).filter(d => d >= LAUNCH_MB2_FROM))].sort()
+            const waves = later.slice(1, 5)
+            const launch = rows.filter(l => firstOf(l) < LAUNCH_MB2_FROM).map(l => l.path[0]).sort((a, b) => Number(a) - Number(b))
+            const wave = new Map(launch.map((id, i) => [id, waves[Math.floor(i * waves.length / launch.length)]]))
+            for (const { path: keys, leaf } of rows) {
                 const end = leaf.text.endsWith("\n") ? "\n" : ""
                 const fields = R.splitCsv(leaf.text.replace(/\n$/, ""))
+                if (waves.length === 4 && wave.has(keys[0])) {
+                    fields[0] = wave.get(keys[0])
+                    R.setLeafText(leaf, fields.map(R.csvField).join(",") + end)
+                }
                 if (mb2InUse.has(keys[0]) && fields[0] > "2015-03-01 15:00:00") {
                     fields[0] = "2015-03-01 15:00:00"
                     R.setLeafText(leaf, fields.map(R.csvField).join(",") + end)
