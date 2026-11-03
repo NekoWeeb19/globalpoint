@@ -418,6 +418,9 @@ final class DataTransfer {
             if (++checked % 2000 == 0) p.update("Checking what's already here... " + checked + " / " + files.size(), 0, -1);
             Item item = new Item(path, size, out);
             if (path.equals("game/info.json")) { gameInfo = item; continue; }
+            // the update list names this phone's own schedule updates, whose zips are only here: the PC's list
+            // replaces it only together with the PC's zips (game updates ticked), or when there's none yet
+            if (path.equals(".cdn/cn_patches/patches.json") && !o.patches && out.exists()) continue;
             boolean always = path.startsWith(".database/");
             if (!always && listed(listings, out)) {
                 if (record.has(path, size)) { skipped += size; continue; }

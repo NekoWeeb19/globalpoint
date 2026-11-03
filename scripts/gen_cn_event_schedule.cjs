@@ -389,7 +389,9 @@ async function main() {
     const listFile = path.join(TRANSLATED, "files.json")
     const translatedFrom = new Map(fs.existsSync(listFile) ? JSON.parse(fs.readFileSync(listFile, "utf8")).map(f => [f.path, f.from]) : [])
     for (const file of fileList) {
-        const translated = translatedFrom.get(file) ?? path.join(TRANSLATED, file)
+        // files.json's paths are the PC's; on a phone the copy sits in the dir itself (src/routes/companion.ts)
+        const from = translatedFrom.get(file)
+        const translated = from && fs.existsSync(from) ? from : path.join(TRANSLATED, file)
         const buf = fs.existsSync(translated) ? fs.readFileSync(translated) : await cn.get(file)?.buffer()
         if (!buf) continue // a table CN doesn't have
         const tree = R.decodeFile(buf)

@@ -59,6 +59,8 @@ function entries(options: Options, snapshot: boolean, notes: string[] = []): Ent
         const csv = readdirSync(entities).find(f => /android_medium\.csv$/.test(f))
         if (csv) add(list, `.cdn/cn/entities/${csv}`, path.join(entities, csv))
     }
+    // always listed (a phone without the zips still needs the versions); the app keeps its own list when it
+    // has one and the zips aren't copied (DataTransfer.downloadFromPc)
     add(list, ".cdn/cn_patches/patches.json", path.join(cnPatchDir(), "patches.json"))
     // the schedules match the game's files (they were built together), so they always come along
     for (const name of ["news.json", "event_schedule.json", "campaign_schedule.json", "cn_copy_window.json", "banner_rotation.json"]) {
@@ -85,8 +87,21 @@ function entries(options: Options, snapshot: boolean, notes: string[] = []): Ent
         } else {
             notes.push("No slim CN folder on the PC, so dashboard schedule edits won't work on the phone. Make one with: node scripts/gen_cn_slim.cjs .cdn/cn_slim")
         }
-        if (existsSync(translatedDir())) addTree(list, ".cdn/cn_text", translatedDir())
-        else notes.push(`No English CN tables at ${translatedDir()} (CN_TRANSLATED_DIR).`)
+        if (existsSync(translatedDir())) {
+            addTree(list, ".cdn/cn_text", translatedDir())
+            // the dir only has the tables its own step changed; files.json points to the rest in earlier
+            // steps' dirs (on this PC), so those are sent too, into the same folder on the phone
+            const sent = new Set(list.map(e => e.path))
+            try {
+                const files = JSON.parse(readFileSync(path.join(translatedDir(), "files.json"), "utf8")) as { path: string, from?: string }[]
+                for (const f of files) {
+                    const at = `.cdn/cn_text/${f.path}`
+                    if (f.from && !sent.has(at)) { add(list, at, f.from); sent.add(at) }
+                }
+            } catch {
+                notes.push(`Couldn't read ${path.join(translatedDir(), "files.json")}; some English CN tables may be missing.`)
+            }
+        } else notes.push(`No English CN tables at ${translatedDir()} (CN_TRANSLATED_DIR).`)
     }
     return list
 }
