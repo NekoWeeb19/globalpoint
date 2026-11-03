@@ -90,13 +90,16 @@ async function patchNames() {
     }
     return names
 }
-// global's file index (.cdn/en/entities/*.csv): every file global has
+// global's file index (.cdn/en/entities/*.csv): every file global has, as "production/upload/..." -> its real
+// path (pictures like home banners are under production/medium_upload, where the patch must put them too)
 const globalNames = (() => {
     const dir = path.join(ROOT, ".cdn", "en", "entities")
     const csv = fs.readdirSync(dir).filter(f => f.endsWith(".csv")).sort().pop()
-    return new Set(fs.readFileSync(path.join(dir, csv), "utf8").split("\n").map(l => l.trim().split(",")[0]))
+    return new Map(fs.readFileSync(path.join(dir, csv), "utf8").split("\n").map(l => l.trim().split(",")[0]).filter(Boolean)
+        .map(p => [p.replace(/^production\/[a-z_]+\//, "production/upload/"), p]))
 })()
 const globalHas = p => globalNames.has(p)
+const globalPath = p => globalNames.get(p) ?? p
 
 ;(async () => {
     fs.mkdirSync(OUT, { recursive: true })
@@ -153,7 +156,7 @@ const globalHas = p => globalNames.has(p)
     const cn = await cnIndex(), patched = await patchNames()
     const have = p => cn.has(p) || patched.has(p)
     const added = new Set(files.map(f => f.path))
-    const add = p => { if (!added.has(p)) { files.push({ path: p, from: "global" }); added.add(p) } }
+    const add = p => { if (!added.has(p)) { files.push({ path: globalPath(p), from: "global" }); added.add(p) } }
     const missingEverywhere = []
     const tableRows = async p => R.leaves(R.decodeFile(await cn.get(p).buffer()))
     for (const [table, column] of [[ANNOUNCEMENTS, 1], [GUIDE_DIALOGS, 3]]) {
@@ -167,6 +170,19 @@ const globalHas = p => globalNames.has(p)
         }
         console.log(`${table === ANNOUNCEMENTS ? "announcements" : "pop-up dialogs"}: ${taken} pictures from global`)
     }
+    // home banners (master/feature_banner/feature_banner + _secondary): every picture they name; names ending in "_"
+    // are completed by the client
+    let banners = 0
+    for (const table of ["master/feature_banner/feature_banner.orderedmap", "master/feature_banner/feature_banner_secondary.orderedmap"].map(hashed)) {
+        for (const { leaf } of await tableRows(table)) {
+            for (const pic of new Set(leaf.text.match(/dynamic\/home_banner\/[a-z0-9_\/]*[a-z0-9](?![a-z0-9_\/])/g) ?? [])) {
+                const p = hashed(pic + ".png")
+                if (have(p) || added.has(p)) continue
+                if (globalHas(p)) { add(p); banners++ } else missingEverywhere.push(pic)
+            }
+        }
+    }
+    console.log(`home banners: ${banners} pictures from global`)
     // Razelt's Launch Gala animation: global's picture and layout together
     for (const ext of [".png", ".atlas.amf3.deflate"]) add(hashed(RAZELT + ext))
     console.log(`Razelt's Launch Gala animation: global's sheet`)

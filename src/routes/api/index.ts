@@ -1,4 +1,5 @@
 import { getFundReceiveListSync } from "../../nya/growthFund";
+import { specialExchangeListSync, startDashListSync } from "../../nya/exchangeCampaigns";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { SessionType } from "../../data/types";
 import { getClientSerializedData, serializePlayerData } from "../../data/utils";
@@ -125,6 +126,8 @@ const routes = async (fastify: FastifyInstance) => {
         // the CN client also reads its own features' fields (all off or empty here)
         if (cn) {
             (clientData as Record<string, any>).fund_receive_list = getFundReceiveListSync(playerId)
+            ;(clientData as Record<string, any>).special_exchange_campaign_list = specialExchangeListSync(playerId)
+            ;(clientData as Record<string, any>).start_dash_exchange_campaign_list = startDashListSync(playerId)
             addCnLoadFields(clientData as Record<string, any>, request.headers.host ?? "127.0.0.1:8000")
         }
 

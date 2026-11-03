@@ -311,6 +311,15 @@ async function main() {
     // the pop-up dialog table (its logical name isn't known; this is its stored path) and the dates that hide a row
     const GUIDE_DIALOGS = "production/upload/f3/5dbdf5b3c941d0a975bd5eabb5652fa411ebf9"
     const HIDDEN = ["2000-01-01 00:00:00", "2000-01-01 00:00:01"]
+    const worldStoryStart = new Map() // world story event id -> its first date (filled when tables load)
+    const cnMs = text => Date.parse(text.replace(" ", "T") + "Z")
+    const cnText = ms => new Date(ms).toISOString().slice(0, 19).replace("T", " ")
+    const hideBannerWithoutPicture = c => {
+        const i = c.findIndex(v => /^dynamic\/home_banner\/[a-z0-9_\/]*[a-z0-9]$/.test(v))
+        if (i < 0 || cnHasPicture(c[i]) || c[i + 2] === HIDDEN[0]) return false
+        c[i + 1] = "0"; c[i + 2] = HIDDEN[0]; c[i + 3] = HIDDEN[1]
+        return true
+    }
     const DUNGEON_FIXES = {
         [fileOf("master/quest/event/daily_week_event.orderedmap")]: (key, c) => {
             if (c[0].endsWith("_campaign") && c[16] === "2020-01-15 12:00:00") { c[16] = "2001-01-01 05:00:00"; return true }
@@ -354,6 +363,23 @@ async function main() {
             c[2] = HIDDEN[0]; c[3] = HIDDEN[1]
             return true
         },
+        // home banners too (their picture column, then show kind, start, end): a picture found nowhere hides the banner
+        // (names ending in "_" are completed by the client, left alone)
+        // a world story event's banner (link kind 6, event id in column 15) whose dates (column 27) aren't its
+        // event's (CN copied JP's: e.g. Cyberpunk's banner 100100 carries Fake Princess's dates; reruns keep the
+        // first run's) is moved to start with its event, keeping its own steps (prequel, sequel, end)
+        [fileOf("master/feature_banner/feature_banner.orderedmap")]: (key, c) => {
+            let changed = false
+            const start = c[14] === "6" ? worldStoryStart.get(c[15]) : undefined
+            const dates = (c[27] ?? "").split(",")
+            if (start && /^\d{4}-/.test(dates[0]) && dates[0] !== start) {
+                const shift = cnMs(start) - cnMs(dates[0])
+                c[27] = dates.map(d => /^\d{4}-/.test(d) ? cnText(cnMs(d) + shift) : d).join(",")
+                changed = true
+            }
+            return hideBannerWithoutPicture(c) || changed
+        },
+        [fileOf("master/feature_banner/feature_banner_secondary.orderedmap")]: (key, c) => hideBannerWithoutPicture(c),
         [GUIDE_DIALOGS]: (key, c) => {
             if (c[3] && c[3] !== "(None)" && cnHasPicture(c[3])) return false
             const i = c.findIndex(v => /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/.test(v))
@@ -432,6 +458,17 @@ async function main() {
     // earlier step's dir (only the tables the last step changed are in the dir itself)
     const listFile = path.join(TRANSLATED, "files.json")
     const translatedFrom = new Map(fs.existsSync(listFile) ? JSON.parse(fs.readFileSync(listFile, "utf8")).map(f => [f.path, f.from]) : [])
+    // each world story event's first date (CN time), for its home banners (BANNER_FIXES below)
+    {
+        const file = fileOf("master/quest/event/world_story_event.orderedmap")
+        const from = translatedFrom.get(file)
+        const translated = from && fs.existsSync(from) ? from : path.join(TRANSLATED, file)
+        const buf = fs.existsSync(translated) ? fs.readFileSync(translated) : await cn.get(file)?.buffer()
+        if (buf) for (const { path: keys, leaf } of R.leaves(R.decodeFile(buf))) {
+            const first = (leaf.text.match(/\d{4}-\d\d-\d\d \d\d:\d\d:\d\d/) ?? [])[0]
+            if (first && keys.length === 1) worldStoryStart.set(keys[0], first)
+        }
+    }
     for (const file of fileList) {
         // files.json's paths are the PC's; on a phone the copy sits in the dir itself (src/routes/companion.ts)
         const from = translatedFrom.get(file)

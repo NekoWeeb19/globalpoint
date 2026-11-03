@@ -23,7 +23,8 @@ import partyGroupApiPlugin from "./routes/api/partyGroup"
 import equipmentApiPlugin from "./routes/api/equipment"
 import exBoostApiPlugin from "./routes/api/exBoost"
 import boxGachaApiPlugin from "./routes/api/boxGacha"
-import shopApiPlugin, { howToGetRoutes as howToGetApiPlugin } from "./routes/api/shop"
+import shopApiPlugin, { howToGetRoutes as howToGetApiPlugin } from "./routes/api/shop"
+import exchangeCampaignsPlugin from "./nya/exchangeCampaigns";
 import comicApiPlugin from "./routes/api/comic"
 import encyclopediaApiPlugin from "./routes/api/encyclopedia"
 import mailApiPlugin from "./routes/api/mail"
@@ -203,6 +204,7 @@ fastify.register(equipmentApiPlugin, { prefix: `${apiPrefix}/equipment` })
 fastify.register(exBoostApiPlugin, { prefix: `${apiPrefix}/ex_boost` })
 fastify.register(boxGachaApiPlugin, { prefix: `${apiPrefix}/box_gacha` })
 fastify.register(shopApiPlugin, { prefix: `${apiPrefix}/shop` })
+fastify.register(exchangeCampaignsPlugin, { prefix: apiPrefix })
 fastify.register(howToGetApiPlugin, { prefix: apiPrefix })
 fastify.register(comicApiPlugin, { prefix: `${apiPrefix}/comic` })
 fastify.register(encyclopediaApiPlugin, { prefix: `${apiPrefix}/encyclopedia` })

@@ -330,7 +330,8 @@ export function addCnLoadFields(d: Record<string, any>, host: string): Record<st
     d.fund_receive_list ??= []
     d.login_info = {}
     d.tower_dungeon_list = []
-    d.special_exchange_campaign_list = []
+    d.special_exchange_campaign_list ??= []
+    d.start_dash_exchange_campaign_list ??= []
     d.win_lottery_active_mission_list = []
     d.stars_gacha_campaign_list ??= []
     d.favorite_party_group_list ??= []
