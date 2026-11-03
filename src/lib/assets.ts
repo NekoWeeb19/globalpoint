@@ -20,6 +20,7 @@ import scoreAttackEventQuests from "../../assets/score_attack_event_quest.json";
 import soloTimeAttackEventQuests from "../../assets/solo_time_attack_event_quest.json";
 import storyEventSingleQuests from "../../assets/story_event_single_quest.json";
 import towerDungeonEventQuests from "../../assets/tower_dungeon_event_quest.json";
+import towerDungeonEventQuestsCn from "../../assets/tower_dungeon_event_quest_cn.json";
 import hardMultiEventQuests from "../../assets/hard_multi_event_quest.json";
 import exAbility from "../../assets/ex_ability.json";
 import exBoost from "../../assets/ex_boost.json";
@@ -249,8 +250,9 @@ export function getQuestFromCategorySync(
         case QuestCategory.DAILY_WEEK_EVENT:
             return getQuestSync((dailyWeekEventQuests as RawQuests), questId)
         case QuestCategory.TOWER_DUNGEON_EVENT:
-            // a copied month's floor (src/lib/towerRotation.ts) has the same quest as CN's floor it copies
-            return getQuestSync((towerDungeonEventQuests as RawQuests), towerOriginalQuestId(Number(questId)))
+            // the CN client's floors have CN's reward groups (scripts/gen_cn_tower_quests.cjs); a copied month's floor
+            // (src/lib/towerRotation.ts) has the same quest as CN's floor it copies
+            return getQuestSync(((inCnRequest() ? towerDungeonEventQuestsCn : towerDungeonEventQuests) as RawQuests), towerOriginalQuestId(Number(questId)))
         case QuestCategory.EXPERT_SINGLE_EVENT:
             return getQuestSync((expertSingleEventQuests as RawQuests), questId)
         case QuestCategory.CARNIVAL_EVENT:
