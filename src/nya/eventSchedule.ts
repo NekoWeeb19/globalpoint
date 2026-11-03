@@ -125,14 +125,14 @@ const { scheduleFingerprint, readBuilt } = require(path.join(__dirname, "..", ".
 /**
  * Rebuilds the CN update when the saved schedules aren't the ones it was built from: a save imported with
  * its own schedules, a data pack, a copy from a PC. Without this the client keeps the old tables, and a
- * save naming a yearly copy they lack stops it (C8601). An update with no record counts as built from empty
- * schedules (the shared package's clean one).
+ * save naming a yearly copy they lack stops it (C8601). An update with no record (the shared package's or a
+ * data pack's) is rebuilt too: nothing says which builder made it, and an older one lacks later fixes.
  */
 function checkCnScheduleMatches() {
     if (!existsSync(cnCdnRoot())) return
     const dir = path.join(process.cwd(), ".database")
     const now = scheduleFingerprint(dir)
-    const built = readBuilt(dir)?.fingerprint ?? scheduleFingerprint(path.join(dir, "no-schedules"))
+    const built = readBuilt(dir)?.fingerprint ?? null
     // an update built before the dashboard showed CN's dates has no cn_event_windows.json yet
     if (now === built && existsSync(path.join(dir, "cn_event_windows.json"))) return
     console.log("[cn] the saved schedules differ from the ones the game update was built from; rebuilding the CN schedule update")

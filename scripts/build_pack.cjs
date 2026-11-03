@@ -85,7 +85,9 @@ if (kind === "comics") {
     addTree(".cdn/cn_schedule_files", path.join(cdn, "cn_schedule_files"))
     addTree(".cdn/dashboard_images", path.join(cdn, "dashboard_images"))
     // only these .database files (schedules and news), never the save or account files
-    const schedules = ["news.json", "event_schedule.json", "campaign_schedule.json", "cn_copy_window.json", "banner_rotation.json"]
+    // the build record and its by-products go too (the pack has none), so the phone rebuilds the CN update on start:
+    // its own earlier updates are removed with .cdn/cn_patches
+    const schedules = ["news.json", "event_schedule.json", "campaign_schedule.json", "cn_copy_window.json", "banner_rotation.json", "cn_schedule_built.json", "cn_event_windows.json", "cn_mb2_dates.json"]
     for (const name of schedules) addFile(`.database/${name}`, path.join(from, ".database", name))
     const list = JSON.parse(fs.readFileSync(path.join(patches, "patches.json"), "utf8"))
     const newest = list.map(p => p.version).sort((a, b) => {
