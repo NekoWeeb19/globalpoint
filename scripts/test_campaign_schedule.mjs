@@ -148,8 +148,7 @@ try {
     check("rows stay in id order", pullRows.map(l => Number(l.path[0])).every((id, i, all) => i === 0 || all[i - 1] < id))
 
     // the stamina run over New Year and the February reward run, copied every year
-    const { createHash } = await import("node:crypto")
-    const fileOf = logical => { const h = createHash("sha1").update(logical + "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy").digest("hex"); return `production/upload/${h.slice(0, 2)}/${h.slice(2)}` }
+    const { uploadPath: fileOf } = await import("./cdn_hash.cjs")
     const staminaLeaves = leaves(await read(fileOf("master/campaign/stamina_campaign.orderedmap")))
     const staminaCopies = staminaLeaves.filter(l => Number(l.path[0]) >= 1000000000)
     check("the stamina run's rows are copied for every year it repeats", staminaLeaves.length - staminaCopies.length === 369 && staminaCopies.length === holidayRun.ids.length * holidayCopies.length, [staminaLeaves.length, staminaCopies.length])

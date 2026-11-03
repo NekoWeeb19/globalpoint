@@ -7,10 +7,8 @@
 //   -> <scan dir>/images.json, <scan dir>/plan_summary.json
 const fs = require("fs")
 const path = require("path")
-const crypto = require("crypto")
 
-const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
-const hashed = l => { const x = crypto.createHash("sha1").update(l + SALT).digest("hex"); return `production/upload/${x.slice(0, 2)}/${x.slice(2)}` }
+const { uploadPath: hashed } = require("./cdn_hash.cjs")
 
 const [scanDir, minArg] = process.argv.slice(2)
 const MIN = Number(minArg ?? 20)

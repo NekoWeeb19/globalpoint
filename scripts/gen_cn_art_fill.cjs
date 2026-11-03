@@ -14,18 +14,16 @@
 const fs = require("fs")
 const path = require("path")
 const zlib = require("zlib")
-const crypto = require("crypto")
 const { execFileSync } = require("child_process")
 const unzipper = require("unzipper")
 const R = require("./cdn_rows.cjs")
 const { cnDir, cnZips, requiredPath } = require("./cn_archives.cjs")
-const { readAmf3 } = require("./client_mod/amf3.cjs")
+const { readAmf3 } = require("./amf3.cjs")
 const { globalFile } = require("./build_cn_patch.cjs")
 
 const ROOT = path.join(__dirname, "..")
 const OUT = path.resolve(process.argv[2] ?? path.join(ROOT, ".cdn", "cn_work_art_fill"))
-const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
-const hashed = logical => { const h = crypto.createHash("sha1").update(logical + SALT).digest("hex"); return `production/upload/${h.slice(0, 2)}/${h.slice(2)}` }
+const { uploadPath: hashed } = require("./cdn_hash.cjs")
 const ANNOUNCEMENTS = hashed("master/feature_banner/feature_announcement.orderedmap")
 // its logical name isn't known; the stored path of the pop-up dialog table (feature_guide_dialog pictures)
 const GUIDE_DIALOGS = "production/upload/f3/5dbdf5b3c941d0a975bd5eabb5652fa411ebf9"

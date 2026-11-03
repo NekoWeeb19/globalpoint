@@ -42,10 +42,6 @@ const OWN_WINDOW = {
     gacha: { table: "master/gacha/gacha.orderedmap", start: 29, end: 30 },
     pass_card_event: { table: "master/pass_card/pass_card_event.orderedmap", start: 8, end: 9 },
 }
-const fileOf = logical => {
-    const h = require("crypto").createHash("sha1").update(logical + "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy").digest("hex")
-    return `production/upload/${h.slice(0, 2)}/${h.slice(2)}`
-}
 
 function mapCnInstant(ms, from, to) {
     if (ms <= from.start) return to.start + (ms - from.start)
@@ -60,6 +56,7 @@ const CN_DIR = require("./cn_archives.cjs").cnDir()
 const TRANSLATED = process.argv[2] ?? require("./cn_archives.cjs").cnTextDir()
 const { cdnDir, dataDir } = require("./cn_archives.cjs")
 const { scheduleFingerprint } = require("./schedule_fingerprint.cjs")
+const { uploadPath: fileOf } = require("./cdn_hash.cjs")
 // the yearly free pull copies this update has (.database/cn_schedule_built.json): the server never sends the
 // CN client a used copy it doesn't have (an unknown campaign id stops it with C8601)
 const builtFreePullCopyIds = []

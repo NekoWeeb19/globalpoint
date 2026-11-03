@@ -13,7 +13,6 @@
 //   (pictures go to .cdn/dashboard_images, like the event catalog's)
 const fs = require("fs")
 const path = require("path")
-const crypto = require("crypto")
 const unzipper = require("unzipper")
 const R = require("./cdn_rows.cjs")
 const { NO_ART_BANNERS } = require("./no_art_banners.cjs")
@@ -23,7 +22,7 @@ const { readCnTable } = require("./cn_read.cjs")
 const ROOT = path.join(__dirname, "..")
 const OUT = path.join(ROOT, "assets", "campaigns_cn.json")
 const IMAGES_OUT = path.join(require("./cn_archives.cjs").cdnDir(), "dashboard_images")
-const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
+const { uploadPath: hashed } = require("./cdn_hash.cjs")
 const TYPES = ["Normal", "Limited", "Comeback", "ComebackAlways", "ActiveUser"]
 const NONE = v => v === undefined || v === "" || v === "(None)"
 const str = v => (NONE(v) ? null : v)
@@ -35,10 +34,6 @@ const globalStamina = require("../assets/stamina_campaign.json").campaigns
 const globalFreePulls = require("../assets/seasonal_campaigns.json").freePulls
 const globalGachaCampaign = require("../assets/gacha_campaign.json")
 
-const hashed = logical => {
-    const h = crypto.createHash("sha1").update(logical + SALT).digest("hex")
-    return `production/upload/${h.slice(0, 2)}/${h.slice(2)}`
-}
 
 // "2025-06-19 12:00:00" China time -> the same moment written in UTC / Japan time
 const shift = (text, hours) => {

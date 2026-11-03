@@ -7,16 +7,14 @@
 //   node scripts/gen_cn_strip_pages.cjs
 const fs = require("fs")
 const path = require("path")
-const crypto = require("crypto")
 const zlib = require("zlib")
 const unzipper = require("unzipper")
 const R = require("./cdn_rows.cjs")
 const { cnZips } = require("./cn_archives.cjs")
-const { readAmf3 } = require("./client_mod/amf3.cjs")
+const { readAmf3 } = require("./amf3.cjs")
 
 const ROOT = path.join(__dirname, "..")
-const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
-const hashed = l => { const h = crypto.createHash("sha1").update(l + SALT).digest("hex"); return `production/upload/${h.slice(0, 2)}/${h.slice(2)}` }
+const { uploadPath: hashed } = require("./cdn_hash.cjs")
 const FULL = 1000 // taller than this is a full-screen page
 
 ;(async () => {

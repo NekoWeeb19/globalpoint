@@ -8,12 +8,10 @@
 //   node scripts/gen_quest_elements.cjs  -> assets/quest_elements.json, assets/reward_element_map.json
 const fs = require("fs")
 const path = require("path")
-const crypto = require("crypto")
 const R = require("./cdn_rows.cjs")
 
 const ROOT = path.join(__dirname, "..")
-const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
-const hashed = l => { const x = crypto.createHash("sha1").update(l + SALT).digest("hex"); return `production/upload/${x.slice(0, 2)}/${x.slice(2)}` }
+const { uploadPath: hashed } = require("./cdn_hash.cjs")
 
 async function rowsOf(logical) {
     const buf = await R.readHashedFile(hashed(logical)).catch(() => null)

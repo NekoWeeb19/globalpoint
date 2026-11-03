@@ -9,7 +9,6 @@
 //   node scripts/gen_cn_banner_art.cjs
 const fs = require("fs")
 const path = require("path")
-const crypto = require("crypto")
 const unzipper = require("unzipper")
 const R = require("./cdn_rows.cjs")
 const { cnZips } = require("./cn_archives.cjs")
@@ -17,9 +16,7 @@ const { readTable } = require("./cdn_master.cjs")
 
 const ROOT = path.join(__dirname, "..")
 const OUT = path.join(ROOT, ".cdn", "cn_work_banner_art")
-const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
-const hash = l => crypto.createHash("sha1").update(l + SALT).digest("hex")
-const hashed = (l, folder = "upload") => { const h = hash(l); return `production/${folder}/${h.slice(0, 2)}/${h.slice(2)}` }
+const { hashHex: hash, uploadPath: hashed } = require("./cdn_hash.cjs")
 
 // rerun -> original (CN ids)
 const RERUNS = { 64: 7, 66: 8, 68: 10, 69: 11, 72: 14, 74: 17, 76: 20, 77: 18, 82: 25, 84: 27, 86: 28, 5009: 5000, 5013: 5004, 5015: 5006 }

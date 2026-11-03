@@ -38,19 +38,11 @@ function placeholdersFit(cn, en) {
     return true
 }
 
-// CN files by hashed path (newest copy), like scan_cn_globalize.cjs
+// CN files by hashed path (newest copy wins: scripts/cn_archives.cjs reads the archives oldest first)
 async function cnIndex() {
-    const dir = require("./cn_archives.cjs").cnDir()
-    const ver = n => (n.match(/-(\d+\.\d+\.\d+)-\d+-[0-9a-f]+\.zip$/) || [])[1] || "0"
-    const cmp = (a, b) => a.split(".").map(Number).reduce((r, x, i) => r || x - Number(b.split(".")[i] || 0), 0)
-    const zips = []
-    for (const sub of fs.readdirSync(dir)) {
-        if (!sub.startsWith("archive-") || sub.includes("ios")) continue
-        for (const z of fs.readdirSync(path.join(dir, sub))) if (z.endsWith(".zip")) zips.push({ file: path.join(dir, sub, z), full: sub.endsWith("-full"), v: ver(z) })
-    }
-    zips.sort((a, b) => (a.full === b.full ? cmp(a.v, b.v) : a.full ? -1 : 1))
+    const zips = require("./cn_archives.cjs").cnZips()
     const map = new Map()
-    for (const z of zips) for (const e of (await unzipper.Open.file(z.file)).files) if (e.type === "File") map.set(e.path, e)
+    for (const z of zips) for (const e of (await unzipper.Open.file(z)).files) if (e.type === "File") map.set(e.path, e)
     return map
 }
 

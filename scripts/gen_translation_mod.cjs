@@ -15,14 +15,9 @@
 const fs = require("fs")
 const path = require("path")
 const zlib = require("zlib")
-const crypto = require("crypto")
 const { ROOT, decodeFile, encodeFile, setLeafText, leaves, readHashedFile } = require("./cdn_rows.cjs")
 
-const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
-const hashed = logical => {
-    const h = crypto.createHash("sha1").update(logical + SALT).digest("hex")
-    return `production/upload/${h.slice(0, 2)}/${h.slice(2)}`
-}
+const { uploadPath: hashed } = require("./cdn_hash.cjs")
 const TABLES = {
     characterText: hashed("master/character/character_text.orderedmap"),
     character: hashed("master/character/character.orderedmap"),

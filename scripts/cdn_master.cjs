@@ -7,18 +7,13 @@
 
 const fs = require("fs")
 const path = require("path")
-const crypto = require("crypto")
 const zlib = require("zlib")
 const unzipper = require("unzipper")
 
 const ROOT = path.join(__dirname, "..")
 const CDN = path.join(ROOT, ".cdn", "en")
-const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
+const { uploadPath: hashedPath } = require("./cdn_hash.cjs")
 
-const hashedPath = logical => {
-    const h = crypto.createHash("sha1").update(logical + SALT).digest("hex")
-    return `production/upload/${h.slice(0, 2)}/${h.slice(2)}`
-}
 
 function parseOrderedMap(raw, compressedRows) {
     const indexLength = raw.readUInt32LE(0)

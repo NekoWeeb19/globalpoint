@@ -27,18 +27,13 @@ const { ROOT, decodeFile, encodeFile, setLeafText, leaves, readHashedFile, split
 const { zip } = require("./gen_translation_mod.cjs")
 const { parseSchedule, planRowMoves, remapText, formatMasterDate } = require("../out/lib/eventSchedule.js")
 const { parseCampaignSchedule, yearlyLoginColumns, freePullCopies, freePullCopyRow, isFreePullBanner, campaignRuns, runCopies, campaignCopyId, keepLongerOnOverlap, runLength, yearlyLoginBonusesKept } = require("../out/lib/campaignSchedule.js")
-const crypto = require("crypto")
 
 const CATALOG = path.join(ROOT, "assets", "event_catalog.json")
 // optional: node gen_event_schedule_mod.cjs <schedule file> <output archive> (used by the tests)
 const SCHEDULE = process.argv[2] ? path.resolve(process.argv[2]) : path.join(ROOT, ".database", "event_schedule.json")
 const SEASONAL = path.join(ROOT, "assets", "seasonal_campaigns.json")
 const GACHA = path.join(ROOT, "assets", "gacha.json")
-const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
-const hashed = logical => {
-    const h = crypto.createHash("sha1").update(logical + SALT).digest("hex")
-    return `production/upload/${h.slice(0, 2)}/${h.slice(2)}`
-}
+const { uploadPath: hashed } = require("./cdn_hash.cjs")
 // stamina and reward campaigns: the server's copy of each table (for the runs) and the game's file
 const RUN_TABLES = {
     reward: { asset: path.join(ROOT, "assets", "reward_campaign.json"), file: hashed("master/campaign/reward_campaign.orderedmap") },

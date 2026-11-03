@@ -16,14 +16,12 @@
 const fs = require("fs")
 const path = require("path")
 const zlib = require("zlib")
-const crypto = require("crypto")
 const unzipper = require("unzipper")
 const { cnZips } = require("./cn_archives.cjs")
-const { readAmf3, writeAmf3 } = require("./client_mod/amf3.cjs")
+const { readAmf3, writeAmf3 } = require("./amf3.cjs")
 
-const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
+const { hashName: short } = require("./cdn_hash.cjs")
 const GLOBAL_CDN = path.join(__dirname, "..", ".cdn", "en")
-const short = logical => { const x = crypto.createHash("sha1").update(logical + SALT).digest("hex"); return `${x.slice(0, 2)}/${x.slice(2)}` }
 
 // every file of a CDN, by its short hashed name ("ab/cdef..."), newest archive last wins; zips are
 // archive paths or { buffer } (an app bundle)

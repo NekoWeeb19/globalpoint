@@ -6,17 +6,12 @@
 
 const fs = require("fs")
 const path = require("path")
-const crypto = require("crypto")
 const unzipper = require("unzipper")
 const { decodeFile, leaves } = require("./cdn_rows.cjs")
 const { cnDir } = require("./cn_archives.cjs")
 
-const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
+const { uploadPath: hashed } = require("./cdn_hash.cjs")
 
-const hashed = logical => {
-    const h = crypto.createHash("sha1").update(logical + SALT).digest("hex")
-    return `production/upload/${h.slice(0, 2)}/${h.slice(2)}`
-}
 
 let index = null
 function cnIndex() {

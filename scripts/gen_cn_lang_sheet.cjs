@@ -11,13 +11,11 @@ const fs = require("fs")
 const { cnZips } = require("./cn_archives.cjs")
 const path = require("path")
 const zlib = require("zlib")
-const crypto = require("crypto")
 const unzipper = require("unzipper")
 const { readAmf3 } = require("./amf3.cjs")
 const { decodePng } = require("./scan_cn_globalize.cjs")
 
-const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
-const hx = l => { const x = crypto.createHash("sha1").update(l + SALT).digest("hex"); return `${x.slice(0, 2)}/${x.slice(2)}` }
+const { hashName: hx } = require("./cdn_hash.cjs")
 const CN_SHEET = "production/upload/" + hx("scene/general/sprite_sheet.png")
 const CN_MAP = "production/upload/94/c238c788d5557f9ba757cf60f3f280c4650ded"
 const GLOBAL_APK = require("./cn_archives.cjs").requiredPath("GLOBAL_APK", null, "the global game APK (world-flipper-0-0-81.apk)")

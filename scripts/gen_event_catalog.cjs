@@ -35,15 +35,10 @@
 
 const fs = require("fs")
 const path = require("path")
-const crypto = require("crypto")
 const { ROOT, decodeFile, leaves, splitCsv, readHashedFile } = require("./cdn_rows.cjs")
 const CN = process.argv.includes("--cn")
 
-const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
-const hashed = logical => {
-    const h = crypto.createHash("sha1").update(logical + SALT).digest("hex")
-    return `production/upload/${h.slice(0, 2)}/${h.slice(2)}`
-}
+const { uploadPath: hashed } = require("./cdn_hash.cjs")
 const DATE = /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/g
 
 // family -> columns of its event table (global layout) and the mission quest-range kinds

@@ -9,22 +9,17 @@
 
 const fs = require("fs")
 const path = require("path")
-const crypto = require("crypto")
 const unzipper = require("unzipper")
 const { ROOT, readTable, parseCsvLine } = require("./cdn_master.cjs")
 const { SEASONAL_LOGIN_BONUSES, SEASONAL_FREE_PULLS } = require("../out/lib/campaignSchedule.js")
 
-const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
+const { uploadPath: hashed } = require("./cdn_hash.cjs")
 const OUT = path.join(ROOT, "assets", "seasonal_campaigns.json")
 const IMAGES_OUT = path.join(ROOT, ".cdn", "dashboard_images")
 const CDN_DIR = path.join(ROOT, ".cdn", "en")
 const LOGIN_TABLE = "master/bonus/login_bonus.orderedmap"
 const FREE_PULL_TABLE = "master/gacha/gacha_campaign.orderedmap"
 
-const hashed = logical => {
-    const h = crypto.createHash("sha1").update(logical + SALT).digest("hex")
-    return `production/upload/${h.slice(0, 2)}/${h.slice(2)}`
-}
 
 // hashed path -> its newest copy, for the wanted pictures only
 async function pictureEntries(wanted) {

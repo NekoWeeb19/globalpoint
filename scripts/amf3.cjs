@@ -1,6 +1,6 @@
 // A small AMF3 reader (Flash's binary object format), for the game's layout and sprite-sheet files
 // (deflate-compressed AMF3). Objects come back as plain objects, arrays as arrays (with an associative
-// part merged in as properties when present).
+// part merged in as properties when present). writeAmf3 writes plain data back (sprite sheet layouts).
 //   const { readAmf3 } = require("./amf3.cjs"); readAmf3(zlib.inflateRawSync(buf))
 function readAmf3(buf) {
     let p = 0
@@ -95,4 +95,38 @@ function readAmf3(buf) {
     return value()
 }
 
-module.exports = { readAmf3 }
+/**
+ * AMF3 writer for plain data: arrays (dense), objects (written as anonymous dynamic objects),
+ * strings, integers (29-bit; others as doubles), doubles, booleans, null/undefined. No references,
+ * which any AMF3 reader accepts.
+ */
+function writeAmf3(value) {
+    const parts = []
+    function u29(n) {
+        if (n < 0x80) parts.push(Buffer.from([n]))
+        else if (n < 0x4000) parts.push(Buffer.from([(n >> 7) | 0x80, n & 0x7f]))
+        else if (n < 0x200000) parts.push(Buffer.from([(n >> 14) | 0x80, ((n >> 7) & 0x7f) | 0x80, n & 0x7f]))
+        else parts.push(Buffer.from([(n >> 22) | 0x80, ((n >> 15) & 0x7f) | 0x80, ((n >> 8) & 0x7f) | 0x80, n & 0xff]))
+    }
+    const str = s => { const b = Buffer.from(s, "utf8"); u29((b.length << 1) | 1); parts.push(b) }
+    function val(v) {
+        if (v === undefined) parts.push(Buffer.from([0x00]))
+        else if (v === null) parts.push(Buffer.from([0x01]))
+        else if (v === false) parts.push(Buffer.from([0x02]))
+        else if (v === true) parts.push(Buffer.from([0x03]))
+        else if (typeof v === "number") {
+            if (Number.isInteger(v) && v >= -0x10000000 && v < 0x10000000) { parts.push(Buffer.from([0x04])); u29(v < 0 ? v + 0x20000000 : v) }
+            else { const b = Buffer.alloc(9); b[0] = 0x05; b.writeDoubleBE(v, 1); parts.push(b) }
+        } else if (typeof v === "string") { parts.push(Buffer.from([0x06])); str(v) }
+        else if (Array.isArray(v)) { parts.push(Buffer.from([0x09])); u29((v.length << 1) | 1); str(""); for (const x of v) val(x) }
+        else if (Buffer.isBuffer(v)) { parts.push(Buffer.from([0x0c])); u29((v.length << 1) | 1); parts.push(v) }
+        else {
+            parts.push(Buffer.from([0x0a, 0x0b])); str("") // dynamic, no sealed members, anonymous
+            for (const [k, x] of Object.entries(v)) { if (k === "") continue; str(k); val(x) }
+            str("")
+        }
+    }
+    val(value)
+    return Buffer.concat(parts)
+}
+module.exports = { readAmf3, writeAmf3 }

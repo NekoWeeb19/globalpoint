@@ -8,7 +8,7 @@ const fs = require("fs")
 const path = require("path")
 const zlib = require("zlib")
 const { execFileSync } = require("child_process")
-const { readAmf3 } = require("./client_mod/amf3.cjs")
+const { readAmf3 } = require("./amf3.cjs")
 
 const PREFIX = "scene/general/sprite_sheet/"
 const LABELS = {
