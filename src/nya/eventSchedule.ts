@@ -54,7 +54,26 @@ const CN_SCRIPT = path.join(__dirname, "..", "..", "scripts", "gen_cn_event_sche
 // can't start one): scripts/run_script.cjs
 type ScriptResult = { code: number, stdout: string, stderr: string }
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const { runScript } = require(path.join(__dirname, "..", "..", "scripts", "run_script.cjs")) as { runScript: (file: string) => Promise<ScriptResult> }
+const { runScript } = require(path.join(__dirname, "..", "..", "scripts", "run_script.cjs")) as { runScript: (file: string, options?: { args?: string[] }) => Promise<ScriptResult> }
+
+/**
+ * Builds the slim CN folder (<CDN_DIR>/cn_slim: CN's tables and file names, ~110 MB) at start-up when the full
+ * CN game files are here and it's missing. A phone copying from this PC needs it for dashboard schedule edits
+ * (src/routes/companion.ts); it can't come from GitHub, since it's made from the game's own files.
+ */
+function buildCnSlimIfMissing() {
+    const root = cnCdnRoot()
+    const isSlim = (dir: string) => existsSync(path.join(dir, "tables")) && existsSync(path.join(dir, "names.txt"))
+    if (!existsSync(root) || isSlim(root)) return // no CN files, or this server runs on the slim set itself (the phone)
+    if (process.env.CN_SLIM_DIR && isSlim(path.resolve(process.env.CN_SLIM_DIR))) return
+    const out = path.join(cdnDir(), "cn_slim")
+    if (isSlim(out)) return
+    console.log("[cn] building the slim CN folder for phones (.cdn/cn_slim, about a minute)")
+    runScript(path.join(__dirname, "..", "..", "scripts", "gen_cn_slim.cjs"), { args: [out] }).then(({ code, stdout, stderr }) => {
+        if (code !== 0) console.error(`[cn] the slim CN folder could not be built: ${lastLines(stderr || stdout, 3)}`)
+        else console.log(`[cn] ${lastLines(stdout, 1)}`)
+    })
+}
 const lastLines = (text: string, n: number) => text.trim().split("\n").slice(-n).join(" ")
 let cnRunning = false, cnAgain = false
 /** Rebuilds the CN client's schedule update in the background (only when the CN game files are set up). */
@@ -286,6 +305,7 @@ export function initEventSchedule() {
     setInterval(checkCnCopyWindow, 10 * 60 * 1000).unref()
     setTimeout(checkCnScheduleMatches, 5 * 1000).unref()
     setTimeout(checkCnClockDependents, 70 * 1000).unref()
+    setTimeout(buildCnSlimIfMissing, 20 * 1000).unref()
     setInterval(checkCnClockDependents, 10 * 60 * 1000).unref()
     if (existsSync(SCHEDULE_FILE)) {
         try {
