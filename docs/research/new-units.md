@@ -120,7 +120,7 @@ ships the table restores it.
 ## The proof of concept
 
 `scripts/research/clone_cn_unit.cjs` (unit and names set at the top) writes the 19 tables with the new rows, the
-74 files under the new string id (renamed inside where needed), `files.json` for `build_cn_patch.cjs`, and
+76 files under the new string id (renamed inside where needed), `files.json` for `build_cn_patch.cjs`, and
 `server.json` for the two server files. It takes tables from the newest copy the device has
 (CN → this PC's patches → `--newer` folders, e.g. a phone's own schedule builds), so translations stay English.
 
