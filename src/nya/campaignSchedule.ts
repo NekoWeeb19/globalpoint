@@ -18,7 +18,7 @@ import {
     activeFreePullCopy, CampaignRun, campaignCopyId, campaignRuns, CampaignSchedule, currentOrNextRun, describeRun,
     isWindowOn, KnownRuns, runCopies, TimedCampaign, yearlyClash, FreePullBannerInfo, FreePullCampaign, freePullClash,
     freePullCopies, FreePullCopy, isFreePullBanner, parseCampaignSchedule, SEASONAL_FREE_PULLS,
-    SEASONAL_LOGIN_BONUSES, yearlyLoginServerColumns, yearlyPart, CN_SEASONAL_LOGIN_BONUSES, CN_SEASONAL_FREE_PULLS, cnFreePullCopyId, isFreePullCopyId, withCnDates, parseUtcText
+    SEASONAL_LOGIN_BONUSES, yearlyLoginServerColumns, yearlyPart, CN_SEASONAL_LOGIN_BONUSES, CN_SEASONAL_FREE_PULLS, cnFreePullCopyId, isFreePullCopyId, withCnDates, parseUtcText, keepLongerOnOverlap, runLength, YearlyWindow
 } from "../lib/campaignSchedule"
 import { cnCampaigns, cnLoginGroup, cnOnlyLoginGroups, setCnLoginGroup, setCnSharedRewardRows } from "./cnCampaigns"
 import { cnBuiltFreePullCopies, cnCopyWindow, cnTableIds, inCnRequest } from "../lib/cnClient"
@@ -150,39 +150,49 @@ const cnRunOf = (runs: readonly CampaignRun[], run: CampaignRun) => runs.find(r 
 /** The CN client's reward campaign rows (shared rows on CN's dates, and the chosen runs' copies). */
 const cnRewardRows: TimedCampaign[] = []
 
+/**
+ * The chosen free pulls' yearly copies, no two at once (keepLongerOnOverlap: the longer campaign keeps a year):
+ * on CN's dates for the CN client (cn), on global's for the global one.
+ */
+function chosenPullCopies(cn: boolean): Map<number, FreePullCopy[]> {
+    const pulls = cn ? cnAllFreePulls() : seasonal.freePulls
+    const parse = cn ? parseUtcText : parseMasterDate
+    const picks = schedule.yearlyFreePulls.flatMap(id => {
+        const campaign = pulls.find(c => c.id === id)
+        return campaign === undefined ? [] : [{ key: id, length: runLength(campaign, parse), copies: freePullCopies(campaign, pulls) }]
+    })
+    return keepLongerOnOverlap(picks, parse)
+}
+
+/** The chosen reward/stamina runs' yearly copies, no two at once: on CN's dates (cn) or global's. Keyed by global's run key. */
+function chosenRunCopies(kind: "reward" | "stamina", cn: boolean): Map<string, YearlyWindow[]> {
+    const keys = kind === "reward" ? schedule.yearlyRewardRuns : schedule.yearlyStaminaRuns
+    const cnT = cnTable(kind)
+    const parse = cn ? parseUtcText : parseMasterDate
+    const picks = keys.flatMap(key => {
+        const run = tables[kind].runs.find(r => r.key === key)
+        if (run === undefined) return []
+        const own = cn ? cnRunOf(cnT.runs, run) : run
+        return [{ key, length: runLength(own, parse), copies: runCopies(own, cn ? cnT.runs : tables[kind].runs) }]
+    })
+    return keepLongerOnOverlap(picks, parse)
+}
+
 function refreshCopies() {
     applyCnLoginBonuses()
-    const cnPulls = cnAllFreePulls()
-    cnCopies = schedule.yearlyFreePulls.flatMap(id => {
-        const campaign = cnPulls.find(c => c.id === id)
-        if (campaign === undefined) return []
-        const own = freePullCopies(campaign, cnPulls)
-        return id in CN_SEASONAL_FREE_PULLS ? own.map(copy => ({ ...copy, id: cnFreePullCopyId(copy.year, copy.originalId) })) : own
-    })
-    copies = schedule.yearlyFreePulls.flatMap(id => {
-        if (id in CN_SEASONAL_FREE_PULLS) return []
-        const campaign = seasonal.freePulls.find(c => c.id === id)
-        return campaign === undefined ? [] : freePullCopies(campaign, seasonal.freePulls)
-    })
+    cnCopies = [...chosenPullCopies(true)].flatMap(([id, list]) =>
+        id in CN_SEASONAL_FREE_PULLS ? list.map(copy => ({ ...copy, id: cnFreePullCopyId(copy.year, copy.originalId) })) : list)
+    copies = [...chosenPullCopies(false)].flatMap(([id, list]) => id in CN_SEASONAL_FREE_PULLS ? [] : list)
     // reward campaign copies: same rows, new dates and ids (the dates are read like the game's own rows)
     rewardRows.length = ownRewardCount
-    const cn = cnTable("reward")
     cnRewardRows.length = 0
-    cnRewardRows.push(...cn.rows)
-    for (const key of schedule.yearlyRewardRuns) {
-        const run = tables.reward.runs.find(r => r.key === key)
-        if (run === undefined) continue
-        for (const window of runCopies(run, tables.reward.runs)) {
-            for (const id of run.ids) {
+    cnRewardRows.push(...cnTable("reward").rows)
+    for (const [rows, kept] of [[rewardRows, chosenRunCopies("reward", false)], [cnRewardRows, chosenRunCopies("reward", true)]] as const) {
+        for (const [key, windows] of kept) {
+            const run = tables.reward.runs.find(r => r.key === key)!
+            for (const window of windows) for (const id of run.ids) {
                 const index = ownRewardRows.findIndex(row => row.id === id)
-                rewardRows.push({ ...ownRewardRows[index], id: campaignCopyId(window.year, index), start: window.start, end: window.end })
-            }
-        }
-        // the CN game's copies come from the run's CN dates
-        for (const window of runCopies(cnRunOf(cn.runs, run), cn.runs)) {
-            for (const id of run.ids) {
-                const index = ownRewardRows.findIndex(row => row.id === id)
-                cnRewardRows.push({ ...ownRewardRows[index], id: campaignCopyId(window.year, index), start: window.start, end: window.end })
+                rows.push({ ...ownRewardRows[index], id: campaignCopyId(window.year, index), start: window.start, end: window.end })
             }
         }
     }
@@ -382,6 +392,8 @@ export function getCampaignOverview(): CampaignOverview {
     const cnActive = activeFreePullCopy(cnCopies, now, parseUtcText)
     // the CN game's free pulls, shared ones included, are on CN's dates: their repeats and "on now" follow those
     const cnPulls = cnAllFreePulls()
+    // a chosen one's copies after overlaps (a year another chosen, longer campaign keeps is skipped)
+    const keptPulls = chosenPullCopies(true)
     const freePulls = [
         ...Object.entries(SEASONAL_FREE_PULLS).map(([id, name]) => [id, name, "both"] as const),
         ...Object.entries(CN_SEASONAL_FREE_PULLS).map(([id, name]) => [id, name, "cn"] as const),
@@ -391,7 +403,7 @@ export function getCampaignOverview(): CampaignOverview {
         const campaign = cnPulls.find(c => c.id === id)
         if (original === undefined || campaign === undefined) return []
         const yearly = schedule.yearlyFreePulls.includes(id)
-        const own = freePullCopies(campaign, cnPulls)
+        const own = (yearly ? keptPulls.get(id) : undefined) ?? freePullCopies(campaign, cnPulls)
         const years = new Set(own.map(c => c.year))
         const firstYear = Number(campaign.start.slice(0, 4))
         const skippedYears: number[] = []
@@ -409,12 +421,13 @@ export function getCampaignOverview(): CampaignOverview {
     const runOverview = (kind: "reward" | "stamina"): RunOverview[] => {
         const table = tables[kind]
         const cnT = cnTable(kind)
+        const keptRuns = chosenRunCopies(kind, true)
         const chosen = kind === "reward" ? schedule.yearlyRewardRuns : schedule.yearlyStaminaRuns
         return table.runs.map(run => {
             const yearly = chosen.includes(run.key)
             // the CN game runs it on its CN dates: its repeats and "on now" follow those
             const cnRun = cnRunOf(cnT.runs, run)
-            const own = runCopies(cnRun, cnT.runs)
+            const own = (yearly ? keptRuns.get(run.key) : undefined) ?? runCopies(cnRun, cnT.runs)
             const years = new Set(own.map(c => c.year))
             const firstYear = Number(cnRun.start.slice(0, 4))
             const skippedYears: number[] = []
@@ -447,18 +460,7 @@ export function getCampaignOverview(): CampaignOverview {
 export async function setCampaignSchedule(raw: unknown): Promise<string | null> {
     const { schedule: next, problems } = parseCampaignSchedule(raw, knownRuns)
     if (problems.length > 0) return problems[0]
-    const clash = freePullClash(next.yearlyFreePulls, allFreePulls())
-    if (clash !== null) return clash
-    // two runs of the same kind on at once can't both repeat
-    for (const kind of ["reward", "stamina"] as const) {
-        const keys = kind === "reward" ? next.yearlyRewardRuns : next.yearlyStaminaRuns
-        const runs = tables[kind].runs
-        const runClash = yearlyClash(keys.map(key => {
-            const run = runs.find(r => r.key === key)!
-            return { name: runName(kind, run), copies: runCopies(run, runs) }
-        }))
-        if (runClash !== null) return runClash
-    }
+    // picks whose copies would run at the same time are fine: the longer one keeps those years (keepLongerOnOverlap)
     schedule = next
     lastProblems = []
     mkdirSync(path.dirname(SCHEDULE_FILE), { recursive: true })

@@ -112,7 +112,7 @@
             <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
                 <div class="flex flex-col gap-1">
                     <h3 class="text-xl text-on-background font-semibold">Stamina campaigns</h3>
-                    <p class="text-on-surface-variant">Each one ran once in the game. Pick one to bring it back every year on the same dates. A year where another of the game's stamina campaigns is on then is skipped, and two that would be on at the same time can't both repeat. The game shows and charges the lower stamina itself.</p>
+                    <p class="text-on-surface-variant">Each one ran once in the game. Pick one to bring it back every year on the same dates. A year where another of the game's stamina campaigns is on then is skipped, and where two picked ones would be on at the same time, the longer one runs that year. The game shows and charges the lower stamina itself.</p>
                 </div>
                 <ul id="stamina-list" class="flex flex-col gap-2"></ul>
             </section>
@@ -257,7 +257,7 @@
                     ]
                     if (item.cn) lines.push(cnLine(item.cn))
                     if (on) lines.push("Repeats " + yearlyText(item.cn ?? item.original) + (item.cn ? " (the CN game's dates)" : ""))
-                    if (on && item.skippedYears.length > 0) lines.push("Skipped in " + item.skippedYears.join(", ") + " (another of the game's campaigns of this kind is on then)")
+                    if (on && item.skippedYears.length > 0) lines.push("Skipped in " + item.skippedYears.join(", ") + " (the game runs one of its own then, or another picked one that runs longer)")
                     const run = runLine(item)
                     if (run) lines.push(run)
                     list.appendChild(row({ name: item.name, image: null, checked: on, badges, lines, onChange: (value) => changed(picked, item.key, value) }))
@@ -286,7 +286,7 @@
                     if (run) lines.push(run)
                     loginList.appendChild(row({ name: bonus.name, image: bonus.image, checked: on, badges, lines, onChange: (value) => changed(logins, bonus.id, value) }))
                 }
-                $("pull-intro").textContent = "A copy runs every later year on the same dates and works on any of the " + data.bannerCount + " regular unit banners that is open then (not armament or special banners). A year where one of the game's own free pull campaigns runs at that time is skipped. Two that would run at the same time can't both repeat."
+                $("pull-intro").textContent = "A copy runs every later year on the same dates and works on any of the " + data.bannerCount + " regular unit banners that is open then (not armament or special banners). A year where one of the game's own free pull campaigns runs at that time is skipped. Where two picked ones would run at the same time, the longer one runs that year."
                 const pullList = $("pull-list")
                 pullList.replaceChildren()
                 for (const pull of byStart(data.freePulls)) {
@@ -301,7 +301,7 @@
                     ]
                     if (pull.cn) lines.push(cnLine(pull.cn))
                     if (on) lines.push("Repeats " + yearlyText(pull.cn ?? pull.original) + (pull.cn ? " (the CN game's dates)" : ""))
-                    if (on && pull.skippedYears.length > 0) lines.push("Skipped in " + pull.skippedYears.join(", ") + " (a game campaign runs then)")
+                    if (on && pull.skippedYears.length > 0) lines.push("Skipped in " + pull.skippedYears.join(", ") + " (the game runs one of its own then, or another picked one that runs longer)")
                     const run = runLine(pull)
                     if (run) lines.push(run)
                     pullList.appendChild(row({ name: pull.name, image: null, checked: on, badges, lines, onChange: (value) => changed(pulls, pull.id, value) }))

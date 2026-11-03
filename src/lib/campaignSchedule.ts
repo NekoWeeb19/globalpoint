@@ -236,6 +236,40 @@ export function yearlyWindows(start: string, end: string, originals: readonly { 
 }
 
 /**
+ * Several yearly picks of one kind, with no two copies running at the same time: where copies of two picks
+ * would overlap, the pick whose original run is longer (`length`, ms) keeps that copy and the other skips it
+ * (equal length: the one listed first). The server and the game updates all use this, so they make the same
+ * copies. `parse` reads the copies' dates (global's data: Japan time; CN-dated rows: parseUtcText).
+ */
+export function keepLongerOnOverlap<K, T extends { start: string, end: string }>(
+    picks: readonly { key: K, length: number, copies: readonly T[] }[],
+    parse: (text: string) => number | null = parseMasterDate
+): Map<K, T[]> {
+    const order = picks.map((p, i) => ({ ...p, i })).sort((a, b) => b.length - a.length || a.i - b.i)
+    const taken: { start: number, end: number }[] = []
+    const kept = new Map<K, T[]>()
+    for (const pick of order) {
+        const list: T[] = []
+        for (const copy of pick.copies) {
+            const start = parse(copy.start), end = parse(copy.end)
+            if (start === null || end === null) continue
+            const window = { start, end }
+            if (taken.some(t => overlaps(t, window))) continue
+            taken.push(window)
+            list.push(copy)
+        }
+        kept.set(pick.key, list)
+    }
+    return kept
+}
+
+/** A run's or campaign's length in ms (0 when its dates can't be read). */
+export function runLength(row: { start: string, end: string }, parse: (text: string) => number | null = parseMasterDate): number {
+    const start = parse(row.start), end = parse(row.end)
+    return start === null || end === null ? 0 : end - start
+}
+
+/**
  * Why several yearly picks of one kind can't all be on (two would run at the same time), or null.
  * `picks` are the picks' names with their copies.
  */

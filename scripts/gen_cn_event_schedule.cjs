@@ -219,11 +219,16 @@ function applyYearlyCampaigns(trees, files, cnWindows = {}) {
         const gachas = read("assets/gacha.json")
         const banners = Object.entries(gachas).filter(([id, g]) => C.isFreePullBanner(g) && (cnBanners.size === 0 || cnBanners.has(id))).map(([id]) => Number(id)).sort((a, b) => a - b)
         const names = new Map(R.leaves(pullTree).map(l => [l.path.join("/"), R.splitCsv(l.leaf.text.replace(/\n$/, ""))[1]]))
+        // no two copies at once: the longer campaign keeps a year (the server makes the same choice)
+        const kept = C.keepLongerOnOverlap(chosen.yearlyFreePulls.flatMap(id => {
+            const original = allPulls.find(c => c.id === id)
+            return original ? [{ key: id, length: C.runLength(original, C.parseUtcText), copies: C.freePullCopies(original, allPulls) }] : []
+        }), C.parseUtcText)
         for (const id of chosen.yearlyFreePulls) {
             const original = allPulls.find(c => c.id === id)
             if (!original) continue
             const cnOnly = !seasonal.freePulls.some(c => c.id === id)
-            for (const found of C.freePullCopies(original, allPulls, window.until).filter(inWindow)) {
+            for (const found of (kept.get(id) ?? []).filter(c => c.year <= window.until).filter(inWindow)) {
                 const copy = cnOnly ? { ...found, id: C.cnFreePullCopyId(found.year, found.originalId) } : found
                 const row = C.freePullCopyRow({ ...original, name: names.get(String(id)) ?? original.name }, { ...copy, start: toCn(copy.start), end: toCn(copy.end) }, banners)
                 pullTree.entries.push({ key: String(copy.id), node: { kind: "leaf", text: row, original: "" } })
@@ -238,10 +243,18 @@ function applyYearlyCampaigns(trees, files, cnWindows = {}) {
         const tree = trees.get(files[kind])
         if (!tree) continue
         const added = []
-        for (const key of kind === "reward" ? chosen.yearlyRewardRuns : chosen.yearlyStaminaRuns) {
+        const keys = kind === "reward" ? chosen.yearlyRewardRuns : chosen.yearlyStaminaRuns
+        // no two copies at once: the longer run keeps a year (the server makes the same choice)
+        const kept = C.keepLongerOnOverlap(keys.flatMap(key => {
+            const run = runs[kind].find(r => r.key === key)
+            if (!run) return []
+            const own = cnRunOf(kind, run)
+            return [{ key, length: C.runLength(own, C.parseUtcText), copies: C.runCopies(own, cnRuns[kind]) }]
+        }), C.parseUtcText)
+        for (const key of keys) {
             const run = runs[kind].find(r => r.key === key)
             if (!run) continue
-            for (const copyWindow of C.runCopies(cnRunOf(kind, run), cnRuns[kind], window.until).filter(inWindow)) for (const id of run.ids) {
+            for (const copyWindow of (kept.get(key) ?? []).filter(c => c.year <= window.until).filter(inWindow)) for (const id of run.ids) {
                 const entry = tree.entries.find(e => e.key === String(id))
                 if (!entry || entry.node.kind !== "leaf") continue
                 const fields = R.splitCsv(entry.node.text.replace(/\n$/, ""))

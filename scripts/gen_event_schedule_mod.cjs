@@ -26,7 +26,7 @@ const unzipper = require("unzipper")
 const { ROOT, decodeFile, encodeFile, setLeafText, leaves, readHashedFile, splitCsv, csvField } = require("./cdn_rows.cjs")
 const { zip } = require("./gen_translation_mod.cjs")
 const { parseSchedule, planRowMoves, remapText, formatMasterDate } = require("../out/lib/eventSchedule.js")
-const { parseCampaignSchedule, yearlyLoginColumns, freePullCopies, freePullCopyRow, isFreePullBanner, campaignRuns, runCopies, campaignCopyId } = require("../out/lib/campaignSchedule.js")
+const { parseCampaignSchedule, yearlyLoginColumns, freePullCopies, freePullCopyRow, isFreePullBanner, campaignRuns, runCopies, campaignCopyId, keepLongerOnOverlap, runLength } = require("../out/lib/campaignSchedule.js")
 const crypto = require("crypto")
 
 const CATALOG = path.join(ROOT, "assets", "event_catalog.json")
@@ -111,9 +111,15 @@ async function main() {
             }
         }
         if (file === seasonal.freePullFile) {
+            // no two copies at once: the longer campaign keeps a year (as the server does)
+            const kept = keepLongerOnOverlap(campaigns.yearlyFreePulls.flatMap(id => {
+                const original = seasonal.freePulls.find(c => c.id === id)
+                return original ? [{ key: id, length: runLength(original), copies: freePullCopies(original, seasonal.freePulls) }] : []
+            }))
             for (const id of campaigns.yearlyFreePulls) {
                 const original = seasonal.freePulls.find(c => c.id === id)
-                for (const copy of freePullCopies(original, seasonal.freePulls)) {
+                if (original === undefined) continue // a CN-only campaign: not in the global app
+                for (const copy of kept.get(id) ?? []) {
                     tree.entries.push({ key: String(copy.id), node: { kind: "leaf", text: freePullCopyRow(original, copy, banners), original: "" } })
                     copyRows++
                 }
@@ -125,9 +131,14 @@ async function main() {
             if (file !== table.file) continue
             const chosen = kind === "reward" ? campaigns.yearlyRewardRuns : campaigns.yearlyStaminaRuns
             const added = []
+            const kept = keepLongerOnOverlap(chosen.flatMap(key => {
+                const run = table.runs.find(r => r.key === key)
+                return run ? [{ key, length: runLength(run), copies: runCopies(run, table.runs) }] : []
+            }))
             for (const key of chosen) {
                 const run = table.runs.find(r => r.key === key)
-                for (const window of runCopies(run, table.runs)) {
+                if (!run) continue
+                for (const window of kept.get(key) ?? []) {
                     for (const id of run.ids) {
                         const entry = tree.entries.find(e => e.key === String(id))
                         if (entry === undefined || entry.node.kind !== "leaf") { console.log(`WARNING ${kind} campaign ${id} is not in the game's file`); continue }
