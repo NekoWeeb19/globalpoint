@@ -6,8 +6,8 @@ assets/worldflipper_android_release.swf inside the APK). The patches work on the
 directly (abc.cjs), so no decompile and recompile of the whole game is needed. Classes are found by
 their member names, since the class names are obfuscated.
 
-- The CN app (official CN 1.8.1, com.leiting.wf) is the one GlobalPoint ships: build 23 is the first
-  public build. Its patches are below.
+- The CN app (official CN 1.8.1, com.leiting.wf) is the one GlobalPoint ships: build 23 was the first
+  public build, build 24 the current one. Its patches are below.
 - The global app (0.0.81) has one older patch (the battle log), at the end. It's legacy.
 
 How the whole CN app was connected and globalized, from nothing: docs/CN_CLIENT_SETUP.md.
@@ -27,7 +27,7 @@ Tools
 The CN patch chain
 ------------------
 
-Each step's output SWF is the next one's input. Build 23 is every step below, in this order:
+Each step's output SWF is the next one's input. Build 24 is every step below, in this order:
 
   #  Script                          What it changes
   1  patch_cn_client.cjs             server address -> 127.0.0.1:8000/cn, skips the Leiting login SDK,
@@ -98,10 +98,12 @@ art changes. The halftone band along those strips' top edge is removed in the ga
 (scripts/gen_cn_strip_band.cjs with ClearRect.java), not in the app.
 
 Storage drop-off (9). At the first loading step, before any downloaded file is read, the game looks
-in two places for game files:
-  /sdcard/StarPoint/game/               needs "All files access" plus the storage permissions
-                                        (Android 13+: "Music and audio" and "Photos and videos";
-                                        6-10: Storage). The route the README gives players.
+in three places for game files:
+  /sdcard/StarPoint/game/               need "All files access" plus the storage permissions
+  /sdcard/starpoint_game/               (Android 13+: "Music and audio" and "Photos and videos";
+                                        6-10: Storage). StarPoint/game is the route the README gives
+                                        players; starpoint_game (build 24+) is the same thing as a
+                                        single top-level folder, easier to make in a file manager.
   /sdcard/Android/obb/com.leiting.wf/   needs no permission, but works only on some devices:
                                         whether the game can read a file there depends on the phone
                                         and the app that put it there. Once, on a Samsung Android
@@ -110,9 +112,10 @@ in two places for game files:
                                         read them even with every permission on. It has worked on
                                         other occasions, and adb pushes work on the Android 9
                                         emulator.
-- An OBB there (any *.obb made by scripts/build_cn_obb.cjs) is unpacked from its end backwards, and
-  the file is cut shorter as it goes, so the phone needs little free space beyond the OBB itself. An
-  interrupted unpack carries on at the next start. The emptied OBB is deleted at the end.
+- An OBB at the top of any of them (any *.obb made by scripts/build_cn_obb.cjs) is unpacked from
+  its end backwards, and the file is cut shorter as it goes, so the phone needs little free space
+  beyond the OBB itself. An interrupted unpack carries on at the next start. The emptied OBB is
+  deleted at the end.
 - Loose files there (the companion's "Full game files" copy) are moved into the game's storage.
 - The version record (info.json) is written last, and only if every file made it, so a half-done
   copy is never taken as finished. If storage fills up, the screen says how much is left and stays
@@ -122,8 +125,12 @@ in two places for game files:
     adb shell appops set com.leiting.wf MANAGE_EXTERNAL_STORAGE allow
   or Settings > Apps > World Flipper > All files access, plus the storage permissions under
   Permissions. The companion app has a button for All files access.
-- The game never creates Android/obb/com.leiting.wf/ itself, so the player makes it. Uninstalling the
-  game deletes it, along with any OBB still in it.
+- The game never creates any of these folders itself, so the player makes the one they use.
+  Uninstalling the game deletes Android/obb/com.leiting.wf/, along with any OBB still in it.
+- Build 24 = build 23 + /sdcard/starpoint_game/. Tested 2026-11-03 on the LDPlayer emulator
+  (Android 9): installed over build 23 (cache cleared), a loose file and a small OBB in
+  /sdcard/starpoint_game/ were both taken at the next start (the OBB unpacked and deleted, the
+  emptied folders removed), and the game went on to the title screen.
 The OBB format is described at the top of scripts/build_cn_obb.cjs, and the storage layout and the
 info.json record in STORAGE_LAYOUT.txt.
 

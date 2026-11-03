@@ -18,12 +18,13 @@ package starpoint
    // The game keeps its downloads in private storage (Local Store/asset/asset_download/dummy/: info.json
    // + download/...), which nothing else can write without root. At startup AssetExtractor.start (the
    // first loading step, before any downloaded file is read) asks start() here first. If the game's OBB
-   // folder or /sdcard/StarPoint/game/ holds files, they are moved into that folder (same relative paths),
+   // folder, /sdcard/StarPoint/game/ or /sdcard/starpoint_game/ holds files, they are moved into that
+   // folder (same relative paths),
    // the drop-off copies deleted, then the game's own start() runs. info.json (the version record that
    // tells the server which updates the game already has) is moved last, and only if every file moved.
    // Moving works in slices of ~50 ms so the screen keeps drawing; a text line shows the count.
    // No folder, no files or no permission: start() returns null and the game starts as normal.
-   // OBB: a .obb file in either folder (scripts/build_cn_obb.cjs: a stored zip whose first entry,
+   // OBB: a .obb file in any of these folders (scripts/build_cn_obb.cjs: a stored zip whose first entry,
    // starpoint-obb-index.txt, lists every entry's offsets) is unpacked first, from the END of the file
    // backwards, cutting the file shorter after each slice: the space it frees takes the unpacked files,
    // so no second 10 GB is needed, and an interrupted unpack carries on from where the file now ends.
@@ -33,7 +34,7 @@ package starpoint
    public class StorageDropoff
    {
       public static var passing:Boolean = false;
-      public static const DROP_PATHS:Array = ["/sdcard/Android/obb/com.leiting.wf", "/sdcard/StarPoint/game"];
+      public static const DROP_PATHS:Array = ["/sdcard/Android/obb/com.leiting.wf", "/sdcard/StarPoint/game", "/sdcard/starpoint_game"];
       public static const INDEX_NAME:String = "starpoint-obb-index.txt";
 
       public static function isObb(f:File):Boolean
