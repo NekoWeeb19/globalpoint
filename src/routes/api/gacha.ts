@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getAccountPlayers, getPlayerGachaCampaignSync, getPlayerGachaInfoListSync, getPlayerGachaInfoSync, getPlayerItemSync, getPlayerSync, getSession, insertPlayerGachaCampaignSync, insertPlayerGachaInfoSync, updatePlayerGachaCampaignSync, updatePlayerGachaInfoSync, updatePlayerItemSync, updatePlayerSync } from "../../data/wdfpData";
 import { generateDataHeaders } from "../../utils";
-import { drawGachaSync, rewardPlayerGachaDrawResultSync } from "../../lib/gacha";
+import { drawGachaSync, randomPoolItem, rewardPlayerGachaDrawResultSync } from "../../lib/gacha";
 import { getGachaCampaignIdSync, getGachaSync } from "../../lib/assets";
 import { GachaType } from "../../lib/types";
 import { serializeGachaCampaign } from "../../data/utils";
@@ -22,6 +22,8 @@ import cnGachaTickets from "../../../assets/cn_gacha_tickets.json";
 const CN_TEN_PULL_KINDS = new Set([2, 4, 7, 8, 9, 13, 14])
 const CN_WILDCARD_TICKETS: Record<number, number> = { 9: 999001, 10: 999003, 12: 999005, 13: 999004, 20: 999008 }
 const CN_RARE4_KIND = 20
+// the CN draw kind of a 10-pull once per account (GachaLogic.getCostWithOption case 7)
+const CN_PER_ACCOUNT_KIND = 7
 function cnTicketItem(gachaId: number, kind: number): number | undefined {
     const own = (cnGachaTickets as Record<string, { once?: number, ten?: number, crazy?: number }>)[String(gachaId)]
     switch (kind) {
@@ -288,7 +290,20 @@ const routes = async (fastify: FastifyInstance) => {
 
         let items: Record<number, number> = {}
 
-        switch (paymentType) {
+        // CN "10-pull once per account" banners (page kind 1, e.g. Star Heroes: 1500 paid beads, at least one
+        // 5★; scripts/gen_cn_gacha.cjs): the client's draw kind 7. Drawn as one 10-pull (C8016 when the count is off)
+        const perAccount = gachaData as typeof gachaData & { perAccountCost?: number, guaranteeNumber?: number, guaranteeRarity?: number }
+        const perAccountPull = cn && type === CN_PER_ACCOUNT_KIND && (perAccount.perAccountCost ?? 0) > 0
+        if (perAccountPull) {
+            if (!playerGachaData.isAccountFirst) return reply.status(400).send({
+                "error": "Bad Request",
+                "message": "Already did this once-per-account summon."
+            })
+            playerPaidVmoney -= perAccount.perAccountCost!
+            pullCount = 10
+        }
+
+        if (!perAccountPull) switch (paymentType) {
             case GachaPaymentType.FREE_VMONEY: {
                 const isMulti = type === GachaExecType.VMONEY_MULTI
                 const cost = (isMulti ? gachaData.multiCost : gachaData.singleCost)
@@ -393,7 +408,17 @@ const routes = async (fastify: FastifyInstance) => {
         const drawFrom = cn && type === CN_RARE4_KIND && gachaData.pool[2] !== undefined
             ? { ...gachaData, pool: { ...gachaData.pool, 3: gachaData.pool[2] } } as typeof gachaData
             : gachaData
-        const drawResult = drawGachaSync(drawFrom, pullCount)
+        // a once-per-account 10-pull's guarantee (e.g. one 5★): those draw from that rarity's pool (pool 1 is
+        // 5★, 2 is 4★, 3 is 3★), the rest as usual
+        const guaranteed = perAccountPull ? Math.min(pullCount, perAccount.guaranteeNumber ?? 0) : 0
+        const guaranteePool = drawFrom.pool[6 - (perAccount.guaranteeRarity ?? 5)]
+        const drawResult = drawGachaSync(drawFrom, pullCount - (guaranteed > 0 && guaranteePool?.length ? guaranteed : 0))
+        if (guaranteed > 0 && guaranteePool?.length) {
+            for (let i = 0; i < guaranteed; i++) {
+                const id = guaranteePool[randomPoolItem(0, 1001, guaranteePool.map(e => e.rarity)) ?? 0].id
+                drawResult.set(id, (drawResult.get(id) ?? 0) + 1)
+            }
+        }
         const rewardResult = rewardPlayerGachaDrawResultSync(playerId, gachaData, drawResult)
 
         const newGachaExchangePoint = (playerGachaData.gachaExchangePoint ?? 0) + pullCount

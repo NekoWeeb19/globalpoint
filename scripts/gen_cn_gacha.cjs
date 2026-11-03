@@ -63,6 +63,16 @@ async function pool(oddsId) {
     }
     console.log(`check banner 184: ${await check("184") ? "same as global" : "DIFFERENT"}`)
 
+    // page kind 1 (column 4): a 10-pull once per account for paid beads (column 8, e.g. Star Heroes, 1500), with
+    // at least column 9 units of column 10's rarity; the server draws it as such (src/routes/api/gacha.ts)
+    const perAccount = c => Number(c[4]) === 1
+        ? { perAccountCost: Number(c[8]) || 0, guaranteeNumber: Number(c[9]) || 0, guaranteeRarity: Number(c[10]) || 0 }
+        : {}
+    // banners added by an earlier run get these fields too
+    for (const [id, line] of Object.entries(cn)) {
+        if (gachas[id] === undefined || gachas[id].cn !== true) continue
+        Object.assign(gachas[id], perAccount(R.splitCsv(line.trimEnd())))
+    }
     const added = [], skipped = [], missingUnits = new Map()
     for (const [id, line] of Object.entries(cn)) {
         if (gachas[id] !== undefined) continue
@@ -84,6 +94,7 @@ async function pool(oddsId) {
             startDate: utc(c[29]),
             endDate: utc(c[30]),
             pool: { 1: pools[0], 2: pools[1], 3: pools[2] },
+            ...perAccount(c),
             cn: true,
         }
         added.push(id)

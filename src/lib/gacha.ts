@@ -145,8 +145,11 @@ export function rewardPlayerGachaDrawResultSync(
                 if (giveResult !== null) {
                     // get character rarity
                     const rarity = Math.floor(characterId / 100000) - 1
-                    // decide on movie
-                    const movieType = randomPoolItem(1, 101, rankMovieRates[rarity]) ?? GachaMovieType.NORMAL
+                    // decide on movie; a "rarity_N_guarantee" movie only plays for at least ★N (the client
+                    // checks: 3032 "result rarity mismatch", e.g. a ★4 from Star Heroes with rarity_5_guarantee)
+                    const guaranteeStars = Number((/^rarity_(\d)_guarantee/.exec(characterGacha.guaranteeMovieName ?? "") ?? [])[1] ?? 0)
+                    const rolledMovie = randomPoolItem(1, 101, rankMovieRates[rarity]) ?? GachaMovieType.NORMAL
+                    const movieType = 5 - rarity < guaranteeStars ? GachaMovieType.NORMAL : rolledMovie
 
                     // pick a seed
                     const isRateUp = (gacha as CharacterGacha).movieName !== "normal"
