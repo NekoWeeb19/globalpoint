@@ -323,8 +323,17 @@ async function main() {
             return changed
         },
         // two Launch Gala banners at once: CN's own launch banner (61, 2011-12-24 to 2021-11-04) overlaps the
-        // JP-era one (1, until 2020-01-27); 61 opens when 1 closes
+        // JP-era one (1, until 2020-01-27); 61 opens when 1 closes.
+        // Armament portals (equipment odds in columns 22-24) whose ticket deadline (column 31) is after their
+        // pull window's end (column 30) stay listed and take ticket pulls after the end, but the client only
+        // loads armament rates for portals before their end, so such a pull's result crashed (C8013 "...
+        // gacha_odds/normal_equipment_3 ... not loaded"). Their ticket deadline is set to their end.
         [fileOf("master/gacha/gacha.orderedmap")]: (key, c) => {
+            const date = /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/
+            if (c[22] && c[22] !== "(None)" && !(c[14] && c[14] !== "(None)") && date.test(c[30] ?? "") && date.test(c[31] ?? "") && c[31] > c[30]) {
+                c[31] = c[30]
+                if (key !== "61") return true
+            }
             if (key !== "61" || c[0] !== "newnormal_1") return false
             const i = c.indexOf("2011-12-24 12:00:00")
             if (i < 0) return false
