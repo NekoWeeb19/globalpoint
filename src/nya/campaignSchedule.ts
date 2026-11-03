@@ -15,10 +15,36 @@ import rewardCampaignData from "../../assets/reward_campaign.json"
 import staminaCampaignData from "../../assets/stamina_campaign.json"
 import getDatabase, { Database } from "../data"
 import {
-    activeFreePullCopy, CampaignRun, campaignCopyId, campaignRuns, CampaignSchedule, currentOrNextRun, describeRun,
-    isWindowOn, KnownRuns, runCopies, TimedCampaign, yearlyClash, FreePullBannerInfo, FreePullCampaign, freePullClash,
-    freePullCopies, FreePullCopy, isFreePullBanner, parseCampaignSchedule, SEASONAL_FREE_PULLS,
-    SEASONAL_LOGIN_BONUSES, yearlyLoginServerColumns, yearlyPart, CN_SEASONAL_LOGIN_BONUSES, CN_SEASONAL_FREE_PULLS, cnFreePullCopyId, isFreePullCopyId, withCnDates, parseUtcText, keepLongerOnOverlap, runLength, YearlyWindow, yearlyLoginBonusesKept
+    activeFreePullCopy,
+    CampaignRun,
+    campaignCopyId,
+    campaignRuns,
+    CampaignSchedule,
+    currentOrNextRun,
+    describeRun,
+    KnownRuns,
+    runCopies,
+    TimedCampaign,
+    FreePullBannerInfo,
+    FreePullCampaign,
+    freePullCopies,
+    FreePullCopy,
+    isFreePullBanner,
+    parseCampaignSchedule,
+    SEASONAL_FREE_PULLS,
+    SEASONAL_LOGIN_BONUSES,
+    yearlyLoginServerColumns,
+    yearlyPart,
+    CN_SEASONAL_LOGIN_BONUSES,
+    CN_SEASONAL_FREE_PULLS,
+    cnFreePullCopyId,
+    isFreePullCopyId,
+    withCnDates,
+    parseUtcText,
+    keepLongerOnOverlap,
+    runLength,
+    YearlyWindow,
+    yearlyLoginBonusesKept
 } from "../lib/campaignSchedule"
 import { cnCampaigns, cnLoginGroup, cnOnlyLoginGroups, setCnLoginGroup, setCnSharedRewardRows } from "./cnCampaigns"
 import { cnBuiltFreePullCopies, cnCopyWindow, cnTableIds, inCnRequest } from "../lib/cnClient"
@@ -161,7 +187,6 @@ function applyCnLoginBonuses() {
 // client gets `copies`, on global's). Shared campaigns are on CN's own dates in the CN game (scripts/
 // gen_cn_event_schedule.cjs builds the same copies into its tables).
 let cnCopies: FreePullCopy[] = []
-const allFreePulls = () => [...seasonal.freePulls, ...cnCampaigns.freePulls] as FreePullCampaign[]
 const cnWindow = (key: string) => cnEventWindows()?.[key] ?? null
 /** The shared seasonal free pulls on CN's dates (global's when CN's data hasn't one). */
 const cnSharedPulls = () => seasonal.freePulls.map(p => withCnDates(p, cnWindow(`freePull:${p.id}`)))

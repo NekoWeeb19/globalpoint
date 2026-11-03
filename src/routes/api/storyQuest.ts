@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getAccountPlayers, getPlayerSingleQuestProgressSync, getPlayerSync, getSession, insertPlayerQuestProgressSync, updatePlayerQuestProgressSync } from "../../data/wdfpData";
 import { getQuestFromCategorySync } from "../../lib/assets";
 import { givePlayerRewardSync } from "../../lib/quest";
-import { generateDataHeaders, epochOf, getServerTime } from "../../utils";
+import { generateDataHeaders, epochOf } from "../../utils";
 import { QuestCategory } from "../../lib/types";
 import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";
 import { progressPlayerMissionsSync } from "../../nya/mission";

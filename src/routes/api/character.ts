@@ -2,9 +2,9 @@ import { awakeManaNodesSync } from "../../nya/manaAwake";
 // Handles the insertion of mana into characters.
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { getAccountPlayers, getPlayerCharacterManaNodesSync, getPlayerCharacterSync, getPlayerCharactersSync, getPlayerCharactersManaNodesSync, getPlayerItemSync, getPlayerSync, getSession, givePlayerItemSync, hasPlayerUnlockedCharacterManaNodeSync, insertPlayerCharacterManaNodesSync, updatePlayerCharacterBondTokenSync, updatePlayerCharacterSync, updatePlayerItemSync, updatePlayerSync } from "../../data/wdfpData";
+import { getAccountPlayers, getPlayerCharacterManaNodesSync, getPlayerCharacterSync, getPlayerCharactersSync, getPlayerItemSync, getPlayerSync, getSession, insertPlayerCharacterManaNodesSync, updatePlayerCharacterBondTokenSync, updatePlayerCharacterSync, updatePlayerItemSync, updatePlayerSync } from "../../data/wdfpData";
 import { generateDataHeaders } from "../../utils";
-import { getCharacterDataSync, getCharacterManaNodeSync, getCharacterManaNodesSync } from "../../lib/assets";
+import { getCharacterDataSync, getCharacterManaNodesSync } from "../../lib/assets";
 import { clientSerializeDate } from "../../data/utils";
 import { givePlayerCharacterSync } from "../../lib/character";
 import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";

@@ -1,7 +1,7 @@
 // Handles EX boosts for characters.
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
-import { getAccountPlayers, getPlayerCharacterSync, getPlayerItemSync, getPlayerSync, getSession, playerOwnsCharacterSync, updatePlayerCharacterSync, updatePlayerItemSync } from "../../data/wdfpData"
+import { getAccountPlayers, getPlayerCharacterSync, getPlayerItemSync, getSession, updatePlayerCharacterSync, updatePlayerItemSync } from "../../data/wdfpData"
 import { getCharacterDataSync, getExAbilityPoolsSync, getExBoostItemSync, getExStatusPoolSync } from "../../lib/assets"
 import { generateDataHeaders } from "../../utils"
 import { randomInt } from "crypto"

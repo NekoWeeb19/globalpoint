@@ -1,7 +1,7 @@
 // Handles the insertion of mana into characters.
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { getAccountPlayers, getSession } from "../../data/wdfpData";
+import { getSession } from "../../data/wdfpData";
 import { generateDataHeaders } from "../../utils";
 import encyclopedia from "../../../assets/encyclopedia.json";
 import { cnTableIds, isCnRequest } from "../../lib/cnClient";

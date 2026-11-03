@@ -1,7 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getServerDate, getServerTimeMode, isServerTimeTicking, setServerTime } from "../../utils";
-import { givePlayerCharacterSync } from "../../lib/character";
-import { givePlayerEquipmentSync } from "../../lib/equipment";
 import { SendMail, MAIL_TYPE } from "../../nya/mail";
 import { getBannerRotationStatus, goToBannerRotation, resumeBannerRotation, skipBannerRotation } from "../../lib/bannerRotation";
 import { getAccountFromPlayerIdSync, getAllPlayersSync, getPlayerFromAccountIdSync, getPlayerSync } from "../../data/wdfpData";

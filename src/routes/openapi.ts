@@ -1,20 +1,8 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { SessionType } from "../data/types";
-import { deleteAccountSessionsOfType, deleteSession, getAccount, getAccountFromIdpIdSync, getAccountFromPlayerIdSync, getSession, insertAccount, insertSession, updateAccount } from "../data/wdfpData";
+import { deleteAccountSessionsOfType, deleteSession, getAccount, getAccountFromIdpIdSync, getSession, insertAccount, insertSession, updateAccount } from "../data/wdfpData";
 import { generateIdpAlias } from "../utils";
 import { takeAccountClaim } from "../nya/accountClaim";
-
-interface CreateDeviceAccessTokenBody {
-    adid: string
-    appVer: string
-    deviceId: string
-    market: string
-    os: string
-    previousDeviceId: string
-    previousSerialNo: string
-    sdkVer: string
-    serialNo: string
-}
 
 interface ZatLoginBody {
     adid: string
@@ -43,22 +31,6 @@ interface ZatLoginBody {
     zat: string
 }
 
-interface AndroidZatLoginBody extends ZatLoginBody {
-    androidId: string
-}
-
-interface PushTokenRegisterBody {
-    appId: string
-    country: string
-    deviceId: string
-    lang: string
-    market: string
-    os: string
-    playerId: string
-    pushToken: string
-    timezoneOffset: number
-}
-
 interface LoginAgreementBody {
     appId: string
     country: string
@@ -68,17 +40,6 @@ interface LoginAgreementBody {
     lang: string
     os: string
     serialNo: string
-}
-
-interface PlayerHeartbeatBody {
-    appId: string
-    clientTime: number
-    country: string
-    heartbeatIntervals: number
-    market: string
-    os: string
-    playerId: string
-    seq: number
 }
 
 interface AuthLoginDeviceBody {
@@ -110,10 +71,6 @@ interface AuthLoginDeviceBody {
     timezoneOffset: number
     usimCountry: string
     whiteKey: string
-}
-
-interface AndroidAuthLoginDeviceBody extends AuthLoginDeviceBody {
-    androidId: string
 }
 
 const routes = async (fastify: FastifyInstance) => {

@@ -7,7 +7,7 @@ import { deserializeClientDate } from "../../data/utils";
 import { getAccountPlayers, getPlayerItemSync, getPlayerSync, getSession, updatePlayerItemSync, updatePlayerSync } from "../../data/wdfpData";
 import { getBossCoinShopItemsSync, getEventShopItemsSync, getGenericShopItemsSync, getShopItemSync } from "../../lib/assets";
 import { CharacterReward, CharacterShopItemReward, CurrencyReward, CurrencyShopItemReward, EquipmentItemReward, EquipmentItemShopItemReward, Reward, RewardType, ShopItemRewardType, ShopItems, ShopItemUserCostType, ShopType } from "../../lib/types";
-import { generateDataHeaders, getServerDate, epochOf, getServerTime } from "../../utils";
+import { generateDataHeaders, getServerDate, epochOf } from "../../utils";
 import { givePlayerRewardsSync } from "../../lib/quest";
 import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";
 import { withMissionRewards } from "../../nya/mission";

@@ -1,10 +1,9 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync } from "fs";
 import path from "path";
 import cliProgress, { SingleBar } from "cli-progress";
 import readlineSync from "readline-sync";
 import { createHash } from "crypto";
 
-const CDN_URL = "http://patch.wdfp.kakaogames.com/Live/2.0.0"
 
 const ROOT = __dirname
 const cdn_dir = process.env.CDN_DIR || ".cdn"

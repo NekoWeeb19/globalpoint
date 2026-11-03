@@ -10,7 +10,6 @@
 
 import missionData from "../../assets/missions.json"
 import { readFileSync, statSync } from "fs"
-import path from "path"
 import { inCnRequest } from "../lib/cnClient"
 import { cnGeneratedFile } from "../lib/cnGenerated"
 import questStamina from "../../assets/quest_stamina.json"

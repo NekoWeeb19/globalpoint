@@ -3,7 +3,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { collectPlayerPooledExpSync, getAccountPlayers, getPlayerCharacterSync, getPlayerSync, getPlayerCharactersSync, getSession, givePlayerItemSync, updatePlayerCharacterSync, updatePlayerSync } from "../../data/wdfpData";
 import { givePlayerCharactersExpSync } from "../../lib/character";
-import { generateDataHeaders, epochOf, getServerTime } from "../../utils";
+import { generateDataHeaders, epochOf } from "../../utils";
 import { getCharacterDataSync } from "../../lib/assets";
 import { clientSerializeDate } from "../../data/utils";
 import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";

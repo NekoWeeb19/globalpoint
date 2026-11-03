@@ -4,7 +4,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getAccountPlayers, getPlayerSync, getSession } from "../../data/wdfpData";
 import { ActiveMissionClaimRequest } from "../../lib/activeMission";
 import { claimPlayerActiveMissionsSync } from "../../nya/activeMission";
-import { generateDataHeaders, epochOf, getServerTime } from "../../utils";
+import { generateDataHeaders, epochOf } from "../../utils";
 
 interface ReceiveActiveMissionBody {
     viewer_id: number,

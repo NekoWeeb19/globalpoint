@@ -5,7 +5,7 @@
 
 import getDatabase, { Database } from "../data"
 import { loginBonusDataFor } from "./cnCampaigns"
-import { LOGIN_BONUS_REWARD_KINDS, LoginBonusData, loginBonusGroupOfKey, LoginBonusProgress, LoginBonusReward, loginPaidBeads, settleLoginBonus } from "../lib/loginBonus"
+import { LOGIN_BONUS_REWARD_KINDS, loginBonusGroupOfKey, LoginBonusProgress, LoginBonusReward, loginPaidBeads, settleLoginBonus } from "../lib/loginBonus"
 import { dailyPaidBeads } from "./serverSettings"
 import { getPlayerSync, updatePlayerSync } from "../data/wdfpData"
 import { dayNumber } from "../lib/mission"

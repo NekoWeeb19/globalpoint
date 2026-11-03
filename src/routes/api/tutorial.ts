@@ -3,7 +3,7 @@ import { clientSerializeDate } from "../../data/utils";
 import { getAccountPlayers, getPlayerSync, getPlayerTriggeredTutorialsSync, getSession, insertDefaultPlayerCharacterSync, insertPlayerTriggeredTutorialSync, updatePlayerSync } from "../../data/wdfpData";
 import { generateDataHeaders, getServerTime } from "../../utils";
 import { getGachaSync } from "../../lib/assets";
-import { randomPoolItem, rewardPlayerGachaDrawResultSync } from "../../lib/gacha";
+import { rewardPlayerGachaDrawResultSync } from "../../lib/gacha";
 import { randomInt } from "crypto";
 import { GachaCharacterDraw } from "../../lib/types";
 

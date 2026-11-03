@@ -1,8 +1,8 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { getAccountPlayers, getPlayerGachaCampaignSync, getPlayerGachaInfoListSync, getPlayerGachaInfoSync, getPlayerItemSync, getPlayerSync, getSession, insertPlayerGachaCampaignSync, insertPlayerGachaInfoSync, updatePlayerGachaCampaignSync, updatePlayerGachaInfoSync, updatePlayerItemSync, updatePlayerSync } from "../../data/wdfpData";
+import { getAccountPlayers, getPlayerGachaCampaignSync, getPlayerGachaInfoSync, getPlayerItemSync, getPlayerSync, getSession, insertPlayerGachaCampaignSync, insertPlayerGachaInfoSync, updatePlayerGachaCampaignSync, updatePlayerGachaInfoSync, updatePlayerItemSync, updatePlayerSync } from "../../data/wdfpData";
 import { generateDataHeaders } from "../../utils";
 import { drawGachaSync, randomPoolItem, rewardPlayerGachaDrawResultSync } from "../../lib/gacha";
-import { getGachaCampaignIdSync, getGachaSync } from "../../lib/assets";
+import { getGachaSync } from "../../lib/assets";
 import { GachaType } from "../../lib/types";
 import { serializeGachaCampaign } from "../../data/utils";
 import { cnKnownFreePullEntries, resolveFreePullCampaignId } from "../../nya/campaignSchedule";

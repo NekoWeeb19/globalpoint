@@ -1,7 +1,7 @@
 import { getPlayerItemSync, getPlayerSync, givePlayerItemSync, updatePlayerSync } from "../data/wdfpData"
 import { givePlayerCharacterSync } from "../lib/character"
 import { givePlayerEquipmentSync } from "../lib/equipment"
-import { epochOf, getServerDate, getServerTime } from "../utils"
+import { epochOf, getServerDate } from "../utils"
 import { ClientError } from "./utils"
 import { recordReceivedSync } from "./receiveHistory"
 import { InfiniteMail, infiniteMailOn } from "./serverSettings"

@@ -1,11 +1,9 @@
 import { randomInt } from "crypto";
-import { clientSerializeDate } from "../data/utils";
-import { getPlayerCharacterSync, getPlayerItemSync, getPlayerSync, givePlayerItemSync, updatePlayerSync } from "../data/wdfpData";
+import { getPlayerItemSync, getPlayerSync, givePlayerItemSync, updatePlayerSync } from "../data/wdfpData";
 import { getRareScoreRewardGroup } from "./assets";
 import { givePlayerCharacterSync } from "./character";
 import { givePlayerEquipmentSync } from "./equipment";
 import { CharacterReward, CommonScoreReward, CurrencyReward, CurrencyScoreReward, DropScoreRewardId, EquipmentItemReward, GivePlayerScoreRewardsResult, ItemScoreReward, PlayerRewardResult, RareScoreRewardGroup, Reward, RewardType, ScoreReward, ScoreRewardType } from "./types";
-import { Player } from "../data/types";
 import { itemDropMultiplier, multipliedDrop } from "./rewardCampaign";
 import { withDropAmount } from "../nya/dropSettings";
 import elementItemMap from "../../assets/reward_element_map.json";

@@ -1,7 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import fastifyMultipart from "@fastify/multipart";
+import "@fastify/multipart"; // adds request.file() to the request type
 import { deserializePlayerData, getClientSerializedData } from "../../data/utils";
-import { createReadStream } from "fs";
 import { getAllPlayersSync, replacePlayerDataSync } from "../../data/wdfpData";
 
 interface SaveQuery {

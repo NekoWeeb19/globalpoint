@@ -13,23 +13,6 @@ interface IndexBody {
     app_admin: string
 }
 
-interface ReceiveResponse {
-    auto_sale_expired_mail: boolean,
-    dispose_expired_mail: boolean,
-    total_count: number,
-
-    user_periodic_reward_point_list?: { id: number, point: number }[],
-    character_list?: Object[],
-    crazy_gacha_result_list?: Object[],
-    equipment_list?: Object[],
-    fund_receive_list?: Object[],
-    item_list?: Object[],
-    mail_arrived?: boolean,
-    monthly_charge_bonus_info?: Object[],
-    user_daily_challenge_point_list?: Object[],
-    user_info?: Object,
-}
-
 const routes = async (fastify: FastifyInstance) => {
     fastify.post("/index", async (request: FastifyRequest, reply: FastifyReply) => {
         const body = request.body as IndexBody

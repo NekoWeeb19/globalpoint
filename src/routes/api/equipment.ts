@@ -1,10 +1,10 @@
 // Handles the insertion of mana into characters.
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { deletePlayerEquipmentSync, getAccountPlayers, getPlayerEquipmentSync, getPlayerItemSync, getPlayerSync, getSession, givePlayerItemSync, playerOwnsEquipmentSync, updatePlayerEquipmentSync, updatePlayerItemSync, updatePlayerPartyGroupSync } from "../../data/wdfpData";
+import { deletePlayerEquipmentSync, getAccountPlayers, getPlayerEquipmentSync, getPlayerItemSync, getPlayerSync, getSession, givePlayerItemSync, playerOwnsEquipmentSync, updatePlayerEquipmentSync, updatePlayerItemSync } from "../../data/wdfpData";
 import { generateDataHeaders } from "../../utils";
 import { clientSerializeEquipment } from "../../lib/equipment";
-import { PlayerEquipment, UserEquipment } from "../../data/types";
+import { PlayerEquipment } from "../../data/types";
 import { ClientError, viewer_id_to_player_id } from "../../nya/utils";
 import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";
 import { withMissionRewards } from "../../nya/mission";
