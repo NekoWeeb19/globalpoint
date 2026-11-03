@@ -29,6 +29,11 @@ package starpoint
    // backwards, cutting the file shorter after each slice: the space it frees takes the unpacked files,
    // so no second 10 GB is needed, and an interrupted unpack carries on from where the file now ends.
    // Its info.json (second entry, so unpacked last) follows the same rules; the emptied file is deleted.
+   // A split OBB (<name>.part1of3.obb ... part3of3.obb, build_cn_obb.cjs --parts; build 25+) is one OBB cut
+   // into byte ranges: the parts are read as one file, the last part still there is cut shorter and each
+   // part deleted once empty. Before the first unpack every part must be there and whole; after that a
+   // marker file in the private folder says it began, and the parts past the current end must already be
+   // unpacked. Otherwise the screen names the missing or incomplete part and stays there.
    // The game's own OBB folder needs no permission on any Android version.
    // Game objects are typed * (this compiles without the game's classes; members are looked up by name).
    public class StorageDropoff
@@ -49,7 +54,8 @@ package starpoint
          return isObb(f) || (!f.isDirectory && f.name.toLowerCase() == "server.txt");
       }
 
-      // the .obb files at the top of the drop-off folders
+      // the OBBs at the top of the drop-off folders: a File for a one-file OBB, or for a split one
+      // (<name>.part<i>of<n>.obb, build_cn_obb.cjs --parts) one {name, n, files: [File or null per part]}
       public static function obbFiles():Array
       {
          var out:Array = [];
@@ -60,7 +66,28 @@ package starpoint
                var d:File = new File(DROP_PATHS[i]);
                if (!d.exists || !d.isDirectory) continue;
                var list:Array = d.getDirectoryListing();
-               for (var j:int = 0; j < list.length; j++) if (isObb(list[j])) out.push(list[j]);
+               var groups:Object = {};
+               for (var j:int = 0; j < list.length; j++)
+               {
+                  var f:File = list[j];
+                  if (!isObb(f)) continue;
+                  var m:Array = f.name.match(/^(.*)\.part(\d+)of(\d+)\.obb$/i);
+                  if (m == null)
+                  {
+                     out.push(f);
+                     continue;
+                  }
+                  var n:int = int(m[3]);
+                  var part:int = int(m[2]);
+                  if (n < 2 || part < 1 || part > n) continue;
+                  var key:String = String(m[1]).toLowerCase() + "|" + n;
+                  if (groups[key] == null)
+                  {
+                     groups[key] = {name: m[1] + ".part1of" + n + ".obb", n: n, files: new Array(n)};
+                     out.push(groups[key]);
+                  }
+                  groups[key].files[part - 1] = f;
+               }
             }
             catch (e:*)
             {
@@ -168,9 +195,14 @@ package starpoint
       public var obbQueue:Array = [];
       public var obbInfos:Array = []; // [obb File, data offset, size] of each OBB's info.json
       public var obbDone:Array = []; // OBB files fully unpacked (deleted once their info.json is handled)
-      // the OBB being unpacked
-      public var obb:File;
-      public var stream:FileStream;
+      // the OBB being unpacked: one file, or the parts of a split one, each a byte range of the whole
+      public var obb:File; // the file (part 1) that holds the index and info.json
+      public var stream:FileStream; // part 1's stream
+      public var segFiles:Array; // the parts still there, in order (the last one is cut shorter)
+      public var segStreams:Array;
+      public var segStart:Array; // where each part starts in the whole OBB
+      public var segCount:int; // parts expected (1 for a one-file OBB)
+      public var marker:File; // set once a split OBB's unpack has begun (tells a resume from a missing part)
       public var hdr:Array;
       public var dat:Array;
       public var len:Array;
@@ -217,19 +249,40 @@ package starpoint
          setTimeout(scan, 1);
       }
 
-      // reads the OBB's index (first zip entry); entries past the file's current end are already unpacked
-      public function openObb(f:File):void
+      public static function sizeOf(f:File):Number
       {
-         obb = f;
+         return new File(f.nativePath).size;
+      }
+
+      public static function gbText(n:Number):String
+      {
+         return (n / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+      }
+
+      // reads the OBB's index (first zip entry); entries past the file's current end are already unpacked.
+      // item: a File, or a split OBB's {name, n, files} from obbFiles()
+      public function openObb(item:*):void
+      {
+         var parts:Array = item is File ? [item] : item.files;
+         var label:String = item is File ? File(item).name : String(item.name);
+         obb = parts[0];
          stream = null;
+         segStreams = [];
+         marker = null;
+         if (obb == null)
+         {
+            hold("Game files part 1 of " + parts.length + " is missing:\n" + label + "\nCopy it next to the other parts, then reopen the game.");
+            return;
+         }
          try
          {
-            say("Reading " + f.name + "…");
+            say("Reading " + obb.name + "…");
             var s:FileStream = new FileStream();
             s.endian = Endian.LITTLE_ENDIAN;
-            s.open(f, FileMode.UPDATE); // it must be possible to cut it shorter
+            s.open(obb, FileMode.UPDATE); // it must be possible to cut it shorter
             stream = s;
-            var fileLen:Number = new File(f.nativePath).size;
+            segStreams = [s];
+            var fileLen:Number = sizeOf(obb);
             s.position = 0;
             if (s.readUnsignedInt() != 0x04034b50) throw new Error("not a zip");
             s.position = 18;
@@ -258,10 +311,81 @@ package starpoint
                if (line.substr(39) == "info.json") infoAt = hdr.length - 1;
             }
             if (hdr.length != int(head[2])) throw new Error("index is cut short");
+            // a split OBB: "... parts <n> <size 1> ... <size n>"; its parts make one byte range
+            segCount = head.length >= 5 && head[3] == "parts" ? int(head[4]) : 1;
+            if (segCount < 1 || head.length < (segCount > 1 ? 5 + segCount : 3)) throw new Error("bad parts line");
+            if (segCount != parts.length)
+            {
+               if (!(item is File)) throw new Error("named " + parts.length + " parts, index says " + segCount);
+               parts = [obb];
+               for (var x:int = 1; x < segCount; x++) parts.push(null);
+            }
+            segFiles = [obb];
+            segStart = [0];
+            if (segCount > 1)
+            {
+               var sizes:Array = [];
+               var at:Number = 0;
+               for (var q:int = 0; q < segCount; q++)
+               {
+                  sizes.push(Number(head[5 + q]));
+                  if (q > 0) segStart.push(at);
+                  at += sizes[q];
+               }
+               marker = target().resolvePath("starpoint-obb-unpacking-" + obb.name + ".txt");
+               var resuming:Boolean = marker.exists;
+               // the parts there must be 1..m with no gap; before the unpack begins, all of them, whole;
+               // once it has begun the later ones go as they empty, and only the last one there is short
+               var m:int = 0;
+               while (m < segCount && parts[m] != null) m++;
+               for (var g:int = m; g < segCount; g++)
+               {
+                  if (parts[g] != null || !resuming)
+                  {
+                     closeObb();
+                     hold("Game files part " + (m + 1) + " of " + segCount + " is missing:\n" + obb.name.replace(/part1of/i, "part" + (m + 1) + "of") + "\nCopy it next to the other parts, then reopen the game.");
+                     return;
+                  }
+               }
+               for (var p:int = 0; p < m; p++)
+               {
+                  var have:Number = sizeOf(parts[p]);
+                  if (have != sizes[p] && (!resuming || p < m - 1 || have > sizes[p]))
+                  {
+                     closeObb();
+                     hold("Game files part " + (p + 1) + " of " + segCount + " is incomplete:\n" + gbText(have) + " of " + gbText(sizes[p]) + "\nCopy it again, then reopen the game.");
+                     return;
+                  }
+                  if (p > 0)
+                  {
+                     var ps:FileStream = new FileStream();
+                     ps.endian = Endian.LITTLE_ENDIAN;
+                     ps.open(parts[p], FileMode.UPDATE);
+                     segStreams.push(ps);
+                     segFiles.push(parts[p]);
+                  }
+               }
+               fileLen = segStart[m - 1] + sizeOf(parts[m - 1]);
+            }
             // what is still in the file (entries are in offset order)
             k = hdr.length - 1;
             while (k >= 0 && hdr[k] >= fileLen) k--;
             if (k >= 0 && dat[k] + len[k] > fileLen) throw new Error("file ends inside " + paths[k]);
+            // a split OBB with parts gone or short: only right if what was past its end is unpacked
+            // already (the first entry past the end and the very last one), not if a part never came
+            if (segCount > 1 && k < hdr.length - 1)
+            {
+               var dest0:File = target();
+               var a:File = dest0.resolvePath(paths[k + 1]);
+               var z:File = dest0.resolvePath(paths[hdr.length - 1]);
+               if (!(a.exists && a.size == len[k + 1] && z.exists && z.size == len[hdr.length - 1]))
+               {
+                  closeObb();
+                  if (m >= segCount) hold("Game files part " + segCount + " of " + segCount + " is incomplete.\nCopy it again, then reopen the game.");
+                  else hold("Game files part " + (m + 1) + " of " + segCount + " is missing:\n" + obb.name.replace(/part1of/i, "part" + (m + 1) + "of") + "\nCopy it next to the other parts, then reopen the game.");
+                  return;
+               }
+            }
             obbCount = 0;
             obbBytesTotal = 0;
             for (var j:int = 0; j <= k; j++)
@@ -272,12 +396,19 @@ package starpoint
             }
             obbNext = 0;
             obbBytesDone = 0;
-            trace("[StorageDropoff] " + f.nativePath + ": " + hdr.length + " entries, " + obbCount + " to unpack");
+            if (marker != null && !marker.exists)
+            {
+               var w:FileStream = new FileStream();
+               w.open(marker, FileMode.WRITE);
+               w.writeUTFBytes(segCount + " parts\n");
+               w.close();
+            }
+            trace("[StorageDropoff] " + obb.nativePath + ": " + hdr.length + " entries, " + obbCount + " to unpack, " + segFiles.length + "/" + segCount + " parts");
          }
          catch (e:*)
          {
             // not ours, unreadable or not writable: leave it alone
-            trace("[StorageDropoff] skipping " + f.nativePath + ": " + e);
+            trace("[StorageDropoff] skipping " + obb.nativePath + ": " + e);
             closeObb();
             setTimeout(nextObb, 1);
             return;
@@ -285,16 +416,63 @@ package starpoint
          setTimeout(unpack, 1);
       }
 
+      // a split OBB that can't be unpacked as it is: say why and stay on this screen (going on would
+      // start the 10 GB download instead)
+      public function hold(text:String):void
+      {
+         failed++;
+         trace("[StorageDropoff] " + text);
+         say(text);
+      }
+
       public function closeObb():void
       {
-         try
+         for (var i:int = 0; segStreams != null && i < segStreams.length; i++)
          {
-            if (stream != null) stream.close();
+            try
+            {
+               segStreams[i].close();
+            }
+            catch (e:*)
+            {
+            }
          }
-         catch (e:*)
-         {
-         }
+         segStreams = [];
          stream = null;
+      }
+
+      // reads n bytes at a position in the whole OBB (across parts) onto the end of buf
+      public function readAt(pos:Number, n:Number):void
+      {
+         var i:int = segFiles.length - 1;
+         while (i > 0 && segStart[i] > pos) i--;
+         while (n > 0)
+         {
+            var s:FileStream = segStreams[i];
+            var inPart:Number = i < segFiles.length - 1 ? segStart[i + 1] - pos : n;
+            var c:uint = uint(Math.min(n, inPart));
+            s.position = pos - segStart[i];
+            s.readBytes(buf, buf.length, c);
+            pos += c;
+            n -= c;
+            i++;
+         }
+      }
+
+      // cuts the whole OBB at a position: the parts past it are deleted, the one it falls in shortened
+      public function cutTo(pos:Number):void
+      {
+         var i:int = segFiles.length - 1;
+         while (i > 0 && segStart[i] >= pos)
+         {
+            segStreams[i].close();
+            (segFiles[i] as File).deleteFile();
+            segStreams.pop();
+            segFiles.pop();
+            i--;
+         }
+         segStreams[i].position = pos - segStart[i];
+         segStreams[i].truncate();
       }
 
       // unpack from the end backwards, a slice at a time, then cut the file at the lowest unpacked entry
@@ -326,8 +504,7 @@ package starpoint
          {
             try
             {
-               stream.position = cutAt;
-               stream.truncate();
+               cutTo(cutAt);
             }
             catch (e:*)
             {
@@ -367,7 +544,8 @@ package starpoint
          }
          closeObb();
          if (infoAt >= 0) obbInfos.push([obb, dat[infoAt], len[infoAt]]);
-         obbDone.push(obb);
+         for (var d:int = 0; d < segFiles.length; d++) obbDone.push(segFiles[d]);
+         if (marker != null) obbDone.push(marker);
          trace("[StorageDropoff] " + obb.nativePath + ": unpacked " + obbNext + " files, " + ((getTimer() - started) / 1000).toFixed(1) + " s");
          setTimeout(nextObb, 1);
       }
@@ -385,9 +563,8 @@ package starpoint
             while (off < size)
             {
                var n:uint = uint(Math.min(1048576, size - off));
-               stream.position = from + off;
                buf.length = 0;
-               stream.readBytes(buf, 0, n);
+               readAt(from + off, n);
                out.writeBytes(buf, 0, n);
                off += n;
             }

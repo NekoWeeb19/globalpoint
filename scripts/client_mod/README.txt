@@ -7,7 +7,7 @@ directly (abc.cjs), so no decompile and recompile of the whole game is needed. C
 their member names, since the class names are obfuscated.
 
 - The CN app (official CN 1.8.1, com.leiting.wf) is the one GlobalPoint ships: build 23 was the first
-  public build, build 24 the current one. Its patches are below.
+  public build, build 25 the current one. Its patches are below.
 - The global app (0.0.81) has one older patch (the battle log), at the end. It's legacy.
 
 How the whole CN app was connected and globalized, from nothing: docs/CN_CLIENT_SETUP.md.
@@ -27,7 +27,7 @@ Tools
 The CN patch chain
 ------------------
 
-Each step's output SWF is the next one's input. Build 24 is every step below, in this order:
+Each step's output SWF is the next one's input. Build 25 is every step below, in this order:
 
   #  Script                          What it changes
   1  patch_cn_client.cjs             server address -> 127.0.0.1:8000/cn, skips the Leiting login SDK,
@@ -116,6 +116,13 @@ in three places for game files:
   its end backwards, and the file is cut shorter as it goes, so the phone needs little free space
   beyond the OBB itself. An interrupted unpack carries on at the next start. The emptied OBB is
   deleted at the end.
+- A split OBB (build 25+; build_cn_obb.cjs --parts N): main.1008001.com.leiting.wf.part1of3.obb ...
+  part3of3.obb, all in the same folder. The game reads the parts as one file, cuts the last part
+  still there shorter as it goes and deletes each part once it's empty. Before the first unpack every
+  part must be there and whole; if one is missing or short, the screen says which ("Game files part
+  2 of 3 is missing: <name>") and stays there, nothing unpacked. Once an unpack has begun, a marker
+  file in the game's storage (starpoint-obb-unpacking-<part 1's name>.txt) lets a resume carry on
+  with the parts that are left, after checking that what was past their end is already unpacked.
 - Loose files there (the companion's "Full game files" copy) are moved into the game's storage.
 - The version record (info.json) is written last, and only if every file made it, so a half-done
   copy is never taken as finished. If storage fills up, the screen says how much is left and stays
@@ -131,6 +138,13 @@ in three places for game files:
   (Android 9): installed over build 23 (cache cleared), a loose file and a small OBB in
   /sdcard/starpoint_game/ were both taken at the next start (the OBB unpacked and deleted, the
   emptied folders removed), and the game went on to the title screen.
+- Build 25 = build 24 + split OBBs. Tested 2026-11-03 on the LDPlayer emulator (Android 9) with
+  small test OBBs in 3 parts (build_cn_obb.cjs --test): parts 1 and 3 only -> "Game files part 2 of 3
+  is missing: main.1008001.com.leiting.wf.part2of3.obb" and nothing unpacked; part 2 added, the game
+  force-stopped right after part 3 was used up (part 2 cut from 41.95 MB to 32.51 MB) -> reopened, it
+  carried on, deleted every part and reached the title screen; a fresh 3-part set next to a one-file
+  OBB -> both unpacked and deleted. The test files (download/production/upload/zz/starpoint-obb-test-*,
+  ~150 MB) stay in that emulator's game storage; the game never reads them.
 The OBB format is described at the top of scripts/build_cn_obb.cjs, and the storage layout and the
 info.json record in STORAGE_LAYOUT.txt.
 

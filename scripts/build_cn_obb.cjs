@@ -3,6 +3,7 @@
 // it at first start into its private download folder.
 //
 //   node scripts/build_cn_obb.cjs <out.obb | out folder | -> [--server <StarPoint folder>] [--version-code 1008001]
+//                                 [--parts N] [--test <files>]
 //   "-" streams it to stdout, e.g. straight onto a phone with no copy on the PC:
 //   node scripts/build_cn_obb.cjs - | adb exec-in "cat > /sdcard/Android/obb/com.leiting.wf/main.1008001.com.leiting.wf.obb"
 //
@@ -10,6 +11,13 @@
 // /sdcard/Android/obb/com.leiting.wf/ (no permission needed there) or /sdcard/StarPoint/game/.
 // --server: the StarPoint folder whose files to pack (its .env and scripts/cn_archives.cjs are used);
 // default this repo. Needs ~10.2 GB free where the OBB goes; nothing else is written.
+// --parts N: the same OBB cut into N files by byte range (for cards or tools that can't take one 10 GB
+// file), main.<versionCode>.com.leiting.wf.part1of3.obb ... part3of3.obb, all in the same folder on the
+// phone. The game (build 25+) treats them as one file: it checks every part is there and whole, then
+// unpacks from the end of the last part backwards, deleting each part once it is empty.
+// --test <files>: a small OBB of <files> 1 MiB dummy files (download/production/upload/zz/starpoint-obb-
+// test-<n>, a folder the game never reads) and an info.json of version 0.0.1 (older than any real one, so
+// the game drops it): for trying the unpack on a device without the real 10 GB. No server needed.
 //
 // Contents, newest copy of each file wins: the CN base zips (no iOS) oldest first, then StarPoint's patch
 // zips from <CDN_DIR>/cn_patches/patches.json in version order, then info.json with the newest patch
@@ -22,8 +30,10 @@
 // needs the zip's central directory at the end. That lets the game unpack from the END of the file
 // backwards and cut the file shorter as it goes (no 2x free space needed), and pick up again after an
 // interruption. info.json is the second entry so it is unpacked last.
-//   starpoint-obb-index.txt: "STARPOINT-OBB 1 <entries>\n" then per entry
+//   starpoint-obb-index.txt: "STARPOINT-OBB 1 <entries>\n" (split: "STARPOINT-OBB 1 <entries> parts <N>
+//     <size of part 1> ... <size of part N>\n", sizes 12 digits) then per entry
 //     "<header offset, 12 digits> <data offset, 12 digits> <size, 12 digits> <path>\n"
+//   Offsets count from the start of the whole OBB (part 1's first byte), across the parts.
 const fs = require("fs")
 const path = require("path")
 const zlib = require("zlib")
@@ -33,21 +43,29 @@ const opt = (name, def) => { const i = args.indexOf(name); if (i < 0) return def
 const SERVER = path.resolve(opt("--server", path.join(__dirname, "..")))
 const VERSION_CODE = opt("--version-code", "1008001")
 const BASE_URL = opt("--base-url", "http://127.0.0.1:8000/cn/cdn/")
+const PARTS = Number(opt("--parts", "1"))
+const TEST = opt("--test", null)
+if (!(Number.isInteger(PARTS) && PARTS >= 1 && PARTS <= 99)) { console.error("--parts: 1 to 99"); process.exit(2) }
+if (TEST !== null && !(Number(TEST) >= 1)) { console.error("--test: a number of files"); process.exit(2) }
 if (args.length !== 1) {
     console.error("usage: node scripts/build_cn_obb.cjs <out.obb | out folder | -> [--server <StarPoint folder>] [--version-code N]")
     process.exit(2)
 }
 // "-" = write the OBB to stdout (e.g. straight into a phone: | adb exec-in "cat > <path>"), notes to stderr
 const TO_STDOUT = args[0] === "-"
+if (TO_STDOUT && PARTS > 1) { console.error("--parts needs an output folder, not -"); process.exit(2) }
 let OUT = TO_STDOUT ? "-" : path.resolve(args[0])
 if (!TO_STDOUT && !OUT.toLowerCase().endsWith(".obb")) OUT = path.join(OUT, `main.${VERSION_CODE}.com.leiting.wf.obb`)
 const log = (...a) => (TO_STDOUT ? console.error : console.log)(...a)
 
 // the server's own settings: its .env, then its archive helpers (they read the env)
-try { process.loadEnvFile(path.join(SERVER, ".env")) } catch { }
-const archives = require(path.join(SERVER, "scripts", "cn_archives.cjs"))
-const cnDir = archives.cnDir ? archives.cnDir() : path.resolve(SERVER, process.env.CN_CDN_DIR || path.join(".cdn", "cn"))
-const cdnDir = archives.cdnDir ? archives.cdnDir() : path.resolve(SERVER, process.env.CDN_DIR || ".cdn")
+let archives = null, cnDir = null, cdnDir = null
+if (TEST === null) {
+    try { process.loadEnvFile(path.join(SERVER, ".env")) } catch { }
+    archives = require(path.join(SERVER, "scripts", "cn_archives.cjs"))
+    cnDir = archives.cnDir ? archives.cnDir() : path.resolve(SERVER, process.env.CN_CDN_DIR || path.join(".cdn", "cn"))
+    cdnDir = archives.cdnDir ? archives.cdnDir() : path.resolve(SERVER, process.env.CDN_DIR || ".cdn")
+}
 const cmp = (a, b) => a.split(".").map(Number).reduce((r, x, i) => r || x - Number(b.split(".")[i] || 0), 0)
 
 const INDEX_NAME = "starpoint-obb-index.txt"
@@ -138,10 +156,24 @@ function centralHeader(e) {
     return Buffer.concat([h, n, extra])
 }
 
+// writes one stream of bytes into one file, or across several (each takes its size, the last the rest)
 class Out {
-    constructor(file) { this.fd = file === "-" ? 1 : fs.openSync(file, "w"); this.pos = 0; this.bufs = []; this.len = 0 }
+    constructor(files, sizes = []) {
+        this.files = files; this.sizes = sizes; this.part = 0; this.partPos = 0
+        this.fd = files[0] === "-" ? 1 : fs.openSync(files[0], "w"); this.pos = 0; this.bufs = []; this.len = 0
+    }
     write(b) { this.bufs.push(b); this.len += b.length; this.pos += b.length; if (this.len >= 8 << 20) this.flush() }
-    flush() { if (this.len) { const b = Buffer.concat(this.bufs, this.len); let o = 0; while (o < b.length) o += fs.writeSync(this.fd, b, o); this.bufs = []; this.len = 0 } }
+    flush() {
+        if (!this.len) return
+        const b = Buffer.concat(this.bufs, this.len); this.bufs = []; this.len = 0
+        let o = 0
+        while (o < b.length) {
+            const room = this.part < this.files.length - 1 ? this.sizes[this.part] - this.partPos : Infinity
+            if (room === 0) { fs.closeSync(this.fd); this.part++; this.partPos = 0; this.fd = fs.openSync(this.files[this.part], "w"); continue }
+            const n = fs.writeSync(this.fd, b, o, Math.min(b.length - o, room))
+            o += n; this.partPos += n
+        }
+    }
     close() { this.flush(); if (this.fd !== 1) fs.closeSync(this.fd) }
 }
 
@@ -149,13 +181,25 @@ const pad = n => String(n).padStart(12, "0")
 
 ;(async () => {
     const started = Date.now()
+    let files, version, sources = []
+    if (TEST !== null) {
+        // dummy files with distinct contents (so the CRCs mean something)
+        version = "0.0.1"
+        files = []
+        for (let i = 0; i < Number(TEST); i++) {
+            const data = Buffer.alloc(1 << 20)
+            let x = (i * 2654435761 + 1) >>> 0
+            for (let k = 0; k < data.length; k += 4) { x = (Math.imul(x, 1664525) + 1013904223) >>> 0; data.writeUInt32LE(x, k) }
+            files.push({ path: `download/production/upload/zz/starpoint-obb-test-${i}`, size: data.length, crc: zlib.crc32(data), data })
+        }
+        log(`test OBB: ${files.length} dummy files`)
+    } else {
     // the newest copy of every file
     const zipFiles = archives.cnZips(cnDir)
     const patchList = JSON.parse(fs.readFileSync(path.join(cdnDir, "cn_patches", "patches.json"), "utf8")).sort((a, b) => cmp(a.version, b.version))
     for (const p of patchList) for (const a of p.archives) zipFiles.push(path.join(cdnDir, "cn_patches", a.file))
     if (patchList.length === 0) throw new Error(`no StarPoint patches in ${path.join(cdnDir, "cn_patches")}`)
-    const version = patchList[patchList.length - 1].version
-    const sources = []
+    version = patchList[patchList.length - 1].version
     const newest = new Map()
     for (const file of zipFiles) {
         const src = { file, ...readCentral(file) }
@@ -165,9 +209,10 @@ const pad = n => String(n).padStart(12, "0")
     log(`${zipFiles.length} zips (CN base + ${patchList.length} StarPoint patches to ${version}), ${newest.size} distinct files`)
 
     // layout: index, info.json, download/.empty, then the files in source order (sequential reads)
-    const files = [...newest.entries()].map(([name, v]) => ({ path: "download/" + name, size: v.e.size, crc: v.e.crc, src: v.src, e: v.e }))
+    files = [...newest.entries()].map(([name, v]) => ({ path: "download/" + name, size: v.e.size, crc: v.e.crc, src: v.src, e: v.e }))
     const srcIndex = new Map(sources.map((s, i) => [s, i]))
     files.sort((a, b) => srcIndex.get(a.src) - srcIndex.get(b.src) || a.e.local - b.e.local)
+    }
     const totalSize = files.reduce((t, f) => t + f.size, 0)
     const info = Buffer.from(JSON.stringify({
         assetRecoveryInfo: [], totalSize, version, baseUrl: BASE_URL, assetSizeKind: "fulfill",
@@ -180,8 +225,8 @@ const pad = n => String(n).padStart(12, "0")
         ...files,
     ]
     // the index's own length is known before the offsets: fixed-width numbers
-    const head = `STARPOINT-OBB 1 ${entries.length}\n`
-    let indexLen = Buffer.byteLength(head)
+    const headFor = sizes => `STARPOINT-OBB 1 ${entries.length}` + (PARTS > 1 ? ` parts ${PARTS}` + sizes.map(n => " " + pad(n)).join("") : "") + "\n"
+    let indexLen = Buffer.byteLength(headFor(new Array(PARTS).fill(0)))
     for (const e of entries) indexLen += 39 + Buffer.byteLength(e.path) + 1
     let pos = 30 + INDEX_NAME.length + indexLen
     for (const e of entries) {
@@ -189,14 +234,27 @@ const pad = n => String(n).padStart(12, "0")
         e.data0 = pos + 30 + Buffer.byteLength(e.path)
         pos = e.data0 + e.size
     }
+    // the whole OBB's length (central directory and end records included), then the parts' sizes
+    let total = pos
+    for (const e of [{ path: INDEX_NAME, hdr: 0 }, ...entries]) total += 46 + Buffer.byteLength(e.path) + (e.hdr >= U32 ? 12 : 0)
+    total += 56 + 20 + 22
+    const partSizes = []
+    if (PARTS > 1) {
+        const each = Math.ceil(total / PARTS)
+        for (let i = 0; i < PARTS; i++) partSizes.push(Math.min(each, total - each * i))
+        // part 1 must hold the index and info.json (the game reads both from it)
+        if (partSizes[0] < entries[0].data0 + entries[0].size || partSizes[PARTS - 1] <= 0) throw new Error(`too many parts for a ${total}-byte OBB`)
+    }
+    const head = headFor(partSizes)
     const index = Buffer.from(head + entries.map(e => `${pad(e.hdr)} ${pad(e.data0)} ${pad(e.size)} ${e.path}\n`).join(""))
     if (index.length !== indexLen) throw new Error("index length mismatch")
     const indexEntry = { path: INDEX_NAME, size: index.length, crc: zlib.crc32(index), hdr: 0 }
-    log(`writing ${OUT}: ${(pos / 2 ** 30).toFixed(2)} GB, version ${version}`)
+    const outFiles = PARTS > 1 ? partSizes.map((_, i) => OUT.replace(/\.obb$/i, `.part${i + 1}of${PARTS}.obb`)) : [OUT]
+    log(`writing ${outFiles.join(", ")}: ${(total / 2 ** 30).toFixed(2)} GB, version ${version}`)
 
     if (!TO_STDOUT) fs.mkdirSync(path.dirname(OUT), { recursive: true })
-    const tmp = TO_STDOUT ? "-" : OUT + ".part"
-    const out = new Out(tmp)
+    const tmps = TO_STDOUT ? ["-"] : outFiles.map(f => f + ".part")
+    const out = new Out(tmps, partSizes)
     out.write(localHeader(INDEX_NAME, index.length, indexEntry.crc)); out.write(index)
     let n = 0
     for (const e of entries) {
@@ -224,7 +282,9 @@ const pad = n => String(n).padStart(12, "0")
     out.write(eocd)
     out.close()
     for (const s of sources) fs.closeSync(s.fd)
-    if (!TO_STDOUT) fs.renameSync(tmp, OUT)
-    log(`done: ${OUT}`)
+    if (out.pos !== total) throw new Error(`wrote ${out.pos} bytes, expected ${total}`)
+    if (!TO_STDOUT) tmps.forEach((t, i) => fs.renameSync(t, outFiles[i]))
+    log(`done: ${outFiles.join(", ")}`)
+    if (PARTS > 1) log(`  parts: ${partSizes.join(" + ")} bytes`)
     log(`  ${entries.length} entries (${files.length} game files, ${(totalSize / 2 ** 30).toFixed(2)} GB), file ${out.pos} bytes (${(out.pos / 2 ** 30).toFixed(2)} GB), version ${version}, ${((Date.now() - started) / 1000).toFixed(0)} s`)
 })().catch(e => { console.error(e); process.exit(1) })
