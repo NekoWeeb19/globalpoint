@@ -183,6 +183,19 @@ const globalPath = p => globalNames.get(p) ?? p
         }
     }
     console.log(`home banners: ${banners} pictures from global`)
+    // Special Exchange / Start Dash shop headers (column 8 of the campaign rows: dynamic/special_exchange/...)
+    let exchange = 0
+    for (const table of ["master/campaign/special_exchange/special_exchange_campaign.orderedmap",
+        "master/campaign/start_dash_exchange/start_dash_exchange_campaign.orderedmap"].map(hashed)) {
+        for (const { leaf } of await tableRows(table)) {
+            for (const pic of new Set(leaf.text.match(/dynamic\/[a-z0-9_\/]*[a-z0-9](?![a-z0-9_\/])/g) ?? [])) {
+                const p = hashed(pic + ".png")
+                if (have(p) || added.has(p)) continue
+                if (globalHas(p)) { add(p); exchange++ } else missingEverywhere.push(pic)
+            }
+        }
+    }
+    console.log(`exchange shop headers: ${exchange} pictures from global`)
     // Razelt's Launch Gala animation: global's picture and layout together
     for (const ext of [".png", ".atlas.amf3.deflate"]) add(hashed(RAZELT + ext))
     console.log(`Razelt's Launch Gala animation: global's sheet`)
