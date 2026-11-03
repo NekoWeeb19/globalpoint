@@ -458,19 +458,23 @@ async function main() {
         if (file === MB2_OPEN) {
             const dates = {}
             let kept = 0
-            // CN opens board 2 of its launch units (89) from 2015, before the game starts: they open on the 2nd to
-            // 5th earliest board 2 dates after the start instead, split evenly in unit id order
+            // CN copies JP's early schedule, and opens board 2 of its launch units (89) from 2015, before the game
+            // starts. Units on JP's board 2 wave list (assets/mb2_jp_waves.json) open on the earlier of CN's date and
+            // their JP wave (wave 1 when Ether can first be had, then monthly); the launch units all are on it
             const rows = R.leaves(tree)
-            const firstOf = l => R.splitCsv(l.leaf.text.replace(/\n$/, ""))[0]
-            const later = [...new Set(rows.map(firstOf).filter(d => d >= LAUNCH_MB2_FROM))].sort()
-            const waves = later.slice(1, 5)
-            const launch = rows.filter(l => firstOf(l) < LAUNCH_MB2_FROM).map(l => l.path[0]).sort((a, b) => Number(a) - Number(b))
-            const wave = new Map(launch.map((id, i) => [id, waves[Math.floor(i * waves.length / launch.length)]]))
+            const jp = JSON.parse(fs.readFileSync(path.join(ROOT, "assets", "mb2_jp_waves.json"), "utf8"))
+            const waveDate = n => {
+                const d = new Date(jp.firstWave.replace(" ", "T") + "Z")
+                d.setUTCMonth(d.getUTCMonth() + n - 1)
+                return d.toISOString().slice(0, 19).replace("T", " ")
+            }
             for (const { path: keys, leaf } of rows) {
                 const end = leaf.text.endsWith("\n") ? "\n" : ""
                 const fields = R.splitCsv(leaf.text.replace(/\n$/, ""))
-                if (waves.length === 4 && wave.has(keys[0])) {
-                    fields[0] = wave.get(keys[0])
+                const n = jp.units[keys[0]]
+                const target = n === undefined ? null : waveDate(n)
+                if (target !== null && (fields[0] < LAUNCH_MB2_FROM || fields[0] > target)) {
+                    fields[0] = target
                     R.setLeafText(leaf, fields.map(R.csvField).join(",") + end)
                 }
                 if (mb2InUse.has(keys[0]) && fields[0] > "2015-03-01 15:00:00") {
