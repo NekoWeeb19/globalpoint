@@ -199,6 +199,29 @@ const globalPath = p => globalNames.get(p) ?? p
     // Razelt's Launch Gala animation: global's picture and layout together
     for (const ext of [".png", ".atlas.amf3.deflate"]) add(hashed(RAZELT + ext))
     console.log(`Razelt's Launch Gala animation: global's sheet`)
+    // Portal feature pages (master/gacha/gacha_feature_content: gacha/feature_movie/.../feature) whose CN picture
+    // was packed apart from its layout (shown scrambled, e.g. the Zombie Land Saga portals): a matching pair's
+    // frames fill the picture to within a pixel or two; such pages take global's picture and layout when global's match
+    const tight = (png, atlas) => {
+        const W = png.readUInt32BE(16), H = png.readUInt32BE(20)
+        let X = 0, Y = 0
+        for (const f of readAmf3(inflate(atlas))) { X = Math.max(X, f.x + f.w); Y = Math.max(Y, f.y + f.h) }
+        return X <= W && Y <= H && W - X <= 2 && H - Y <= 2
+    }
+    const featureDirs = new Set()
+    for (const { leaf } of await tableRows(hashed("master/gacha/gacha_feature_content.orderedmap")))
+        for (const m of leaf.text.matchAll(/gacha\/feature_movie\/[a-z0-9_\/]+?(?=\/feature\b)/g)) featureDirs.add(m[0])
+    let scrambled = 0
+    const unfixed = []
+    for (const dir of featureDirs) {
+        const [png, atlas] = [".png", ".atlas.amf3.deflate"].map(ext => hashed(dir + "/sprite_sheet" + ext))
+        if (!cn.has(png) || !cn.has(atlas) || added.has(png) || patched.has(png)) continue
+        if (tight(await cn.get(png).buffer(), await cn.get(atlas).buffer())) continue
+        const g = globalHas(png) && globalHas(atlas) ? [await globalFile(png), await globalFile(atlas)] : null
+        if (g && tight(g[0], g[1])) { add(png); add(atlas); scrambled++ } else unfixed.push(dir.replace("gacha/feature_movie/", ""))
+    }
+    console.log(`portal feature pages: ${scrambled} of ${featureDirs.size} scrambled in CN, global's sheet used`)
+    if (unfixed.length) console.log(`scrambled with no matching global sheet: ${unfixed.join(", ")}`)
 
     fs.writeFileSync(path.join(OUT, "files.json"), JSON.stringify(files))
     console.log(`${files.length} files -> ${path.join(OUT, "files.json")}`)
