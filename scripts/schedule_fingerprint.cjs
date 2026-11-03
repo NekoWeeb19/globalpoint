@@ -7,8 +7,8 @@ const path = require("path")
 const crypto = require("crypto")
 
 // raised when scripts/gen_cn_event_schedule.cjs changes what it writes, so every install rebuilds its
-// update once (2: permanent dungeons kept open)
-const BUILDER_REVISION = 2
+// update once (2: permanent dungeons kept open; 3: one Launch Gala banner at a time)
+const BUILDER_REVISION = 3
 
 const readJson = file => { try { return JSON.parse(fs.readFileSync(file, "utf8")) } catch { return null } }
 

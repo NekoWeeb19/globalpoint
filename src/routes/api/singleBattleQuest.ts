@@ -24,6 +24,7 @@ import { campaignRates, itemDropMultiplier, RewardCampaign } from "../../lib/rew
 import rewardCampaignData from "../../../assets/reward_campaign.json";
 import { rewardCampaignsFor } from "../../nya/cnCampaigns";
 import eventDropData from "../../../assets/event_drops.json";
+import cnEventDropData from "../../../assets/event_drops_cn.json";
 import { EventDropData, eventDropItems, eventDrops } from "../../lib/eventDrops";
 import { givePeriodicDropSync } from "../../nya/periodicReward";
 import scoreAttackJson from "../../../assets/score_attack.json";
@@ -31,6 +32,8 @@ import { borderRewardItems, mainCharacterIds, newlyPassedBorders, ScoreAttackDat
 import { recordScoreAttackBattleSync } from "../../nya/scoreAttack";
 const scoreAttackData = scoreAttackJson as unknown as ScoreAttackData
 const eventDropRules = eventDropData as unknown as EventDropData
+// the CN client's own treasure hunts (CN's events, items and dates)
+const cnEventDropRules = cnEventDropData as unknown as EventDropData
 
 const rewardCampaigns = rewardCampaignData.campaigns as RewardCampaign[]
 import { refillBossBoostSync } from "../../nya/bossBoost";
@@ -307,12 +310,13 @@ const routes = async (fastify: FastifyInstance) => {
 
         // treasure hunt / collect item events: extra items for a cleared battle while one is open
         // (drop boosts and "more drops" campaigns count, like the score drops)
+        const dropRules = inCnRequest() ? cnEventDropRules : eventDropRules
         const additionalDrops = questAccomplished
-            ? eventDrops(eventDropRules, questCategory, questId, getServerDate().getTime(),
+            ? eventDrops(dropRules, questCategory, questId, getServerDate().getTime(),
                 (section, id) => getPlayerSingleQuestProgressSync(playerId, section, id)?.finished === true,
                 itemDropMultiplier(campaign.items, useBoostPoint))
             : []
-        const additionalItems = eventDropItems(eventDropRules, additionalDrops)
+        const additionalItems = eventDropItems(dropRules, additionalDrops)
         const additionalResult = additionalItems.size > 0
             ? givePlayerRewardsSync(playerId, [...additionalItems].map(([id, count]) => ({ type: RewardType.ITEM, id, count } as EquipmentItemReward)))
             : null

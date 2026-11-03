@@ -19,7 +19,15 @@ const path = require("path")
 const fs = require("fs")
 const { ROOT, readTable, readRows, parseCsvLine, str, int } = require("./cdn_master.cjs")
 
-const OUT = path.join(ROOT, "assets", "event_drops.json")
+// MASTER_SOURCE=cn (scripts/cdn_master.cjs): the CN client's tables, written to assets/event_drops_cn.json; CN's
+// dates are China time (UTC+8) and are written as UTC like global's
+const CN = process.env.MASTER_SOURCE === "cn"
+const OUT = path.join(ROOT, "assets", CN ? "event_drops_cn.json" : "event_drops.json")
+const toUtc = text => {
+    if (!CN) return text
+    const ms = Date.parse(text.replace(" ", "T") + "+08:00")
+    return isNaN(ms) ? text : new Date(ms).toISOString().slice(0, 19).replace("T", " ")
+}
 
 // quest table -> [section (QuestCategory), nesting depth, enemy level column | "name" + name column]
 const QUEST_TABLES = {
@@ -109,7 +117,7 @@ const positive = (value, what) => {
                 return { level: Number(level), groupId: Number(groupId) }
             }).sort((x, y) => x.level - y.level)
             if (thresholds.length === 0) throw new Error(`event ${eventId} relation ${sequence}: reward ${r[5]} has no tiers.`)
-            rules.push({ eventId: Number(eventId), start: e[20], end: e[21], prerequisite, range: [rangeKind, str(r[2]), str(r[3]), str(r[4])], thresholds })
+            rules.push({ eventId: Number(eventId), start: toUtc(e[20]), end: toUtc(e[21]), prerequisite, range: [rangeKind, str(r[2]), str(r[3]), str(r[4])], thresholds })
         }
     }
 

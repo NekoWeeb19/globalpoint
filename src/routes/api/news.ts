@@ -4,7 +4,7 @@
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getSession } from "../../data/wdfpData";
-import { generateDataHeaders } from "../../utils";
+import { generateDataHeaders, getServerDate } from "../../utils";
 import { inCnRequest } from "../../lib/cnClient";
 import { cnNewsItem, getNews, newsHtml } from "../../nya/news";
 import { clientSerializeDate } from "../../data/utils";
@@ -32,11 +32,18 @@ const routes = async (fastify: FastifyInstance) => {
         })
 
         const cn = inCnRequest()
-        const post = getNews(Number(body.news_id))
-        if (post === null || !post.apps.includes(cn ? "cn" : "global")) return reply.status(404).send({
-            "error": "Not Found",
-            "message": "No such news."
-        })
+        const found = getNews(Number(body.news_id))
+        // a home banner can link to one of the official posts (e.g. CN's banner for news 2245), which this
+        // server doesn't have: a 404 sends the client back to its title screen (H404), so a short note is
+        // shown instead
+        const post = found !== null && found.apps.includes(cn ? "cn" : "global") ? found : {
+            id: Number(body.news_id) || 0,
+            title: "News",
+            body: "This announcement was on the official servers and isn't available here.",
+            category: 1 as const,
+            apps: [cn ? "cn" as const : "global" as const],
+            date: getServerDate().toISOString(),
+        }
 
         reply.header("content-type", "application/x-msgpack")
         return reply.status(200).send({

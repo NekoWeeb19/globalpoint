@@ -319,6 +319,15 @@ async function main() {
             for (let i = 0; i < c.length; i++) if (c[i] === "2026-05-12 04:59:59") { c[i] = "2199-12-31 23:59:59"; changed = true }
             return changed
         },
+        // two Launch Gala banners at once: CN's own launch banner (61, 2011-12-24 to 2021-11-04) overlaps the
+        // JP-era one (1, until 2020-01-27); 61 opens when 1 closes
+        [fileOf("master/gacha/gacha.orderedmap")]: (key, c) => {
+            if (key !== "61" || c[0] !== "newnormal_1") return false
+            const i = c.indexOf("2011-12-24 12:00:00")
+            if (i < 0) return false
+            c[i] = "2020-01-27 12:00:00"
+            return true
+        },
         [fileOf("master/quest/event/tower_dungeon_event_quest.orderedmap")]: (key, c) => {
             let changed = false
             if (c[5] === "2022-05-12 12:00:00") { c[5] = "2021-05-12 12:00:00"; changed = true }
