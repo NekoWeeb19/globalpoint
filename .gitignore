@@ -26,3 +26,8 @@ download_cdn.bat
 
 # your own settings (made from .env.example by setup)
 .env
+
+# the game app and OBB are not ours to host: never commit them (people download them from the Drive)
+/apk/
+*.apk
+*.obb
