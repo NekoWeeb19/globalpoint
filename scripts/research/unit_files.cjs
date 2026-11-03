@@ -17,7 +17,7 @@ const UI = ["thumb_party_unison", "thumb_party_main", "thumb_level_up", "skill_c
     "square", "square_132_132", "square_round_136_136", "square_round_95_95", "story/base"]
 const BATTLE_VOICE = ["battle_start", "skill", "normal_attack", "skill_ready", "outhole", "win", "power_flip"]
 const EXT = ["", ".png", ".mp3", ".atlas.amf3.deflate", ".frame.amf3.deflate", ".timeline.amf3.deflate",
-    ".parts.amf3.deflate", ".battle.amf3.deflate", ".amf3.deflate"]
+    ".parts.amf3.deflate", ".battle.amf3.deflate", ".amf3.deflate", ".atf.deflate"]
 
 ;(async () => {
     const id = process.argv[2]
