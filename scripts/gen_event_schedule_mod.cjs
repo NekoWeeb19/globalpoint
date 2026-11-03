@@ -26,7 +26,7 @@ const unzipper = require("unzipper")
 const { ROOT, decodeFile, encodeFile, setLeafText, leaves, readHashedFile, splitCsv, csvField } = require("./cdn_rows.cjs")
 const { zip } = require("./gen_translation_mod.cjs")
 const { parseSchedule, planRowMoves, remapText, formatMasterDate } = require("../out/lib/eventSchedule.js")
-const { parseCampaignSchedule, yearlyLoginColumns, freePullCopies, freePullCopyRow, isFreePullBanner, campaignRuns, runCopies, campaignCopyId, keepLongerOnOverlap, runLength } = require("../out/lib/campaignSchedule.js")
+const { parseCampaignSchedule, yearlyLoginColumns, freePullCopies, freePullCopyRow, isFreePullBanner, campaignRuns, runCopies, campaignCopyId, keepLongerOnOverlap, runLength, yearlyLoginBonusesKept } = require("../out/lib/campaignSchedule.js")
 const crypto = require("crypto")
 
 const CATALOG = path.join(ROOT, "assets", "event_catalog.json")
@@ -97,9 +97,15 @@ async function main() {
             if (text !== leaf.text) { setLeafText(leaf, text); movedRows++ }
         }
         if (file === seasonal.loginBonusFile) {
-            // after any move, so a moved login bonus repeats on its new dates
+            // after any move, so a moved login bonus repeats on its new dates; picked ones that overlap: only the
+            // longer repeats (as the server does)
+            const firstDays = new Map(leaves(tree).filter(l => l.path[1] === "1").map(l => [l.path[0], splitCsv(l.leaf.text)]))
+            const loginKept = yearlyLoginBonusesKept(campaigns.yearlyLoginBonuses.flatMap(id => {
+                const f = firstDays.get(id)
+                return f && f.length >= 44 ? [{ key: id, start: f[40], end: f[41] }] : []
+            }))
             for (const { path: keys, leaf } of leaves(tree)) {
-                if (!campaigns.yearlyLoginBonuses.includes(keys[0])) continue
+                if (!loginKept.has(keys[0])) continue
                 const fields = splitCsv(leaf.text)
                 const columns = fields.length >= 44 ? yearlyLoginColumns(fields[40], fields[41]) : null
                 if (columns === null) { console.log(`WARNING ${keys.join("/")}: its dates can't be made yearly`); continue }

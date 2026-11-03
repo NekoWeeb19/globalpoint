@@ -263,6 +263,30 @@ export function keepLongerOnOverlap<K, T extends { start: string, end: string }>
     return kept
 }
 
+/**
+ * The yearly login bonuses that repeat, from those picked: a yearly bonus is on the same dates every year, so
+ * where two picked ones would be on at the same time, the one whose original run is longer repeats and the
+ * other doesn't (keepLongerOnOverlap, checked over a few years so runs over New Year count). The server and the
+ * game updates all use this. `start`/`end` are each one's original run, read with `parse`.
+ */
+export function yearlyLoginBonusesKept<K>(
+    picks: readonly { key: K, start: string, end: string }[],
+    parse: (text: string) => number | null = parseMasterDate
+): Set<K> {
+    const asked = picks.map(pick => {
+        const firstYear = Number(pick.start.slice(0, 4)), span = Number(pick.end.slice(0, 4)) - firstYear
+        const copies: { start: string, end: string }[] = []
+        for (const year of [2001, 2002, 2003]) {
+            const start = inYear(pick.start, year), end = inYear(pick.end, year + span)
+            if (start !== null && end !== null) copies.push({ start, end })
+        }
+        return { key: pick.key, length: runLength(pick, parse), copies }
+    })
+    const kept = keepLongerOnOverlap(asked, parse)
+    // a bonus repeats only when none of its years went to a longer one
+    return new Set(asked.filter(p => p.copies.length > 0 && (kept.get(p.key)?.length ?? 0) === p.copies.length).map(p => p.key))
+}
+
 /** A run's or campaign's length in ms (0 when its dates can't be read). */
 export function runLength(row: { start: string, end: string }, parse: (text: string) => number | null = parseMasterDate): number {
     const start = parse(row.start), end = parse(row.end)

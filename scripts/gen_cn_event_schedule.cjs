@@ -200,8 +200,15 @@ function applyYearlyCampaigns(trees, files, cnWindows = {}) {
     let login = 0, pulls = 0, runRows = 0
 
     const loginTree = trees.get(files.login)
+    // picked ones that overlap: only the longer repeats (the server makes the same choice), on the dates the
+    // CN table has (CN's own, or moved by the event schedule)
+    const firstDays = new Map(loginTree ? R.leaves(loginTree).filter(l => l.path[1] === "1").map(l => [l.path[0], R.splitCsv(l.leaf.text.replace(/\n$/, ""))]) : [])
+    const loginKept = C.yearlyLoginBonusesKept(chosen.yearlyLoginBonuses.flatMap(id => {
+        const f = firstDays.get(id)
+        return f && f.length >= 45 && parse(f[41] ?? "") !== null && parse(f[42] ?? "") !== null ? [{ key: id, start: f[41], end: f[42] }] : []
+    }), parse)
     if (loginTree) for (const { path: keys, leaf } of R.leaves(loginTree)) {
-        if (!chosen.yearlyLoginBonuses.includes(keys[0])) continue
+        if (!loginKept.has(keys[0])) continue
         const fields = R.splitCsv(leaf.text.replace(/\n$/, ""))
         const columns = fields.length >= 45 ? C.yearlyLoginColumns(fields[41], fields[42]) : null
         if (columns === null) { console.log(`yearly login bonus ${keys.join("/")}: its dates can't be made yearly`); continue }

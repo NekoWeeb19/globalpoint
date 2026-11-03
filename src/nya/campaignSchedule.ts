@@ -18,7 +18,7 @@ import {
     activeFreePullCopy, CampaignRun, campaignCopyId, campaignRuns, CampaignSchedule, currentOrNextRun, describeRun,
     isWindowOn, KnownRuns, runCopies, TimedCampaign, yearlyClash, FreePullBannerInfo, FreePullCampaign, freePullClash,
     freePullCopies, FreePullCopy, isFreePullBanner, parseCampaignSchedule, SEASONAL_FREE_PULLS,
-    SEASONAL_LOGIN_BONUSES, yearlyLoginServerColumns, yearlyPart, CN_SEASONAL_LOGIN_BONUSES, CN_SEASONAL_FREE_PULLS, cnFreePullCopyId, isFreePullCopyId, withCnDates, parseUtcText, keepLongerOnOverlap, runLength, YearlyWindow
+    SEASONAL_LOGIN_BONUSES, yearlyLoginServerColumns, yearlyPart, CN_SEASONAL_LOGIN_BONUSES, CN_SEASONAL_FREE_PULLS, cnFreePullCopyId, isFreePullCopyId, withCnDates, parseUtcText, keepLongerOnOverlap, runLength, YearlyWindow, yearlyLoginBonusesKept
 } from "../lib/campaignSchedule"
 import { cnCampaigns, cnLoginGroup, cnOnlyLoginGroups, setCnLoginGroup, setCnSharedRewardRows } from "./cnCampaigns"
 import { cnBuiltFreePullCopies, cnCopyWindow, cnTableIds, inCnRequest } from "../lib/cnClient"
@@ -60,13 +60,18 @@ let copies: FreePullCopy[] = []
 
 /** Makes the chosen login bonuses yearly in the server's copy (run after the event schedule moved them). */
 function applyLoginBonuses(moves: Map<string, unknown>) {
+    // picked ones that overlap: only the longer repeats (yearlyLoginBonusesKept), on global's dates for the global client
+    const globalKept = yearlyLoginBonusesKept(schedule.yearlyLoginBonuses.flatMap(id => {
+        const group = groups[id]
+        return group !== undefined && group.end !== null ? [{ key: id, start: group.start, end: group.end }] : []
+    }), parseUtcText)
     for (const id of Object.keys(SEASONAL_LOGIN_BONUSES)) {
         const group = groups[id]
         if (group === undefined) continue
         // the event schedule has just put start and end back (or moved them); the yearly window is ours
         group.yearlyFrom = null
         group.yearlyUntil = null
-        if (!schedule.yearlyLoginBonuses.includes(id) || group.end === null) continue
+        if (!globalKept.has(id) || group.end === null) continue
         if (moves.has(serverRecordKey("master/bonus/login_bonus.orderedmap", `${id}/1`))) {
             // moved dates are already written in UTC
             group.yearlyFrom = yearlyPart(group.start)
@@ -93,8 +98,31 @@ const groupDate = (isoText: string) => isoText.slice(0, 19).replace("T", " ")
  * them at other times, e.g. CN's Golden Week bonus gw2020 ran as global's December "Lunar New Year"), yearly
  * from those dates when chosen. A bonus the event schedule moved follows the move, like global's.
  */
+/**
+ * The yearly login bonuses that repeat in the CN game: the picked shared ones on CN's dates (moved ones on their
+ * moved dates) and the CN-only ones, where overlapping only the longer (yearlyLoginBonusesKept).
+ */
+function cnLoginKept(moves: Map<string, unknown> = new Map()): Set<string> {
+    const cnDates = cnEventWindows()
+    return yearlyLoginBonusesKept(schedule.yearlyLoginBonuses.flatMap(id => {
+        if (id in CN_SEASONAL_LOGIN_BONUSES) {
+            const own = cnLoginOriginal.get(id)
+            return own && own.end !== null ? [{ key: id, start: own.start, end: own.end }] : []
+        }
+        const group = groups[id], cn = cnDates?.[`login:${id}`]
+        if (group === undefined) return []
+        if (cn === undefined || moves.has(serverRecordKey("master/bonus/login_bonus.orderedmap", `${id}/1`))) {
+            const ownEnd = group.end ?? (group.yearlyUntil !== null ? `${group.start.slice(0, 4)}-${group.yearlyUntil}` : null)
+            return ownEnd !== null ? [{ key: id, start: group.start, end: ownEnd }] : []
+        }
+        return [{ key: id, start: groupDate(cn.start), end: groupDate(cn.end) }]
+    }), parseUtcText)
+}
+let cnKept = new Set<string>()
+
 function applyCnSeasonalLoginDates(moves: Map<string, unknown>) {
     const cnDates = cnEventWindows()
+    cnKept = cnLoginKept(moves)
     for (const id of Object.keys(SEASONAL_LOGIN_BONUSES)) {
         const group = groups[id], cn = cnDates?.[`login:${id}`]
         if (group === undefined || cn === undefined || moves.has(serverRecordKey("master/bonus/login_bonus.orderedmap", `${id}/1`))) {
@@ -102,7 +130,7 @@ function applyCnSeasonalLoginDates(moves: Map<string, unknown>) {
             continue
         }
         const copy: LoginBonusGroup = { ...group, start: groupDate(cn.start), end: groupDate(cn.end), yearlyFrom: null, yearlyUntil: null }
-        if (schedule.yearlyLoginBonuses.includes(id)) {
+        if (cnKept.has(id)) {
             copy.yearlyFrom = yearlyPart(copy.start)
             copy.yearlyUntil = yearlyPart(copy.end!)
             copy.end = null
@@ -121,7 +149,8 @@ function applyCnLoginBonuses() {
         const group = cnGroups[id], original = cnLoginOriginal.get(id)
         if (group === undefined || original === undefined) continue
         Object.assign(group, original)
-        if (!schedule.yearlyLoginBonuses.includes(id) || group.end === null) continue
+        // only the ones that repeat (a longer picked one doesn't run at the same time: cnLoginKept)
+        if (!cnKept.has(id) || group.end === null) continue
         group.yearlyFrom = yearlyPart(group.start)
         group.yearlyUntil = yearlyPart(group.end)
         group.end = null
@@ -327,6 +356,7 @@ export interface CampaignOverview {
         cn: { start: string, end: string } | null,
         yearly: boolean,
         open: boolean,
+        overlapped: boolean, // picked, but a longer picked one is on at the same time, so it doesn't repeat
         next: { start: string, end: string } | null // the run on now or coming next (when yearly)
     }[],
     freePulls: {
@@ -356,19 +386,20 @@ export function getCampaignOverview(): CampaignOverview {
         const ms = Date.parse(text.replace(" ", "T") + "+09:00") // global's data: Japan time
         return isNaN(ms) ? text : iso(ms)
     }
+    const repeating = cnLoginKept() // the CN game's yearly login bonuses after overlaps
     const loginBonuses: CampaignOverview["loginBonuses"] = Object.entries(SEASONAL_LOGIN_BONUSES).flatMap(([id, name]) => {
         const info = seasonal.loginBonuses[id]
         if (info === undefined) return []
-        const yearly = schedule.yearlyLoginBonuses.includes(id)
+        const yearly = schedule.yearlyLoginBonuses.includes(id), overlapped = yearly && !repeating.has(id)
         const cn = cnOf(`login:${id}`)
         // the CN game runs it on CN's dates (applyCnSeasonalLoginDates): its runs and "on now" follow those
-        const run = !yearly ? null : cn ? currentOrNextRun(formatMasterDate(Date.parse(cn.start)), formatMasterDate(Date.parse(cn.end)), now) : currentOrNextRun(info.start, info.end, now)
+        const run = !yearly || overlapped ? null : cn ? currentOrNextRun(formatMasterDate(Date.parse(cn.start)), formatMasterDate(Date.parse(cn.end)), now) : currentOrNextRun(info.start, info.end, now)
         const group = cnLoginGroup(id) ?? groups[id]
         return [{
             id, name, app: "both", image: imageUrl(info.image), days: info.days,
             original: { start: masterIso(info.start), end: masterIso(info.end) },
             cn,
-            yearly,
+            yearly, overlapped,
             open: group !== undefined && isLoginBonusGroupOpen(group, now),
             next: run === null ? null : { start: iso(run.start), end: iso(run.end) }
         }]
@@ -377,13 +408,13 @@ export function getCampaignOverview(): CampaignOverview {
     for (const [id, name] of Object.entries(CN_SEASONAL_LOGIN_BONUSES)) {
         const info = cnCampaigns.loginInfo[id], group = cnOnlyLoginGroups()[id]
         if (info === undefined || group === undefined || info.start === null || info.end === null) continue
-        const yearly = schedule.yearlyLoginBonuses.includes(id)
-        const run = yearly ? currentOrNextRun(formatMasterDate(parseUtcText(info.start)!), formatMasterDate(parseUtcText(info.end)!), now) : null
+        const yearly = schedule.yearlyLoginBonuses.includes(id), overlapped = yearly && !repeating.has(id)
+        const run = yearly && !overlapped ? currentOrNextRun(formatMasterDate(parseUtcText(info.start)!), formatMasterDate(parseUtcText(info.end)!), now) : null
         loginBonuses.push({
             id, name, app: "cn", image: imageUrl(info.image), days: info.days,
             original: { start: utcIso(info.start), end: utcIso(info.end) },
             cn: cnOf(`login:${id}`),
-            yearly,
+            yearly, overlapped,
             open: isLoginBonusGroupOpen(group, now),
             next: run === null ? null : { start: iso(run.start), end: iso(run.end) }
         })

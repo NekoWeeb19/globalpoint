@@ -96,7 +96,7 @@
             <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
                 <div class="flex flex-col gap-1">
                     <h3 class="text-xl text-on-background font-semibold">Seasonal login bonuses</h3>
-                    <p class="text-on-surface-variant">Each year's run starts again at day 1. Anniversary, collab and story bonuses aren't listed: they stay as they are.</p>
+                    <p class="text-on-surface-variant">Each year's run starts again at day 1. Where two picked ones would be on at the same time, only the longer one repeats. Anniversary, collab and story bonuses aren't listed: they stay as they are.</p>
                 </div>
                 <ul id="login-list" class="flex flex-col gap-2"></ul>
             </section>
@@ -278,10 +278,11 @@
                     const on = logins.has(bonus.id)
                     const badges = [appBadge(bonus.app), badge(bonus.days + " days", false)]
                     if (bonus.open) badges.push(badge("On now", true))
-                    if (bonus.yearly) badges.push(badge("Repeats every year", false))
+                    if (bonus.yearly) badges.push(badge(bonus.overlapped ? "Overlaps a longer one" : "Repeats every year", false))
                     const lines = ["Original run: " + fullText(bonus.original.start) + " to " + fullText(bonus.original.end) + " UTC"]
                     if (bonus.cn) lines.push(cnLine(bonus.cn))
-                    if (on) lines.push("Repeats " + yearlyText(bonus.cn ?? bonus.original) + (bonus.cn ? " (the CN game's dates)" : ""))
+                    if (on && bonus.overlapped) lines.push("Doesn't repeat: a longer picked bonus is on at the same time")
+                    else if (on) lines.push("Repeats " + yearlyText(bonus.cn ?? bonus.original) + (bonus.cn ? " (the CN game's dates)" : ""))
                     const run = runLine(bonus)
                     if (run) lines.push(run)
                     loginList.appendChild(row({ name: bonus.name, image: bonus.image, checked: on, badges, lines, onChange: (value) => changed(logins, bonus.id, value) }))
