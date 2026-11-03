@@ -330,11 +330,18 @@ async function main() {
         // gacha_odds/normal_equipment_3 ... not loaded"). Their ticket deadline is set to their end.
         [fileOf("master/gacha/gacha.orderedmap")]: (key, c) => {
             const date = /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/
+            let changed = false
             if (c[22] && c[22] !== "(None)" && !(c[14] && c[14] !== "(None)") && date.test(c[30] ?? "") && date.test(c[31] ?? "") && c[31] > c[30]) {
                 c[31] = c[30]
-                if (key !== "61") return true
+                changed = true
             }
-            if (key !== "61" || c[0] !== "newnormal_1") return false
+            // Armament portals with column 44 (freemium_guarantee_available) false show no Exchange button, and the
+            // client then keeps their armament rates loaded only by chance (e.g. a featured list), yet the pull
+            // result screen reads them for the exchange points: C8013 "gacha_odds/... not loaded" (e.g. 5008 and
+            // the JP-era 3, normal_equipment_3). Set true: their rates stay loaded and the Exchange button shows
+            // (the server has /gacha/exchange_equipment).
+            if (c[22] && c[22] !== "(None)" && !(c[14] && c[14] !== "(None)") && c[44] === "false") { c[44] = "true"; changed = true }
+            if (key !== "61" || c[0] !== "newnormal_1") return changed
             const i = c.indexOf("2011-12-24 12:00:00")
             if (i < 0) return false
             c[i] = "2020-01-27 12:00:00"
