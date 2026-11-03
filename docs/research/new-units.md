@@ -1,0 +1,157 @@
+# New units in the CN app from data only (research, 2026-11-03)
+
+**Result: it works.** A brand-new unit (id 111907, string id `gp_test_haruhi`, "Haruhi (GP Test)") was added to the
+patched CN 1.8.1 app with **no game-code change**: table rows plus files, shipped as an ordinary StarPoint update
+patch, plus two server data entries. On the StarPointTest emulator it was mailed to a save and claimed, and it showed in
+the unit list. Its detail page worked, and so did its skill **Preview** (a real battle run, with the new skill script,
+skill effects and voices). It was leveled to 80, uncapped and EX Boosted. Mana Board 1 was unlocked in full,
+**awakening included** (awakened art, voice line and upgraded leader talent).
+
+The test unit is a clone of Haruhi Suzumiya (111069) under a new id and string id, so every one of its files is a
+*new* file. That makes it the same path a hand-made unit would take. What a hand-made unit would still need is new
+content: art, a kit, a skill script. See [What a "new unit" tool needs](#what-a-new-unit-tool-needs).
+
+| | |
+|---|---|
+| ![detail](images/new-unit-detail.png) | ![skill](images/new-unit-skill.png) |
+| ![skill preview battle](images/new-unit-skill-preview.png) | ![awakening](images/new-unit-awakening.png) |
+
+## Where this came from
+
+- **Community mod (global app, 2024).** duosii's `haruhi_mod` added Haruhi to global, building her on Alk's files
+  (`alk_3halfanv`). Every table change in it is additive, and it adds about 380 new files. Two failures were
+  reported: "game crashes when entering battle & opening character details", and an "asset check" that sends you
+  to the download screen. Both are explained below; they were the two bugs this research hit first, too.
+- **Tools.** [wfax](https://github.com/blead/wfax) (Go: `fetch`, `extract`, `pack`) and
+  [wdfp-extractor](https://github.com/ScripterSugar/wdfp-extractor) (Electron, newer) extract and repack files.
+  Their path lists (67,645 and 61,894 logical paths) mostly hold paths that appear inside tables. Neither lists a
+  unit's portraits, sprites or battle voices: those names are built in game code. GlobalPoint already has its own
+  equivalents (`scripts/cdn_hash.cjs`, `cdn_rows.cjs`, `amf3.cjs`, `build_cn_patch.cjs`).
+- **Decompiled CN client** (`F:\WF client\cn\decompiled\scripts`): the source of everything marked *(code)* below.
+  `pinball/master/generated/*Values.as` holds a parser for each of the 785 tables, which names every column.
+
+## How the game finds a unit
+
+- **The id** (`111907`) keys most tables. Digit 1 = rarity (1 = 5★), digit 2 = element (1 fire … 6 dark). Unused ids
+  work; nothing checks a range.
+- **The string id** (character column 0, `gp_test_haruhi`) is the folder of every file:
+  `character/<string id>/ui/...`, `/pixelart/...`, `/voice/...`, `/battle/...`. *(code)*
+- **Character column 8** names the skill (`master/skill/action_skill` key `<name>/1`, `/2`). The skill row's
+  column 7 names the skill script `battle/action/skill/action/rare5/<name>$<name>_N`. *(code: CharacterValues)*
+- **Mana Board node ids are not free numbers.** The game finds a node's row from its id:
+  `board = id / 200 % 10`, `index = id % 200`, so `id = unit × 2000 + board × 200 + index`
+  (Haruhi 222138201 = 111069 × 2000 + 200 + 1; Meteor Light's MB2 ids 302306201… = 151153 × 2000 + …).
+  *(code: GeneralManaNodeLogic.get_values)* Other ids crash the detail page with C8601 "key 5".
+
+## The tables (19)
+
+Found by decoding every CN table (3,895) and searching for the id and the string id. The keys are the new unit's.
+
+| Table | Key | Notes |
+|---|---|---|
+| master/character/character | id | col 0 string id, 8 skill name, 17 leader id, 18 leader name, 19-24 ability ids, 27 identity id |
+| master/character/character_text | id | col 0 name, 3 title, then skill/ability texts (already English in GlobalPoint's tables) |
+| character_status `5c/6a4f…` | id/level | "HP,ATK" at 1/10/80/100 |
+| master/character/character_speech | id | home lines; col 4 = voice file under `voice/` |
+| ability `1e/664c…` | id×10+1..6 | two lines per row (layout in the memory note kit-rows-decode) |
+| leader_ability `ff/8435…` | id | |
+| master/skill/action_skill | skill name / 1, 2 | col 7 skill script path, 4/5 gauge |
+| skill_preview_character `aa/abdd…` | id | which preview stage |
+| character stance_detail `d7/50c2…` | id | |
+| full_shot_image_attribute `b9/132d…`, character_image `3e/b411…`, trimmed_image `fb/ab43…` | id/0,1; picture path | picture crops |
+| upskill `57/8872…` | id | |
+| battle sound effects `ac/b038…` | id/frame | |
+| master/mana_board/mana_node | id/board/index | node ids as above |
+| master/generated/mana_board | id/board/index | layout; col 5 = parent node ids |
+| master/mana_board/mana_board2_open_condition | id | |
+| master/encyclopedia/encyclopedia | 1<id> | |
+| master/story/story_character | string id | name, voice folder, expressions |
+
+Not needed for a playable unit: degree (title), degree_mission, gacha/banner rows, shops, event stories.
+Rows can be appended anywhere: lookups are by key (`OrderedMap`, `indexOf`), not binary search.
+
+## The files (74 for Haruhi)
+
+- `pixelart/` 8: `pixelart`, `special` `.frame` + `.timeline`, `sprite_sheet` and `special_sprite_sheet` `.png` + `.atlas`
+- `ui/` 41 (most in `medium_upload`): `square_*`, `thumb_*`, `full_shot_1440_1920_0/1`, `skill_cutin_0/1`,
+  `cutin_skill_chain_*`, `battle_*`, `episode_banner_0`, `illustration_setting_sprite_sheet`, `story/<expression>`
+- `voice/` 22: `battle/` (battle_start, skill, skill_ready, outhole, power_flip, normal_attack, win; `_0`/`_1`),
+  `login/login_0..2`, `home/…` (from character_speech)
+- `battle/character_detail_skill_preview` and `character_info_skill_preview` `.battle`: recorded preview inputs
+- skill scripts `battle/action/skill/action/rare5/<skill>$<skill>_1/_2.action.dsl`; skill effects under
+  `battle/effect/skill_unique/...` (the skill script names them, so a new unit can reuse another unit's effects)
+
+Stored names: `<logical path>.<type>` hashed with `scripts/cdn_hash.cjs`; JSON-like files are AMF3 + deflate
+(`.atlas.amf3.deflate`, `.frame.amf3.deflate`, `.action.dsl.amf3.deflate`); pictures `.png`; voices `.mp3`.
+`scripts/research/unit_files.cjs <id>` lists a unit's files (it tries every name the game builds).
+
+**Files that name themselves.** `.frame` and `.atlas` files hold their own path (`"name":
+"character/suzumiya_haruhi/pixelart/special"`). A renamed copy must be rewritten inside, or the game asks for the
+old animation: C8003 "…pixelart/special 的影像短片尚未加载". This is very likely duosii's crash on battle and
+character details. `scripts/amf3.cjs` reads and writes these (decode, edit, encode: same values on re-read). Some
+files are raw deflate, some zlib.
+
+## The "asset check"
+
+There is no manifest check. Whenever the game reads a file that isn't on disk, it goes to the "Insufficient data.
+Returning to the title screen" screen, or throws error 8100 *(code: FileReader → AssetSufficiencyCheckLoadingTask)*.
+The game reports the exact path to the server's crash log (`/cn/crash` in `cn_requests.log`):
+`notify_asset_recovery 未找到素材 character/gp_test_haruhi/battle/character_detail_skill_preview.battle.amf3.deflate`.
+So a missing file is easy to diagnose: open the screen, read the log, add the file.
+The Haruhi mod shipped no voice files and no `battle/` preview files, which explains its download screen.
+
+A related trap: when a table lookup fails (C8601), the game **deletes its copy of that table**. The next update that
+ships the table restores it.
+
+## Shipping
+
+- An update patch can add any new file, in `upload/` or `medium_upload/` (`scripts/build_cn_patch.cjs`; the
+  1.4.600 home banners already did this).
+- **Server**: `assets/character.json` (`{ name, rarity, element, skill_count: 6, cn: true }`) so the server can give
+  the unit (dashboard Give → mail), and `assets/mana_node_cn.json` (same node ids) so Mana Board unlocks are accepted.
+- **The schedule rebuild is the catch.** Seven of the tables (character, character_status, ability,
+  leader_ability, action_skill, encyclopedia, mana_board2_open_condition) are re-shipped by every schedule build
+  (`scripts/gen_cn_event_schedule.cjs`), from CN's own rows, so the new rows would vanish at the next rebuild,
+  and a save holding the unit would then hit C8601. The kit-by-date mechanism (`assets/kit_dates.json`) only
+  *replaces* existing rows. A permanent version needs a small server-side step that *adds* custom-unit rows
+  inside the schedule build (data only; no game-code change).
+
+## The proof of concept
+
+`scripts/research/clone_cn_unit.cjs` (unit and names set at the top) writes the 19 tables with the new rows, the
+74 files under the new string id (renamed inside where needed), `files.json` for `build_cn_patch.cjs`, and
+`server.json` for the two server files. It takes tables from the newest copy the device has
+(CN → this PC's patches → `--newer` folders, e.g. a phone's own schedule builds), so translations stay English.
+
+Test run (emulator 5556, companion server, game at schedule build 1.4.805):
+
+1. 1.4.950: everything except the files' inner names → mail icon fine, **C8003** on claiming (frame names).
+2. 1.4.951: frame/atlas names rewritten → unit list fine, detail page **C8601** (Mana Board node ids).
+3. 1.4.952: node ids = unit × 2000 + … → detail page, skill, leader, abilities fine; Preview → **asset recovery**
+   for `battle/character_detail_skill_preview.battle`.
+4. 1.4.953: the two preview files added → Preview battle with the skill firing; Mana Board unlocks accepted by the
+   server; levels 1-80, uncap, EX Boost, Mana Board 1 with awakening all work.
+
+Not tested yet: a real quest battle with the unit in a party, Mana Board 2, co-op.
+
+## What a "new unit" tool needs
+
+1. **Rows.** A unit as a small JSON file (id, string id, rarity, element, stats, ability rows, leader, skill rows,
+   Mana Board), compiled into the 19 tables. Ability/leader columns are decoded already (memory note
+   kit-rows-decode, `scripts/build_kit_*.cjs`), and `*Values.as` names every column of every table.
+2. **Schedule integration.** Add those rows in `gen_cn_event_schedule.cjs` (like kit_dates, but appending), and
+   write `character.json` / `mana_node_cn.json` entries, so rebuilds keep the unit.
+3. **Art pipeline.** Pixel sprites as sheets + `.atlas` (frame rects, AMF3) + `.frame`/`.timeline` (animation
+   sequences such as `special_land`/`special_pose`); portraits and icons at fixed sizes (the `ui/` list above);
+   `trimmed_image`/`character_image` crop rows. `scripts/cn_sprite_merge.cjs`/`amf3.cjs` already write sheets and
+   atlases. Drawing the art is the real cost.
+4. **Skills.** A skill script is a JSON-shaped AMF3 tree (`["ActionDsl", 2, …, ["Block", [["Command",
+   ["StopBall", …]], ["Command", ["ShowEffect", …, "battle/effect/skill_unique/<x>/<y>"]] …]]]`). New skills can
+   combine existing commands and reuse any unit's effects. Writing one by hand needs the command list documented
+   (wfax/wdfp-extractor decode the format but don't explain it). New *effect* animations are art, like sprites.
+5. **Voices.** Optional. Game MP3s have each frame's sync byte 0xFF stored as 0x7F (wdfp-extractor's restoreMp3);
+   a new clip should be stored the same way (untested whether plain MP3 also plays).
+6. **Ids.** Pick an id with the right rarity/element digits that CN never used; Mana Board ids follow from it.
+
+**Bosses and events** follow the same rules (data tables + files + the server's own quest data); the Haunt and
+the event schedule already add rows that way. They weren't tested here.
