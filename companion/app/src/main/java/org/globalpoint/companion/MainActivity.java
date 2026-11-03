@@ -59,6 +59,14 @@ public class MainActivity extends Activity {
         battery = u.button("Let the server run in the background", this::askBattery);
         CheckBox auto = u.check("Start the server when this app opens", prefs.getBoolean("autoStart", true));
         auto.setOnCheckedChangeListener((b, on) -> prefs.edit().putBoolean("autoStart", on).apply());
+        // for phones whose battery saver still stops the server while the game is in front (like Termux's wake lock)
+        CheckBox awake = u.check("Keep the server awake while it runs (for strict battery savers; uses more battery)", prefs.getBoolean(ServerService.KEEP_AWAKE, false));
+        awake.setOnCheckedChangeListener((b, on) -> {
+            prefs.edit().putBoolean(ServerService.KEEP_AWAKE, on).commit();
+            ServerService.applyWake(this);
+        });
+        // where phone makers keep "Unrestricted" battery use and auto-start
+        u.button("Battery and auto-start settings", this::openAppSettings);
 
         logScroll = new ScrollView(this);
         log = new TextView(this);
@@ -150,6 +158,12 @@ public class MainActivity extends Activity {
     private boolean batteryFree() {
         PowerManager pm = getSystemService(PowerManager.class);
         return Build.VERSION.SDK_INT < 23 || pm.isIgnoringBatteryOptimizations(getPackageName());
+    }
+
+    // This app's page in Android's settings: Battery ("Unrestricted"), and on some phones Auto-start / "Allow
+    // background activity", which the battery-optimization prompt doesn't cover
+    private void openAppSettings() {
+        startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName())));
     }
 
     // Without this, some phones stop the server a while after the screen turns off or the game is closed

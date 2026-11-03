@@ -7,9 +7,11 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.os.Process;
 import android.util.Log;
 
@@ -28,9 +30,17 @@ import java.util.List;
  * If the system kills the process, START_STICKY brings it back. If Node itself stops with an error,
  * the process ends without stopping the service, so Android restarts it too, unless that already
  * happened 3 times in 2 minutes (then it stays stopped and the log says why).
+ *
+ * "Keep the server awake" (the "keepAwake" setting, off by default; also a button on the notification) holds a
+ * CPU wake lock while the server runs, like Termux's "Acquire wakelock": on phones with strict battery savers
+ * the server otherwise stops answering a while after the game or the screen takes over.
  */
 public class ServerService extends Service {
     static final String ACTION_STOP = "org.globalpoint.companion.STOP";
+    static final String ACTION_WAKE_TOGGLE = "org.globalpoint.companion.WAKE_TOGGLE";
+    static final String ACTION_WAKE_APPLY = "org.globalpoint.companion.WAKE_APPLY";
+    static final String KEEP_AWAKE = "keepAwake";
+    private static PowerManager.WakeLock wake;
     private static final String CHANNEL = "server";
     private static final long CRASH_WINDOW_MS = 2 * 60 * 1000;
     private static final int CRASH_LIMIT = 3;
@@ -45,13 +55,49 @@ public class ServerService extends Service {
         c.stopService(new Intent(c, ServerService.class));
     }
 
+    /** After the "keepAwake" setting changed on the main screen: a running server takes or drops its wake lock. */
+    static void applyWake(Context c) {
+        if (!ServerProbe.ownProcess(c)) return; // not running: the next start reads the setting
+        try { c.startService(new Intent(c, ServerService.class).setAction(ACTION_WAKE_APPLY)); } catch (RuntimeException ignored) { }
+    }
+
+    // the setting is written by the app's main process; MULTI_PROCESS reads it fresh in the server's process
+    @SuppressWarnings("deprecation")
+    private SharedPreferences prefs() {
+        return getSharedPreferences("companion", Context.MODE_MULTI_PROCESS);
+    }
+
+    private boolean keepAwake() {
+        return prefs().getBoolean(KEEP_AWAKE, false);
+    }
+
+    private void holdWake() {
+        boolean on = keepAwake();
+        if (on && (wake == null || !wake.isHeld())) {
+            wake = getSystemService(PowerManager.class).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "StarPoint:server");
+            wake.setReferenceCounted(false);
+            wake.acquire();
+            ServerFiles.log(this, "[companion] keeping the server awake (wake lock on)");
+        } else if (!on && wake != null && wake.isHeld()) {
+            wake.release();
+            ServerFiles.log(this, "[companion] wake lock off");
+        }
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && ACTION_STOP.equals(intent.getAction())) {
             stopSelf();
             return START_NOT_STICKY;
         }
+        String action = intent == null ? null : intent.getAction();
+        if (ACTION_WAKE_TOGGLE.equals(action) || ACTION_WAKE_APPLY.equals(action)) {
+            if (ACTION_WAKE_TOGGLE.equals(action)) prefs().edit().putBoolean(KEEP_AWAKE, !keepAwake()).commit();
+            if (goForeground()) holdWake(); // the notification shows the new state
+            if (nodeStarted) return START_STICKY;
+        }
         if (!goForeground()) { stopSelf(); return START_NOT_STICKY; }
+        holdWake();
         synchronized (ServerService.class) {
             if (!nodeStarted) {
                 nodeStarted = true;
@@ -112,11 +158,14 @@ public class ServerService extends Service {
         }
         PendingIntent open = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_IMMUTABLE);
         PendingIntent stop = PendingIntent.getService(this, 1, new Intent(this, ServerService.class).setAction(ACTION_STOP), PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent toggle = PendingIntent.getService(this, 2, new Intent(this, ServerService.class).setAction(ACTION_WAKE_TOGGLE), PendingIntent.FLAG_IMMUTABLE);
+        boolean awake = keepAwake();
         Notification n = b.setContentTitle("StarPoint server is running")
-                .setContentText("127.0.0.1:8000 - tap to open the companion")
+                .setContentText(awake ? "127.0.0.1:8000 - kept awake - tap to open the companion" : "127.0.0.1:8000 - tap to open the companion")
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentIntent(open)
                 .addAction(new Notification.Action.Builder(null, "Stop", stop).build())
+                .addAction(new Notification.Action.Builder(null, awake ? "Allow sleep" : "Keep awake", toggle).build())
                 .setOngoing(true)
                 .build();
         try {
@@ -135,6 +184,7 @@ public class ServerService extends Service {
 
     @Override
     public void onDestroy() {
+        if (wake != null && wake.isHeld()) wake.release();
         // Node can't be stopped and started again in one process
         Process.killProcess(Process.myPid());
     }
