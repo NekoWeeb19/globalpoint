@@ -26,7 +26,7 @@ import { LoginBonusGroup, isLoginBonusGroupOpen } from "../lib/loginBonus"
 import { dayNumber } from "../lib/mission"
 import { getGachaCampaignIdSync } from "../lib/assets"
 import { getServerDate } from "../utils"
-import { addServerDataStep, applyEventScheduleToServerData, getScheduleModStatus, rebuildMod, serverRecordKey } from "./eventSchedule"
+import { addServerDataStep, applyEventScheduleToServerData, cnEventWindows, getScheduleModStatus, rebuildMod, serverRecordKey } from "./eventSchedule"
 
 interface SeasonalData {
     loginBonuses: Record<string, { start: string, end: string, days: number, image: string | null }>,
@@ -235,6 +235,7 @@ export interface RunOverview {
     name: string,
     description: string,
     original: { start: string, end: string },
+    cn: { start: string, end: string } | null, // its own dates in CN's data (when the CN game runs it)
     yearly: boolean,
     skippedYears: number[], // years with no copy (one of the game's runs of this kind is on then)
     next: { start: string, end: string } | null,
@@ -246,6 +247,7 @@ export interface CampaignOverview {
     loginBonuses: {
         id: string, name: string, app: "both" | "cn", image: string | null, days: number,
         original: { start: string, end: string },
+        cn: { start: string, end: string } | null,
         yearly: boolean,
         open: boolean,
         next: { start: string, end: string } | null // the run on now or coming next (when yearly)
@@ -253,6 +255,7 @@ export interface CampaignOverview {
     freePulls: {
         id: number, name: string, app: "both" | "cn", gameName: string, kind: number,
         original: { start: string, end: string },
+        cn: { start: string, end: string } | null,
         yearly: boolean,
         skippedYears: number[], // years with no copy (a game campaign runs then)
         next: { start: string, end: string } | null,
@@ -268,6 +271,8 @@ export interface CampaignOverview {
 /** Everything the dashboard's Campaigns tab shows. */
 export function getCampaignOverview(): CampaignOverview {
     const now = getServerDate().getTime()
+    const cnDates = cnEventWindows() ?? {}
+    const cnOf = (key: string) => cnDates[key] ?? null
     const masterIso = (text: string) => {
         const ms = Date.parse(text.replace(" ", "T") + "+09:00")
         return isNaN(ms) ? text : iso(ms)
@@ -280,6 +285,7 @@ export function getCampaignOverview(): CampaignOverview {
         return [{
             id, name, app: "both", image: imageUrl(info.image), days: info.days,
             original: { start: masterIso(info.start), end: masterIso(info.end) },
+            cn: cnOf(`login:${id}`),
             yearly,
             open: groups[id] !== undefined && isLoginBonusGroupOpen(groups[id], now),
             next: run === null ? null : { start: iso(run.start), end: iso(run.end) }
@@ -294,6 +300,7 @@ export function getCampaignOverview(): CampaignOverview {
         loginBonuses.push({
             id, name, app: "cn", image: imageUrl(info.image), days: info.days,
             original: { start: masterIso(info.start), end: masterIso(info.end) },
+            cn: cnOf(`login:${id}`),
             yearly,
             open: isLoginBonusGroupOpen(group, now),
             next: run === null ? null : { start: iso(run.start), end: iso(run.end) }
@@ -318,6 +325,7 @@ export function getCampaignOverview(): CampaignOverview {
         return [{
             id, name, app, gameName: campaign.name, kind: campaign.kind,
             original: { start: masterIso(campaign.start), end: masterIso(campaign.end) },
+            cn: cnOf(`freePull:${id}`),
             yearly, skippedYears,
             next: next === undefined ? null : { start: masterIso(next.start), end: masterIso(next.end) },
             active: (active !== null && active.originalId === id) || (cnActive !== null && cnActive.originalId === id)
@@ -338,6 +346,7 @@ export function getCampaignOverview(): CampaignOverview {
             return {
                 key: run.key, name: runName(kind, run), description: describeRun(kind, rows),
                 original: { start: masterIso(run.start), end: masterIso(run.end) },
+                cn: run.ids.map(i => cnOf(`${kind}:${i}`)).find(w => w !== null) ?? null,
                 yearly, skippedYears,
                 next: next === undefined ? null : { start: masterIso(next.start), end: masterIso(next.end) },
                 active: isWindowOn(run, now) || (yearly && own.some(c => isWindowOn(c, now)))

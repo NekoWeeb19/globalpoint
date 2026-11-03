@@ -255,6 +255,7 @@
                         item.description,
                         "Original run: " + fullText(item.original.start) + " to " + fullText(item.original.end) + " UTC"
                     ]
+                    if (item.cn) lines.push(cnLine(item.cn))
                     if (on) lines.push("Repeats " + yearlyText(item.original))
                     if (on && item.skippedYears.length > 0) lines.push("Skipped in " + item.skippedYears.join(", ") + " (another of the game's campaigns of this kind is on then)")
                     const run = runLine(item)
@@ -262,6 +263,9 @@
                     list.appendChild(row({ name: item.name, image: null, checked: on, badges, lines, onChange: (value) => changed(picked, item.key, value) }))
                 }
             }
+
+            // when the CN game runs it on its own (its dates in CN's data), next to global's original run
+            const cnLine = (cn) => "In the CN game: " + fullText(cn.start) + " to " + fullText(cn.end) + " UTC"
 
             function renderLists() {
                 if (data === null) return
@@ -274,6 +278,7 @@
                     if (bonus.open) badges.push(badge("On now", true))
                     if (bonus.yearly) badges.push(badge("Repeats every year", false))
                     const lines = ["Original run: " + fullText(bonus.original.start) + " to " + fullText(bonus.original.end) + " UTC"]
+                    if (bonus.cn) lines.push(cnLine(bonus.cn))
                     if (on) lines.push("Repeats " + yearlyText(bonus.original))
                     const run = runLine(bonus)
                     if (run) lines.push(run)
@@ -292,6 +297,7 @@
                         "In the game: " + pull.gameName,
                         "Original run: " + fullText(pull.original.start) + " to " + fullText(pull.original.end) + " UTC (its own banners only)"
                     ]
+                    if (pull.cn) lines.push(cnLine(pull.cn))
                     if (on) lines.push("Repeats " + yearlyText(pull.original))
                     if (on && pull.skippedYears.length > 0) lines.push("Skipped in " + pull.skippedYears.join(", ") + " (a game campaign runs then)")
                     const run = runLine(pull)

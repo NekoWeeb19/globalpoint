@@ -414,6 +414,44 @@ async function main() {
         if (!byEvent.has(move.eventKey)) byEvent.set(move.eventKey, { move, rows: [] })
         byEvent.get(move.eventKey).rows.push({ file, p })
     }
+    // Each event's own dates in CN's data, before any move (.database/cn_event_windows.json, ISO UTC): the
+    // dashboard shows these, since they are when the CN game runs an event that isn't moved (global's
+    // dates, which the catalog has, can be years apart).
+    {
+        const windows = {}
+        const rowOf = new Map()
+        for (const [family, own] of Object.entries(OWN_WINDOW)) {
+            const tree = trees.get(fileOf(own.table))
+            if (tree) rowOf.set(family, new Map(R.leaves(tree).filter(l => l.path.length === 1).map(l => [l.path[0], l.leaf.text])))
+        }
+        for (const event of catalog.events) {
+            const own = OWN_WINDOW[event.family], rows = rowOf.get(event.family)
+            if (!own || !rows) continue
+            const id = event.family === "gacha" ? cnBannerId(event.id) : event.id
+            const text = rows.get(id)
+            if (text === undefined) continue
+            const c = R.splitCsv(text)
+            const first = v => parse(((v ?? "").match(DATE) ?? [])[0] ?? "")
+            const last = v => { const all = (v ?? "").match(DATE) ?? []; return parse(all[all.length - 1] ?? "") }
+            const start = first(c[own.start]), end = last(c[own.end])
+            if (start !== null && end !== null && end >= start) windows[event.key] = { start: new Date(start).toISOString(), end: new Date(end).toISOString() }
+        }
+        // the Campaigns tab's rows: "login:<group>" (a group's first day, columns 41/42), "freePull:<id>"
+        // (gacha_campaign 3/4), "reward:<id>" and "stamina:<id>" (1/2), before the yearly copies are added
+        for (const [kind, table, s, e, firstDayOnly] of [["login", CAMPAIGN_TABLES.login, 41, 42, true], ["freePull", CAMPAIGN_TABLES.freePull, 3, 4], ["reward", CAMPAIGN_TABLES.reward, 1, 2], ["stamina", CAMPAIGN_TABLES.stamina, 1, 2]]) {
+            const tree = trees.get(table)
+            if (!tree) continue
+            for (const { path: keys, leaf } of R.leaves(tree)) {
+                if (firstDayOnly ? keys[1] !== "1" : keys.length !== 1) continue
+                const c = R.splitCsv(leaf.text.replace(/\n$/, ""))
+                const start = parse(c[s] ?? ""), end = parse(c[e] ?? "")
+                if (start !== null && end !== null && end >= start) windows[`${kind}:${keys[0]}`] = { start: new Date(start).toISOString(), end: new Date(end).toISOString() }
+            }
+        }
+        fs.writeFileSync(path.join(dataDir(), "cn_event_windows.json"), JSON.stringify(windows))
+        console.log(`CN event dates: ${Object.keys(windows).length} event(s)`)
+    }
+
     let moved = 0, events = 0
     for (const [eventKey, { move, rows }] of byEvent) {
         const leaves = []

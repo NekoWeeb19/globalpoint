@@ -262,10 +262,13 @@
                 return span
             }
 
+            // the dates the game runs an event on when it isn't moved: CN's own (event.cn) when known, else global's
+            const ownDates = (event) => event.cn ?? event.original
+
             function stateOf(event) {
                 const now = serverNow()
-                const start = Date.parse(event.scheduled ? event.scheduled.start : event.original.start)
-                const end = Date.parse(event.scheduled ? event.scheduled.end : event.original.end)
+                const start = Date.parse(event.scheduled ? event.scheduled.start : ownDates(event).start)
+                const end = Date.parse(event.scheduled ? event.scheduled.end : ownDates(event).end)
                 return now < start ? "upcoming" : now <= end ? "live" : "ended"
             }
 
@@ -325,9 +328,10 @@
                     if (event.scheduled) title.append(badge("Moved", false))
                     const dates = document.createElement("span")
                     dates.className = "text-on-surface-variant text-sm"
+                    const own = ownDates(event)
                     dates.textContent = event.scheduled
-                        ? show(event.scheduled.start) + " to " + show(event.scheduled.end) + " UTC (originally " + show(event.original.start) + " to " + show(event.original.end) + ")"
-                        : show(event.original.start) + " to " + show(event.original.end) + " UTC"
+                        ? show(event.scheduled.start) + " to " + show(event.scheduled.end) + " UTC (originally " + show(own.start) + " to " + show(own.end) + ")"
+                        : show(own.start) + " to " + show(own.end) + " UTC"
                     text.append(title, dates)
                     const button = document.createElement("button")
                     button.type = "button"
@@ -435,7 +439,10 @@
                 const closes = event.original.close > event.original.end
                     ? (SUMMONS ? ", its points count until " : ", shops open until ") + show(event.original.close)
                     : ""
-                $("editor-original").textContent = "Originally " + show(event.original.start) + " to " + show(event.original.end) + " UTC (" + lengthText(originalLength) + ")" + closes + "."
+                $("editor-original").textContent = (event.cn
+                    ? "In the CN game: " + show(event.cn.start) + " to " + show(event.cn.end) + " UTC. Global ran it " + show(event.original.start) + " to " + show(event.original.end)
+                    : "Originally " + show(event.original.start) + " to " + show(event.original.end) + " UTC")
+                    + " (" + lengthText(originalLength) + ")" + closes + "."
                 $("editor-rows").textContent = event.rowCount + " game data rows move with it (quests, missions, shop items and more)."
                 const start = event.scheduled ? Date.parse(event.scheduled.start) : Math.ceil(serverNow() / 3600000) * 3600000
                 const end = event.scheduled ? Date.parse(event.scheduled.end) : start + originalLength

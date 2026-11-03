@@ -5,7 +5,7 @@
 // same dates.
 
 import { createHash } from "crypto"
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs"
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "fs"
 import path from "path"
 import catalogData from "../../assets/event_catalog.json"
 import missionData from "../../assets/missions.json"
@@ -128,7 +128,8 @@ function checkCnScheduleMatches() {
     const dir = path.join(process.cwd(), ".database")
     const now = scheduleFingerprint(dir)
     const built = readBuilt(dir)?.fingerprint ?? scheduleFingerprint(path.join(dir, "no-schedules"))
-    if (now === built) return
+    // an update built before the dashboard showed CN's dates has no cn_event_windows.json yet
+    if (now === built && existsSync(path.join(dir, "cn_event_windows.json"))) return
     console.log("[cn] the saved schedules differ from the ones the game update was built from; rebuilding the CN schedule update")
     rebuildCnSchedule()
 }
@@ -332,6 +333,8 @@ export interface EventOverview {
     name: string,
     rerun: boolean,
     original: { start: string, end: string, close: string },
+    /** When the CN game runs it when it isn't moved (its own dates in CN's data), or null when unknown. */
+    cn: { start: string, end: string } | null,
     scheduled: { start: string, end: string, moveBanners: boolean, skipBanners: string[] } | null,
     rowCount: number,
     bannerCount: number,
@@ -339,6 +342,19 @@ export interface EventOverview {
     image: string | null, // URL of the event's banner picture
     banners: { name: string, image: string | null }[], // summon banners that opened with it
     state: "upcoming" | "live" | "ended"
+}
+
+/** Every event's own dates in CN's data (.database/cn_event_windows.json, written by each CN update build), or null. */
+let cnWindowsCache: { mtimeMs: number, windows: Record<string, { start: string, end: string }> } | null = null
+export function cnEventWindows(): Record<string, { start: string, end: string }> | null {
+    const file = path.join(process.cwd(), ".database", "cn_event_windows.json")
+    try {
+        const mtimeMs = statSync(file).mtimeMs
+        if (cnWindowsCache === null || cnWindowsCache.mtimeMs !== mtimeMs) cnWindowsCache = { mtimeMs, windows: JSON.parse(readFileSync(file, "utf8")) }
+        return cnWindowsCache.windows
+    } catch {
+        return null
+    }
 }
 
 const imageUrl = (id: string | null | undefined) => id ? `/api/server/event-image/${id}.png` : null
@@ -356,12 +372,15 @@ const iso = (ms: number) => new Date(ms).toISOString()
 export function getEventOverview(): { serverDate: string, events: EventOverview[], problems: string[], conflicts: string[], mod: typeof modStatus } {
     const now = getServerDate().getTime()
     const events: EventOverview[] = []
+    const cnDates = cnEventWindows()
     for (const event of catalog.events) {
         const window = eventWindow(event)
         if (window === null) continue
         const entry = schedule.entries.find(e => e.key === event.key) ?? null
-        const start = entry ? Date.parse(entry.start) : window.start
-        const end = entry ? Date.parse(entry.end) : window.end
+        const cn = cnDates?.[event.key] ?? null
+        // an event that isn't moved runs on its CN dates in the CN game (the game this server is for)
+        const start = entry ? Date.parse(entry.start) : cn ? Date.parse(cn.start) : window.start
+        const end = entry ? Date.parse(entry.end) : cn ? Date.parse(cn.end) : window.end
         events.push({
             key: event.key,
             servers: event.servers ?? ["global"],
@@ -371,6 +390,7 @@ export function getEventOverview(): { serverDate: string, events: EventOverview[
             name: event.name,
             rerun: event.rerunOf !== null,
             original: { start: iso(window.start), end: iso(window.end), close: iso(window.close) },
+            cn,
             scheduled: entry ? { start: entry.start, end: entry.end, moveBanners: entry.moveBanners, skipBanners: entry.skipBanners ?? [] } : null,
             rowCount: event.rowCount,
             bannerCount: Object.values(event.banners).reduce((n, list) => n + list.length, 0),
