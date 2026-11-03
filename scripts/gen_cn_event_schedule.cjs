@@ -323,12 +323,8 @@ async function main() {
             return changed
         },
         // two Launch Gala banners at once: CN's own launch banner (61, 2011-12-24 to 2021-11-04) overlaps the
-        // JP-era one (1, until 2020-01-27); 61 opens when 1 closes.
-        // The JP-era Armament Portal (3, until 2020-01-27) is the only armament banner with column 26
-        // (freemium_guarantee_available) false: the client preloads armament rates only for banners with it
-        // true, so its pull results crashed (C8013, gacha_odds/normal_equipment_3 not loaded); set true like the rest
+        // JP-era one (1, until 2020-01-27); 61 opens when 1 closes
         [fileOf("master/gacha/gacha.orderedmap")]: (key, c) => {
-            if (key === "3" && c[0] === "equipment_1" && c[26] === "false") { c[26] = "true"; return true }
             if (key !== "61" || c[0] !== "newnormal_1") return false
             const i = c.indexOf("2011-12-24 12:00:00")
             if (i < 0) return false
