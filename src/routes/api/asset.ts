@@ -14,7 +14,8 @@ import { Platform, generateDataHeaders, getRequestPlatformSync } from "../../uti
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "fs";
 import { createHash } from "crypto";
 import path from "path";
-import { cnPathList, cnVersionInfo, isCnRequest } from "../../lib/cnClient";
+import { cnAssetVersion, cnPathList, cnVersionInfo, isCnRequest } from "../../lib/cnClient";
+import { noteCnClientVersion } from "../../nya/eventSchedule";
 
 interface GetPathBody {
     target_asset_version: string,
@@ -272,7 +273,11 @@ const routes = async (fastify: FastifyInstance) => {
         // the CN client: the CN game files, downloaded from StarPoint (JSON reply, as the CN fork sends)
         if (isCnRequest(request.originalUrl)) {
             const resVer = request.headers['res_ver']
-            const pathList = cnPathList(request.headers.host ?? "127.0.0.1:8000", typeof resVer === "string" ? resVer : undefined)
+            const host = request.headers.host ?? "127.0.0.1:8000"
+            // a client ahead of this server's newest update gets nothing now (its files are newer anyway); the
+            // update is rebuilt above its version and it takes that on its next check (src/nya/eventSchedule.ts)
+            const ahead = noteCnClientVersion(typeof resVer === "string" ? resVer : undefined, cnAssetVersion())
+            const pathList = cnPathList(host, ahead ? cnAssetVersion() : typeof resVer === "string" ? resVer : undefined)
             return reply.type("application/json").send({
                 data_headers: generateDataHeaders({ asset_update: pathList.info.client_asset_version !== pathList.info.target_asset_version || pathList.info.is_initial }),
                 data: pathList

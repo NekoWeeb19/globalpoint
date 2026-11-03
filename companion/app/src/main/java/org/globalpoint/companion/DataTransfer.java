@@ -400,7 +400,7 @@ final class DataTransfer {
         // skip files already here with the same size, except the save and schedules (always fresh);
         // the game's info.json comes last, so the game never takes a half-filled folder as finished
         List<Item> todo = new ArrayList<>();
-        Item gameInfo = null;
+        Item gameInfo = null, updateList = null;
         long skipped = 0, gameMissing = 0;
         int checked = 0;
         // each folder is listed once (shared storage makes every per-file check slow): a file not in its
@@ -421,6 +421,9 @@ final class DataTransfer {
             // the update list names this phone's own schedule updates, whose zips are only here: the PC's list
             // replaces it only together with the PC's zips (game updates ticked), or when there's none yet
             if (path.equals(".cdn/cn_patches/patches.json") && !o.patches && out.exists()) continue;
+            // the update list comes after the zips it names (like the game's info.json), so a copy that stops
+            // partway never leaves a list pointing at missing zips (the game's U0000)
+            if (path.equals(".cdn/cn_patches/patches.json")) { updateList = item; continue; }
             // the update list is rewritten by this phone's own server (its schedule builds), so it's always fetched
             boolean always = path.startsWith(".database/") || path.equals(".cdn/cn_patches/patches.json");
             if (!always && listed(listings, out)) {
@@ -500,6 +503,7 @@ final class DataTransfer {
             record.flush();
         }
         if (failed.get() != null) throw failed.get();
+        if (updateList != null) { fetch(base, updateList, done); count.incrementAndGet(); }
         if (gameInfo != null) { fetch(base, gameInfo, done); count.incrementAndGet(); }
 
         if (!env.isEmpty()) mergeEnv(new File(data, ".env"), env);

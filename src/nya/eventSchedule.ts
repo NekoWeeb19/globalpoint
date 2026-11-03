@@ -22,7 +22,7 @@ import {
 } from "../lib/eventSchedule"
 import { getServerDate } from "../utils"
 import getDatabase, { Database } from "../data"
-import { cdnDir, cnCdnRoot, cnCopyWindow } from "../lib/cnClient"
+import { cdnDir, cnCdnRoot, cnCopyWindow, cnPatches, compareVersions } from "../lib/cnClient"
 import { reloadMods } from "../routes/api/asset"
 
 // global's events, plus the events only the CN client has (assets/event_catalog_cn.json, from
@@ -106,6 +106,39 @@ function rebuildCnSchedule() {
     })
 }
 /**
+ * Keeps the highest CN update version this install has seen (a game's report, an update it built or had
+ * on its list) in .database/cn_client_version.json; the next build is numbered above it.
+ */
+function raiseSeenCnVersion(version: string | undefined) {
+    if (version === undefined || !/^\d+\.\d+\.\d+$/.test(version)) return
+    const file = path.join(process.cwd(), ".database", "cn_client_version.json")
+    let max: string | null = null
+    try { max = JSON.parse(readFileSync(file, "utf8")).max ?? null } catch { }
+    if (max === null || compareVersions(version, max) > 0) {
+        try { writeFileSync(file, JSON.stringify({ max: version })) } catch { }
+    }
+}
+/**
+ * Called with the game files' version a CN client reports on its update check. The highest one is kept
+ * (.database/cn_client_version.json, read by scripts/gen_cn_event_schedule.cjs, which numbers its next update
+ * above it): a phone's server numbers its own updates, so after its update list changes (a Wi-Fi copy, a
+ * data pack) a rebuild could otherwise reuse a number the game already has, with other contents, and the
+ * game would skip it. Returns true when the client is ahead of `target` (the newest update here): the
+ * update is rebuilt above its version, and the client gets that on its next check (a small download)
+ * instead of every StarPoint update again.
+ */
+export function noteCnClientVersion(resVer: string | undefined, target: string): boolean {
+    if (resVer === undefined || !/^\d+\.\d+\.\d+$/.test(resVer)) return false
+    raiseSeenCnVersion(resVer)
+    if (compareVersions(resVer, target) <= 0 || !existsSync(cnCdnRoot())) return false
+    if (!cnRunning) {
+        console.log(`[cn] the game has update ${resVer}, newer than this server's ${target}; rebuilding the CN schedule update above it`)
+        rebuildCnSchedule()
+    }
+    return true
+}
+
+/**
  * The CN update has yearly campaign copies only for a few years around the game clock (the CN client
  * scans them all for every event banner). Rebuilds it when the game year gets near the window's edge.
  */
@@ -126,15 +159,22 @@ const { scheduleFingerprint, readBuilt } = require(path.join(__dirname, "..", ".
  * Rebuilds the CN update when the saved schedules aren't the ones it was built from: a save imported with
  * its own schedules, a data pack, a copy from a PC. Without this the client keeps the old tables, and a
  * save naming a yearly copy they lack stops it (C8601). An update with no record (the shared package's or a
- * data pack's) is rebuilt too: nothing says which builder made it, and an older one lacks later fixes.
+ * data pack's) is rebuilt too: nothing says which builder made it, and an older one lacks later fixes. So is
+ * one whose update is no longer on the update list (a data pack or a Wi-Fi copy replaced the list).
  */
 function checkCnScheduleMatches() {
     if (!existsSync(cnCdnRoot())) return
     const dir = path.join(process.cwd(), ".database")
     const now = scheduleFingerprint(dir)
-    const built = readBuilt(dir)?.fingerprint ?? null
+    const record = readBuilt(dir) as { fingerprint?: string, version?: string } | null
+    const built = record?.fingerprint ?? null
+    const patches = cnPatches()
+    const listed = record?.version !== undefined && patches.some(p => p.version === record.version)
+    // whatever this install built or had on its list may be on the game: later builds go above it
+    raiseSeenCnVersion(record?.version)
+    raiseSeenCnVersion(patches.length > 0 ? patches[patches.length - 1].version : undefined)
     // an update built before the dashboard showed CN's dates has no cn_event_windows.json yet
-    if (now === built && existsSync(path.join(dir, "cn_event_windows.json"))) return
+    if (now === built && listed && existsSync(path.join(dir, "cn_event_windows.json"))) return
     console.log("[cn] the saved schedules differ from the ones the game update was built from; rebuilding the CN schedule update")
     rebuildCnSchedule()
 }

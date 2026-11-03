@@ -646,7 +646,16 @@ async function main() {
     // the next CN update
     const patches = fs.existsSync(PATCHES) ? JSON.parse(fs.readFileSync(PATCHES, "utf8")) : []
     const last = patches.length ? patches[patches.length - 1].version : "1.4.54"
-    const v = last.split(".").map(Number); v[2]++
+    // numbered above both the list's newest and the highest version a game reported (the server keeps it in
+    // cn_client_version.json): a number the game already has, with other contents, would be skipped by it
+    const versionNumbers = s => s.split(".").map(Number)
+    const newer = (a, b) => { const x = versionNumbers(a), y = versionNumbers(b); for (let i = 0; i < 3; i++) if (x[i] !== y[i]) return x[i] > y[i]; return false }
+    let base = last
+    try {
+        const seen = JSON.parse(fs.readFileSync(path.join(dataDir(), "cn_client_version.json"), "utf8")).max
+        if (typeof seen === "string" && /^\d+\.\d+\.\d+$/.test(seen) && newer(seen, base)) base = seen
+    } catch { }
+    const v = versionNumbers(base); v[2]++
     const version = v.join(".")
     const outDir = path.join(cdnDir(), "cn_schedule_files")
     fs.rmSync(outDir, { recursive: true, force: true })
