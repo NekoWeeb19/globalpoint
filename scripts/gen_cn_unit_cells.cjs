@@ -20,7 +20,7 @@ const fs = require("fs")
 const path = require("path")
 const unzipper = require("unzipper")
 const R = require("./cdn_rows.cjs")
-const { cnZips } = require("./cn_archives.cjs")
+const { cnZips, globalizeDir } = require("./cn_archives.cjs")
 const { recordsOf } = require("./gen_cn_text.cjs")
 
 const ROOT = path.join(__dirname, "..")
@@ -32,7 +32,7 @@ const PLACEHOLDER = /^(仮|临时|임시)$/
 const GUEST_BASE = { 700000: 243007, 700012: 161082, 700013: 131086, 700014: 121081 }
 const NO_SKILL = new Set(["700000"]) // ekaki_onmyoji_noskill
 
-const names = JSON.parse(fs.readFileSync("F:/WF client/globalize/table_names.json", "utf8"))
+const names = JSON.parse(fs.readFileSync(path.join(globalizeDir(), "table_names.json"), "utf8"))
 const byName = Object.fromEntries(Object.entries(names).map(([k, v]) => [v, k]))
 const TEXT = byName["master/character/character_text"]
 const CHARACTER = byName["master/character/character"]
@@ -62,9 +62,9 @@ const rowsOf = buf => new Map(R.leaves(R.decodeFile(buf)).map(l => [l.path.join(
 
 ;(async () => {
     // the CN text the apply step starts from (not its output, which already has these cells)
-    const textDir = process.argv[2] ?? process.env.CN_BASE_TEXT_DIR ?? "F:/WF client/globalize/text8"
+    const textDir = process.argv[2] ?? process.env.CN_BASE_TEXT_DIR ?? path.join(globalizeDir(), "text8")
     const translated = textDir ? new Map(JSON.parse(fs.readFileSync(path.join(textDir, "files.json"), "utf8")).map(f => [f.path, f.from])) : new Map()
-    const cn = await entries(cnZips("D:/WF client/.cdn/cn"))
+    const cn = await entries(cnZips())
     const glDir = path.join(ROOT, ".cdn/en")
     const gl = await entries(["archive-common-full", "archive-common-diff"].flatMap(d => fs.readdirSync(path.join(glDir, d)).filter(f => f.endsWith(".zip")).sort().map(f => path.join(glDir, d, f))))
     const cnRows = async p => rowsOf(translated.has(p) ? fs.readFileSync(translated.get(p)) : await cn.get(p).buffer())

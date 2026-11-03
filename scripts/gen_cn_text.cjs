@@ -40,7 +40,7 @@ function placeholdersFit(cn, en) {
 
 // CN files by hashed path (newest copy), like scan_cn_globalize.cjs
 async function cnIndex() {
-    const dir = "D:/WF client/.cdn/cn"
+    const dir = require("./cn_archives.cjs").cnDir()
     const ver = n => (n.match(/-(\d+\.\d+\.\d+)-\d+-[0-9a-f]+\.zip$/) || [])[1] || "0"
     const cmp = (a, b) => a.split(".").map(Number).reduce((r, x, i) => r || x - Number(b.split(".")[i] || 0), 0)
     const zips = []

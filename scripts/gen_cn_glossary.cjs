@@ -14,10 +14,9 @@ const unzipper = require("unzipper")
     const dir = process.argv[2]
     const files = JSON.parse(fs.readFileSync(path.join(dir, "files.json"), "utf8"))
     // CN originals by hashed path (newest copy)
-    const cnDir = "D:/WF client/.cdn/cn"
     const want = new Set(files.map(f => f.path))
     const cn = new Map()
-    for (const z of cnZips(cnDir)) for (const e of (await unzipper.Open.file(z)).files) if (want.has(e.path)) cn.set(e.path, e)
+    for (const z of cnZips()) for (const e of (await unzipper.Open.file(z)).files) if (want.has(e.path)) cn.set(e.path, e)
     const counts = new Map()
     for (const f of files) {
         const before = new Map(R.leaves(R.decodeFile(await cn.get(f.path).buffer())).map(({ path: p, leaf }) => [p.join("/"), leaf.text]))

@@ -13,7 +13,7 @@
 //
 // The game APK (the 127.0.0.1 build only) goes in <out>/apk/: --apk <file>, or add it later.
 //
-//   node scripts/package_release.cjs [out folder, default D:/GlobalPoint-release] [--apk <game apk>]
+//   node scripts/package_release.cjs [out folder, default ../GlobalPoint-release next to this repo] [--apk <game apk>]
 //   node scripts/package_release.cjs <existing out folder> --apk <game apk> --apk-only
 //   node scripts/package_release.cjs <existing out folder> --update-code   (server code only)
 const fs = require("fs")
@@ -25,7 +25,7 @@ const ROOT = path.join(__dirname, "..")
 const args = process.argv.slice(2)
 const apkAt = args.indexOf("--apk")
 const APK = apkAt >= 0 ? args[apkAt + 1] : null
-const OUT = path.resolve(args.find((a, i) => !a.startsWith("--") && i !== apkAt + 1) ?? "D:/GlobalPoint-release")
+const OUT = path.resolve(args.find((a, i) => !a.startsWith("--") && i !== apkAt + 1) ?? path.join(ROOT, "..", "GlobalPoint-release"))
 const step = s => console.log(`\n== ${s}`)
 
 /** Puts the game APK in <out>/apk/ (only the 127.0.0.1 build is for sharing). */

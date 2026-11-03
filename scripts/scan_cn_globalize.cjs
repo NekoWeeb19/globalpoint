@@ -13,7 +13,7 @@ const path = require("path")
 const zlib = require("zlib")
 const unzipper = require("unzipper")
 
-const CN = "D:/WF client/.cdn/cn"
+const CN = require("./cn_archives.cjs").cnDir()
 const GL = path.join(__dirname, "..", ".cdn", "en")
 
 function loadEntities(dir) {

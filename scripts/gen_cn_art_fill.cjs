@@ -18,7 +18,7 @@ const crypto = require("crypto")
 const { execFileSync } = require("child_process")
 const unzipper = require("unzipper")
 const R = require("./cdn_rows.cjs")
-const { cnDir, cnZips } = require("./cn_archives.cjs")
+const { cnDir, cnZips, requiredPath } = require("./cn_archives.cjs")
 const { readAmf3 } = require("./client_mod/amf3.cjs")
 const { globalFile } = require("./build_cn_patch.cjs")
 
@@ -32,7 +32,7 @@ const GUIDE_DIALOGS = "production/upload/f3/5dbdf5b3c941d0a975bd5eabb5652fa411eb
 const TOWER = "scene/tower_dungeon/sprite_sheet"
 const RAZELT = "gacha/feature_movie/release_gacha/prince_zero/sprite_sheet"
 const HEADER_TEXT = "Progress is reset every month on the 12th"
-const FONT = process.env.HEADER_FONT ?? "F:/WF client/fonts/Poppins-SemiBold.ttf"
+const FONT = () => requiredPath("HEADER_FONT", null, "the font for redrawn header text (global's Poppins-SemiBold.ttf)")
 
 // ---- PNG (RGBA only; CN/global sheets start with "png" in lower case) ----
 function decodePng(b) {
@@ -136,7 +136,7 @@ const globalPath = p => globalNames.get(p) ?? p
     const work = path.join(OUT, "work"); fs.mkdirSync(work, { recursive: true })
     const tw = Math.min(W - 60, x1 - x0 + 1 + 24), th = y1 - y0 + 1 + 6
     fs.writeFileSync(path.join(work, "labels.tsv"), ["tower_header", tw, th, "ffffff", "none", HEADER_TEXT].join("\t"))
-    execFileSync("java", [path.join(__dirname, "client_mod", "RenderLabels.java"), path.join(work, "labels.tsv"), work, FONT], { stdio: "inherit" })
+    execFileSync("java", [path.join(__dirname, "client_mod", "RenderLabels.java"), path.join(work, "labels.tsv"), work, FONT()], { stdio: "inherit" })
     const L = decodePng(fs.readFileSync(path.join(work, "tower_header.png")))
     const lx = Math.round((x0 + x1 + 1) / 2 - tw / 2), ly = Math.round((y0 + y1 + 1) / 2 - th / 2)
     for (let y = 0; y < th; y++) for (let x = 0; x < tw; x++) {

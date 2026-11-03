@@ -20,7 +20,7 @@ const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
 const hx = l => { const x = crypto.createHash("sha1").update(l + SALT).digest("hex"); return `${x.slice(0, 2)}/${x.slice(2)}` }
 const CN_SHEET = "production/upload/" + hx("scene/general/sprite_sheet.png")
 const CN_MAP = "production/upload/94/c238c788d5557f9ba757cf60f3f280c4650ded"
-const GLOBAL_APK = "C:/Users/Jaheem/Downloads/world-flipper-0-0-81.apk"
+const GLOBAL_APK = require("./cn_archives.cjs").requiredPath("GLOBAL_APK", null, "the global game APK (world-flipper-0-0-81.apk)")
 const GL_LANG_SHEET = hx("scene/general/sprite_sheet_lang.png")
 const GL_LANG_MAP = "15/6a600623598ffa689d83f37bd9c1399dc38209"
 

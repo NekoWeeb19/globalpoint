@@ -51,4 +51,18 @@ function cnZips(dir = cnDir()) {
     return zips.map(z => z.file)
 }
 
-module.exports = { cnZips, cnDir, cnTextDir, cdnDir, dataDir, generatedDir }
+/** The translation work folder (table_names.json and the text folders of each translation pass):
+ *  CN_GLOBALIZE_DIR (relative to the repo folder), else .cdn/globalize. */
+function globalizeDir() {
+    return path.resolve(path.join(__dirname, ".."), process.env.CN_GLOBALIZE_DIR || path.join(".cdn", "globalize"))
+}
+
+/** A setting that names a file or folder this machine must provide: the variable, else the command line value
+ *  given, else stops with a message saying what to set. */
+function requiredPath(variable, given, what) {
+    const value = given || process.env[variable]
+    if (!value) { console.error(`Set ${variable} in .env (or pass it on the command line): ${what}`); process.exit(1) }
+    return path.resolve(path.join(__dirname, ".."), value)
+}
+
+module.exports = { cnZips, cnDir, cnTextDir, cdnDir, dataDir, generatedDir, globalizeDir, requiredPath }

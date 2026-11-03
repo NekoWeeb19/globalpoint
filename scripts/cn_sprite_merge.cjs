@@ -19,7 +19,7 @@ const crypto = require("crypto")
 const unzipper = require("unzipper")
 
 const SALT = "K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy"
-const CN = "D:/WF client/.cdn/cn"
+const CN = require("./cn_archives.cjs").cnDir()
 const GL = path.join(__dirname, "..", ".cdn", "en")
 const SKIP_PREFIXES = ["story/", "character/", "battle/boss/", "battle/funnel/", "battle/effect/", "battle/field_object/"]
 const hashKey = logical => { const h = crypto.createHash("sha1").update(logical + SALT).digest("hex"); return h.slice(0, 2) + "/" + h.slice(2) }

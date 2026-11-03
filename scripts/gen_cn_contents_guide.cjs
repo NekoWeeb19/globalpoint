@@ -23,7 +23,8 @@ const R = require("./cdn_rows.cjs")
 
 const ROOT = path.join(__dirname, "..")
 const OUT = path.join(ROOT, "assets", "contents_guide_cn.json")
-const TRANSLATED = process.env.CN_TRANSLATED_DIR ?? "F:/WF client/globalize/text33"
+const { cnTextDir, globalizeDir } = require("./cn_archives.cjs")
+const TRANSLATED = cnTextDir()
 const NONE = v => v === undefined || v === "" || v === "(None)"
 const int = v => NONE(v) ? undefined : Number(v)
 
@@ -35,7 +36,7 @@ const EFFECT_WORDS = [
 
 /** The English skill text of every unit (translated action_skill + the units' skill keys). */
 async function unitSkillTexts() {
-    const names = require("F:/WF client/globalize/table_names.json")
+    const names = require(path.join(globalizeDir(), "table_names.json"))
     const inv = Object.fromEntries(Object.entries(names).map(([k, v]) => [v, k]))
     const files = new Map(JSON.parse(fs.readFileSync(path.join(TRANSLATED, "files.json"), "utf8")).map(f => [f.path, f.from]))
     const skillFile = files.get(inv["master/skill/action_skill"])

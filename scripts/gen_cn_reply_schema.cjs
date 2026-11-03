@@ -4,13 +4,13 @@
 //   8700 Int, 8701 Float, 8702 String, 8703 Bool, 8704 Array, 8707 Object
 // A check is "nullable" when the client compares the field with null first (then null/absent is fine).
 //
-//   node scripts/gen_cn_reply_schema.cjs ["F:/WF client/cn/pcode-1.8.1/scripts"]
+//   node scripts/gen_cn_reply_schema.cjs [<p-code export>/scripts]   (or set CN_DECOMPILED_DIR)
 // (export: ffdec-cli -format script:pcode -selectclass "pinball.remote.**,pinball.context.remote.real.**" -export script <out> <1.8.1 swf>)
 //   -> assets/cn_reply_schema.json  { common: [checks], apis: { "single_battle_quest/finish": [checks] } }
 const fs = require("fs")
 const path = require("path")
 
-const ROOT = process.argv[2] ?? "F:/WF client/cn/pcode-1.8.1/scripts"
+const ROOT = require("./cn_archives.cjs").requiredPath("CN_DECOMPILED_DIR", process.argv[2], "the CN client's FFDec p-code export (its scripts folder)")
 const TYPES = { 8700: "int", 8701: "float", 8702: "string", 8703: "bool", 8704: "array", 8707: "object" }
 // files whose checks apply to every reply, and files whose API path isn't written as "a/b"
 const COMMON = "pinball/context/remote/real/RealRemoteService.pcode"

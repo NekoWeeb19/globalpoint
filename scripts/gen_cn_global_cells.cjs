@@ -18,7 +18,7 @@ const fs = require("fs")
 const path = require("path")
 const unzipper = require("unzipper")
 const R = require("./cdn_rows.cjs")
-const { cnZips } = require("./cn_archives.cjs")
+const { cnZips, globalizeDir } = require("./cn_archives.cjs")
 const { recordsOf } = require("./gen_cn_text.cjs")
 
 const ROOT = path.join(__dirname, "..")
@@ -88,12 +88,12 @@ async function archive(dir, map) {
     const textDir = process.argv[2] ?? process.env.CN_TRANSLATED_DIR
     if (!textDir) throw new Error("Give the CN text dir (or set CN_TRANSLATED_DIR)")
     const translated = new Map(JSON.parse(fs.readFileSync(path.join(textDir, "files.json"), "utf8")).map(f => [f.path, f.from]))
-    const names = JSON.parse(fs.readFileSync("F:/WF client/globalize/table_names.json", "utf8"))
+    const names = JSON.parse(fs.readFileSync(path.join(globalizeDir(), "table_names.json"), "utf8"))
 
     const gl = new Map()
     for (const d of ["archive-common-full", "archive-common-diff"]) await archive(path.join(ROOT, ".cdn/en", d), gl)
     const cn = new Map()
-    for (const z of cnZips("D:/WF client/.cdn/cn"))
+    for (const z of cnZips())
         for (const e of (await unzipper.Open.file(z)).files)
             if (e.type === "File") cn.set("production/" + e.path.split("\\").join("/").replace(/^production\//, ""), e)
 

@@ -9,7 +9,7 @@
 //      merged tables with these on top, for scripts/build_cn_patch.cjs), todo.json (Chinese still left,
 //      { text: [table names] }, unit tables excluded)
 const fs = require("fs")
-const { cnZips } = require("./cn_archives.cjs")
+const { cnZips, cnDir, globalizeDir } = require("./cn_archives.cjs")
 const path = require("path")
 const crypto = require("crypto")
 const R = require("./cdn_rows.cjs")
@@ -59,12 +59,12 @@ async function cnArchives() {
     const unitCells = fs.existsSync(unitCellsFile) ? JSON.parse(fs.readFileSync(unitCellsFile, "utf8")).tables ?? {} : {}
     for (const [table, keys] of [...Object.entries(unitCells), ...Object.entries(fixes.cells ?? {})]) for (const [key, cells] of Object.entries(keys))
         ((cellFixes[table] ??= {})[key] = { ...(cellFixes[table]?.[key] ?? {}), ...cells })
-    const names = JSON.parse(fs.readFileSync("F:/WF client/globalize/table_names.json", "utf8"))
+    const names = JSON.parse(fs.readFileSync(path.join(globalizeDir(), "table_names.json"), "utf8"))
     const merged = new Map(JSON.parse(fs.readFileSync(path.join(mergedDir, "files.json"), "utf8")).map(f => [f.path, f.from]))
 
     // which tables: everything CN has that isn't byte-identical to global (shared-but-same files have no Chinese)
     const glE = new Map(fs.readFileSync(path.join(ROOT, ".cdn/en/entities/2.1.125-android_medium.csv"), "utf8").split("\n").map(l => { const p = l.split(","); return [p[0], p[3]] }))
-    const cnE = fs.readFileSync("D:/WF client/.cdn/cn/entities/10939-android_medium.csv", "utf8").split("\n").map(l => l.split(",")).filter(p => p.length >= 4)
+    const cnE = fs.readFileSync(path.join(cnDir(), "entities", "10939-android_medium.csv"), "utf8").split("\n").map(l => l.split(",")).filter(p => p.length >= 4)
     const candidates = cnE.filter(p => glE.get(p[0]) !== p[3]).map(p => p[0])
     // tables the hand fixes name are read too, also when they're the same as global's
     for (const t of [...Object.keys(fixes.rows ?? {}), ...Object.keys(replacements), ...Object.keys(cellFixes)]) if (!candidates.includes(t)) candidates.push(t)

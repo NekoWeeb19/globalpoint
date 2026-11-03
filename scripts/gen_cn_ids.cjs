@@ -1,4 +1,4 @@
-// Lists the ids that exist in the CN game files' tables (CN CDN, D:\WF client\.cdn\cn), for the CN
+// Lists the ids that exist in the CN game files' tables (CN_CDN_DIR), for the CN
 // client's replies: an id from global data the CN tables don't have stops the CN client (error C8601,
 // "key does not exist"), so src/lib/cnClient.ts leaves those out.
 //
