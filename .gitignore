@@ -23,3 +23,6 @@ logs/
 *.url
 banner-files.txt
 download_cdn.bat
+
+# your own settings (made from .env.example by setup)
+.env
