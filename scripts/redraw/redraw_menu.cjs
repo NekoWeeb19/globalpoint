@@ -1,7 +1,0 @@
-const zlib=require("zlib"),fs=require("fs"),crypto=require("crypto"),unz=require("F:/starpoint-main/node_modules/unzipper");const {readAmf3}=require("F:/starpoint-main/scripts/client_mod/amf3.cjs");const {cnZips}=require("F:/starpoint-main/scripts/cn_archives.cjs");const L=require("./redraw_lib.cjs");
-const SALT="K6R9T9Hz22OpeIGEWB0ui6c6PYFQnJGy";const s=l=>{const x=crypto.createHash("sha1").update(l+SALT).digest("hex");return x.slice(0,2)+"/"+x.slice(2)};
-(async()=>{const SP=__dirname;const ka=s("scene/general/sprite_sheet.atlas.amf3.deflate");let a;for(const z of cnZips())for(const e of (await unz.Open.file(z)).files)if(e.path.endsWith(ka))a=await e.buffer();
-const f=readAmf3(zlib.inflateRawSync(a)).find(x=>x.n.endsWith("header_footer-assets/menu_text"));console.log(JSON.stringify(f));
-const img=L.load(SP+"/general_new.png");for(let y=0;y<f.h;y++)img.px.fill(0,((f.y+y)*img.w+f.x)*4,((f.y+y)*img.w+f.x+f.w)*4);
-const t=L.fit("Menu","Regular",f.w-2,f.h*0.62);L.paste(img,t,f.x+f.w/2,f.y+f.h/2);L.save(img,SP+"/general_new2.png");
-const crop={w:f.w,h:f.h,px:Buffer.alloc(f.w*f.h*4)};for(let y=0;y<f.h;y++)img.px.copy(crop.px,y*f.w*4,((f.y+y)*img.w+f.x)*4,((f.y+y)*img.w+f.x+f.w)*4);const o={w:f.w*4,h:f.h*4,px:Buffer.alloc(f.w*f.h*64)};for(let y=0;y<o.h;y++)for(let x=0;x<o.w;x++){const si=(Math.floor(y/4)*f.w+Math.floor(x/4))*4,d=(y*o.w+x)*4,al=crop.px[si+3]/255;for(let k=0;k<3;k++)o.px[d+k]=Math.round(crop.px[si+k]*al+60*(1-al));o.px[d+3]=255}L.save(o,SP+"/menu_check.png")})()
