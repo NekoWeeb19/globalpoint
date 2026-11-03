@@ -12,7 +12,7 @@ import { ACCOUNT_CLAIM_MINUTES } from "../../lib/accountClaim";
 import { resetPlayerActiveMissionSync, unlockPlayerActiveMissionSync } from "../../nya/activeMissionTools";
 import activeMissionData from "../../../assets/active_missions.json";
 import { getCampaignOverview, setCampaignSchedule } from "../../nya/campaignSchedule";
-import { eventImagePath, getEventOverview, removeEventSchedule, removeEventSchedules, setEventSchedule, setEventSchedules } from "../../nya/eventSchedule";
+import { checkCnClockDependents, eventImagePath, getEventOverview, removeEventSchedule, removeEventSchedules, setEventSchedule, setEventSchedules } from "../../nya/eventSchedule";
 import { createReadStream } from "fs";
 import { allowLoginBonusAgainSync } from "../../nya/loginBonus";
 import { withRealTimeOfDay } from "../../lib/serverClock";
@@ -57,6 +57,7 @@ const routes = async (fastify: FastifyInstance) => {
             try {
                 // otherwise the server uses the real time again
                 setServerTime(null)
+                checkCnClockDependents()
             } catch (error) { }
         }
 
@@ -74,6 +75,7 @@ const routes = async (fastify: FastifyInstance) => {
         if (time === null) return badTimeReply(reply)
 
         setServerTime(time)
+        checkCnClockDependents()
 
         return reply.redirect(`/`);
     })
@@ -83,6 +85,7 @@ const routes = async (fastify: FastifyInstance) => {
     fastify.post("/time/match-real", async (_: FastifyRequest, reply: FastifyReply) => {
         const matched = new Date(withRealTimeOfDay(getServerDate().getTime(), Date.now()))
         setServerTime(matched)
+        checkCnClockDependents()
         return reply.send({ "serverDate": getServerDate().toISOString() })
     })
 

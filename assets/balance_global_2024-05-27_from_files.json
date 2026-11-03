@@ -1,0 +1,92 @@
+{
+ "source": "global game files: 2.1.108 update (2024-05-27) vs earlier; real number changes only (ID shifts, layout changes, translations and MB2 switch-ons removed). Values are raw: 100000 = 100% (ability values: level 1 then max), skill numbers = skill gauge cost.",
+ "units": {
+  "dimension_witch (161001)": [
+   "ability 1610013: 125000 250000 → 275000 550000"
+  ],
+  "lakeside_guardian (121006)": [
+   "ability 1210063: 40000 → 160000"
+  ],
+  "warlock_2halfanv (161117)": [
+   "ability 1611171: 12500 25000 → 17500 35000",
+   "ability 1611172: 12500 25000 → 17500 35000"
+  ],
+  "student_president (223019)": [
+   "ability 2230193: 172 1000 1000 100 false 23 250 500 \nstudent_president_3 false action_skill 1 600000 600000 Blue 18 5 Blue 100000 100000 (None) 0 (None) 487 100000 300000 2 (None) 0 true → 107 9 1000 1000 100 23 250 500 \nstudent_president_3 action_skill 1 600000 600000 Blue 18 5 Blue 100000 100000 487 100000 300000 100000 100000 2 true 1"
+  ],
+  "spider_ninja (131098)": [
+   "ability 1310983: 60000 120000 → 200000",
+   "skill spider_ninja/1: 540→510 540→510",
+   "skill spider_ninja/2: 540→510 490→460"
+  ],
+  "anger_investigator (111105)": [
+   "ability 1111053: 17500 → 70000"
+  ],
+  "katana_ghost_wt22 (161099)": [
+   "ability 1610993: 7500 15000 10000 20000 → 7500 15000 15000 30000"
+  ],
+  "misogi (111093)": [
+   "ability 1110933: 2500 5000 6000 12000 → 3500 7000 8000 16000"
+  ],
+  "combat_animal_xm21 (141081)": [
+   "ability 1410813: 5000 10000 → 8500 17000"
+  ],
+  "psychic_tohru (131080)": [
+   "ability 1310803: 40000 80000 → 70000 140000"
+  ],
+  "dog_slasher_proud (131074)": [
+   "ability 1310743: 85000 170000 5000 10000 → 105000 210000 12500 25000",
+   "skill dog_slasher_proud/1: 560→530 560→530",
+   "skill dog_slasher_proud/2: 560→530 510→480"
+  ],
+  "cyber_battergirl (131062)": [
+   "ability 1310623: 12500 10000 20000 → 50000 16250 32500"
+  ],
+  "tengu_master (141057)": [
+   "ability 1410573: -800000 -800000 → -600000 -600000"
+  ],
+  "tsundere_bountyhunter (111057)": [
+   "ability 1110573: 110000 220000 → 210000 420000"
+  ],
+  "yokai_exterminator (151039)": [
+   "ability 1510393: 6000 12000 → 11000 22000"
+  ],
+  "beatrix (161057)": [
+   "ability 1610573: 1500 5000 → 1250 2500 20000"
+  ],
+  "desert_commander (121039)": [
+   "ability 1210393: 17500 35000 → 42500 85000"
+  ],
+  "halberd_princess (111027)": [
+   "ability 1110273: 40000 80000 15000 30000 → 90000 180000 20000 40000"
+  ],
+  "prince_zero_smr20 (121008)": [
+   "ability 1210083: 75000 150000 → 115000 230000",
+   "skill prince_zero_smr20/1: 650→620 650→620",
+   "skill prince_zero_smr20/2: 650→620 600→570"
+  ],
+  "wind_dragon (141008)": [
+   "ability 9200553: -1000000 -1000000 → 5000000 5000000 9000 18000",
+   "skill wind_dragon/1: 650→610 650→610",
+   "skill wind_dragon/2: 650→610 600→560"
+  ],
+  "illusionist_smr20 (131013)": [
+   "ability 1310133: 2500000 5000000 → 3500000 7000000",
+   "skill illusionist_smr20/1: 600→530 600→530",
+   "skill illusionist_smr20/2: 600→530 550→480"
+  ],
+  "kokkoro (141007)": [
+   "ability 1410073: 75000 → 300000"
+  ],
+  "blade_dancer (151007)": [
+   "ability 1510073: 12500 → 50000"
+  ],
+  "lightbullet_wiz_ny20 (121003)": [
+   "ability 1210033: 10000 20000 → 12500 25000"
+  ],
+  "herbalist (341007)": [
+   "skill herbalist/1: 0→1 →2 →2400 →3000 →0 →0 →0 →0",
+   "skill herbalist/2: 0→1 →2 →2400 →3000 →0 →0 →0 →0"
+  ]
+ }
+}

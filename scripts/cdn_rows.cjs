@@ -51,7 +51,8 @@ function decodeValue(raw) {
     return { ...decodeFile(raw), raw }
 }
 
-const changed = node => node.kind === "leaf" ? node.original !== undefined : node.entries.some(e => changed(e.node))
+// a map is changed when a leaf in it was edited, or when entries were added or removed (node.dirty)
+const changed = node => node.kind === "leaf" ? node.original !== undefined : node.dirty === true || node.entries.some(e => changed(e.node))
 
 function encodeValue(node) {
     if (node.kind === "map") return node.raw !== undefined && !changed(node) ? node.raw : encodeFile(node)
@@ -89,6 +90,18 @@ function setLeafText(leaf, text) {
 function leaves(node, keyPath = []) {
     if (node.kind === "leaf") return [{ path: keyPath, leaf: node }]
     return node.entries.flatMap(e => leaves(e.node, [...keyPath, e.key]))
+}
+
+/** Splits a leaf's text into its CSV lines (a newline inside a quoted field doesn't end a line). */
+function splitCsvLines(text) {
+    const lines = []
+    let start = 0, quoted = false
+    for (let i = 0; i < text.length; i++) {
+        if (text[i] === '"') quoted = !quoted
+        else if (text[i] === "\n" && !quoted) { lines.push(text.slice(start, i)); start = i + 1 }
+    }
+    if (start < text.length) lines.push(text.slice(start))
+    return lines
 }
 
 /** Splits a CSV row into fields (quoted fields may hold commas, quotes and newlines). */
@@ -142,4 +155,4 @@ async function readHashedFile(hashed) {
     throw new Error(`${hashed} (version ${version}) was not found in any archive.`)
 }
 
-module.exports = { ROOT, CDN, decodeFile, encodeFile, setLeafText, leaves, splitCsv, csvField, readHashedFile }
+module.exports = { ROOT, CDN, decodeFile, encodeFile, setLeafText, leaves, splitCsv, splitCsvLines, csvField, readHashedFile }

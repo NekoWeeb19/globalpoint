@@ -286,7 +286,34 @@ async function main() {
     // the home "Way of Practice" banner (feature_banner_secondary 20016) runs 2024-2099 in CN, which had a
     // pass every month; here it gets one row per pass window, so it's only up while a pass is (C25000 otherwise)
     const PASS_BANNER = { banner: fileOf("master/feature_banner/feature_banner_secondary.orderedmap"), pass: fileOf("master/pass_card/pass_card_event.orderedmap"), id: "20016" }
-    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass])].sort()
+    // Unit kits before a balance change (assets/kit_dates.json, scripts/kit_dates.cjs): until a stage's date
+    // on the game clock its rows ship instead of the game's own. The tables are shipped whenever the file
+    // exists, so a later update puts the game's own rows back.
+    const KIT = require("./kit_dates.cjs")
+    const kits = KIT.readKits(path.join(ROOT, "assets", "kit_dates.json"))
+    const kitRows = new Map() // file -> Map(row key -> old text or column patch)
+    const kitTables = new Set()
+    const kitNow = gameNowMs()
+    for (const [unit, stages] of kits ?? []) {
+        for (const stage of stages) for (const ref of Object.keys(stage.rows)) kitTables.add(fileOf(ref.slice(0, ref.indexOf("#"))))
+        const stage = KIT.activeStages(new Map([[unit, stages]]), kitNow).get(unit)
+        if (stage === null) continue
+        for (const [ref, text] of Object.entries(stage.rows)) {
+            const file = fileOf(ref.slice(0, ref.indexOf("#")))
+            if (!kitRows.has(file)) kitRows.set(file, new Map())
+            kitRows.get(file).set(ref.slice(ref.indexOf("#") + 1), text)
+        }
+    }
+    const kitState = KIT.kitState(kits, kitNow)
+    // The CN client opens each unit's Mana Board 2 from a date in this table ("<unit>": "<from>,<until>") and
+    // the game clock. A unit a save already has on board 2 (.database/cn_mb2_in_use.json, written by the
+    // server before each build) crashes its board screen (F1009) while that date is ahead of the clock, so
+    // its board 2 is kept open. The dates are also saved for the server, to rebuild when the clock goes back.
+    // (its logical name isn't known; this is its stored path, found by the unit -> date rows matching each
+    // unit's "finish Mana Board 2" title mission)
+    const MB2_OPEN = "production/upload/bc/0bc800f482670f3ec8a7f2fee9b9deeeca3a04"
+    const mb2InUse = new Set((() => { try { return JSON.parse(fs.readFileSync(path.join(dataDir(), "cn_mb2_in_use.json"), "utf8")).map(String) } catch { return [] } })())
+    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...kitTables, MB2_OPEN])].sort()
     const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
     const cn = await cnFiles(new Set([...fileList, featureFile]))
     // art StarPoint's patches added (scripts/gen_cn_banner_art.cjs) counts too: their file names and
@@ -320,6 +347,40 @@ async function main() {
             if (leaf.text.includes("2025-08-14 23:59:59")) R.setLeafText(leaf, leaf.text.split("2025-08-14 23:59:59").join("2199-12-31 23:59:59"))
         }
         if (file === CAMPAIGN_TABLES.login) fillNormalLoginBonusGaps(tree)
+        if (file === MB2_OPEN) {
+            const dates = {}
+            let kept = 0
+            for (const { path: keys, leaf } of R.leaves(tree)) {
+                const end = leaf.text.endsWith("\n") ? "\n" : ""
+                const fields = R.splitCsv(leaf.text.replace(/\n$/, ""))
+                if (mb2InUse.has(keys[0]) && fields[0] > "2015-03-01 15:00:00") {
+                    fields[0] = "2015-03-01 15:00:00"
+                    R.setLeafText(leaf, fields.map(R.csvField).join(",") + end)
+                    kept++
+                }
+                dates[keys[0]] = fields[0]
+            }
+            fs.writeFileSync(path.join(dataDir(), "cn_mb2_dates.json"), JSON.stringify({ keptOpen: [...mb2InUse].sort(), dates }))
+            if (kept > 0) console.log(`Mana Board 2: ${kept} unit(s) a save already uses kept open`)
+        }
+        if (kitRows.has(file)) {
+            const wanted = kitRows.get(file)
+            let set = 0
+            for (const { path: keys, leaf } of R.leaves(tree)) {
+                const old = wanted.get(keys.join("/"))
+                if (old === undefined) continue
+                const end = leaf.text.endsWith("\n") ? "\n" : ""
+                if (typeof old === "string") R.setLeafText(leaf, old.replace(/\n$/, "") + end)
+                else {
+                    const lines = R.splitCsvLines(leaf.text.replace(/\n$/, "")), cols = R.splitCsv(lines[0])
+                    for (const [i, v] of Object.entries(old.cols ?? {})) cols[+i] = String(v)
+                    lines[0] = cols.map(R.csvField).join(",")
+                    R.setLeafText(leaf, lines.join("\n") + end)
+                }
+                set++
+            }
+            console.log(`Unit kits before a balance change: ${set} row(s) in ${file}`)
+        }
         trees.set(file, tree)
     }
 
@@ -417,7 +478,7 @@ async function main() {
         list.push({ path: file, from: out })
     }
     await build(version, last, list)
-    fs.writeFileSync(path.join(dataDir(), "cn_schedule_built.json"), JSON.stringify({ fingerprint, version, freePullCopyIds: builtFreePullCopyIds.sort((a, b) => a - b) }))
+    fs.writeFileSync(path.join(dataDir(), "cn_schedule_built.json"), JSON.stringify({ fingerprint, version, freePullCopyIds: builtFreePullCopyIds.sort((a, b) => a - b), kitState }))
     console.log(`CN schedule ${version}: ${events} event(s), ${moved} rows moved, ${campaignsMade}, ${list.length} files`)
     // the server's copy of the CN missions follows the new dates
     await runScriptOrThrow(path.join(__dirname, "gen_cn_missions.cjs"), { env: { ...process.env, CN_TRANSLATED_DIR: TRANSLATED }, echo: true })
