@@ -136,6 +136,20 @@ final class DataTransfer {
     static File gameDropOff() { return new File(Environment.getExternalStorageDirectory(), "StarPoint/game"); }
 
     /** Where a manifest path goes: the data folder, or the game's drop-off folder for game/... */
+    /** Whether a file is in its folder, from one listing per folder (kept in listings). */
+    private static boolean listed(Map<String, java.util.Set<String>> listings, File file) {
+        File dir = file.getParentFile();
+        if (dir == null) return file.exists();
+        String key = dir.getPath();
+        java.util.Set<String> names = listings.get(key);
+        if (names == null) {
+            String[] list = dir.list();
+            names = list == null ? java.util.Collections.emptySet() : new java.util.HashSet<>(java.util.Arrays.asList(list));
+            listings.put(key, names);
+        }
+        return names.contains(file.getName());
+    }
+
     private static File place(File data, String name) throws IOException {
         if (!name.startsWith("game/")) return target(data, name);
         File root = gameDropOff();
@@ -389,6 +403,9 @@ final class DataTransfer {
         Item gameInfo = null;
         long skipped = 0, gameMissing = 0;
         int checked = 0;
+        // each folder is listed once (shared storage makes every per-file check slow): a file not in its
+        // folder's listing is missing without asking the storage for it; only files that are there get a size check
+        Map<String, java.util.Set<String>> listings = new java.util.HashMap<>();
         for (String[] f : files) {
             String path = f[0];
             long size = Long.parseLong(f[1]);
@@ -398,7 +415,7 @@ final class DataTransfer {
             Item item = new Item(path, size, out);
             if (path.equals("game/info.json")) { gameInfo = item; continue; }
             boolean always = path.startsWith(".database/");
-            if (!always && out.exists() && out.length() == size) { skipped += size; continue; }
+            if (!always && listed(listings, out) && out.length() == size) { skipped += size; continue; }
             todo.add(item);
             if (path.startsWith("game/")) gameMissing += size;
         }
