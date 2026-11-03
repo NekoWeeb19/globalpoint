@@ -44,6 +44,7 @@ import treasureShopItems from "../../assets/treasure_shop.json";
 import rushEventQuestFolders from "../../assets/rush_event_quest_folder.json"
 import { readFileSync, statSync } from "fs";
 import { inCnRequest } from "./cnClient";
+import { towerOriginalQuestId } from "./towerRotation";
 import { AssetCharacter, BattleQuest, BossCoinShopItems, BoxGacha, ClearRewards, EventItemShopIdMapItem, EventShopItems, ExAbilities, ExBoostItem, ExBoostItems, ExStatus, Gacha, Gachas, ManaNode, ManaNodes, QuestCategory, RareScoreReward, RareScoreRewardGroups, RawAssetCharacters, RawBoxGachas, RawBoxRewards, RawQuests, Reward, RushEventFolders, ScoreReward, ScoreRewardGroups, ShopItem, ShopItems, ShopType, StoryQuest } from "./types";
 
 /**
@@ -248,7 +249,8 @@ export function getQuestFromCategorySync(
         case QuestCategory.DAILY_WEEK_EVENT:
             return getQuestSync((dailyWeekEventQuests as RawQuests), questId)
         case QuestCategory.TOWER_DUNGEON_EVENT:
-            return getQuestSync((towerDungeonEventQuests as RawQuests), questId)
+            // a copied month's floor (src/lib/towerRotation.ts) has the same quest as CN's floor it copies
+            return getQuestSync((towerDungeonEventQuests as RawQuests), towerOriginalQuestId(Number(questId)))
         case QuestCategory.EXPERT_SINGLE_EVENT:
             return getQuestSync((expertSingleEventQuests as RawQuests), questId)
         case QuestCategory.CARNIVAL_EVENT:

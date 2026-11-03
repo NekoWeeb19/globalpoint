@@ -169,6 +169,47 @@ function gameNowMs() {
  * stamina/reward campaign run a copy of its rows for every year in the copy window. Global's dates (UTC) become
  * China time. Returns a summary.
  */
+/**
+ * The Haunt's months outside CN's 48 (src/lib/towerRotation.ts): copies of the floor sets, one per month on the
+ * same loop, each with its own quest ids so the floors reset monthly. Only for the game clock's year -1 to +1 (the
+ * same window as the yearly campaign copies, rebuilt when the clock leaves it): copies for every year to 2199
+ * would be thousands of rows. Dates are China time, like the table's.
+ */
+function addTowerCopies(tree) {
+    const T = require("../out/lib/towerRotation.js")
+    const list = tree.entries.find(e => e.key === "1")?.node
+    if (!list || list.kind !== "map") return "The Haunt: no floor list, no copies"
+    const rows = new Map(list.entries.filter(e => e.node.kind === "leaf").map(e => [Number(R.splitCsv(e.node.text.replace(/\n$/, ""))[0]), e.node.text]))
+    const gameYear = new Date(gameNowMs()).getUTCFullYear()
+    const pad = n => String(n).padStart(2, "0")
+    let nextKey = Math.max(...list.entries.map(e => Number(e.key) || 0)) + 1
+    let months = 0
+    for (let year = gameYear - 1; year <= gameYear + 1; year++) for (let month = 1; month <= 12; month++) {
+        if (!T.isTowerCopyMonth(year, month)) continue
+        const set = T.towerSetForMonth(year, month)
+        const next = month === 12 ? [year + 1, 1] : [year, month + 1]
+        const first = year === T.TOWER_FIRST_MONTH.year && month === T.TOWER_FIRST_MONTH.month
+        const start = `${year}-${pad(month)}-12 ${first ? "12:00:00" : "05:00:00"}`
+        const end = `${next[0]}-${pad(next[1])}-12 04:59:59`
+        for (let floor = 1; floor <= 10; floor++) {
+            const text = rows.get(T.towerQuestId(set, floor))
+            if (!text) continue
+            const lines = R.splitCsvLines(text.replace(/\n$/, "")), c = R.splitCsv(lines[0])
+            c[0] = String(T.towerCopyQuestId(year, month, floor))
+            c[5] = start
+            c[6] = end
+            // the floor before it (column 13) is the copy's own floor, not CN's
+            const before = Number(c[13])
+            if (before >= T.towerQuestId(set, 1) && before <= T.towerQuestId(set, 10)) c[13] = String(T.towerCopyQuestId(year, month, before - T.towerQuestId(set, 1) + 1))
+            lines[0] = c.map(R.csvField).join(",")
+            list.entries.push({ key: String(nextKey++), node: { kind: "leaf", text: lines.join("\n") + (text.endsWith("\n") ? "\n" : ""), original: "" } })
+        }
+        months++
+    }
+    if (months > 0) list.dirty = true
+    return `The Haunt: ${months} month(s) of floor copies for ${gameYear - 1}-${gameYear + 1}`
+}
+
 function applyYearlyCampaigns(trees, files, cnWindows = {}) {
     const C = require("../out/lib/campaignSchedule.js")
     const read = file => JSON.parse(fs.readFileSync(path.join(ROOT, file), "utf8"))
@@ -303,8 +344,8 @@ async function main() {
     //   2020-01-15, so a save starting 2019-12-01 had none; the every-element rows open from 2001 instead
     //   (until 2022-05-31 as before, when the combined dungeon takes over)
     // - The Haunt (2022-05-12 to 2026-05-12 04:59:59, China time) opens a year earlier, 2021-05-12, and stays
-    //   open (2199-12-31). Its floors change monthly: 48 sets of 10 quests, each with its own month. The
-    //   first set starts 2021-05-12 too (so the extra year has floors) and the last one never ends.
+    //   open (2199-12-31). Its floors change monthly: 48 sets of 10 quests, each with its own month. The months
+    //   outside CN's get copies that carry on the same monthly loop (addTowerCopies, src/lib/towerRotation.ts).
     // the pop-up dialog table (its logical name isn't known; this is its stored path) and the dates that hide a row
     const GUIDE_DIALOGS = "production/upload/f3/5dbdf5b3c941d0a975bd5eabb5652fa411ebf9"
     const HIDDEN = ["2000-01-01 00:00:00", "2000-01-01 00:00:01"]
@@ -317,6 +358,7 @@ async function main() {
         c[i + 1] = "0"; c[i + 2] = HIDDEN[0]; c[i + 3] = HIDDEN[1]
         return true
     }
+    const TOWER_QUESTS = fileOf("master/quest/event/tower_dungeon_event_quest.orderedmap")
     const DUNGEON_FIXES = {
         [fileOf("master/quest/event/daily_week_event.orderedmap")]: (key, c) => {
             if (c[0].endsWith("_campaign") && c[16] === "2020-01-15 12:00:00") { c[16] = "2001-01-01 05:00:00"; return true }
@@ -384,12 +426,6 @@ async function main() {
             c[i] = HIDDEN[0]; c[i + 1] = HIDDEN[1]
             return true
         },
-        [fileOf("master/quest/event/tower_dungeon_event_quest.orderedmap")]: (key, c) => {
-            let changed = false
-            if (c[5] === "2022-05-12 12:00:00") { c[5] = "2021-05-12 12:00:00"; changed = true }
-            if (c[6] === "2026-05-12 04:59:59") { c[6] = "2199-12-31 23:59:59"; changed = true }
-            return changed
-        },
     }
     // the yearly campaigns (dashboard Campaigns tab) are written in these, every time
     const CAMPAIGN_TABLES = {
@@ -430,7 +466,7 @@ async function main() {
     // the CN game's start (China time); launch units with board 2 before it are moved to later waves
     const LAUNCH_MB2_FROM = "2019-12-01 00:00:00"
     const mb2InUse = new Set((() => { try { return JSON.parse(fs.readFileSync(path.join(dataDir(), "cn_mb2_in_use.json"), "utf8")).map(String) } catch { return [] } })())
-    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...kitTables, MB2_OPEN, ...Object.keys(DUNGEON_FIXES)])].sort()
+    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...kitTables, MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES)])].sort()
     const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
     const cn = await cnFiles(new Set([...fileList, featureFile]))
     // art StarPoint's patches added (scripts/gen_cn_banner_art.cjs) counts too: their file names and
@@ -489,6 +525,7 @@ async function main() {
             }
             console.log(`Date fixes: ${fixed} row(s) changed in ${file}`)
         }
+        if (file === TOWER_QUESTS) console.log(addTowerCopies(tree))
         if (file === MB2_OPEN) {
             const dates = {}
             let kept = 0
