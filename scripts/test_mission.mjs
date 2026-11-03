@@ -5,7 +5,7 @@
 //   node scripts/test_mission.mjs
 //
 // The main check replays the list recorded from the real global server
-// (docs/routes/mission_get_mission_progress.md): with the recorded progress saved and the clock at
+// (docs/global/routes/mission_get_mission_progress.md): with the recorded progress saved and the clock at
 // the recorded server time, the same missions must come back with the same progress and stage.
 
 import assert from "node:assert"
@@ -54,7 +54,7 @@ function store(rows = {}) {
 
 // --- 1. replay the recorded reply -------------------------------------------------------------
 
-const recordedDoc = read("../docs/routes/mission_get_mission_progress.md")
+const recordedDoc = read("../docs/global/routes/mission_get_mission_progress.md")
 const bodies = [...recordedDoc.matchAll(/### Body\n```\n([\s\S]*?)\n```/g)].map(m => JSON.parse(m[1]))
 const recordedRequest = bodies[0]
 const recordedReply = bodies[1]
@@ -241,7 +241,7 @@ check("rewards: unsupported kinds and broken rows are skipped and reported, not 
 
 // --- 9. in-battle actions ----------------------------------------------------------------------------
 
-const finishDoc = read("../docs/routes/single_battle_quest_finish.md")
+const finishDoc = read("../docs/global/routes/single_battle_quest_finish.md")
 const finishBody = JSON.parse([...finishDoc.matchAll(/### Body\n```\n([\s\S]*?)\n```/g)][0][1])
 const battle = (overrides = {}) => ({
     accomplished: finishBody.is_accomplished,

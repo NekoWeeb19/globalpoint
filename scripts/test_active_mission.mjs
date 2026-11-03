@@ -4,7 +4,7 @@
 //   node scripts/test_active_mission.mjs
 //
 // It also checks assets/active_missions.json, and replays the claim recorded from the real global
-// server (docs/routes/active_mission_receive.md) to make sure the response is identical.
+// server (docs/global/routes/active_mission_receive.md) to make sure the response is identical.
 
 import assert from "node:assert"
 import { readFileSync } from "node:fs"
@@ -62,7 +62,7 @@ check("every reward is a known kind with a positive amount (items have an id)", 
 check("every stage has a required progress (used by the unlock tool)", badRequirements.length === 0, badRequirements)
 
 // ---- replay the recorded global claim ----
-const doc = read("../docs/routes/active_mission_receive.md")
+const doc = read("../docs/global/routes/active_mission_receive.md")
 const blocks = [...doc.matchAll(/```\n([\s\S]*?)\n```/g)].map((match) => match[1])
 const recordedRequest = JSON.parse(blocks.find((b) => b.includes('"active_mission_list"') && !b.includes("data_headers")))
 const recorded = JSON.parse(blocks.find((b) => b.includes("data_headers"))).data

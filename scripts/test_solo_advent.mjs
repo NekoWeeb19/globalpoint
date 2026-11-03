@@ -18,7 +18,7 @@ const fresh = { isHostCleared: () => false, lastTicketDay: () => null }
 
 // data
 const multiOnly = Object.entries(rules.quests).filter(([_, q]) => q.playMode === 2).map(([id]) => Number(id))
-check("data: the multiplayer-only battles are the 9 Purgers of The Purge's 3 runs", multiOnly.length === 9 && multiOnly.every(id => [200013, 200021, 200050].includes(Math.floor(id / 1000))), multiOnly)
+check("data: the multiplayer-only battles are the 15 Purgers of The Purge's 5 runs (3 global, 2 CN)", multiOnly.length === 15 && multiOnly.every(id => [200013, 200021, 200050, 200071, 200076].includes(Math.floor(id / 1000))), multiOnly)
 check("data: the Empress tickets are 40314, 40323, 40335", JSON.stringify([200013009, 200021009, 200050009].map(id => getEntryItem(rules, id)?.id)) === "[40314,40323,40335]")
 check("data: other boss battles have no ticket", getEntryItem(rules, 200013002) === null && getEntryItem(rules, 1002) === null)
 

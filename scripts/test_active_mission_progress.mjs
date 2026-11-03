@@ -3,7 +3,7 @@
 // Run `npm run build` first, because this loads the compiled code from out/:
 //   node scripts/test_active_mission_progress.mjs
 //
-// It replays actions recorded from the real global server (docs/routes/equipment_upgrade.md,
+// It replays actions recorded from the real global server (docs/global/routes/equipment_upgrade.md,
 // expod_inject_exp.md, character_learn_mana_node.md, character_over_limit.md,
 // character_receive_bond_token.md, shop_buy.md and story_quest_finish.md) and checks that the missions
 // reported are the ones it reported.
@@ -83,7 +83,7 @@ check("never goes down as exp goes up, and stays between 1 and 100", monotonic)
 check("a new character is level 1", rarities.every((r) => estimateCharacterLevel(r, 0, expCaps) === 1))
 
 // ---- the recorded equipment upgrade ----
-const equipmentDoc = read("../docs/routes/equipment_upgrade.md")
+const equipmentDoc = read("../docs/global/routes/equipment_upgrade.md")
 const eqBlocks = [...equipmentDoc.matchAll(/### Body\n```\n([\s\S]*?)\n```/g)].map((m) => m[1])
 const recordedEquipment = JSON.parse(eqBlocks[1]).data.active_mission_list
 // before the upgrade: 11030 was already done (progress 1, so the beginner "complete all" already counted it),
@@ -96,7 +96,7 @@ try { assert.deepStrictEqual(deltas, byId(recordedEquipment)) } catch { same = f
 check("RECORDED equipment upgrade: the same missions, progress and unlocked stages", same, { deltas, recorded: byId(recordedEquipment) })
 
 // ---- the recorded exp injection ----
-const expodDoc = read("../docs/routes/expod_inject_exp.md")
+const expodDoc = read("../docs/global/routes/expod_inject_exp.md")
 const exBlocks = [...expodDoc.matchAll(/### Body\n```\n([\s\S]*?)\n```/g)].map((m) => m[1])
 const recordedExp = JSON.parse(exBlocks[1]).data.active_mission_list
 // before: 12030 unlocked at progress 60, and 11090 already done. The injection takes a 4 star character to level 70.
@@ -169,22 +169,22 @@ const matches = (deltas, recorded) => { try { assert.deepStrictEqual(deltas, rec
 // learning a mana node: 11070 went to 29 (it was unlocked already, and the "complete all" already counted it)
 acc = account({ saved: { 11070: { progress: 28, stages: { 1: false } }, 11110: { progress: 1, stages: {} } }, abilityNodes: 29 })
 deltas = byId(run(acc, { recompute: [62, 61] }))
-check("RECORDED mana node: the same missions and progress", matches(deltas, recordedMissions("../docs/routes/character_learn_mana_node.md")), { deltas })
+check("RECORDED mana node: the same missions and progress", matches(deltas, recordedMissions("../docs/global/routes/character_learn_mana_node.md")), { deltas })
 
 // over limit: 13040 went to 17
 acc = account({ saved: { 13040: { progress: 15, stages: { 1: false } }, 13110: { progress: 1, stages: {} } }, overLimit: 17 })
 deltas = byId(run(acc, { recompute: [9] }))
-check("RECORDED over limit: the same missions and progress", matches(deltas, recordedMissions("../docs/routes/character_over_limit.md")), { deltas })
+check("RECORDED over limit: the same missions and progress", matches(deltas, recordedMissions("../docs/global/routes/character_over_limit.md")), { deltas })
 
 // a bond token: 14070 unlocks, and the advanced "complete all" goes from 1 to 2
 acc = account({ saved: { 14050: { progress: 1, stages: { 1: true } }, 14110: { progress: 1, stages: {} } }, bondTokens: 1 })
 deltas = byId(run(acc, { recompute: [8] }))
-check("RECORDED bond token: the same missions, unlocked stage and all-clear count", matches(deltas, recordedMissions("../docs/routes/character_receive_bond_token.md")), { deltas, recorded: recordedMissions("../docs/routes/character_receive_bond_token.md") })
+check("RECORDED bond token: the same missions, unlocked stage and all-clear count", matches(deltas, recordedMissions("../docs/global/routes/character_receive_bond_token.md")), { deltas, recorded: recordedMissions("../docs/global/routes/character_receive_bond_token.md") })
 
 // a treasure shop purchase: 12010 went to 146
 acc = account({ saved: { 12010: { progress: 145, stages: { 1: false } }, 12110: { progress: 1, stages: {} } } })
 deltas = byId(run(acc, { add: { 45: 1 } }))
-check("RECORDED shop purchase: the same missions and progress", matches(deltas, recordedMissions("../docs/routes/shop_buy.md")), { deltas })
+check("RECORDED shop purchase: the same missions and progress", matches(deltas, recordedMissions("../docs/global/routes/shop_buy.md")), { deltas })
 
 // ---- the first of each ----
 acc = account()
@@ -215,7 +215,7 @@ check("a shop purchase changes only 12010 and its all-clear", JSON.stringify(ids
 const beginnerDone = { 11020: { progress: 1, stages: { 1: false } }, 11030: { progress: 4, stages: { 1: false } }, 11070: { progress: 2, stages: { 1: false } } }
 acc = account({ saved: { ...beginnerDone, 11110: { progress: 3, stages: {} } }, stories: 1 })
 deltas = byId(run(acc, { recompute: [21] }))
-check("RECORDED story quest: the same missions, unlocked stage and all-clear count", matches(deltas, recordedMissions("../docs/routes/story_quest_finish.md")), { deltas, recorded: recordedMissions("../docs/routes/story_quest_finish.md") })
+check("RECORDED story quest: the same missions, unlocked stage and all-clear count", matches(deltas, recordedMissions("../docs/global/routes/story_quest_finish.md")), { deltas, recorded: recordedMissions("../docs/global/routes/story_quest_finish.md") })
 acc = account({ stories: 5 })
 check("11010 counts the finished character stories", byId(run(acc, { recompute: [21] })).find((d) => d.mission_id === 11010)?.progress_value === 5)
 

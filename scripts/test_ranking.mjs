@@ -19,7 +19,7 @@ const place = (eventId, m, s) => placeRankingTime(data.events[eventId], eventId,
 const letter = p => LETTERS[p.tierIndex]
 
 // data
-check("data: 5 Trials (Water, Light, Wind, Thunder, Fire), quests 1001..5001", JSON.stringify(Object.values(data.events).map(e => e.questId)) === "[1001,2001,3001,4001,5001]")
+check("data: global's 5 Trials (Water, Light, Wind, Thunder, Fire), quests 1001..5001, then CN's 2 (1000001, 1001001)", JSON.stringify(Object.values(data.events).map(e => e.questId)) === "[1001,2001,3001,4001,5001,1000001,1001001]")
 check("data: every Trial has 9 tiers ending at 100%", Object.values(data.events).every(e => e.tiers.length === 9 && e.tiers[8].border === 1))
 check("data: Water's tiers are 3/5/10/20/30/40/50/70/100%", data.events["1"].tiers.map(t => t.border * 100).map(Math.round).join("/") === "3/5/10/20/30/40/50/70/100")
 check("data: S+ pays 50 Lilie Awards and 1,500 beads", data.events["1"].tiers[0].rewards.some(r => r.kind === 0 && r.id === 49100 && r.amount === 50) && data.events["1"].tiers[0].rewards.some(r => r.kind === 2 && r.amount === 1500))
