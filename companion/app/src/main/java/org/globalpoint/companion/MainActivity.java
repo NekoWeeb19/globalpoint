@@ -33,7 +33,8 @@ public class MainActivity extends Activity {
     private Button battery;
     private ScrollView logScroll;
     private SharedPreferences prefs;
-    private boolean visible, autoStarted;
+    private boolean visible, autoStarted, syncingAwake;
+    private CheckBox awakeBox;
 
     @Override
     protected void onCreate(Bundle saved) {
@@ -60,8 +61,9 @@ public class MainActivity extends Activity {
         CheckBox auto = u.check("Start the server when this app opens", prefs.getBoolean("autoStart", true));
         auto.setOnCheckedChangeListener((b, on) -> prefs.edit().putBoolean("autoStart", on).apply());
         // for phones whose battery saver still stops the server while the game is in front (like Termux's wake lock)
-        CheckBox awake = u.check("Keep the server awake while it runs (for strict battery savers; uses more battery)", prefs.getBoolean(ServerService.KEEP_AWAKE, false));
-        awake.setOnCheckedChangeListener((b, on) -> {
+        awakeBox = u.check("Keep the server awake while it runs (for strict battery savers; uses more battery)", prefs.getBoolean(ServerService.KEEP_AWAKE, false));
+        awakeBox.setOnCheckedChangeListener((b, on) -> {
+            if (syncingAwake) return;
             prefs.edit().putBoolean(ServerService.KEEP_AWAKE, on).commit();
             ServerService.applyWake(this);
         });
@@ -160,6 +162,21 @@ public class MainActivity extends Activity {
         return Build.VERSION.SDK_INT < 23 || pm.isIgnoringBatteryOptimizations(getPackageName());
     }
 
+    // the notification's Keep awake / Allow sleep button changes the setting in the server's process
+    private void syncAwakeBox() {
+        @SuppressWarnings("deprecation") boolean awakeNow = getSharedPreferences("companion", MODE_MULTI_PROCESS).getBoolean(ServerService.KEEP_AWAKE, false);
+        syncingAwake = true;
+        awakeBox.setChecked(awakeNow);
+        syncingAwake = false;
+    }
+
+    // closing the notification shade over this screen doesn't resume it, but gives it the focus back
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && awakeBox != null) awakeBox.postDelayed(this::syncAwakeBox, 300);
+    }
+
     // This app's page in Android's settings: Battery ("Unrestricted"), and on some phones Auto-start / "Allow
     // background activity", which the battery-optimization prompt doesn't cover
     private void openAppSettings() {
@@ -181,6 +198,7 @@ public class MainActivity extends Activity {
         super.onResume();
         visible = true;
         battery.setVisibility(batteryFree() ? View.GONE : View.VISIBLE);
+        syncAwakeBox();
         data.setText(DataTransfer.summary(this));
         // start once per screen visit, only when the data is there
         if (!autoStarted && prefs.getBoolean("autoStart", true) && new File(ServerFiles.dataDir(this), ".cdn/cn/path").exists()) {
