@@ -421,9 +421,17 @@ final class DataTransfer {
             // the update list names this phone's own schedule updates, whose zips are only here: the PC's list
             // replaces it only together with the PC's zips (game updates ticked), or when there's none yet
             if (path.equals(".cdn/cn_patches/patches.json") && !o.patches && out.exists()) continue;
-            boolean always = path.startsWith(".database/");
+            // the update list is rewritten by this phone's own server (its schedule builds), so it's always fetched
+            boolean always = path.startsWith(".database/") || path.equals(".cdn/cn_patches/patches.json");
             if (!always && listed(listings, out)) {
-                if (record.has(path, size)) { skipped += size; continue; }
+                // the record only stands in for the slow size checks of the game files on shared storage; the
+                // server's own files are in this app's storage (fast to check, and the server may change them)
+                if (path.startsWith("game/") && record.has(path, size)) { skipped += size; continue; }
+                if (!path.startsWith("game/")) {
+                    if (out.length() == size) { skipped += size; continue; }
+                    todo.add(item);
+                    continue;
+                }
                 unsure.add(item);
                 continue;
             }
@@ -472,7 +480,7 @@ final class DataTransfer {
                 if (failed.get() != null) return;
                 try {
                     fetch(base, item, done);
-                    if (!item.path.startsWith(".database/")) record.add(item.path, item.size);
+                    if (item.path.startsWith("game/")) record.add(item.path, item.size);
                     count.incrementAndGet();
                 } catch (Exception e) {
                     failed.compareAndSet(null, e);

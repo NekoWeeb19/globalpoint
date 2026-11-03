@@ -3,7 +3,7 @@
 // (hex)<TAB>outline color (hex or "none")<TAB>text ("\n" = new line). The text is fitted to the
 // box: the largest bold font size that fits, centered.
 //
-//   java RenderLabels.java <labels.tsv> <out dir> [font name]
+//   java RenderLabels.java <labels.tsv> <out dir> [font name, or a .ttf file]
 import java.awt.*;
 import java.awt.font.*;
 import java.awt.geom.*;
@@ -15,6 +15,8 @@ import javax.imageio.ImageIO;
 public class RenderLabels {
     public static void main(String[] args) throws Exception {
         String fontName = args.length > 2 ? args[2] : "Segoe UI";
+        // a font file (e.g. the game's Poppins) is used as it is, without a bold style on top
+        Font fileFont = args.length > 2 && args[2].toLowerCase().endsWith(".ttf") ? Font.createFont(Font.TRUETYPE_FONT, new java.io.File(args[2])) : null;
         for (String line : Files.readAllLines(Paths.get(args[0]), java.nio.charset.StandardCharsets.UTF_8)) {
             if (line.isBlank() || line.startsWith("#")) continue;
             String[] p = line.split("\t");
@@ -32,13 +34,13 @@ public class RenderLabels {
             // the largest size whose lines fit inside the box (minus the outline)
             Font font = null;
             for (float size = h; size >= 6; size -= 0.5f) {
-                Font f = new Font(fontName, Font.BOLD, 10).deriveFont(size);
+                Font f = (fileFont != null ? fileFont : new Font(fontName, Font.BOLD, 10)).deriveFont(size);
                 double lh = f.getLineMetrics("Ag", frc).getHeight();
                 double maxW = 0;
                 for (String l : lines) maxW = Math.max(maxW, new TextLayout(l, f, frc).getBounds().getWidth());
                 if (maxW <= w - 2 * pad && lh * lines.length * 0.92 <= h - 2 * pad) { font = f; break; }
             }
-            if (font == null) font = new Font(fontName, Font.BOLD, 6);
+            if (font == null) font = (fileFont != null ? fileFont : new Font(fontName, Font.BOLD, 10)).deriveFont(6f);
             LineMetrics lm = font.getLineMetrics("Ag", frc);
             double lh = lm.getHeight() * 0.92;
             double top = (h - lh * lines.length) / 2;
