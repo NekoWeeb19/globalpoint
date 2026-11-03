@@ -164,10 +164,10 @@ public class DashboardActivity extends Activity {
         }
     }
 
+    // Back leaves the dashboard at once (back to the app), instead of stepping through its pages like a browser
     @Override
     public void onBackPressed() {
-        if (web.canGoBack()) web.goBack();
-        else super.onBackPressed();
+        super.onBackPressed();
     }
 
     @Override
