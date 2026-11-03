@@ -44,9 +44,9 @@ CN archive names are `pinball-1.4.X-1.4.Y-...zip`. Always read them in **version
 The CN app asks a Leiting server for its API address; the patch points it at StarPoint
 (`/cn` on port 8000) and skips the Leiting login SDK.
 
-The steps below are the first build. The current app (build 23) adds more patches on top: co-op
+The steps below are the first build. The current app (build 25) adds more patches on top: co-op
 speed, the OBB and drop-off folder for phones, and the `server.txt` address file.
-[`scripts/client_mod/README.txt`](../scripts/client_mod/README.txt) lists build 23's full chain of
+[`scripts/client_mod/README.txt`](../scripts/client_mod/README.txt) lists build 25's full chain of
 patches, in order, with the commands.
 
 1. Take `assets/worldflipper_android_release.swf` out of the APK.
@@ -190,13 +190,15 @@ node scripts/build_cn_obb.cjs "C:/wf/obb" --server <StarPoint folder>
 - It packs CN's base files and every StarPoint update in `.cdn/cn_patches/patches.json`, so build
   it after step 6 and any art patches. `--server` defaults to this checkout.
 - The output is `main.1008001.com.leiting.wf.obb` (~10.3 GB; it needs that much free space and
-  writes nothing else). `-` instead of a folder streams it to stdout, e.g. straight onto a phone:
+  writes nothing else). `--parts 3` cuts it into three files (`...part1of3.obb` and so on), which
+  game build 25 reads from the same folder. `-` instead of a folder streams it to stdout, e.g. straight onto a phone:
   `node scripts/build_cn_obb.cjs - | adb exec-in "cat > /sdcard/StarPoint/game/main.1008001.com.leiting.wf.obb"`
   (make the folder first, and give the game the permissions in README setup C, step 5).
 - It's a plain zip (files stored, zip64) whose first entry indexes every file. That lets the game
   unpack it from the end and shrink the file as it goes, so the phone needs little space beyond the
   OBB, and an interrupted unpack carries on next time.
-- Where the phone takes it, and the fallback folder: README, setup C. The folder layout is in
+- Where the phone takes it (`starpoint_game/` from build 24, `StarPoint/game/`, or
+  `Android/obb/com.leiting.wf/` on some phones) and the permissions it needs: README, setup C. The folder layout is in
   `scripts/client_mod/STORAGE_LAYOUT.txt`.
 
 ## Things that are different on the CN app

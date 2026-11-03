@@ -10,7 +10,7 @@ What you need
     127.0.0.1:8000, so on an emulator it reaches your PC through "adb reverse" (done for you).
   - About 16 GB of free space (the game downloads ~12 GB of files from this server the first time).
   - Downloads (links in README.md):
-      the game APK (build 23) and starpoint-data.zip (2.25 GB) from the Google Drive folder, plus
+      the game APK (build 25) and starpoint-data.zip (2.25 GB) from the Google Drive folder, plus
         the comics zip (1.4 GB) if you want comics;
       the CN game files (CN CDN 1.4.54, six cn-cdn.tar.part.* files, ~10.1 GB) from
         https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54

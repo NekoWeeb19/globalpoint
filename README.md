@@ -62,13 +62,13 @@ patches and those units play with their kit from before it (see [Balance by date
 |---|---|---|---|
 | **A. PC** | your PC | an Android emulator on the same PC (e.g. LDPlayer) | Windows, Node.js 20+, ~16 GB free; the CN game files and `starpoint-data.zip` |
 | **B. Phone, Wi-Fi** | on the phone (StarPoint Companion app) | the same phone | a PC running setup A on the same Wi-Fi, once; ~25 GB free on the phone |
-| **C. Phone, OBB** | on the phone (StarPoint Companion app) | the same phone | an OBB file built on a PC with setup A and copied over USB, plus `starpoint-data.zip` |
+| **C. Phone, OBB** | on the phone (StarPoint Companion app) | the same phone | the OBB file (from the Drive, or built on a PC with setup A) and `starpoint-data.zip`; ~15 GB free |
 | **D. Phone + PC server** | your PC | a phone | setup A on the PC; the phone on the same Wi-Fi (or a USB cable with USB debugging) |
 
 Setups A and D keep the server on your PC. Use them if you'd rather not keep everything on your
 phone or don't want the companion app.
 
-The game app is **build 23** of the patched CN app. By default it talks to `127.0.0.1:8000`: your
+The game app is **build 25** of the patched CN app. By default it talks to `127.0.0.1:8000`: your
 PC's server through the emulator in setup A, or the companion app on the phone itself in setups B
 and C. A small `server.txt` file on the phone points it at your PC instead (setup D). That takes
 the place of original StarPoint's mitmproxy route, which only worked for the global app.
@@ -79,14 +79,25 @@ Downloads:
 
 | File | What it is | Where | Size |
 |---|---|---|---|
-| **World Flipper (game) APK** | the patched game app (build 23), for every setup | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 139 MB |
-| **StarPoint Companion APK** | the server-on-your-phone app (0.6.17), for setups B and C | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 85 MB |
+| **World Flipper (game) APK** | the patched game app (build 25; installs over builds 23 and 24), for every setup | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 139 MB |
+| **StarPoint Companion APK** | the server-on-your-phone app (0.6.22), for setups B and C | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 76 MB |
+| **OBB in 3 parts** (`main.1008001.com.leiting.wf.part1of3.obb`, `part2of3`, `part3of3`) | every game file (game files 1.4.800, up to date), for setup C; download all three | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 3.6 GB each |
+| **OBB** (`main.1008001.com.leiting.wf.obb`), the alternative | the same as one 10 GB file (game files 1.4.203: older, the game updates after unpacking), for phones and file apps that handle one big file | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 10.3 GB |
 | **`starpoint-data.zip`** | GlobalPoint's English tables, game updates (art and text patches), schedule files, dashboard pictures and news. Setup A unzips it into the server folder; setup C imports it into the companion | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 2.25 GB |
 | **Comics zip** (optional) | the in-game comics, used the same way as `starpoint-data.zip` | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 1.4 GB |
 | **CN game files** (CN CDN 1.4.54) | the official CN game's files, for setup A: six parts `cn-cdn.tar.part.00` to `05`, plus `SHA256SUMS.txt` | [dennis96292/.cdn, release cdn-1.4.54](https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54) | ~10.1 GB |
 | **GlobalPoint** (this repository) | the server, the dashboard and the scripts | `git clone`, or **Code > Download ZIP** on GitHub | small |
 
-There's no ready-made OBB to download: setup C builds one on the PC from setup A's files.
+Setup C can also build its own OBB on a PC from setup A's files.
+
+SHA-256 of the OBB parts, to check a download (`certutil -hashfile <file> SHA256` on Windows,
+`sha256sum <file>` elsewhere):
+
+```
+a57b1629b3564aa600cfaa9b1bbc88794a36eb1214b58f58238986dc0f0aebb7  main.1008001.com.leiting.wf.part1of3.obb
+343438b6ee2debb1843609acbf386b2cf977d23a6ea018485e22e6d48a5fc453  main.1008001.com.leiting.wf.part2of3.obb
+b3676a2042c945b26b7c0bfa1bd1127cb15e07984d7b2b47971c8b0d4aa9e412  main.1008001.com.leiting.wf.part3of3.obb
+```
 
 ### A. On a PC (emulator)
 
@@ -163,24 +174,24 @@ move it.
 
 ### C. On a phone, with the OBB file
 
-The OBB is every game file in one file (~10.3 GB). It isn't hosted anywhere, so you build it once
-on a PC that has setup A and copy it to the phone over USB. After that the phone plays on its own.
+The OBB is every game file, ~10.3 GB. The [Google Drive folder](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) has it in **3 parts**
+(~3.6 GB each, easier to download and copy) and as one file. You can also build it on a PC that has
+setup A. After that the phone plays on its own.
 
-1. **Build the OBB** on the PC, in `<folder>`:
+1. **Get the OBB**: download the three `part1of3` / `part2of3` / `part3of3` files (or the single
+   `.obb`), on the phone or on a PC to copy over USB. Or build it on the PC, in `<folder>`:
    ```bash
-   node scripts/build_cn_obb.cjs <output folder>
+   node scripts/build_cn_obb.cjs <output folder> --parts 3
    ```
-   It needs ~10.3 GB free in the output folder and writes `main.1008001.com.leiting.wf.obb` there.
-   (With the phone connected over adb, it can also stream the OBB straight onto the phone; see
-   [docs/CN_CLIENT_SETUP.md](docs/CN_CLIENT_SETUP.md#9-optional-an-obb-for-phones).)
-2. Install the **game** APK on the phone. **Don't open it yet.**
-3. **Make the folder.** In internal storage, create a folder named **`StarPoint`**, and inside it a
-   folder named **`game`** (in the phone's file app, or from the PC over USB). The game only looks
-   in a folder with exactly that name: `Internal storage/StarPoint/game/`.
-4. **Put the OBB in `StarPoint/game/`**, directly (not in a subfolder): copy it from the PC over USB,
-   or, if it's already on the phone, **Move** it there with the file app (Move, not Copy: a copy
-   needs twice the space, ~20 GB). Don't let anything compress or zip it: the game can't read a
-   zipped OBB.
+   That needs ~10.3 GB free. Leave out `--parts 3` for one file.
+2. Install the **game** APK (build 25; the parts need it) on the phone. **Don't open it yet.**
+3. **Make the folder.** At the top of internal storage, create a folder named exactly
+   **`starpoint_game`**: `Internal storage/starpoint_game/`. (`Internal storage/StarPoint/game/`
+   works the same way, if you already have it.)
+4. **Put the OBB in `starpoint_game/`**: all three parts together in that one folder, directly
+   (not in a subfolder). Copy them from the PC over USB or, if they're already on the phone,
+   **Move** them there with the file app (Move, not Copy: a copy needs twice the space, ~20 GB).
+   Don't let anything compress or zip them: the game can't read a zipped OBB.
 5. **Let the game read it (required).** Android Settings > Apps > World Flipper:
    - turn on **All files access**;
    - under **Permissions**, allow the storage permissions. On Android 13 and newer they're listed as
@@ -193,21 +204,42 @@ on a PC that has setup A and copy it to the phone over USB. After that the phone
    **Download from PC** without **Full game files** does the same.)
 7. Start the companion's server as in step 8 of setup B.
 8. Open the game (if it was already open, close it fully first). It shows "Unpacking game files",
-   unpacks the OBB by itself, deletes it when done, and goes in with no download.
+   unpacks the OBB by itself and deletes it when done. With the 3 parts it checks first that all
+   three are there and complete, then unpacks from the last part back, deleting each part as it
+   empties.
 
 The phone only needs a little free space beyond the OBB itself: the game shrinks the OBB as it
 unpacks. If it's interrupted, it carries on where it stopped next time.
 
-- **The file name doesn't matter**, as long as it ends in `.obb` and sits directly in
-  `StarPoint/game/`. One renamed to `.obb.zip` doesn't work.
-- **`Android/obb/com.leiting.wf/` also works on some devices.** The game looks there too, and
-  needs no permission for it. But whether it can read a file there depends on the phone and on the
-  file app that put it there: Samsung's My Files, for one, can leave the OBB unreadable to the game.
-  `StarPoint/game` with the permissions above is the reliable route (confirmed on a Samsung Android
-  16 tablet).
+- **A part missing or cut short:** the game says so, e.g. "Game files part 2 of 3 is missing" or
+  "...is incomplete: x of y GB", and unpacks nothing. Copy the missing part next to the others
+  (or download it again) and reopen the game.
+- **The single-file OBB on the Drive is older** (game files 1.4.203). After it unpacks, the game
+  downloads the rest from the companion once (~2 GB, from the phone itself, so it's quick). The 3
+  parts and an OBB you build yourself are already up to date.
+- **The file names don't matter**, as long as they end in `.obb` and sit directly in the folder.
+  One renamed to `.obb.zip` doesn't work.
+- **`Android/obb/com.leiting.wf/` also works on some phones,** with no permissions needed (they
+  don't apply there either way). What matters is which app wrote the file: some phones' file apps
+  (Samsung's My Files, for one) leave it unreadable to the game. `starpoint_game` with the
+  permissions above is the reliable route.
+- **With a PC and adb**, `Android/obb` always works. If the folder doesn't exist yet:
+  ```bash
+  adb shell mkdir -p /sdcard/Android/obb/com.leiting.wf
+  ```
+  ```bash
+  adb shell chmod 777 /sdcard/Android/obb/com.leiting.wf
+  ```
+  ```bash
+  adb push main.1008001.com.leiting.wf.obb /sdcard/Android/obb/com.leiting.wf/
+  ```
+  (For the 3 parts, push each one the same way.)
+  adb can't fix a folder a file app already made: rename or delete that folder first.
+- **GrapheneOS:** give World Flipper **All files access**, not Storage Scopes. Scopes only shows an
+  app the files it made plus ones you pick, and the game also has to shrink and delete the OBB.
 - **If the game asks to download ~10 GB**, or the title screen shows **ResVer null**, instead of
   "Unpacking game files", it can't see the OBB. Tap Cancel. If you used `Android/obb`, move the OBB
-  to `StarPoint/game/`. Check that it's directly in that folder and that World Flipper has **All
+  to `starpoint_game/`. Check that it's directly in that folder and that World Flipper has **All
   files access** and the storage permissions (step 5). Close the game fully and reopen it. Nothing
   is lost.
 
@@ -227,10 +259,12 @@ PC, or use an OBB as in setup C, steps 1-5.
    folder if needed). You can send it to yourself, or download the file straight on the phone by
    opening the dashboard there at `http://<PC address>:8000`.
 
-   Whether the game can read a file there depends on the device and the file app, as with the OBB
-   in setup C. If the title screen doesn't show "Server: ...", that's the likely cause: put
+   Whether the game can read a file there depends on the app that wrote it, as with the OBB in
+   setup C. If the title screen doesn't show "Server: ...", that's the likely cause: put
    `server.txt` in `Internal storage/StarPoint/` instead and give World Flipper the permissions
-   from setup C, step 5.
+   from setup C, step 5, or push it with adb (`adb push server.txt
+   /sdcard/Android/obb/com.leiting.wf/`, after the folder steps in setup C). The game doesn't read
+   `server.txt` from `starpoint_game`.
 4. Install the game and open it. The title screen shows **"Server: 192.168.x.y:8000"**. If it says
    "server.txt not understood", the file's address line is wrong.
 
@@ -249,6 +283,9 @@ drops whenever adb loses the phone; run `start-cn.bat` again to restore it.
 With the server running, open **http://127.0.0.1:8000** in a browser, or tap **Dashboard** in the
 companion app. It follows your device's light or dark mode. In the companion, Back closes the
 dashboard and returns to the app.
+
+Step-by-step jobs (moving an event, repeating a campaign, giving items, moving a save...) and the
+gotchas are in the [dashboard guide](docs/DASHBOARD.md).
 
 - **Dashboard (first tab)**
   - **Server time:** Visit past and future content. New installs start on 2019-12-01, just before
@@ -381,8 +418,10 @@ anywhere, the picture is hidden rather than left in Chinese or blank.
 **Not yet confirmed on real phones:** setup B on Android 12, the companion staying up in the
 background with the screen off, and phones with 16 KB memory pages (three of the game's built-in
 protection libraries are built for 4 KB pages). Setup C with `StarPoint/game` works on an Android
-16 tablet (Samsung). `Android/obb` works on some devices; whether the game can read it depends on
-the phone and its file app (see setup C).
+16 tablet (Samsung); `starpoint_game` (build 24+) and the 3-part OBB (build 25) work on the
+emulator. `Android/obb`
+works on some devices; whether the game can read it depends on the app that wrote the file (see
+setup C).
 
 ## FAQ
 
