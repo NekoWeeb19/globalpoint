@@ -182,7 +182,6 @@ function addTowerCopies(tree) {
     const rows = new Map(list.entries.filter(e => e.node.kind === "leaf").map(e => [Number(R.splitCsv(e.node.text.replace(/\n$/, ""))[0]), e.node.text]))
     const gameYear = new Date(gameNowMs()).getUTCFullYear()
     const pad = n => String(n).padStart(2, "0")
-    let nextKey = Math.max(...list.entries.map(e => Number(e.key) || 0)) + 1
     let months = 0
     for (let year = gameYear - 1; year <= gameYear + 1; year++) for (let month = 1; month <= 12; month++) {
         if (!T.isTowerCopyMonth(year, month)) continue
@@ -202,11 +201,12 @@ function addTowerCopies(tree) {
             const before = Number(c[13])
             if (before >= T.towerQuestId(set, 1) && before <= T.towerQuestId(set, 10)) c[13] = String(T.towerCopyQuestId(year, month, before - T.towerQuestId(set, 1) + 1))
             lines[0] = c.map(R.csvField).join(",")
-            list.entries.push({ key: String(nextKey++), node: { kind: "leaf", text: lines.join("\n") + (text.endsWith("\n") ? "\n" : ""), original: "" } })
+            // the game takes the quest id from the key (1000 + key), so the key is fixed per month and floor
+            list.entries.push({ key: String(T.towerCopyKey(year, month, floor)), node: { kind: "leaf", text: lines.join("\n") + (text.endsWith("\n") ? "\n" : ""), original: "" } })
         }
         months++
     }
-    if (months > 0) list.dirty = true
+    if (months > 0) { list.entries.sort((a, b) => Number(a.key) - Number(b.key)); list.dirty = true }
     return `The Haunt: ${months} month(s) of floor copies for ${gameYear - 1}-${gameYear + 1}`
 }
 
