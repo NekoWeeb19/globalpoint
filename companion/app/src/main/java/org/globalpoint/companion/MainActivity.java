@@ -2,6 +2,7 @@ package org.globalpoint.companion;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AppOpsManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -10,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Process;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.View;
@@ -30,7 +32,7 @@ public class MainActivity extends Activity {
     private final Handler ui = new Handler(Looper.getMainLooper());
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
     private TextView status, data, log;
-    private Button battery;
+    private Button battery, usage;
     private ScrollView logScroll;
     private SharedPreferences prefs;
     private boolean visible, autoStarted, syncingAwake;
@@ -58,6 +60,8 @@ public class MainActivity extends Activity {
         row3.addView(button("Import save", this::importSave));
 
         battery = u.button("Let the server run in the background", this::askBattery);
+        // some phones' battery savers stop the server unless the app has usage access (as with Termux)
+        usage = u.button("Allow usage access (if the server still stops in the background)", this::askUsage);
         CheckBox auto = u.check("Start the server when this app opens", prefs.getBoolean("autoStart", true));
         auto.setOnCheckedChangeListener((b, on) -> prefs.edit().putBoolean("autoStart", on).apply());
         // for phones whose battery saver still stops the server while the game is in front (like Termux's wake lock)
@@ -177,6 +181,24 @@ public class MainActivity extends Activity {
         if (hasFocus && awakeBox != null) awakeBox.postDelayed(this::syncAwakeBox, 300);
     }
 
+    @SuppressWarnings("deprecation")
+    private boolean usageAllowed() {
+        AppOpsManager ops = getSystemService(AppOpsManager.class);
+        int mode = Build.VERSION.SDK_INT >= 29
+                ? ops.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), getPackageName())
+                : ops.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), getPackageName());
+        return mode == AppOpsManager.MODE_ALLOWED;
+    }
+
+    // Settings > Usage access, at this app's switch where the phone supports it, else the list
+    private void askUsage() {
+        try {
+            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS, Uri.parse("package:" + getPackageName())));
+        } catch (Exception e) {
+            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+        }
+    }
+
     // This app's page in Android's settings: Battery ("Unrestricted"), and on some phones Auto-start / "Allow
     // background activity", which the battery-optimization prompt doesn't cover
     private void openAppSettings() {
@@ -198,6 +220,7 @@ public class MainActivity extends Activity {
         super.onResume();
         visible = true;
         battery.setVisibility(batteryFree() ? View.GONE : View.VISIBLE);
+        usage.setVisibility(usageAllowed() ? View.GONE : View.VISIBLE);
         syncAwakeBox();
         data.setText(DataTransfer.summary(this));
         // start once per screen visit, only when the data is there
