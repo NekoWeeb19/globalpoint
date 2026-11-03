@@ -281,7 +281,7 @@
                     if (bonus.yearly) badges.push(badge("Repeats every year", false))
                     const lines = ["Original run: " + fullText(bonus.original.start) + " to " + fullText(bonus.original.end) + " UTC"]
                     if (bonus.cn) lines.push(cnLine(bonus.cn))
-                    if (on) lines.push("Repeats " + yearlyText(bonus.original))
+                    if (on) lines.push("Repeats " + yearlyText(bonus.cn ?? bonus.original) + (bonus.cn ? " (the CN game's dates)" : ""))
                     const run = runLine(bonus)
                     if (run) lines.push(run)
                     loginList.appendChild(row({ name: bonus.name, image: bonus.image, checked: on, badges, lines, onChange: (value) => changed(logins, bonus.id, value) }))

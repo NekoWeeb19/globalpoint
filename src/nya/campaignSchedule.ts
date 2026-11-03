@@ -20,7 +20,7 @@ import {
     freePullCopies, FreePullCopy, isFreePullBanner, parseCampaignSchedule, SEASONAL_FREE_PULLS,
     SEASONAL_LOGIN_BONUSES, yearlyLoginServerColumns, yearlyPart, CN_SEASONAL_LOGIN_BONUSES, CN_SEASONAL_FREE_PULLS, cnFreePullCopyId, isFreePullCopyId
 } from "../lib/campaignSchedule"
-import { cnCampaigns, cnOnlyLoginGroups } from "./cnCampaigns"
+import { cnCampaigns, cnLoginGroup, cnOnlyLoginGroups, setCnLoginGroup } from "./cnCampaigns"
 import { cnBuiltFreePullCopies, cnCopyWindow, cnTableIds, inCnRequest } from "../lib/cnClient"
 import { LoginBonusGroup, isLoginBonusGroupOpen } from "../lib/loginBonus"
 import { dayNumber } from "../lib/mission"
@@ -76,6 +76,33 @@ function applyLoginBonuses(moves: Map<string, unknown>) {
         const columns = yearlyLoginServerColumns(group.start, group.end)
         if (columns === null) continue
         Object.assign(group, columns)
+    }
+    applyCnSeasonalLoginDates(moves)
+}
+
+/** A date from .database/cn_event_windows.json (ISO) as the login bonus groups write it ("YYYY-MM-DD hh:mm:ss" UTC). */
+const groupDate = (isoText: string) => isoText.slice(0, 19).replace("T", " ")
+
+/**
+ * The CN client gets each shared seasonal login bonus on CN's own dates (its CN calendar: global reused many of
+ * them at other times, e.g. CN's Golden Week bonus gw2020 ran as global's December "Lunar New Year"), yearly
+ * from those dates when chosen. A bonus the event schedule moved follows the move, like global's.
+ */
+function applyCnSeasonalLoginDates(moves: Map<string, unknown>) {
+    const cnDates = cnEventWindows()
+    for (const id of Object.keys(SEASONAL_LOGIN_BONUSES)) {
+        const group = groups[id], cn = cnDates?.[`login:${id}`]
+        if (group === undefined || cn === undefined || moves.has(serverRecordKey("master/bonus/login_bonus.orderedmap", `${id}/1`))) {
+            setCnLoginGroup(id, null)
+            continue
+        }
+        const copy: LoginBonusGroup = { ...group, start: groupDate(cn.start), end: groupDate(cn.end), yearlyFrom: null, yearlyUntil: null }
+        if (schedule.yearlyLoginBonuses.includes(id)) {
+            copy.yearlyFrom = yearlyPart(copy.start)
+            copy.yearlyUntil = yearlyPart(copy.end!)
+            copy.end = null
+        }
+        setCnLoginGroup(id, copy)
     }
 }
 
@@ -281,13 +308,17 @@ export function getCampaignOverview(): CampaignOverview {
         const info = seasonal.loginBonuses[id]
         if (info === undefined) return []
         const yearly = schedule.yearlyLoginBonuses.includes(id)
-        const run = yearly ? currentOrNextRun(info.start, info.end, now) : null
+        const cn = cnOf(`login:${id}`)
+        // the CN game runs it on CN's dates (applyCnSeasonalLoginDates): its runs and "on now" follow those
+        const japanText = (isoText: string) => new Date(Date.parse(isoText) + 9 * 3600000).toISOString().slice(0, 19).replace("T", " ")
+        const run = !yearly ? null : cn ? currentOrNextRun(japanText(cn.start), japanText(cn.end), now) : currentOrNextRun(info.start, info.end, now)
+        const group = cnLoginGroup(id) ?? groups[id]
         return [{
             id, name, app: "both", image: imageUrl(info.image), days: info.days,
             original: { start: masterIso(info.start), end: masterIso(info.end) },
-            cn: cnOf(`login:${id}`),
+            cn,
             yearly,
-            open: groups[id] !== undefined && isLoginBonusGroupOpen(groups[id], now),
+            open: group !== undefined && isLoginBonusGroupOpen(group, now),
             next: run === null ? null : { start: iso(run.start), end: iso(run.end) }
         }]
     })

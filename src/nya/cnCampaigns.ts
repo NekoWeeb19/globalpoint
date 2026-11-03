@@ -29,6 +29,19 @@ export function loginBonusDataFor(): LoginBonusData {
     return inCnRequest() ? cnLogin : globalLogin
 }
 
+/**
+ * Gives the CN client its own copy of a shared group, on CN's dates (src/nya/campaignSchedule.ts keeps these in
+ * step with the yearly schedule); null puts global's group back.
+ */
+export function setCnLoginGroup(id: string, group: LoginBonusGroup | null) {
+    cnLogin.groups[id] = group ?? globalLogin.groups[id]
+}
+
+/** The group the CN client gets for an id (its CN copy when there is one). */
+export function cnLoginGroup(id: string): LoginBonusGroup | undefined {
+    return cnLogin.groups[id]
+}
+
 /** The CN-only login bonus groups (changed in place by the yearly campaign schedule). */
 export function cnOnlyLoginGroups(): Record<string, LoginBonusGroup> {
     return cnCampaigns.loginBonuses

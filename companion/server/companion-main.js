@@ -51,7 +51,7 @@ const defaults = {
     CN_CDN_DIR: path.join(dataDir, ".cdn", "cn"),
     CN_TRANSLATED_DIR: path.join(dataDir, ".cdn", "cn_text"),
     CN_GENERATED_DIR: generated,
-    SERVER_START_DATE: "2021-07-24T05:00:00Z",
+    SERVER_START_DATE: "2019-12-01T05:00:00Z", // just before the CN game's first regular banners and events
     LISTEN_HOST: "127.0.0.1",
     LISTEN_PORT: "8000",
     COOP_HOST: "127.0.0.1",

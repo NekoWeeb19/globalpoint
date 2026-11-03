@@ -96,7 +96,12 @@ function rebuildCnSchedule() {
     runScript(CN_SCRIPT).then(({ code, stdout, stderr }) => {
         cnRunning = false
         if (code !== 0) console.error(`[cn] schedule update failed: ${lastLines(stderr || stdout, 3)}`)
-        else console.log(`[cn] ${lastLines(stdout, 1)}`)
+        else {
+            console.log(`[cn] ${lastLines(stdout, 1)}`)
+            // the build wrote the CN game's own dates (cn_event_windows.json): the server's steps that use
+            // them (the CN dates of the seasonal login bonuses) run again
+            applyToServerData()
+        }
         if (cnAgain) { cnAgain = false; rebuildCnSchedule() }
     })
 }
