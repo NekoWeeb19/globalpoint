@@ -3,7 +3,8 @@ import { getPlayerItemSync, getPlayerSync, givePlayerItemSync, updatePlayerSync 
 import { getRareScoreRewardGroup } from "./assets";
 import { givePlayerCharacterSync } from "./character";
 import { givePlayerEquipmentSync } from "./equipment";
-import { CharacterReward, CommonScoreReward, CurrencyReward, CurrencyScoreReward, DropScoreRewardId, EquipmentItemReward, GivePlayerScoreRewardsResult, ItemScoreReward, PlayerRewardResult, RareScoreRewardGroup, Reward, RewardType, ScoreReward, ScoreRewardType } from "./types";
+import { CharacterReward, CommonScoreReward, CurrencyReward, CurrencyScoreReward, DropScoreRewardId, EquipmentItemReward, GivePlayerScoreRewardsResult, ItemScoreReward, PlayerRewardResult, QuestCategory, RareScoreRewardGroup, Reward, RewardType, ScoreReward, ScoreRewardType } from "./types";
+import { towerOriginalQuestId } from "./towerRotation";
 import { itemDropMultiplier, multipliedDrop } from "./rewardCampaign";
 import { withDropAmount } from "../nya/dropSettings";
 import elementItemMap from "../../assets/reward_element_map.json";
@@ -19,13 +20,15 @@ const ENEMY_ELEMENT: Record<number, number> = { 0: 3, 1: 0, 2: 1, 3: 2, 4: 5, 5:
 const ELEMENT_TABLES: Record<number, string> = {
     1: "main_quest", 2: "boss_battle_quest", 4: "ex_quest", 7: "advent_event_quest", 8: "advent_event_quest",
     10: "story_event_single_quest", 13: "challenge_dungeon_event_quest", 18: "world_story_event_quest",
-    19: "world_story_event_boss_battle_quest", 21: "expert_single_event_quest", 26: "hard_multi_event_quest",
+    19: "world_story_event_boss_battle_quest", 20: "tower_dungeon_event_quest", 21: "expert_single_event_quest",
+    26: "hard_multi_event_quest",
 }
 
 /** A stage's recommended element (0 fire ... 5 dark), or undefined when not known. */
 export function questElement(category: number, questId: number): number | undefined {
     const table = (questElements as Record<string, Record<string, number>>)[ELEMENT_TABLES[category]]
-    return table?.[String(questId)]
+    // The Haunt's copied months (src/lib/towerRotation.ts) have their floor's element
+    return table?.[String(category === QuestCategory.TOWER_DUNGEON_EVENT ? towerOriginalQuestId(questId) : questId)]
 }
 
 /** The item an element-material drop of `tier` gives on a stage of `element`, or undefined. */
@@ -136,7 +139,14 @@ export function givePlayerScoreRewardsSync(
                         const group = getRareScoreRewardGroup(rareGroupId)
                         if (group !== null) {
                             const random_index = 1 >= group.length ? 0 : randomInt(group.length)
-                            const picked = group[random_index]
+                            let picked = group[random_index]
+                            // an element material (pool type 6, tier = its id) is the stage's element's item,
+                            // as in the score drops above (e.g. The Haunt's floors); without a stage element, nothing
+                            if ((picked.type as number) === ELEMENT_DROP) {
+                                const itemId = elementDropItemId((picked as Reward as EquipmentItemReward).id, stageElement)
+                                if (itemId === undefined) break
+                                picked = { ...picked, type: RewardType.ITEM, id: itemId } as typeof picked
+                            }
                             // an item drop is multiplied like the score drops; units and beads aren't
                             const reward = picked.type === RewardType.ITEM
                                 ? { ...picked, count: multipliedDrop((picked as Reward as EquipmentItemReward).count, dropMultiplier) } as typeof picked
