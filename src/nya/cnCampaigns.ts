@@ -53,7 +53,14 @@ export function cnGachaCampaignId(gachaId: number | string): number | null {
     return cnCampaigns.gachaCampaigns[String(gachaId)] ?? null
 }
 
+let cnSharedRewardRows: RewardCampaign[] | null = null
+/** The shared reward campaign rows the CN client uses (global's rows on CN's dates, plus their yearly copies). */
+export function setCnSharedRewardRows(rows: readonly { id: number }[]) {
+    cnSharedRewardRows = rows as unknown as RewardCampaign[]
+}
+
 /** Reward campaigns for the client making the request: global's, plus CN's own for the CN client. */
 export function rewardCampaignsFor(globalRows: RewardCampaign[]): RewardCampaign[] {
-    return inCnRequest() ? [...globalRows, ...cnCampaigns.rewardCampaigns] : globalRows
+    // the CN client's shared rows are on CN's dates (with their yearly copies), set by src/nya/campaignSchedule.ts
+    return inCnRequest() ? [...(cnSharedRewardRows ?? globalRows), ...cnCampaigns.rewardCampaigns] : globalRows
 }

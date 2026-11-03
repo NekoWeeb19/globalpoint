@@ -21,24 +21,28 @@
 
 import { formatServerDate, parseMasterDate } from "./eventSchedule"
 
-/** Seasonal login bonuses that can repeat every year (group id -> name shown on the dashboard). */
+/**
+ * Seasonal login bonuses that can repeat every year (group id -> name shown on the dashboard). Named as the CN
+ * game has them (its row titles, the year of its CN run): global reused many at other times under other names
+ * (gw2020, CN's Golden Week, was global's "Lunar New Year" in December).
+ */
 export const SEASONAL_LOGIN_BONUSES: Readonly<Record<string, string>> = Object.freeze({
-    ny20: "New Year's (2021)",
-    gw2020: "Lunar New Year (2021)",
-    valentine21: "Valentine's (2022)",
-    smr_v20: "Summer (2022)",
-    ny21: "New Year's (2022)",
-    spring2021: "Autumn (2022)",
-    gw21: "Golden Week (2022)",
-    smr_v21: "Summer (2023)",
-    smr_v21_02: "Summer, part 2 (2023)",
+    ny20: "New Year's Red Envelope (2022)",
+    gw2020: "Golden Week (2020)",
+    valentine21: "Valentine's (2021)",
+    smr_v20: "Summer Vacation (2020)",
+    ny21: "New Year's Red Envelope (2021)",
+    spring2021: "Spring (2021)",
+    gw21: "Golden Week (2021)",
+    smr_v21: "Summer (2021)",
+    smr_v21_02: "Summer, part 2 (2021)",
     hw_v21_01: "Halloween, part 1 (2023)",
     hw_v21_02: "Halloween, part 2 (2023)",
-    xmas21: "Holiday (2023)",
-    ny22: "Autumnal (2023)",
-    gw22: "Winter Holiday (2023)",
+    xmas21: "Christmas (2023)",
+    ny22: "World Flipper Year After Year (2023)",
+    gw22: "Golden Week (2024)",
     smr_v22: "Summer (2024)",
-    xmas22: "May Flower (2024)",
+    xmas22: "Christmas (2024)",
 })
 
 /** Seasonal free pull campaigns that can repeat every year (campaign id -> name shown on the dashboard). */
@@ -89,6 +93,17 @@ export const cnFreePullCopyId = (year: number, originalId: number) => 600_000_00
 
 /** Copies are made up to this year. */
 export const LAST_COPY_YEAR = 2099
+
+/**
+ * A campaign row on the CN game's own dates: `cn` is its window from .database/cn_event_windows.json (ISO,
+ * written by each CN update build); the row's dates are UTC text, "YYYY-MM-DD hh:mm:ss", like the data's. The
+ * row as it is when CN's data doesn't have it.
+ */
+export function withCnDates<T extends { start: string, end: string }>(row: T, cn: { start: string, end: string } | null | undefined): T {
+    if (!cn) return row
+    const text = (iso: string) => iso.slice(0, 19).replace("T", " ")
+    return { ...row, start: text(cn.start), end: text(cn.end) }
+}
 
 export interface CampaignSchedule {
     yearlyLoginBonuses: string[],
@@ -267,10 +282,19 @@ export function isFreePullBanner(gacha: FreePullBannerInfo): boolean {
     return gacha.type === 0 && gacha.paymentType === 0 && gacha.singleCost > 0 && (gacha.movieName === "normal" || gacha.movieName === "fes")
 }
 
-/** The yearly copy running at a moment (ms), if any. */
-export function activeFreePullCopy(copies: readonly FreePullCopy[], ms: number): FreePullCopy | null {
+/** UTC date text ("YYYY-MM-DD hh:mm:ss") to ms: the CN-dated rows (withCnDates, assets/campaigns_cn.json) are UTC. */
+export const parseUtcText = (text: string): number | null => {
+    const ms = Date.parse(text.replace(" ", "T") + "Z")
+    return isNaN(ms) ? null : ms
+}
+
+/**
+ * The yearly copy running at a moment (ms), if any. `parse` reads the copies' dates: global's data is Japan time
+ * (the default); the CN client's copies are UTC (parseUtcText), as its game update writes them.
+ */
+export function activeFreePullCopy(copies: readonly FreePullCopy[], ms: number, parse: (text: string) => number | null = parseMasterDate): FreePullCopy | null {
     for (const copy of copies) {
-        const start = parseMasterDate(copy.start), end = parseMasterDate(copy.end)
+        const start = parse(copy.start), end = parse(copy.end)
         if (start !== null && end !== null && ms >= start && ms <= end) return copy
     }
     return null

@@ -18,14 +18,15 @@ import {
     activeFreePullCopy, CampaignRun, campaignCopyId, campaignRuns, CampaignSchedule, currentOrNextRun, describeRun,
     isWindowOn, KnownRuns, runCopies, TimedCampaign, yearlyClash, FreePullBannerInfo, FreePullCampaign, freePullClash,
     freePullCopies, FreePullCopy, isFreePullBanner, parseCampaignSchedule, SEASONAL_FREE_PULLS,
-    SEASONAL_LOGIN_BONUSES, yearlyLoginServerColumns, yearlyPart, CN_SEASONAL_LOGIN_BONUSES, CN_SEASONAL_FREE_PULLS, cnFreePullCopyId, isFreePullCopyId
+    SEASONAL_LOGIN_BONUSES, yearlyLoginServerColumns, yearlyPart, CN_SEASONAL_LOGIN_BONUSES, CN_SEASONAL_FREE_PULLS, cnFreePullCopyId, isFreePullCopyId, withCnDates, parseUtcText
 } from "../lib/campaignSchedule"
-import { cnCampaigns, cnLoginGroup, cnOnlyLoginGroups, setCnLoginGroup } from "./cnCampaigns"
+import { cnCampaigns, cnLoginGroup, cnOnlyLoginGroups, setCnLoginGroup, setCnSharedRewardRows } from "./cnCampaigns"
 import { cnBuiltFreePullCopies, cnCopyWindow, cnTableIds, inCnRequest } from "../lib/cnClient"
 import { LoginBonusGroup, isLoginBonusGroupOpen } from "../lib/loginBonus"
 import { dayNumber } from "../lib/mission"
 import { getGachaCampaignIdSync } from "../lib/assets"
 import { getServerDate } from "../utils"
+import { formatMasterDate, parseMasterDate } from "../lib/eventSchedule"
 import { addServerDataStep, applyEventScheduleToServerData, cnEventWindows, getScheduleModStatus, rebuildMod, serverRecordKey } from "./eventSchedule"
 
 interface SeasonalData {
@@ -78,9 +79,13 @@ function applyLoginBonuses(moves: Map<string, unknown>) {
         Object.assign(group, columns)
     }
     applyCnSeasonalLoginDates(moves)
+    // the CN copies follow CN's dates, which each CN update build writes (this step runs again after it)
+    refreshCopies()
 }
 
 /** A date from .database/cn_event_windows.json (ISO) as the login bonus groups write it ("YYYY-MM-DD hh:mm:ss" UTC). */
+/** Whether UTC-text dates are on at a moment. */
+const utcOn = (w: { start: string, end: string }, ms: number) => { const s = parseUtcText(w.start), e = parseUtcText(w.end); return s !== null && e !== null && ms >= s && ms <= e }
 const groupDate = (isoText: string) => isoText.slice(0, 19).replace("T", " ")
 
 /**
@@ -123,16 +128,36 @@ function applyCnLoginBonuses() {
     }
 }
 
-// the CN-only free pulls' yearly copies (for the CN client only: global's has no such campaigns)
+// The CN client's free pull copies: the CN-only campaigns' and the shared ones', all on CN's dates (the global
+// client gets `copies`, on global's). Shared campaigns are on CN's own dates in the CN game (scripts/
+// gen_cn_event_schedule.cjs builds the same copies into its tables).
 let cnCopies: FreePullCopy[] = []
 const allFreePulls = () => [...seasonal.freePulls, ...cnCampaigns.freePulls] as FreePullCampaign[]
+const cnWindow = (key: string) => cnEventWindows()?.[key] ?? null
+/** The shared seasonal free pulls on CN's dates (global's when CN's data hasn't one). */
+const cnSharedPulls = () => seasonal.freePulls.map(p => withCnDates(p, cnWindow(`freePull:${p.id}`)))
+/** Every free pull the CN game has, on its dates: the originals CN copies skip years for. */
+const cnAllFreePulls = () => [...cnSharedPulls(), ...cnCampaigns.freePulls] as FreePullCampaign[]
+
+/** A reward/stamina table's rows and runs on CN's dates (the rows CN's data hasn't one for keep global's). */
+function cnTable(kind: "reward" | "stamina") {
+    const rows = tables[kind].rows.map(row => withCnDates(row, cnWindow(`${kind}:${row.id}`)))
+    return { rows, runs: campaignRuns(rows) }
+}
+/** A global run's CN counterpart: the CN run its first row is in. */
+const cnRunOf = (runs: readonly CampaignRun[], run: CampaignRun) => runs.find(r => r.ids.includes(run.ids[0])) ?? run
+
+/** The CN client's reward campaign rows (shared rows on CN's dates, and the chosen runs' copies). */
+const cnRewardRows: TimedCampaign[] = []
 
 function refreshCopies() {
     applyCnLoginBonuses()
+    const cnPulls = cnAllFreePulls()
     cnCopies = schedule.yearlyFreePulls.flatMap(id => {
-        if (!(id in CN_SEASONAL_FREE_PULLS)) return []
-        const campaign = cnCampaigns.freePulls.find(c => c.id === id)
-        return campaign === undefined ? [] : freePullCopies(campaign as FreePullCampaign, allFreePulls()).map(copy => ({ ...copy, id: cnFreePullCopyId(copy.year, copy.originalId) }))
+        const campaign = cnPulls.find(c => c.id === id)
+        if (campaign === undefined) return []
+        const own = freePullCopies(campaign, cnPulls)
+        return id in CN_SEASONAL_FREE_PULLS ? own.map(copy => ({ ...copy, id: cnFreePullCopyId(copy.year, copy.originalId) })) : own
     })
     copies = schedule.yearlyFreePulls.flatMap(id => {
         if (id in CN_SEASONAL_FREE_PULLS) return []
@@ -141,6 +166,9 @@ function refreshCopies() {
     })
     // reward campaign copies: same rows, new dates and ids (the dates are read like the game's own rows)
     rewardRows.length = ownRewardCount
+    const cn = cnTable("reward")
+    cnRewardRows.length = 0
+    cnRewardRows.push(...cn.rows)
     for (const key of schedule.yearlyRewardRuns) {
         const run = tables.reward.runs.find(r => r.key === key)
         if (run === undefined) continue
@@ -150,7 +178,15 @@ function refreshCopies() {
                 rewardRows.push({ ...ownRewardRows[index], id: campaignCopyId(window.year, index), start: window.start, end: window.end })
             }
         }
+        // the CN game's copies come from the run's CN dates
+        for (const window of runCopies(cnRunOf(cn.runs, run), cn.runs)) {
+            for (const id of run.ids) {
+                const index = ownRewardRows.findIndex(row => row.id === id)
+                cnRewardRows.push({ ...ownRewardRows[index], id: campaignCopyId(window.year, index), start: window.start, end: window.end })
+            }
+        }
     }
+    setCnSharedRewardRows(cnRewardRows)
 }
 
 function readSchedule() {
@@ -184,7 +220,7 @@ export function initCampaignSchedule() {
 export function resolveFreePullCampaignId(gachaId: number, serverMs = getServerDate().getTime()): number | null {
     const gacha = gachas[String(gachaId)]
     if (gacha !== undefined && isFreePullBanner(gacha)) {
-        const copy = activeFreePullCopy(copiesForClient(), serverMs)
+        const copy = activeFreePullCopy(copiesForClient(), serverMs, copyDateParser())
         if (copy !== null) return copy.id
     }
     return getGachaCampaignIdSync(gachaId)
@@ -220,14 +256,18 @@ function cnUpdateHasCopy(id: number): boolean {
 }
 
 /** The yearly copies the requesting client can be given (the CN client: only the ones in its update). */
+/** How the requesting client's copies' dates read: global's are Japan time, the CN client's UTC. */
+const copyDateParser = () => inCnRequest() ? parseUtcText : parseMasterDate
+
 function copiesForClient(): FreePullCopy[] {
     if (!inCnRequest()) return copies
-    return [...cnCopies, ...copies].filter(copy => cnUpdateHasCopy(copy.id))
+    // cnCopies holds the shared campaigns' copies too, on CN's dates
+    return cnCopies.filter(copy => cnUpdateHasCopy(copy.id))
 }
 
 export function freePullCopyEntriesSync(saved: { gacha_id: number, campaign_id: number, count: number }[], serverMs = getServerDate().getTime()) {
     const cn = inCnRequest()
-    const copy = activeFreePullCopy(copiesForClient(), serverMs)
+    const copy = activeFreePullCopy(copiesForClient(), serverMs, copyDateParser())
     if (copy === null) return []
     const have = new Set(saved.filter(e => e.campaign_id === copy.id).map(e => e.gacha_id))
     // only banners the client's own tables have (CN has most of global's plus its own)
@@ -300,8 +340,10 @@ export function getCampaignOverview(): CampaignOverview {
     const now = getServerDate().getTime()
     const cnDates = cnEventWindows() ?? {}
     const cnOf = (key: string) => cnDates[key] ?? null
+    // the CN-dated rows (withCnDates, the CN game's own campaigns) are UTC text
+    const utcIso = (text: string) => { const ms = parseUtcText(text); return ms === null ? text : iso(ms) }
     const masterIso = (text: string) => {
-        const ms = Date.parse(text.replace(" ", "T") + "+09:00")
+        const ms = Date.parse(text.replace(" ", "T") + "+09:00") // global's data: Japan time
         return isNaN(ms) ? text : iso(ms)
     }
     const loginBonuses: CampaignOverview["loginBonuses"] = Object.entries(SEASONAL_LOGIN_BONUSES).flatMap(([id, name]) => {
@@ -310,8 +352,7 @@ export function getCampaignOverview(): CampaignOverview {
         const yearly = schedule.yearlyLoginBonuses.includes(id)
         const cn = cnOf(`login:${id}`)
         // the CN game runs it on CN's dates (applyCnSeasonalLoginDates): its runs and "on now" follow those
-        const japanText = (isoText: string) => new Date(Date.parse(isoText) + 9 * 3600000).toISOString().slice(0, 19).replace("T", " ")
-        const run = !yearly ? null : cn ? currentOrNextRun(japanText(cn.start), japanText(cn.end), now) : currentOrNextRun(info.start, info.end, now)
+        const run = !yearly ? null : cn ? currentOrNextRun(formatMasterDate(Date.parse(cn.start)), formatMasterDate(Date.parse(cn.end)), now) : currentOrNextRun(info.start, info.end, now)
         const group = cnLoginGroup(id) ?? groups[id]
         return [{
             id, name, app: "both", image: imageUrl(info.image), days: info.days,
@@ -327,10 +368,10 @@ export function getCampaignOverview(): CampaignOverview {
         const info = cnCampaigns.loginInfo[id], group = cnOnlyLoginGroups()[id]
         if (info === undefined || group === undefined || info.start === null || info.end === null) continue
         const yearly = schedule.yearlyLoginBonuses.includes(id)
-        const run = yearly ? currentOrNextRun(info.start, info.end, now) : null
+        const run = yearly ? currentOrNextRun(formatMasterDate(parseUtcText(info.start)!), formatMasterDate(parseUtcText(info.end)!), now) : null
         loginBonuses.push({
             id, name, app: "cn", image: imageUrl(info.image), days: info.days,
-            original: { start: masterIso(info.start), end: masterIso(info.end) },
+            original: { start: utcIso(info.start), end: utcIso(info.end) },
             cn: cnOf(`login:${id}`),
             yearly,
             open: isLoginBonusGroupOpen(group, now),
@@ -338,49 +379,55 @@ export function getCampaignOverview(): CampaignOverview {
         })
     }
     const active = activeFreePullCopy(copies, now)
-    const cnActive = activeFreePullCopy(cnCopies, now)
+    const cnActive = activeFreePullCopy(cnCopies, now, parseUtcText)
+    // the CN game's free pulls, shared ones included, are on CN's dates: their repeats and "on now" follow those
+    const cnPulls = cnAllFreePulls()
     const freePulls = [
         ...Object.entries(SEASONAL_FREE_PULLS).map(([id, name]) => [id, name, "both"] as const),
         ...Object.entries(CN_SEASONAL_FREE_PULLS).map(([id, name]) => [id, name, "cn"] as const),
     ].flatMap(([idText, name, app]) => {
         const id = Number(idText)
-        const campaign = (app === "cn" ? cnCampaigns.freePulls : seasonal.freePulls).find(c => c.id === id) as FreePullCampaign | undefined
-        if (campaign === undefined) return []
+        const original = (app === "cn" ? cnCampaigns.freePulls : seasonal.freePulls).find(c => c.id === id) as FreePullCampaign | undefined
+        const campaign = cnPulls.find(c => c.id === id)
+        if (original === undefined || campaign === undefined) return []
         const yearly = schedule.yearlyFreePulls.includes(id)
-        const own = freePullCopies(campaign, allFreePulls())
+        const own = freePullCopies(campaign, cnPulls)
         const years = new Set(own.map(c => c.year))
         const firstYear = Number(campaign.start.slice(0, 4))
         const skippedYears: number[] = []
         for (let year = firstYear + 1; year <= firstYear + 6; year++) if (!years.has(year)) skippedYears.push(year)
-        const next = own.find(c => Date.parse(c.end.replace(" ", "T") + "+09:00") >= now)
+        const next = own.find(c => Date.parse(c.end.replace(" ", "T") + "Z") >= now)
         return [{
             id, name, app, gameName: campaign.name, kind: campaign.kind,
-            original: { start: masterIso(campaign.start), end: masterIso(campaign.end) },
+            original: app === "cn" ? { start: utcIso(original.start), end: utcIso(original.end) } : { start: masterIso(original.start), end: masterIso(original.end) },
             cn: cnOf(`freePull:${id}`),
             yearly, skippedYears,
-            next: next === undefined ? null : { start: masterIso(next.start), end: masterIso(next.end) },
+            next: next === undefined ? null : { start: utcIso(next.start), end: utcIso(next.end) },
             active: (active !== null && active.originalId === id) || (cnActive !== null && cnActive.originalId === id)
         }]
     })
     const runOverview = (kind: "reward" | "stamina"): RunOverview[] => {
         const table = tables[kind]
+        const cnT = cnTable(kind)
         const chosen = kind === "reward" ? schedule.yearlyRewardRuns : schedule.yearlyStaminaRuns
         return table.runs.map(run => {
             const yearly = chosen.includes(run.key)
-            const own = runCopies(run, table.runs)
+            // the CN game runs it on its CN dates: its repeats and "on now" follow those
+            const cnRun = cnRunOf(cnT.runs, run)
+            const own = runCopies(cnRun, cnT.runs)
             const years = new Set(own.map(c => c.year))
-            const firstYear = Number(run.start.slice(0, 4))
+            const firstYear = Number(cnRun.start.slice(0, 4))
             const skippedYears: number[] = []
             for (let year = firstYear + 1; year <= firstYear + 6; year++) if (!years.has(year)) skippedYears.push(year)
-            const next = own.find(c => Date.parse(c.end.replace(" ", "T") + "+09:00") >= now)
+            const next = own.find(c => Date.parse(c.end.replace(" ", "T") + "Z") >= now)
             const rows = table.rows.filter(row => run.ids.includes(row.id))
             return {
                 key: run.key, name: runName(kind, run), description: describeRun(kind, rows),
                 original: { start: masterIso(run.start), end: masterIso(run.end) },
                 cn: run.ids.map(i => cnOf(`${kind}:${i}`)).find(w => w !== null) ?? null,
                 yearly, skippedYears,
-                next: next === undefined ? null : { start: masterIso(next.start), end: masterIso(next.end) },
-                active: isWindowOn(run, now) || (yearly && own.some(c => isWindowOn(c, now)))
+                next: next === undefined ? null : { start: utcIso(next.start), end: utcIso(next.end) },
+                active: utcOn(cnRun, now) || (yearly && own.some(c => utcOn(c, now)))
             }
         })
     }

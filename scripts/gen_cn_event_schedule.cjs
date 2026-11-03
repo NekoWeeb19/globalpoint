@@ -172,7 +172,7 @@ function gameNowMs() {
  * stamina/reward campaign run a copy of its rows for every year in the copy window. Global's dates (UTC) become
  * China time. Returns a summary.
  */
-function applyYearlyCampaigns(trees, files) {
+function applyYearlyCampaigns(trees, files, cnWindows = {}) {
     const C = require("../out/lib/campaignSchedule.js")
     const read = file => JSON.parse(fs.readFileSync(path.join(ROOT, file), "utf8"))
     // Copies only for the game clock's year -1 to +1 (last year: runs over New Year; next year: ready before the year changes). The CN client scans every
@@ -190,7 +190,12 @@ function applyYearlyCampaigns(trees, files) {
     const { schedule: chosen } = C.parseCampaignSchedule(fs.existsSync(scheduleFile) ? JSON.parse(fs.readFileSync(scheduleFile, "utf8")) : {}, known)
     const seasonal = read("assets/seasonal_campaigns.json")
     const cnOwn = read("assets/campaigns_cn.json")
-    const allPulls = [...seasonal.freePulls, ...cnOwn.freePulls]
+    // the CN game runs the shared campaigns on CN's own dates (cnWindows), so their copies come from those
+    // (src/nya/campaignSchedule.ts gives the CN client the same copies); the chosen runs are named by global's keys
+    const allPulls = [...seasonal.freePulls.map(p => C.withCnDates(p, cnWindows[`freePull:${p.id}`])), ...cnOwn.freePulls]
+    const cnRuns = {}
+    for (const kind of ["reward", "stamina"]) cnRuns[kind] = C.campaignRuns(runTables[kind].map(row => C.withCnDates(row, cnWindows[`${kind}:${row.id}`])))
+    const cnRunOf = (kind, run) => cnRuns[kind].find(r => r.ids.includes(run.ids[0])) ?? run
     const toCn = text => { const ms = Date.parse(String(text).replace(" ", "T") + "Z"); return isNaN(ms) ? text : format(ms) }
     let login = 0, pulls = 0, runRows = 0
 
@@ -236,7 +241,7 @@ function applyYearlyCampaigns(trees, files) {
         for (const key of kind === "reward" ? chosen.yearlyRewardRuns : chosen.yearlyStaminaRuns) {
             const run = runs[kind].find(r => r.key === key)
             if (!run) continue
-            for (const copyWindow of C.runCopies(run, runs[kind], window.until).filter(inWindow)) for (const id of run.ids) {
+            for (const copyWindow of C.runCopies(cnRunOf(kind, run), cnRuns[kind], window.until).filter(inWindow)) for (const id of run.ids) {
                 const entry = tree.entries.find(e => e.key === String(id))
                 if (!entry || entry.node.kind !== "leaf") continue
                 const fields = R.splitCsv(entry.node.text.replace(/\n$/, ""))
@@ -417,8 +422,9 @@ async function main() {
     // Each event's own dates in CN's data, before any move (.database/cn_event_windows.json, ISO UTC): the
     // dashboard shows these, since they are when the CN game runs an event that isn't moved (global's
     // dates, which the catalog has, can be years apart).
+    const cnWindows = {} // also what the yearly campaigns' CN copies are built from (applyYearlyCampaigns)
     {
-        const windows = {}
+        const windows = cnWindows
         const rowOf = new Map()
         for (const [family, own] of Object.entries(OWN_WINDOW)) {
             const tree = trees.get(fileOf(own.table))
@@ -498,7 +504,7 @@ async function main() {
 
     // ---- yearly campaigns (.database/campaign_schedule.json, src/lib/campaignSchedule.ts), as the
     // global client's mod has them (scripts/gen_event_schedule_mod.cjs), in CN's layout and China time
-    const campaignsMade = applyYearlyCampaigns(trees, CAMPAIGN_TABLES)
+    const campaignsMade = applyYearlyCampaigns(trees, CAMPAIGN_TABLES, cnWindows)
     passBannerWindows(trees, PASS_BANNER)
 
     // A banner with no feature content rows (its big picture and unit previews) stops the summon screen with

@@ -256,7 +256,7 @@
                         "Original run: " + fullText(item.original.start) + " to " + fullText(item.original.end) + " UTC"
                     ]
                     if (item.cn) lines.push(cnLine(item.cn))
-                    if (on) lines.push("Repeats " + yearlyText(item.original))
+                    if (on) lines.push("Repeats " + yearlyText(item.cn ?? item.original) + (item.cn ? " (the CN game's dates)" : ""))
                     if (on && item.skippedYears.length > 0) lines.push("Skipped in " + item.skippedYears.join(", ") + " (another of the game's campaigns of this kind is on then)")
                     const run = runLine(item)
                     if (run) lines.push(run)
@@ -300,7 +300,7 @@
                         "Original run: " + fullText(pull.original.start) + " to " + fullText(pull.original.end) + " UTC (its own banners only)"
                     ]
                     if (pull.cn) lines.push(cnLine(pull.cn))
-                    if (on) lines.push("Repeats " + yearlyText(pull.original))
+                    if (on) lines.push("Repeats " + yearlyText(pull.cn ?? pull.original) + (pull.cn ? " (the CN game's dates)" : ""))
                     if (on && pull.skippedYears.length > 0) lines.push("Skipped in " + pull.skippedYears.join(", ") + " (a game campaign runs then)")
                     const run = runLine(pull)
                     if (run) lines.push(run)
