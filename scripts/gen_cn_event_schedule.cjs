@@ -463,6 +463,41 @@ async function main() {
     const campaignsMade = applyYearlyCampaigns(trees, CAMPAIGN_TABLES)
     passBannerWindows(trees, PASS_BANNER)
 
+    // A banner with no feature content rows (its big picture and unit previews) stops the summon screen with
+    // error C2032 ("no feature image for gacha ID") as soon as it's swiped to. 41 CN banners have none (mostly
+    // CN's reruns of late 2021 - mid 2022, and a second Launch Gala, 61). A rerun of a banner that has them
+    // ("x_1" of "x", "newx" of "x") gets that banner's rows; the rest are closed (all their dates go to
+    // 2000-01-01, so the game never lists them, also when the schedule moved one). The feature table is
+    // built on its newest copy, StarPoint's patches included (they add rows for translated art).
+    if (featureBuf && trees.has(gachaFile)) {
+        const featureTree = R.decodeFile(featureBuf)
+        const featureById = new Map(featureTree.entries.map(e => [e.key, e]))
+        const gachaRows = R.leaves(trees.get(gachaFile))
+        const byDev = new Map(gachaRows.map(({ path: keys, leaf }) => [R.splitCsv(leaf.text)[0], keys[0]]))
+        const copyNode = node => node.kind === "leaf" ? { kind: "leaf", text: node.text, original: "" } : { kind: "map", entries: node.entries.map(e => ({ key: e.key, node: copyNode(e.node) })), dirty: true }
+        let copied = 0, closed = 0
+        for (const { path: keys, leaf } of gachaRows) {
+            const id = keys[0]
+            if (featureById.has(id) || !/20\d\d-\d\d-\d\d \d\d:\d\d:\d\d/.test(leaf.text)) continue
+            const dev = R.splitCsv(leaf.text)[0]
+            const original = [dev.replace(/_1$/, ""), dev.replace(/^new/, ""), dev.replace(/^new/, "").replace(/_1$/, "")]
+                .filter(d => d !== dev).map(d => byDev.get(d)).find(o => o !== undefined && featureById.has(o))
+            if (original !== undefined) {
+                featureTree.entries.push({ key: id, node: copyNode(featureById.get(original).node) })
+                copied++
+            } else {
+                R.setLeafText(leaf, leaf.text.replace(/\d{4}-\d\d-\d\d \d\d:\d\d:\d\d/g, "2000-01-01 00:00:00"))
+                closed++
+            }
+        }
+        if (copied > 0) {
+            featureTree.entries.sort((a, b) => Number(a.key) - Number(b.key))
+            featureTree.dirty = true
+            trees.set(featureFile, featureTree)
+        }
+        if (copied || closed) console.log(`summon banners without feature content (C2032): ${copied} given their original's, ${closed} closed`)
+    }
+
     // the next CN update
     const patches = fs.existsSync(PATCHES) ? JSON.parse(fs.readFileSync(PATCHES, "utf8")) : []
     const last = patches.length ? patches[patches.length - 1].version : "1.4.54"
