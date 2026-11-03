@@ -145,6 +145,10 @@ in three places for game files:
   carried on, deleted every part and reached the title screen; a fresh 3-part set next to a one-file
   OBB -> both unpacked and deleted. The test files (download/production/upload/zz/starpoint-obb-test-*,
   ~150 MB) stay in that emulator's game storage; the game never reads them.
+  Live test the same day, the full set: the game's data cleared on that emulator, the three 3.57 GB
+  parts of the 1.4.800 OBB (10.72 GB, 138354 files) copied into /sdcard/starpoint_game/ (195 s over
+  adb), the game opened: part 3, then 2, then 1 shrank and were deleted, all unpacked in ~2 min, title
+  ResVer 1.4.800, then sign-in and the home screen.
 The OBB format is described at the top of scripts/build_cn_obb.cjs, and the storage layout and the
 info.json record in STORAGE_LAYOUT.txt.
 
