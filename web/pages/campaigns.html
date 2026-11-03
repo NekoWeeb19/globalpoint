@@ -246,7 +246,7 @@
                 const list = $(listId)
                 list.replaceChildren()
                 if (appFilter === "cn") return // shared runs only
-                for (const item of runs) {
+                for (const item of byStart(runs)) {
                     const on = picked.has(item.key)
                     const badges = []
                     if (item.active) badges.push(badge("On now", true))
@@ -265,13 +265,15 @@
             }
 
             // when the CN game runs it on its own (its dates in CN's data), next to global's original run
+            // a list by start date: the CN game's own when known, else the original run's
+            const byStart = (items) => [...items].sort((a, b) => Date.parse((a.cn ?? a.original).start) - Date.parse((b.cn ?? b.original).start))
             const cnLine = (cn) => "In the CN game: " + fullText(cn.start) + " to " + fullText(cn.end) + " UTC"
 
             function renderLists() {
                 if (data === null) return
                 const loginList = $("login-list")
                 loginList.replaceChildren()
-                for (const bonus of data.loginBonuses) {
+                for (const bonus of byStart(data.loginBonuses)) {
                     if (!shown(bonus)) continue
                     const on = logins.has(bonus.id)
                     const badges = [appBadge(bonus.app), badge(bonus.days + " days", false)]
@@ -287,7 +289,7 @@
                 $("pull-intro").textContent = "A copy runs every later year on the same dates and works on any of the " + data.bannerCount + " regular unit banners that is open then (not armament or special banners). A year where one of the game's own free pull campaigns runs at that time is skipped. Two that would run at the same time can't both repeat."
                 const pullList = $("pull-list")
                 pullList.replaceChildren()
-                for (const pull of data.freePulls) {
+                for (const pull of byStart(data.freePulls)) {
                     if (!shown(pull)) continue
                     const on = pulls.has(pull.id)
                     const badges = [appBadge(pull.app), badge(pull.kind === 2 ? "Free 10-pull a day" : "Free pull a day", false)]

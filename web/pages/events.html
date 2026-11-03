@@ -289,6 +289,9 @@
                     if (showing === "upcoming" && state !== "upcoming") return false
                     return true
                 })
+                // by start date, as shown (a moved event by its new start, else the CN game's own)
+                const startOf = (event) => Date.parse(event.scheduled ? event.scheduled.start : ownDates(event).start)
+                shown.sort((a, b) => startOf(a) - startOf(b) || a.name.localeCompare(b.name))
                 $("count").textContent = shown.length + " of " + noun(all.length)
                 lastShown = shown
                 for (const event of shown) {
