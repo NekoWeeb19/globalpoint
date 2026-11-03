@@ -33,10 +33,13 @@ const walk = dir => {
     }
 }
 walk(path.join(ROOT, "src", "routes"))
+// features in src/nya can register their own routes too (e.g. exchangeCampaigns.ts, under the API prefix)
+walk(path.join(ROOT, "src", "nya"))
 
 /** Which source folder registers routes under a prefix. */
 function groupOf(prefix, url) {
-    if (url.startsWith(API)) return { key: "api", files: f => f.startsWith("src/routes/api/") }
+    if (url.startsWith(API)) return { key: "api", files: f => f.startsWith("src/routes/api/") || f.startsWith("src/nya/") }
+    if (url.startsWith("/companion")) return { key: "other", files: f => f === "src/routes/companion.ts" }
     if (url.startsWith("/api/") || url === "/api") return { key: "dashboardApi", files: f => f.startsWith("src/routes/web_api/") }
     if (url.startsWith("/openapi")) return { key: "kakao", files: f => f === "src/routes/openapi.ts" }
     if (url.startsWith("/infodesk")) return { key: "kakao", files: f => f === "src/routes/infodesk.ts" }
@@ -53,6 +56,9 @@ function findSource(route, group) {
     const sub = route.url.slice(route.prefix.length) || "/"
     const candidates = sources.filter(s => group.files(s.file))
     const quoted = [`"${sub}"`, `'${sub}'`, `\`${sub}\``]
+    // a file that registers the path itself wins over one that only mentions it (src/nya files are read too)
+    const registers = s => quoted.some(q => s.text.includes(`(${q}`))
+    candidates.sort((a, b) => Number(registers(b)) - Number(registers(a)))
     for (const s of candidates) {
         const at = Math.max(...quoted.map(q => s.text.indexOf(q)))
         if (at < 0) continue
@@ -164,8 +170,10 @@ ${table(rows.dashboard)}
 
 ## Dashboard API (${count(rows.dashboardApi)})
 
-What the dashboard pages call. These change the server's state and have no login, so keep
-\`LISTEN_HOST\` at \`127.0.0.1\` unless you trust your network.
+What the dashboard pages call. These change the server's state and have no login. With
+\`LISTEN_HOST\` at \`127.0.0.1\` (the default, also on the phone companion) only the same device
+can reach them. Setups B and D in the README set it to \`0.0.0.0\`, which lets every device on your
+network use the dashboard too, so do that only on a network you trust, such as your home Wi-Fi.
 
 ${table(rows.dashboardApi)}
 

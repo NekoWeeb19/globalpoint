@@ -1,4 +1,9 @@
 # API Endpoints
+
+> [!NOTE]
+> **Legacy (global app).** This status list is StarPoint's progress as of 2024 and isn't updated
+> anymore; many entries have been implemented since. The linked pages are captured traffic from the
+> official global servers. See [this folder's README](README.md).
 > [!WARNING]
 > This list may be incomplete and/or outdated. Check for any open pull requests or branches to make any final calls.
 

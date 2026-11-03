@@ -1,4 +1,9 @@
 # Rooted Android Connection Guide
+
+> [!NOTE]
+> **Legacy (global app).** This page is from the original StarPoint, for the global app, and is
+> no longer maintained. For the CN app, see the main [README](../../README.md).
+
 The following is a general guide for connecting a rooted Android device or emulator to Starpoint.
 
 This guide expects your Android device or emulator to be rooted using Magisk.

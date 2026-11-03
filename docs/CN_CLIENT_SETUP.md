@@ -1,4 +1,8 @@
-# Playing the CN app on StarPoint ("Globalized CN")
+# Building the globalized CN app from scratch
+
+> [!NOTE]
+> **For developers.** This is how GlobalPoint was made, step by step. To play it, follow the
+> [README](../README.md)'s setups, which use the ready-made downloads; none of this is needed.
 
 This is how to go from nothing to the current state: the official Chinese (CN) World Flipper app,
 connected to this StarPoint server, playing the global save, with global's English text and art
@@ -13,10 +17,11 @@ You need:
 - an **arm64 Android emulator** (tested: LDPlayer 9, Android 9) or phone, with ADB
 - Node 20, Python 3, Java 17+, Android build-tools (zipalign, apksigner), FFDec only for SWF work
 
-Paths used below (change them to yours): CN CDN unpacked at `D:\WF client\.cdn\cn`, a work folder
-`F:\WF client` (APK, decompiles, the "globalize" output folders).
+Paths used below are examples (change them to yours): the CN CDN unpacked at `C:/wf/cn-cdn`, and a
+work folder `C:/wf/work` for the APK, decompiles and the "globalize" output folders.
 
-Times are rough. Steps 3 to 6 are one-time builds; after that, day-to-day use is step 8.
+Times are rough. Steps 3 to 6 are one-time builds; after that, day-to-day use is step 8. Step 9
+(an OBB for phones) is optional.
 
 ---
 
@@ -26,8 +31,8 @@ Put the CN CDN so the folder has `archive-*-full`, `archive-*-diff`, `entities`,
 (the same layout as global's `.cdn/en`). Set it in `.env`:
 
 ```
-CN_CDN_DIR="D:/WF client/.cdn/cn"
-CN_ACCOUNT_ID="5"          # the StarPoint account the CN app logs in as (your global save)
+CN_CDN_DIR="C:/wf/cn-cdn"
+CN_ACCOUNT_ID=""           # an existing StarPoint account id to play that save (e.g. a global one); empty = a new account per device
 CN_TRANSLATED_DIR=""       # filled in at step 5
 ```
 
@@ -38,6 +43,11 @@ CN archive names are `pinball-1.4.X-1.4.Y-...zip`. Always read them in **version
 
 The CN app asks a Leiting server for its API address; the patch points it at StarPoint
 (`/cn` on port 8000) and skips the Leiting login SDK.
+
+The steps below are the first build. The current app (build 23) adds more patches on top: co-op
+speed, the OBB and drop-off folder for phones, and the `server.txt` address file.
+[`scripts/client_mod/README.txt`](../scripts/client_mod/README.txt) lists build 23's full chain of
+patches, in order, with the commands.
 
 1. Take `assets/worldflipper_android_release.swf` out of the APK.
 2. Patch it:
@@ -56,7 +66,8 @@ The CN app asks a Leiting server for its API address; the patch points it at Sta
    adb install -r --no-incremental wfcn-globalized.apk
    ```
 6. **After installing a new build, delete the app's code cache**, or it keeps running the old code:
-   `adb shell su -c "rm -rf /data/data/com.leiting.wf/cache/app"` (needs root on the emulator).
+   `adb shell su -c "rm -rf /data/data/com.leiting.wf/cache/app"` (needs root), or without root:
+   Android Settings > Apps > World Flipper > Storage > **Clear cache** (not Clear data).
 7. Let the app reach StarPoint on your PC: `adb reverse tcp:8000 tcp:8000` and
    `adb reverse tcp:18888 tcp:18888` (co-op). These drop whenever ADB reconnects; re-run them
    (or keep a loop running that re-adds them every 30 s). Error F2032 means the link is gone.
@@ -80,14 +91,15 @@ id filters, `inCnRequest()`), `src/routes/api/cn.ts`, `src/routes/cnVersion.ts`,
 Both CDNs name files the same way, so global's English copies can replace CN's.
 
 1. Find the files that differ (6 workers in parallel, each writes a part):
-   `node scripts/scan_cn_globalize.cjs <i> 6 "F:/WF client/globalize/scan_<i>.json"` for i = 0..5
+   `node scripts/scan_cn_globalize.cjs <i> 6 "C:/wf/work/globalize/scan_<i>.json"` for i = 0..5
 2. Pick safe images (same size, really changed, no layout change):
-   `node scripts/plan_cn_globalize.cjs "F:/WF client/globalize"` → `images.json`
+   `node scripts/plan_cn_globalize.cjs "C:/wf/work/globalize"` → `images.json`
 3. Merge global's English into CN's tables (CN has extra columns; they're matched automatically):
-   `node scripts/gen_cn_text.cjs "F:/WF client/globalize" "F:/WF client/globalize/text8"`
+   `node scripts/gen_cn_text.cjs "C:/wf/work/globalize" "C:/wf/work/globalize/text8"`
 4. Build the translation memory (Chinese → global's English):
-   `node scripts/gen_cn_glossary.cjs "F:/WF client/globalize/text8"`
-5. English UI labels sprite sheet: `node scripts/gen_cn_lang_sheet.cjs <out dir>`
+   `node scripts/gen_cn_glossary.cjs "C:/wf/work/globalize/text8"`
+5. English UI labels sprite sheet: `node scripts/gen_cn_lang_sheet.cjs <out dir>` (reads the global
+   APK from `GLOBAL_APK` in `.env`)
 
 ## 5. Translate what global doesn't have (as much as you like)
 
@@ -95,28 +107,35 @@ Both CDNs name files the same way, so global's English copies can replace CN's.
 Never use an empty string as a translation (use `" "`). Keep `::placeholders::` identical.
 
 - Apply memory + cn.json to every table (unit tables only get global's own text):
-  `node scripts/apply_cn_translations.cjs "F:/WF client/globalize/text8" "F:/WF client/globalize/textN"`
+  `node scripts/apply_cn_translations.cjs "C:/wf/work/globalize/text8" "C:/wf/work/globalize/textN"`
   → writes `todo.json` (what's still Chinese).
 - Patterned strings (dates, "× N", coins, ranks, title conditions...):
   `node scripts/compose_cn_translations.cjs <glossary.json> <todo.json>`
-- Story episodes: `F:\WF client\globalize\story_tr.cjs show|save <file>` (helper).
+- Story episodes were translated with a small local helper that isn't in this repo: it showed an
+  episode's lines and saved the translated ones into `assets/translations/cn.json`.
 - Set `CN_TRANSLATED_DIR` in `.env` to the newest `textN`.
 - Boss names must match inside the enemy models too, or co-op/boss battles stop with F0:
-  `node scripts/gen_cn_boss_models.cjs "<textN>" "F:/WF client/globalize/models1"`
+  `node scripts/gen_cn_boss_models.cjs "<textN>" "C:/wf/work/globalize/models1"`
 
 ## 6. Ship it to the app as an update (each time, ~5 min)
 
 StarPoint lists its own update versions after CN's 1.4.54 and serves them at `/cn/patch`. **A
 version the app already has is never downloaded again — always use a new number.**
 
+The numbers below are the first ones used. Today the dashboard's schedule builds also take numbers
+from this chain, and every phone running the companion builds its own. So hand-made patches (like
+the art patches from `scripts/gen_cn_art_fill.cjs`) now use numbers far above them: 1.4.500,
+1.4.600, 1.4.700 so far. Build each one on the newest version in `.cdn/cn_patches/patches.json`,
+then save any schedule change on the dashboard so the schedule builds continue above it.
+
 ```
-node scripts/build_cn_patch.cjs 1.4.55 1.4.54 "F:/WF client/globalize/images.json"
-node scripts/build_cn_patch.cjs 1.4.56 1.4.55 "F:/WF client/globalize/textN/files.json"
-node scripts/build_cn_patch.cjs 1.4.57 1.4.56 "F:/WF client/globalize/models1/files.json"
+node scripts/build_cn_patch.cjs 1.4.55 1.4.54 "C:/wf/work/globalize/images.json"
+node scripts/build_cn_patch.cjs 1.4.56 1.4.55 "C:/wf/work/globalize/textN/files.json"
+node scripts/build_cn_patch.cjs 1.4.57 1.4.56 "C:/wf/work/globalize/models1/files.json"
 ```
 
 App-bundle text (labels baked into the APK, needs the APK rebuild in step 2):
-`node scripts/gen_cn_bundle.cjs wfcn.apk global.apk <glossary.json> "F:/WF client/globalize/bundle2"`,
+`node scripts/gen_cn_bundle.cjs wfcn.apk global.apk <glossary.json> "C:/wf/work/globalize/bundle2"`,
 then repack `bundle.zip` with the replaced files and write its SHA-1 into `bundle.zip.sha1`.
 
 ## 7. CN-only content on the server (once, ~10 min)
@@ -144,17 +163,47 @@ npx tsc
 
 Restart the server afterwards.
 
+Later features added more generators: the exchanges (`gen_cn_exchanges.cjs`,
+`gen_cn_exchange_campaigns.cjs`), campaigns (`gen_cn_campaigns.cjs`), the growth fund, the Content
+Guide, awakening and mana nodes, summon tickets, banner art, and more (`scripts/gen_cn_*.cjs`). Each
+says what it builds in its first lines. Their output is committed in `assets/`, so a checkout
+already has it; rerun one only to change what it makes.
+
 ## 8. Day to day: the dashboard
 
-Schedule events and summons in the dashboard as usual. CN-only ones are listed with "[CN only]".
-Each change rebuilds the global event mod **and** a new CN update automatically
-(`scripts/gen_cn_event_schedule.cjs`, which also refreshes the CN mission dates). Restart the CN
-app to download it. The same save is shared by the global and CN apps.
+Schedule events and summons in the dashboard as usual. CN-only ones carry a "CN only" badge.
+Each change builds a new CN update automatically (`scripts/gen_cn_event_schedule.cjs`, which also
+refreshes the CN missions, shops and pass), plus the global app's event mod when the global CDN
+(`.cdn/en`) is present. Restart the CN app to download it. Both apps can play the same save when
+`CN_ACCOUNT_ID` is set to that account.
+
+## 9. (Optional) An OBB for phones
+
+Only needed to share the game for setup C, where a phone gets every game file as one file instead
+of downloading ~12 GB from a server. The game app (build 23 or newer, with
+`scripts/client_mod/patch_cn_storage_dropoff.cjs`) unpacks it by itself at its first start.
+
+```
+node scripts/build_cn_obb.cjs "C:/wf/obb" --server <StarPoint folder>
+```
+
+- It packs CN's base files and every StarPoint update in `.cdn/cn_patches/patches.json`, so build
+  it after step 6 and any art patches. `--server` defaults to this checkout.
+- The output is `main.1008001.com.leiting.wf.obb` (~10.3 GB; it needs that much free space and
+  writes nothing else). `-` instead of a folder streams it to stdout, e.g. straight onto a phone:
+  `node scripts/build_cn_obb.cjs - | adb exec-in "cat > /sdcard/StarPoint/game/main.1008001.com.leiting.wf.obb"`
+  (make the folder first, and give the game the permissions in README setup C, step 5).
+- It's a plain zip (files stored, zip64) whose first entry indexes every file. That lets the game
+  unpack it from the end and shrink the file as it goes, so the phone needs little space beyond the
+  OBB, and an interrupted unpack carries on next time.
+- Where the phone takes it, and the fallback folder: README, setup C. The folder layout is in
+  `scripts/client_mod/STORAGE_LAYOUT.txt`.
 
 ## Things that are different on the CN app
 
 - Co-op works from the CN app (StarPoint's COM partners); CN rooms use CN's message numbers.
-- CN-only units' names stay Chinese (no new unit translations were made).
-- Artwork with Chinese text (chapter titles, some badges, the loading notice) is still Chinese;
-  1,285 global images have a different size and need their real file names to replace safely.
-- Paid bead packs (Bundle Marketplace) are empty on purpose.
+- CN-only units, events and stories were translated (see the README's Translation section).
+- Artwork with Chinese text and no English version (CN-only banners, some badges, the health
+  notice, the tutorial demo captions) stays Chinese.
+- Real-money bead packs aren't sold: there's no store behind them. Paid beads come with the daily
+  login bonus, and the Special Exchange and Start Dash Exchange sell their tickets for paid beads.

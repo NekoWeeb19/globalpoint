@@ -1,20 +1,33 @@
 World Flipper (globalized CN 1.8.1) on StarPoint - how to play
 ==============================================================
 
-This folder is a private World Flipper server (StarPoint) plus everything the game needs: the game's
-files with English text and art, and the game app itself (apk folder). It runs fully offline on your PC.
+This folder is GlobalPoint: a private World Flipper server (StarPoint) that plays the CN game in
+English, fully offline on your PC. README.md has the full steps and the download links.
 
 What you need
   - Windows PC with Node.js 20 or newer (https://nodejs.org)
   - An Android emulator (e.g. LDPlayer) or an Android phone connected with adb. The game talks to
     127.0.0.1:8000, so on an emulator it reaches your PC through "adb reverse" (done for you).
   - About 16 GB of free space (the game downloads ~12 GB of files from this server the first time).
+  - Downloads (links in README.md):
+      the game APK (build 23) and starpoint-data.zip (2.25 GB) from the Google Drive folder, plus
+        the comics zip (1.4 GB) if you want comics;
+      the CN game files (CN CDN 1.4.54, six cn-cdn.tar.part.* files, ~10.1 GB) from
+        https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54
 
 First time
-  1. Run setup.bat. It installs the server's packages (needs internet once), builds the server and
-     checks the game files. If adb is found it offers to install the game on your emulator, then
-     starts the server.
-  2. Open the game. The very first screen is the CN publisher's user agreement and privacy notice in
+  1. Unpack the CN game files into this folder's .cdn folder (make it first). In Command Prompt, in
+     the download folder:
+       copy /b cn-cdn.tar.part.00 + cn-cdn.tar.part.01 + cn-cdn.tar.part.02 + cn-cdn.tar.part.03 + cn-cdn.tar.part.04 + cn-cdn.tar.part.05 cn-cdn.tar
+       tar -xf cn-cdn.tar -C <this folder>\.cdn
+     (Git Bash, Linux, macOS: cat cn-cdn.tar.part.* | tar -x -C <this folder>/.cdn)
+     You get .cdn\cn\... Delete cn-cdn.tar and the parts afterwards.
+  2. Unzip starpoint-data.zip (and the comics zip) into this folder itself.
+  3. Put the game APK in an "apk" folder here, or install it on the emulator yourself.
+  4. Run setup.bat. It installs the server's packages (needs internet once), builds the server,
+     makes .env, and checks the game files (it says what's missing, if anything). If adb is found
+     it offers to install the APK from the apk folder, then starts the server.
+  5. Open the game. The very first screen is the CN publisher's user agreement and privacy notice in
      Chinese: the right-hand button (同意) agrees and continues, the left one (拒绝) declines and closes
      the game. Then it downloads its files from the server (only the first time), and you can play.
 
@@ -22,8 +35,15 @@ Every other time
   Run start-cn.bat, then open the game. Close the server window to stop the server.
 
 Dashboard
-  With the server running, open http://127.0.0.1:8000 in your browser: events and summon banners
-  (schedule any of them), campaigns, news, players, the server clock.
+  With the server running, open http://127.0.0.1:8000 in your browser:
+  - Server time: visit past and future content. New installs start on 2019-12-01, just before the
+    CN game's first banners and events. Units play with the kit they had on that date.
+  - Quest drop amount: 1x (the default) is the base game's own amounts; original StarPoint gave
+    10x. Raise it (up to 100x) for less grind.
+  - Daily paid beads and free mails: the paid beads with each daily login bonus (150 by default),
+    and the never-ending Bread, Mana and EXP mails.
+  - Events, Summons, Campaigns: move any event, summon banner, login bonus or free pull to any date.
+  - News and Players: in-game news posts, accounts, saves and gifts.
 
 After updating the game app
   Clear the game's cache once: Android Settings > Apps > World Flipper > Storage > Clear cache
@@ -32,6 +52,10 @@ After updating the game app
 Notes
   - Events start on their original CN dates; schedule the ones you want from the dashboard. Each
     change builds a small game update that the game downloads the next time it reaches the title.
+    The server builds it in the background (a minute or two). If you open the game too soon and get
+    an error (like C8601) or a frozen screen, close the game fully, wait a minute, and open it again.
   - Settings are in .env (copied from .env.example on first setup). LISTEN_HOST "127.0.0.1" keeps
     the server and its dashboard to this PC.
   - Linux/macOS: setup.sh and start-cn.sh do the same but are untested.
+  - To play on a phone (with the server on the phone, or on this PC), see README.md: setups B, C
+    and D. Google Drive downloads: https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO

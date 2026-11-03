@@ -1,4 +1,9 @@
 # Modding Guide
+
+> [!NOTE]
+> **Legacy (global app).** This page is from the original StarPoint, for the global app, and is
+> no longer maintained. For the CN app, see the main [README](../../README.md).
+
 The following is a guide for modding using Starpoint.
 
 ## Installing Mods

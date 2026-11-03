@@ -1,200 +1,184 @@
-StarPoint-patched game client (global 0.0.81 APK, Adobe AIR).
+Game app patches
+================
 
-What the patch does (patch_swf.cjs):
-  - adds the battle log (as3/starpoint/BattleLog.as): buffs added/removed, instant abilities firing,
-    dash gauge use and refill. Sent to https://na.wdfp.kakaogames.com/starpoint/battle_log (mitmproxy
-    sends it to StarPoint, src/routes/battleLog.ts), written to logs/battle.log.
-  - turns off the root check and gxshield's "Detected cheating" force-quit.
+These scripts patch the World Flipper game apps themselves (Adobe AIR: the game's code is
+assets/worldflipper_android_release.swf inside the APK). The patches work on the SWF's bytecode
+directly (abc.cjs), so no decompile and recompile of the whole game is needed. Classes are found by
+their member names, since the class names are obfuscated.
 
-Tools: FFDec 26.3.0 (F:\WF client\tools\ffdec) compiles BattleLog.as; Android build-tools r34
-(F:\WF client\tools\build-tools\android-14) align and sign. Java (Eclipse Adoptium 25) and Python.
+- The CN app (official CN 1.8.1, com.leiting.wf) is the one GlobalPoint ships: build 23 is the first
+  public build. Its patches are below.
+- The global app (0.0.81) has one older patch (the battle log), at the end. It's legacy.
 
-Build (from F:\WF client\mod):
-  node F:/starpoint-main/scripts/client_mod/patch_swf.cjs ../global/worldflipper_android_release.swf patched.swf work ../tools/ffdec/ffdec-cli.jar
-  python -I F:/starpoint-main/scripts/client_mod/repack_apk.py C:/Users/Jaheem/Downloads/world-flipper-0-0-81.apk patched.swf unsigned.apk
-  ../tools/build-tools/android-14/zipalign.exe -p -f 4 unsigned.apk aligned.apk
-  java -jar ../tools/build-tools/android-14/lib/apksigner.jar sign --ks starpoint-release.keystore --ks-key-alias starpoint --ks-pass file:starpoint-release.keystore.pass --out world-flipper-starpoint.apk aligned.apk
+How the whole CN app was connected and globalized, from nothing: docs/CN_CLIENT_SETUP.md.
 
-KEEP starpoint-release.keystore (+ .pass) in F:\WF client\mod: later builds must be signed with the same
-key to install as an update. A different key means uninstalling again (new guest login).
 
-Files:
-  abc.cjs         read/patch/write the SWF's bytecode (round-trips the whole client byte for byte)
-  stub_class.cjs  makes an empty class for FFDec's -importScript to compile real code into
-  patch_swf.cjs   the patches; classes are found by member names (class names are obfuscated)
-  repack_apk.py   puts the patched SWF in the APK and drops the old signature
+Tools
+-----
 
-CN client (official CN 1.8.1, F:\WF client\cn), SWF chain, each step's output is the next one's input:
-  patch_cn_client.cjs (server address) -> patch_cn_text.cjs -> patch_cn_ability_text.cjs -> patch_cn_font.cjs
-  -> patch_cn_campaign_cache.cjs (as3/starpoint/CampaignCache.as: the Events screen scanned every
-     stamina/reward campaign row once per event banner; now once per second per kind)
-Then repack_apk.py <previous build apk> <out-unsigned.apk> assets/worldflipper_android_release.swf=<swf>,
-zipalign, apksigner with starpoint-release.keystore. Keep SWFs uncompressed (writeSwf(..., false)).
-Build 13 (2026-11-01): F:\WF client\cn\build\wfcn-globalized-13.apk (127.0.0.1) and -phone-13 (LAN),
-from p8-*-font.swf. After installing, clear the code cache:
+- Node.js 20+ and Python 3 (run the .py files with python -I)
+- Java 17+ (Eclipse Adoptium works) for FFDec and the .java helpers
+- FFDec (JPEXS Free Flash Decompiler, tested 26.3.0): its ffdec-cli.jar compiles the as3/ code that
+  some patches add
+- Android build-tools (zipalign, apksigner)
+- adb, to install and test
+
+
+The CN patch chain
+------------------
+
+Each step's output SWF is the next one's input. Build 23 is every step below, in this order:
+
+  #  Script                          What it changes
+  1  patch_cn_client.cjs             server address -> 127.0.0.1:8000/cn, skips the Leiting login SDK,
+                                     and the version check goes to the server too
+  2  patch_cn_text.cjs               English for the text built into the code
+                                     (assets/translations/cn_app.json)
+  3  patch_cn_font.cjs               global's Latin letters (Poppins) in CN's font, so English fits its
+                                     boxes; needs global's SWF as well
+  4  patch_cn_campaign_cache.cjs     Events screen: campaigns scanned once per second per kind instead
+                                     of once per banner (as3/starpoint/CampaignCache.as)
+  5  patch_cn_ability_text.cjs       Units screen: stops building ability text only a debug
+                                     inspector reads (the screen froze ~1.5 s, now ~0.55 s)
+  6  patch_cn_coop_speed.cjs         co-op and raid battles allow AUTO x1 -> x2 -> x3 (was x1 only)
+  7  patch_cn_coop_lite.cjs          co-op always hides partners' skill effects; solo always shows all
+  8  patch_cn_strip_pages.cjs        early banners' short summon-art strips centered like pictures
+                                     (as3/starpoint/StripPages.template.as + strip_pages.json)
+  9  patch_cn_storage_dropoff.cjs    game files from the OBB or a drop-off folder instead of a download
+                                     (as3/starpoint/StorageDropoff.as)
+ 10  patch_cn_server_file.cjs        server.txt: play against a PC's server over Wi-Fi
+                                     (as3/starpoint/ServerAddress.as)
+
+Then the APK:
+ 11  manifest_storage.py             adds the storage permissions the drop-off needs
+ 12  repack_apk.py                   puts the SWF and manifest into the APK, drops the old signature
+ 13  zipalign + apksigner            align and sign
+
+Usage of each (all from the repository root):
+
+  node scripts/client_mod/patch_cn_client.cjs           <in.swf> <out.swf> 127.0.0.1:8000/cn
+  node scripts/client_mod/patch_cn_text.cjs             <in.swf> <out.swf> [translations.json]
+  node scripts/client_mod/patch_cn_font.cjs             <cn.swf> <global.swf> <out.swf>
+  node scripts/client_mod/patch_cn_campaign_cache.cjs   <in.swf> <out.swf> <work dir> <ffdec-cli.jar>
+  node scripts/client_mod/patch_cn_ability_text.cjs     <in.swf> <out.swf>
+  node scripts/client_mod/patch_cn_coop_speed.cjs       <in.swf> <out.swf>
+  node scripts/client_mod/patch_cn_coop_lite.cjs        <in.swf> <out.swf>
+  node scripts/client_mod/patch_cn_strip_pages.cjs      <in.swf> <out.swf> <work dir> <ffdec-cli.jar>
+  node scripts/client_mod/patch_cn_storage_dropoff.cjs  <in.swf> <out.swf> <work dir> <ffdec-cli.jar>
+  node scripts/client_mod/patch_cn_server_file.cjs      <in.swf> <out.swf> <work dir> <ffdec-cli.jar>
+
+  python -I scripts/client_mod/manifest_storage.py <base.apk> <work dir>/AndroidManifest.xml
+  python -I scripts/client_mod/repack_apk.py <base.apk> unsigned.apk assets/worldflipper_android_release.swf=<final.swf> AndroidManifest.xml=<work dir>/AndroidManifest.xml
+  zipalign -p -f 4 unsigned.apk aligned.apk
+  java -jar apksigner.jar sign --ks <your.keystore> --ks-key-alias <alias> --out wfcn-globalized.apk aligned.apk
+
+repack_apk.py takes any number of <path in APK>=<file> pairs: the English app bundle
+(assets/bundle.zip and assets/bundle.zip.sha1, see docs/CN_CLIENT_SETUP.md step 6) goes in the same
+way. Keep SWFs uncompressed (the scripts write them that way).
+
+Keep your signing key. Android installs a new build over the old one only if it's signed with the
+same key; a different key means uninstalling, which deletes the game's downloaded files.
+
+After installing a new build over an older one, clear the game's cache once (Android Settings >
+Apps > World Flipper > Storage > Clear cache; not Clear data). AIR keeps compiled code there and an
+update doesn't replace it, so without this the old build's code keeps running. With root:
   adb shell "su -c 'rm -rf /data/data/com.leiting.wf/cache/app'"
 
-patch_cn_perf.cjs (TEST BUILDS ONLY, as3/starpoint/Perf.as): times chosen game functions and sends
-GET /cn/perf?d=name:calls:total:self,... to the server (logs/cn_requests.log). Edit TARGETS to aim it.
-A JSON file of [class or "re:<regex>", methods] pairs can be passed as a 5th argument instead.
-Hooking many small functions inflates them a lot (a hooked call costs a few microseconds): find
-the area with broad hooks, then confirm real times with a handful of hooks before patching.
 
-patch_cn_ability_text.cjs (build 18, 2026-11-01): the Units screen froze ~1.5 s working out team stats,
-half of it building full ability description text for BattleAbilitySource.abilityDescription, which
-only a debug inspector reads. The 6 builds in BattleCharacterLogic.getAvailableAbilities(/WithCond)
-and AbilitySummarizer.summaryAbilities now store "". Units freeze ~0.55 s after. Applied on top of
-p9-*-cache.swf -> p11-*-text.swf; wfcn-globalized-18.apk / -phone-18.apk.
+Notes on the patches
+--------------------
 
-Build 19 (2026-11-01): p11-*-text.swf -> patch_cn_coop_speed.cjs -> p12-*-coop.swf ->
-patch_cn_coop_lite.cjs -> p13-*-coop-lite.swf; wfcn-globalized-19.apk / -phone-19.apk.
-patch_cn_coop_speed.cjs: co-op (MultiQuestStartLoadingTask) and raid (RaidBattleStartFlow) battles started
-with their allowed auto speed hard-coded to 1; now 3, so AUTO cycles x1 -> x2 -> x3 -> off. Co-op runs the
-partners' battles on this device too, and the battle advances one step per drawn frame (the TIME shown is
-real time), so on a slow device the frame rate drops and real speed gains less than the number.
-patch_cn_coop_lite.cjs: Battle.preparation now sets lightweightModeLevel = co-op ? 2 : 0 after the game's
-own line (Lite Mode / "Abbreviate Multiplayer Notifications" options), so co-op always hides the partners'
-skill animations, trails and multiballs, and solo always shows every effect. Emulator: x2 co-op ~19 fps
-before, ~25 fps after (measured while screen recording).
+Co-op speed (6). The game runs the COM partners' battles on the same device and steps the battle
+once per drawn frame (the TIME shown is real time). On a slow device the frame rate drops, so x3
+gains less real speed than the number says. Co-op lite (7) helps: on an emulator, x2 co-op went
+from ~19 to ~25 fps.
 
-Build 20 (2026-11-02): p13-*-coop-lite.swf -> patch_cn_strip_pages.cjs -> p14-*-strip.swf;
-wfcn-globalized-20.apk / -phone-20.apk. The early banners' summon art is a short strip (~624 px) made for
-an older screen layout; the game centers picture pages but puts animation pages at the top, leaving a
-gap above the featured units. GachaFeaturePageHolderView.setContent now calls
-as3/starpoint/StripPages.template.as (StripPages.place) after adding an animation page, which centers
-the strip ones like pictures. strip_pages.json (scripts/gen_cn_strip_pages.cjs) lists them; regenerate
-it if banner art changes. The halftone band along those strips' top edge (hidden by the old layout's top
-bar) is removed in the game files instead: scripts/gen_cn_strip_band.cjs + ClearRect.java make its dot
-tile transparent (CN patch 1.4.202, tagged "stripBand" in patches.json so reruns start from the originals).
+Strip pages (8). strip_pages.json comes from scripts/gen_cn_strip_pages.cjs; regenerate it if banner
+art changes. The halftone band along those strips' top edge is removed in the game files instead
+(scripts/gen_cn_strip_band.cjs with ClearRect.java), not in the app.
 
-Storage drop-off (TEST, 2026-11-02; sharing plan Phase 4): p14-local-strip.swf ->
-patch_cn_storage_dropoff.cjs -> p15-local-storage.swf; manifest_storage.py; wfcn-test-storage-3.apk
-(-1: first build; -2: overlay text fit; -3: files without info.json were not noticed, fixed).
-Lets a phone with no root get the ~10 GB of game files from a folder instead of downloading them.
-  patch_cn_storage_dropoff.cjs: AssetExtractor.start (first loading step, before any downloaded file
-    is read) now asks as3/starpoint/StorageDropoff.as first. If /sdcard/Android/obb/com.leiting.wf/ or
-    /sdcard/StarPoint/game/ holds files, they are moved into Local Store/asset/asset_download/dummy/
-    with the same relative paths (rename, or copy + delete across volumes), the emptied drop-off
-    folders removed (the two roots stay), then the game's own start runs. info.json (the version
-    record) goes last and only if every file moved; an info.json older than the game's own is dropped;
-    a moved one clears partial_downloaded*. Work runs in ~50 ms slices with a line on screen
-    ("Moving game files: n / total" + "x / y GB. Keep the game open."), shown over the boot logo.
-    Fresh install test (data cleared, full 10 GB / 138092-file set in the drop-off, LDPlayer):
-    moved in ~2.5 min, then signup -> load -> get_path -> home with no download at all. No folder,
-    no files or no permission: nothing happens and the normal download runs. Failures stay in the
-    drop-off and are retried next start.
-  manifest_storage.py <apk> <out AndroidManifest.xml>: binary manifest edit; adds
-    MANAGE_EXTERNAL_STORAGE ("All files access", needed on Android 11+ since the APK targets 30),
-    READ/WRITE_EXTERNAL_STORAGE if missing (the official manifest has both, plus a misspelled
-    READ_EXTERNAL_STORGE that does nothing), and application requestLegacyExternalStorage=true
-    (Android 10). Pass the result to repack_apk.py as AndroidManifest.xml=<file>.
-  The player must allow storage once: Android 11+ Settings -> Apps -> World Flipper -> "All files
-    access" (or the companion opens ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION); Android 6-10 the
-    Storage permission in the app's permissions. The game never asks by itself. Emulator/adb:
-    adb shell pm grant com.leiting.wf android.permission.READ_EXTERNAL_STORAGE (and WRITE_...);
-    Android 11+: adb shell appops set com.leiting.wf MANAGE_EXTERNAL_STORAGE allow
-  capture_cn_storage.py <out dir> --adb <adb.exe> --serial <dev>: copies a finished download off a
-    rooted device (su + tar over adb exec-out, `stty raw` because LDPlayer's su turns \n into \r\n)
-    in exactly the drop-off layout. Layout and the info.json record: STORAGE_LAYOUT.txt.
-  Build (from F:\WF client\cn\build):
-    node <repo>/scripts/client_mod/patch_cn_storage_dropoff.cjs p14-local-strip.swf p15-local-storage.swf work-storage ../../tools/ffdec/ffdec-cli.jar
-    python -I <repo>/scripts/client_mod/manifest_storage.py wfcn-globalized-20.apk work-storage/AndroidManifest.xml
-    python -I <repo>/scripts/client_mod/repack_apk.py wfcn-globalized-20.apk work-storage/unsigned.apk assets/worldflipper_android_release.swf=p15-local-storage.swf AndroidManifest.xml=work-storage/AndroidManifest.xml
-    then zipalign + apksigner as above -> wfcn-test-storage-N.apk
+Storage drop-off (9). At the first loading step, before any downloaded file is read, the game looks
+in two places for game files:
+  /sdcard/StarPoint/game/               needs "All files access" plus the storage permissions
+                                        (Android 13+: "Music and audio" and "Photos and videos";
+                                        6-10: Storage). The route the README gives players.
+  /sdcard/Android/obb/com.leiting.wf/   needs no permission, but works only on some devices:
+                                        whether the game can read a file there depends on the phone
+                                        and the app that put it there. Once, on a Samsung Android
+                                        16 tablet, My Files' move left the folder and file owned by
+                                        My Files (dir 2771, file 770), and the game couldn't list or
+                                        read them even with every permission on. It has worked on
+                                        other occasions, and adb pushes work on the Android 9
+                                        emulator.
+- An OBB there (any *.obb made by scripts/build_cn_obb.cjs) is unpacked from its end backwards, and
+  the file is cut shorter as it goes, so the phone needs little free space beyond the OBB itself. An
+  interrupted unpack carries on at the next start. The emptied OBB is deleted at the end.
+- Loose files there (the companion's "Full game files" copy) are moved into the game's storage.
+- The version record (info.json) is written last, and only if every file made it, so a half-done
+  copy is never taken as finished. If storage fills up, the screen says how much is left and stays
+  there; free space and reopen to carry on.
+- No folder, no files or no permission: nothing happens and the normal download runs.
+- The game never asks for storage permission itself. On Android 11+:
+    adb shell appops set com.leiting.wf MANAGE_EXTERNAL_STORAGE allow
+  or Settings > Apps > World Flipper > All files access, plus the storage permissions under
+  Permissions. The companion app has a button for All files access.
+- The game never creates Android/obb/com.leiting.wf/ itself, so the player makes it. Uninstalling the
+  game deletes it, along with any OBB still in it.
+The OBB format is described at the top of scripts/build_cn_obb.cjs, and the storage layout and the
+info.json record in STORAGE_LAYOUT.txt.
 
-Server address file (2026-11-02): p16 (drop-off, now skipping server.txt) -> patch_cn_server_file.cjs
--> p17-local-server.swf -> wfcn-globalized-23.apk (= build 22 + server.txt). Plays against a PC's
-StarPoint over plain Wi-Fi, no adb.
-  File: server.txt, top level of /sdcard/Android/obb/com.leiting.wf/ (read with no permission; Samsung
-    My Files can write there on Android 12/16) or else /sdcard/StarPoint/ (needs All files access).
-    The first line that isn't empty or a # comment: host:port, e.g. 192.168.1.20:8000. A BOM, spaces,
-    CRLF, "http://" in front, a trailing "/" or "/cn" are fine; no port = 8000. Read once per start.
-  Valid: the API host (DevConfig_gf_android "127.0.0.1:8000/cn") and the version check
-    (GbitsVersionLogic "http://127.0.0.1:8000/cn/shijtswy/version/") use it; CDN and patch downloads
-    follow by themselves (the server builds those addresses from the address the game used); co-op's
-    battle address comes from the server's replies (COOP_HOST), nothing on the client pins it. The
-    other 127.0.0.1/localhost strings in the SWF are unused dev settings (dummy socket, gamepad URL).
-    The title screen shows "Server: <host:port>" above the version text; a file that is there but not
-    understood shows "server.txt not understood" and the baked 127.0.0.1:8000 is used. Missing: as
-    build 22, nothing shown. The OBB/loose-file drop-off leaves server.txt alone.
-  Updating the APK: AIR keeps compiled code in /data/data/com.leiting.wf/cache/app and an update does
-    not clear it, so after installing 23 over an older build clear the app's cache (Settings > Apps >
-    World Flipper > Storage > Clear cache; adb: pm trim-caches 999G, or su rm -rf .../cache/app).
-    Otherwise the old build's code runs (seen on the emulator: build 21's drop-off moved server.txt).
-  Tested 2026-11-02 on LDPlayer emulator-5556 (Android 9): (1) no file: no title line, logs in to
-    127.0.0.1:8000 as before; (2) server.txt (BOM, CRLF, comment, http://.../) -> title "Server:
-    192.168.12.109:8010", signup/login/missions/login bonus on a separate test server on the PC's LAN
-    address (no adb reverse), the tutorial quest played; that server's get_path answer lists patch
-    URLs on 192.168.12.109:8010 and they download; (3) a junk file -> title "server.txt not understood", logs in to 127.0.0.1:8000 as before.
-  Build:
-    node <repo>/scripts/client_mod/patch_cn_storage_dropoff.cjs p14-local-strip.swf work-srv/p16b.swf work-srv ../../tools/ffdec/ffdec-cli.jar
-    node <repo>/scripts/client_mod/patch_cn_server_file.cjs work-srv/p16b.swf p17-local-server.swf work-srv ../../tools/ffdec/ffdec-cli.jar
-    then manifest_storage.py, repack_apk.py, zipalign + apksigner as for build 22 -> wfcn-globalized-23.apk
+manifest_storage.py edits the binary manifest: it adds MANAGE_EXTERNAL_STORAGE (the APK targets
+Android 11, API 30), READ/WRITE_EXTERNAL_STORAGE if missing, and requestLegacyExternalStorage=true
+(Android 10).
 
-OBB drop-off (2026-11-02): p14-local-strip.swf -> patch_cn_storage_dropoff.cjs -> p16-local-obb.swf ->
-wfcn-globalized-22.apk (= build 21 + OBB). The whole game-files set as ONE file, for players who copy
-it over USB instead of ~138k loose files.
-  The file: scripts/build_cn_obb.cjs writes main.<versionCode>.com.leiting.wf.obb (versionCode 1008001)
-    straight from a StarPoint server's files, no device or root needed:
-      node scripts/build_cn_obb.cjs "D:/WF client/obb" --server F:/starpoint-main
-    = the CN base zips (no iOS) oldest first, then the StarPoint patches in patches.json order, newest
-    copy wins, plus info.json (version = newest patch, baseUrl http://127.0.0.1:8000/cn/cdn/, fulfill).
-    1.4.203: 138092 files (+ info.json), 10.29 GB file (9.54 GB of game files), built in ~2 min on D:.
-    File list and sizes checked equal to a device that downloaded everything.
-  Format: a plain zip, files STORED (they are already compressed), zip64 (offsets past 4 GB, >65535
-    entries); any zip tool can list or unpack it. Its FIRST entry starpoint-obb-index.txt lists every
-    entry ("STARPOINT-OBB 1 <n>", then "<header offset> <data offset> <size> <path>", 12-digit fixed
-    width), so the game reads everything from the start of the file and never needs the central
-    directory at the end. Why: AS3 FileStream reads at any Number position, but a 17 MB central
-    directory at the end would be gone once the game starts cutting the file (below).
-  Where: /sdcard/Android/obb/com.leiting.wf/ (the game's own OBB folder: readable and writable with NO
-    permission on every Android version, including 11+ with targetSdk 30) or /sdcard/StarPoint/game/
-    (needs the storage permission, as the loose files do). Any *.obb there; a .obb that is not ours
-    is left alone. Loose files there are still taken as before (after the OBB).
-  The game (StorageDropoff.as): unpacks from the END of the file backwards and cuts the file shorter
-    (FileStream.truncate) after every ~50 ms slice, so the space it frees takes the unpacked files:
-    beyond the OBB itself only a little free space is needed (not a second 10 GB). Interrupted: next start reads the index again, everything
-    past the file's current end is already unpacked, it carries on. info.json is the 2nd entry, so it
-    comes last, and is written only if nothing failed (an older one is dropped, as for loose files);
-    then the emptied OBB is deleted. Storage full: the screen says how much is left and how much is
-    free, and stays there (going on would start the 10 GB download); free space and reopen to carry on.
-    Text: "Unpacking game files: n / total" + "x / y GB. Keep the game open."
-  Tested 2026-11-02 on LDPlayer (Android 9, emulator-5556) as a first-timer: game uninstalled, OBB put
-    in /sdcard/Android/obb/com.leiting.wf/, build 22 installed with NO storage permission granted,
-    opened: "Unpacking game files", the OBB shrank from the end (~140 MB/s), a force-stop halfway
-    then reopen carried on with the rest (113691 files / 5.7 GB left), done and the OBB deleted ~2.5
-    min after launch; title ResVer 1.4.203; tutorial skip -> nickname -> main menu, no download.
-    Streaming onto the device: node scripts/build_cn_obb.cjs - | adb exec-in "cat > <obb>.part" (then
-    mv) avoids a 10 GB copy on the PC, but adb exec-in dropped the last ~1 MB once (part of the zip's
-    central directory, which the game never reads; the data entries were intact). Compare the size on
-    the device with the "file N bytes" line. Emulator note: LDPlayer's disk images (D:\LDPlayer\
-    LDPlayer9\vms\leidianN\*.vmdk) grow by what is pushed in and don't shrink, so a 10 GB push needs
-    10+ GB free on D: (a push once filled D: and crashed the emulator).
-  Android 11+ (targetSdk 30; the emulator is Android 9 and can't show these rules):
-    - Reading/writing/deleting: an app reaches its OWN Android/obb/<package> folder by plain file path
-      without any permission (scoped storage exempts app-specific folders; since 11 they are bind-
-      mounted straight from the lower filesystem, so truncate and delete work like on any folder).
-      Unchanged in 12-16 as far as the platform docs go. AIR's File/FileStream use plain paths.
-    - The game never creates the folder itself (AIR doesn't call getObbDir), so the player's copy
-      creates it. On 11+ a folder made over USB (MTP, runs as MediaProvider) is fixed up to the app's
-      ownership by MediaProvider; if the game can't open the OBB anyway, the fallback is
-      /sdcard/StarPoint/game/ with All files access.
-    - MTP: PCs still see Android/obb on 11-16 (only on-phone file managers lost access to it in 11+;
-      some OEM file managers can't open it). Copy main.1008001.com.leiting.wf.obb into
-      Android/obb/com.leiting.wf/ (create the folder if missing). A 10 GB file over MTP takes a while;
-      Windows may say "the file is too large" only on FAT32 cards, not on internal storage.
-    - Uninstalling the game deletes Android/obb/com.leiting.wf/ with it, so copy the OBB after
-      installing (or reinstall as an update) if the OBB is still unpacked.
-    Only the real phones can confirm: the game sees and opens the OBB with NO permission granted (12
-    and 16), the file shrinks while unpacking and is gone at the end, MTP copy into Android/obb on each
-    phone's maker's build, the speed on real flash, and the storage-full screen.
-  16 KB pages (Android 15+/16 devices that use them; most phones still use 4 KB: adb shell getconf
-    PAGE_SIZE): the arm64 libs are stored compressed (extracted at install, so zip alignment does not
-    matter). 12 of them, including libCore.so (the AIR runtime), have 64 KB-aligned segments (fine).
-    3 have 4 KB segments: libexecgame.so, libfakedyn.so, assets/ijm_lib/arm64-v8a/libexec(main).so
-    (Leiting's protection loader). On a 16 KB phone those run in Android's page-size compatibility
-    mode (a one-time warning may show), or may fail to load; only a 16 KB device can tell. Not
-    fixable by realigning: the segments themselves are built for 4 KB.
-  Build:
-    node <repo>/scripts/client_mod/patch_cn_storage_dropoff.cjs p14-local-strip.swf p16-local-obb.swf work-obb ../../tools/ffdec/ffdec-cli.jar
-    then manifest_storage.py, repack_apk.py, zipalign + apksigner as for storage-3 -> wfcn-globalized-22.apk
+Server address file (10). server.txt sits at the top of /sdcard/Android/obb/com.leiting.wf/ (no
+permission needed), or else /sdcard/StarPoint/ (needs All files access). Whether the game can read a
+server.txt in Android/obb depends on the device and file app, as for the OBB above.
+- Its first line that isn't empty or a # comment is host:port, e.g. 192.168.1.20:8000. A BOM,
+  spaces, CRLF, "http://" in front, a trailing "/" or "/cn" are all fine; no port means 8000. It's
+  read once per start.
+- It sets the API host and the version check. Game file downloads follow by themselves (the server
+  builds those addresses from the one the game used), and co-op's battle address comes from the
+  server (COOP_HOST).
+- The title screen shows "Server: <host:port>". A file that's there but can't be read shows
+  "server.txt not understood", and the built-in 127.0.0.1:8000 is used. No file: nothing shown.
+- The drop-off leaves server.txt alone.
+
+16 KB memory pages (some Android 15+/16 phones; check with adb shell getconf PAGE_SIZE). Three of the
+game's own native libraries (libexecgame.so, libfakedyn.so and Leiting's protection loader
+libexec(main).so) are built for 4 KB pages. On a 16 KB phone they run in Android's compatibility
+mode or may fail to load. Realigning can't fix it, since the code itself is built for 4 KB. Not yet
+tried on a 16 KB device.
+
+
+Other tools here
+----------------
+
+  abc.cjs                read, patch and write the SWF's bytecode (round-trips the game byte for byte)
+  stub_class.cjs         an empty class for FFDec's -importScript to compile real code into
+  patch_swf.cjs          the global app's patch (below)
+  cn_swf_strings.cjs     lists the Chinese text in the CN app's code, for patch_cn_text.cjs:
+                         node scripts/client_mod/cn_swf_strings.cjs <in.swf> <out.json>
+  RenderLabels.java      draws English text labels as PNGs, for text drawn into images
+  ClearRect.java         makes one rectangle of a sprite sheet transparent (gen_cn_strip_band.cjs)
+  capture_cn_storage.py  copies a finished download off a rooted device in the drop-off layout:
+                         python -I scripts/client_mod/capture_cn_storage.py <out dir> --adb <adb> --serial <device>
+  patch_cn_perf.cjs      TEST BUILDS ONLY. Times chosen game functions and sends
+                         GET /cn/perf?d=name:calls:total:self,... to the server (logs/cn_requests.log).
+                         Edit its TARGETS, or pass a JSON file of [class or "re:<regex>", methods]
+                         pairs as a 5th argument. Each hooked call costs a few microseconds, so start
+                         with broad hooks to find the slow area, then confirm with a handful.
+
+
+The global app (legacy)
+-----------------------
+
+patch_swf.cjs patches the global 0.0.81 SWF:
+- adds a battle log (as3/starpoint/BattleLog.as): buffs added and removed, instant abilities firing,
+  dash gauge use and refill. It's sent to https://na.wdfp.kakaogames.com/starpoint/battle_log, which
+  mitmproxy forwards to the server (src/routes/battleLog.ts), and written to logs/battle.log.
+- turns off the root check and gxshield's "Detected cheating" force-quit.
+
+  node scripts/client_mod/patch_swf.cjs <original.swf> patched.swf <work dir> <ffdec-cli.jar>
+  python -I scripts/client_mod/repack_apk.py <global 0.0.81.apk> unsigned.apk assets/worldflipper_android_release.swf=patched.swf
+  then zipalign + apksigner as above.

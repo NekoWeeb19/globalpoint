@@ -1,59 +1,99 @@
-## Contribution Guide
-Learn the basics of the Starpoint project to begin contributing!
+# Contribution guide
 
-## What's Left?
-There is a list of all routes that have been discovered along with their implementation status in the [routes document](./routes.md)
+How GlobalPoint is put together, for anyone who wants to fix or add something. To play it, see the
+main [README](../README.md).
 
-This document also contains links to individual documentation pages for each route with the data that passes between the client and server.
+GlobalPoint is [StarPoint](https://github.com/duosii/starpoint) (a private server for the global World
+Flipper app) with support for the **CN app** added on top. One server answers both apps and keeps
+one save database. The CN app is the main one; the global app is [legacy](global/README.md).
 
-## Project Structure
-The following is an overview of the project structure.
-### ``/src``
-- The location of the majority of Starpoint's source code.
-- ``/data``
-  - The directory that hosts the scripts that handle the server's internal SQLite database for storing player data.
-  - ``wdfpData.ts``
-    - The main database proxy script. Exports a variety of functions that are helpful for modifying, inserting, or deleting player data.
-- ``/lib``
-  - The location of various scripts that are intended for helping the API endpoints perform their functions.\
-- ``/routes``
-  - The directory that hosts all of the scripts that directly handle API endpoints.
-  - ``/api``
-    - Hosts scripts that handle ``na.wdfp.kakaogames.com`` endpoints.
-  - ``/infodesk.ts``
-    - The script that handles any traffic that was originally intended for ``gc-infodesk-zinny3.kakaogames.com``
-  - ``/openapi.ts``
-    - The script that handles any traffic that was originally intended for ``openapi-zinny3.game.kakao.com``
-- ``server.ts``
-  - The main server script. Connects all of the routes together.
+## How the CN app talks to the server
 
-## Getting Started
+- The patched CN app sends its API calls to `127.0.0.1:8000/cn/...`. Those calls are handled by the
+  same routes as the global app's, with CN-specific replies decided in `src/lib/cnClient.ts`
+  (`inCnRequest()` tells the code which app is asking).
+- Request and response bodies are base64-encoded msgpack, as on global. ref45638's
+  [msgpack-converter](https://ref45638.github.io/msgpack-converter/) is handy for reading captures.
+- Game files: the app downloads CN's base files from `/cn/cdn` (CN's own version 1.4.54), then
+  StarPoint's own updates from `/cn/patch` (English text and art, schedule changes). Each update
+  is a new version number; the app never downloads a version it already has. The server numbers
+  its schedule builds above the highest version it has seen, so they never repeat one a game may
+  have (see [CN_CLIENT_SETUP.md](CN_CLIENT_SETUP.md#6-ship-it-to-the-app-as-an-update-each-time-5-min)).
+- A phone can point the app at a PC instead of `127.0.0.1` with a `server.txt` file (README, setup D).
+- Co-op battles use a separate TCP server (`src/coop/tcp.ts`, port 18888) with COM partners.
 
-### Server-Client Traffic
-When the game client makes calls to ``na.wdfp.kakaogames.com`` it sends a POST request with its body in a base64-encoded msgpack format. It also expects responses from the server to be in this format.
+Every route the server answers is listed in [routes.md](routes.md), generated from the server by
+`scripts/gen_routes_doc.cjs`. Rerun it after adding or changing routes.
 
-I recommend the usage of ref45638's [msgpack-converter website](https://ref45638.github.io/msgpack-converter/) when viewing captured traffic to and from this server.
+## Project layout
 
-For all other API endpoints, the client and server simply communicate using JSON.
+### `src/`
+- `server.ts`: starts the server and registers every route.
+- `routes/api/`: the game's API, one file per area (gacha, quests, missions, shops...). `cn.ts`
+  holds CN-only endpoints.
+- `routes/web/`, `routes/web_api/`: the dashboard's pages and its API (`/api/server/...`).
+- `routes/cnVersion.ts`, `infodesk.ts`, `openapi.ts`: version check and the global app's Kakao
+  login and platform endpoints.
+- `lib/`: game rules used by the routes (quests, drops, gacha, missions, raids, the server clock...).
+  `cnClient.ts` is the CN app's side: reply shapes, id filters, game-file versions and the update chain.
+- `nya/`: features added on top of upstream StarPoint, usually with their saved state in `.database/`:
+  the event and campaign schedules, news, login bonuses, the pass, missions, the drop amount and more.
+- `data/`: the SQLite save database (`wdfpData.ts` reads and writes player data). On a phone the
+  companion app uses Node's built-in `node:sqlite` through the same calls.
+- `coop/`: the co-op battle server.
 
-### Captured Traffic
-Examining captured traffic between the game client and the official game servers is the easiest way to reverse engineer and implement specific endpoints.
+### `assets/`
+The game's data converted to JSON (quests, units, rewards, shops...). Files ending in `_cn` are the
+CN app's own versions. `missions_cn.json`, `cn_shops.json` and `pass_card_cn.json` are rebuilt
+whenever the event schedule changes. `assets/translations/` holds the Chinese-to-English dictionaries.
 
-In order to capture traffic, I recommend following the [android connection tutorial](./connecting-android.md), but instead of running ``start.bat``, run ``start_mitmweb_capture.bat``.
+### `web/`
+The dashboard's pages (`web/pages/`) and its stylesheet. After changing Tailwind classes, rebuild the
+stylesheet with `npm run css`.
 
-This will open mitmweb and capture traffic between the game client and official game servers instead of proxying traffic to Starpoint.
+### `scripts/`
+Node scripts that build data, translations, game updates and packages. The ones you'll meet most:
+- `gen_cn_event_schedule.cjs`: turns the dashboard's schedule into a game update. The server runs
+  it by itself on every schedule change.
+- `build_cn_patch.cjs`: packs changed game files into a new update version.
+- `package_release.cjs`: copies a working setup into one ready-to-run folder (by default
+  `../GlobalPoint-release`, next to the repository). It includes the game APK, so it's for your
+  own use, not for publishing. `verify_package.cjs` checks a folder's game files and updates
+  (`setup.bat` runs it).
+- `build_cn_obb.cjs` (optional): builds the OBB with every game file, for phones (setup C).
+- `build_pack.cjs`: the data and comics packs for the companion's **Import pack...**.
+- `gen_cn_art_fill.cjs`: global's pictures for CN pictures that were missing, as an art patch.
+- `build_kit_*.cjs`, `kit_dates.cjs`: the old unit kits for balance by date (`assets/kit_dates.json`).
+- `gen_cn_slim.cjs`: the small CN data set the phone needs for schedule changes.
+- `cdn_hash.cjs` and `amf3.cjs`: shared helpers (the game's CDN file-name hash; reading and writing
+  the game's AMF3 sprite layouts).
+- `run_tests.cjs`: runs the tests (`npm test`, below).
+- `client_mod/`: patches for the game app itself (see its `README.txt`).
+- `converter.py`: upstream's converter from [wdfp-extractor](https://github.com/ScripterSugar/wdfp-extractor)
+  output to `assets/`.
 
-You will be simply playing the game like normal, but all of the network traffic you are generating is being captured by mitmweb.
+### `companion/`
+The StarPoint Companion Android app, which runs this same server on a phone. Its
+[README](../companion/README.md) explains how it works and how to build it.
 
-You can save the traffic that mitmweb captures and reference it at a later point when implementing endpoints.
+## Development Setup
 
-## Scripts
-The ``/scripts`` directory contains two useful scripts:
-- ``converter.py``
-  - Converts game asset files into a form that's readable by the server. The output of this script has been stored in the ``/assets`` directory.
-  - Simply put files from [wdfp-extractor](https://github.com/ScripterSugar/wdfp-extractor) into a folder called ``in`` in the same directory as the script and it will convert them into a folder called ``out``.
-- ``mitm-redirect-traffic.py``
-  - A script for [mitmproxy](https://mitmproxy.org/) which will redirect all incoming game traffic to this server.
-- ``cdn_download.py``
-  - A script for downloading a copy of the game's official CDN.
-  - Run instructions are included in the main README.
+1. Install Node.js 20+, then `npm ci`.
+2. Copy `.env.example` to `.env` (it isn't in git; `setup.bat` makes it too) and point
+   `CN_CDN_DIR` / `CN_TRANSLATED_DIR` at your CN game files and English tables. A few more settings
+   are only for rebuilding the translation and art patches (`CN_GLOBALIZE_DIR`, `HEADER_FONT`,
+   `GLOBAL_APK`, `CN_DECOMPILED_DIR`); `.env.example` says what each is for. The scripts have no
+   hard-coded paths, so they read these from `.env`.
+3. Build and run: `npx tsc -p .` then `node --env-file=.env out/server.js`.
+4. Tests: `npm test` builds the server and runs every offline test (`scripts/test_*.mjs`, through
+   `scripts/run_tests.cjs`; pass a name to run only matching ones:
+   `node scripts/run_tests.cjs <filter>`). `scripts/test_cn_client.mjs` plays the CN app's start
+   against a running server, so it's run by hand: `node scripts/test_cn_client.mjs [base URL]`.
+5. Logs: `logs/cn_requests.log` (every CN request), `logs/cn_crash.log`. The game's own error log is
+   on the device, in its private storage (`custom_Release_Android/latest.log`).
+
+Test changes in the game itself: GlobalPoint's rule is that a change counts as working once it's
+been seen working in the game.
+
+[CN_CLIENT_SETUP.md](CN_CLIENT_SETUP.md) describes how the CN app was connected and globalized from
+nothing, step by step.

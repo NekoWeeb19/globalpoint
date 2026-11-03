@@ -1,5 +1,13 @@
 # Deploying StarPoint
 
+> [!NOTE]
+> **Legacy (upstream StarPoint, global app).** These files are from the original
+> [StarPoint](https://github.com/duosii/starpoint) and aren't needed to play GlobalPoint. The nginx,
+> SSL and dnsmasq setup is for redirecting the global app's traffic to a server; the patched CN app
+> connects to `127.0.0.1:8000` (or the address in `server.txt`) by itself. Setup is in the main
+> [README](../README.md). `devenv/` is still used by the repository's dev container
+> (`.devcontainer/`). These files haven't been tested with GlobalPoint.
+
 ## DISCLAIMER
 
 **While these scripts exist to facilitate ease of deployment, they are not a one-size-fits-all solution and may not work if not properly configured.**
