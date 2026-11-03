@@ -301,6 +301,31 @@ async function main() {
     // tables CN closed on its shutdown day (2025-08-14 23:59:59, China time) that global keeps open:
     // their rows ending then are kept open (2199-12-31), so e.g. the Star Sliver exchange isn't empty
     const EOS_TABLES = ["master/shop/star_crumb_exchange.orderedmap"].map(fileOf)
+    // Permanent Events-tab dungeons whose CN dates leave a hole (the early rows are JP's schedule):
+    // - element dungeons: the weekday rotation rows ended in 2018 and the every-element rows only open
+    //   2020-01-15, so a save starting 2019-12-01 had none; the every-element rows open from 2001 instead
+    //   (until 2022-05-31 as before, when the combined dungeon takes over)
+    // - The Haunt (2022-05-12 to 2026-05-12 04:59:59, China time) opens a year earlier, 2021-05-12, and stays
+    //   open (2199-12-31). Its floors change monthly: 48 sets of 10 quests, each with its own month. The
+    //   first set starts 2021-05-12 too (so the extra year has floors) and the last one never ends.
+    const DUNGEON_FIXES = {
+        [fileOf("master/quest/event/daily_week_event.orderedmap")]: (key, c) => {
+            if (c[0].endsWith("_campaign") && c[16] === "2020-01-15 12:00:00") { c[16] = "2001-01-01 05:00:00"; return true }
+            return false
+        },
+        [fileOf("master/quest/event/tower_dungeon_event.orderedmap")]: (key, c) => {
+            let changed = false
+            if (c[11] === "2022-05-12 12:00:00") { c[11] = "2021-05-12 12:00:00"; changed = true }
+            for (let i = 0; i < c.length; i++) if (c[i] === "2026-05-12 04:59:59") { c[i] = "2199-12-31 23:59:59"; changed = true }
+            return changed
+        },
+        [fileOf("master/quest/event/tower_dungeon_event_quest.orderedmap")]: (key, c) => {
+            let changed = false
+            if (c[5] === "2022-05-12 12:00:00") { c[5] = "2021-05-12 12:00:00"; changed = true }
+            if (c[6] === "2026-05-12 04:59:59") { c[6] = "2199-12-31 23:59:59"; changed = true }
+            return changed
+        },
+    }
     // the yearly campaigns (dashboard Campaigns tab) are written in these, every time
     const CAMPAIGN_TABLES = {
         login: fileOf("master/bonus/login_bonus.orderedmap"),
@@ -338,7 +363,7 @@ async function main() {
     // unit's "finish Mana Board 2" title mission)
     const MB2_OPEN = "production/upload/bc/0bc800f482670f3ec8a7f2fee9b9deeeca3a04"
     const mb2InUse = new Set((() => { try { return JSON.parse(fs.readFileSync(path.join(dataDir(), "cn_mb2_in_use.json"), "utf8")).map(String) } catch { return [] } })())
-    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...kitTables, MB2_OPEN])].sort()
+    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...kitTables, MB2_OPEN, ...Object.keys(DUNGEON_FIXES)])].sort()
     const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
     const cn = await cnFiles(new Set([...fileList, featureFile]))
     // art StarPoint's patches added (scripts/gen_cn_banner_art.cjs) counts too: their file names and
@@ -372,6 +397,18 @@ async function main() {
             if (leaf.text.includes("2025-08-14 23:59:59")) R.setLeafText(leaf, leaf.text.split("2025-08-14 23:59:59").join("2199-12-31 23:59:59"))
         }
         if (file === CAMPAIGN_TABLES.login) fillNormalLoginBonusGaps(tree)
+        if (DUNGEON_FIXES[file]) {
+            let fixed = 0
+            for (const { path: keys, leaf } of R.leaves(tree)) {
+                const end = leaf.text.endsWith("\n") ? "\n" : ""
+                const lines = R.splitCsvLines(leaf.text.replace(/\n$/, "")), c = R.splitCsv(lines[0])
+                if (!DUNGEON_FIXES[file](keys[0], c)) continue
+                lines[0] = c.map(R.csvField).join(",")
+                R.setLeafText(leaf, lines.join("\n") + end)
+                fixed++
+            }
+            console.log(`Permanent dungeons: ${fixed} row(s) kept open in ${file}`)
+        }
         if (file === MB2_OPEN) {
             const dates = {}
             let kept = 0

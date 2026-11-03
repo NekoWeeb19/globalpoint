@@ -6,6 +6,10 @@ const fs = require("fs")
 const path = require("path")
 const crypto = require("crypto")
 
+// raised when scripts/gen_cn_event_schedule.cjs changes what it writes, so every install rebuilds its
+// update once (2: permanent dungeons kept open)
+const BUILDER_REVISION = 2
+
 const readJson = file => { try { return JSON.parse(fs.readFileSync(file, "utf8")) } catch { return null } }
 
 /** Same order of keys everywhere, so formatting doesn't change the fingerprint. */
@@ -19,7 +23,7 @@ function scheduleFingerprint(dataDir) {
     const campaigns = readJson(path.join(dataDir, "campaign_schedule.json")) ?? {}
     const yearly = ["yearlyLoginBonuses", "yearlyFreePulls", "yearlyRewardRuns", "yearlyStaminaRuns"]
         .map(key => [key, Array.isArray(campaigns[key]) ? [...campaigns[key]].map(String).sort() : []])
-    return crypto.createHash("sha1").update(JSON.stringify(stable({ events, yearly }))).digest("hex")
+    return crypto.createHash("sha1").update(JSON.stringify(stable({ events, yearly, builder: BUILDER_REVISION }))).digest("hex")
 }
 
 /** What the current CN update was built from, or null (an update built before this was recorded). */
