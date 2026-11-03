@@ -404,8 +404,12 @@ final class DataTransfer {
         long skipped = 0, gameMissing = 0;
         int checked = 0;
         // each folder is listed once (shared storage makes every per-file check slow): a file not in its
-        // folder's listing is missing without asking the storage for it; only files that are there get a size check
+        // folder's listing is missing without asking the storage for it. A file that is there and that this
+        // app copied before with the same size (the record) is skipped; any other gets a size check, several
+        // at a time, and goes on the record when it matches, so the next copy needs no checks at all.
         Map<String, java.util.Set<String>> listings = new java.util.HashMap<>();
+        CopyRecord record = new CopyRecord(c);
+        List<Item> unsure = new ArrayList<>();
         for (String[] f : files) {
             String path = f[0];
             long size = Long.parseLong(f[1]);
@@ -415,9 +419,33 @@ final class DataTransfer {
             Item item = new Item(path, size, out);
             if (path.equals("game/info.json")) { gameInfo = item; continue; }
             boolean always = path.startsWith(".database/");
-            if (!always && listed(listings, out) && out.length() == size) { skipped += size; continue; }
+            if (!always && listed(listings, out)) {
+                if (record.has(path, size)) { skipped += size; continue; }
+                unsure.add(item);
+                continue;
+            }
             todo.add(item);
             if (path.startsWith("game/")) gameMissing += size;
+        }
+        if (!unsure.isEmpty()) {
+            AtomicInteger sized = new AtomicInteger();
+            List<Item> same = java.util.Collections.synchronizedList(new ArrayList<>());
+            ExecutorService checks = Executors.newFixedThreadPool(16);
+            for (Item item : unsure) checks.execute(() -> {
+                if (item.out.length() == item.size) same.add(item);
+                sized.incrementAndGet();
+            });
+            checks.shutdown();
+            while (!checks.awaitTermination(300, TimeUnit.MILLISECONDS)) {
+                p.update("Checking the files already here... " + sized.get() + " / " + unsure.size(), 0, -1);
+            }
+            java.util.Set<Item> matched = new java.util.HashSet<>(same);
+            for (Item item : unsure) {
+                if (matched.contains(item)) { skipped += item.size; record.add(item.path, item.size); continue; }
+                todo.add(item);
+                if (item.path.startsWith("game/")) gameMissing += item.size;
+            }
+            record.flush();
         }
         if (gameInfo != null) {
             File dir = gameDropOff();
@@ -441,6 +469,7 @@ final class DataTransfer {
                 if (failed.get() != null) return;
                 try {
                     fetch(base, item, done);
+                    if (!item.path.startsWith(".database/")) record.add(item.path, item.size);
                     count.incrementAndGet();
                 } catch (Exception e) {
                     failed.compareAndSet(null, e);
@@ -449,8 +478,15 @@ final class DataTransfer {
         }
         pool.shutdown();
         long t = total;
-        while (!pool.awaitTermination(300, TimeUnit.MILLISECONDS)) {
-            p.update("Copying " + count.get() + " / " + todo.size() + " files", done.get(), t);
+        long lastFlush = System.currentTimeMillis();
+        try {
+            while (!pool.awaitTermination(300, TimeUnit.MILLISECONDS)) {
+                p.update("Copying " + count.get() + " / " + todo.size() + " files", done.get(), t);
+                // kept on disk as it goes, so a stopped copy still knows what it finished
+                if (System.currentTimeMillis() - lastFlush > 5000) { record.flush(); lastFlush = System.currentTimeMillis(); }
+            }
+        } finally {
+            record.flush();
         }
         if (failed.get() != null) throw failed.get();
         if (gameInfo != null) { fetch(base, gameInfo, done); count.incrementAndGet(); }
@@ -461,6 +497,53 @@ final class DataTransfer {
     }
 
     private static final int THREADS = 6;
+
+    /**
+     * The files this app copied over Wi-Fi, with their sizes (in its own storage, which is fast to read), so a
+     * later copy can skip them without asking the shared storage for each file's size. Files are written as
+     * .part and renamed when complete, so a file under its own name with a matching record is whole.
+     */
+    private static final class CopyRecord {
+        private final File file;
+        private final Map<String, Long> sizes = new java.util.HashMap<>();
+        private final StringBuilder pending = new StringBuilder();
+
+        CopyRecord(Context c) {
+            file = new File(c.getFilesDir(), "wifi-copied.tsv");
+            if (!file.exists()) return;
+            try (java.io.BufferedReader r = new java.io.BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"), 1 << 16)) {
+                String line;
+                while ((line = r.readLine()) != null) {
+                    int tab = line.indexOf('\t');
+                    if (tab <= 0) continue;
+                    try { sizes.put(line.substring(tab + 1), Long.parseLong(line.substring(0, tab))); } catch (NumberFormatException ignored) { }
+                }
+            } catch (IOException ignored) {
+                sizes.clear(); // an unreadable record only means every file gets checked
+            }
+        }
+
+        synchronized boolean has(String path, long size) {
+            Long known = sizes.get(path);
+            return known != null && known == size;
+        }
+
+        synchronized void add(String path, long size) {
+            Long known = sizes.put(path, size);
+            if (known == null || known != size) pending.append(size).append('\t').append(path).append('\n');
+        }
+
+        /** Appends the new entries (a later line for a path wins when read back). */
+        synchronized void flush() {
+            if (pending.length() == 0) return;
+            try (OutputStream os = new FileOutputStream(file, true)) {
+                os.write(pending.toString().getBytes("UTF-8"));
+                pending.setLength(0);
+            } catch (IOException ignored) {
+                // not kept: those files are checked again next time
+            }
+        }
+    }
 
     /** One file, tried up to 3 times (a long copy over Wi-Fi may meet a dropped connection). */
     private static void fetch(String base, Item item, AtomicLong done) throws IOException {
