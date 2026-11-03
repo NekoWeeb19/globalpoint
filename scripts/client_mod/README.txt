@@ -149,6 +149,13 @@ in three places for game files:
   parts of the 1.4.800 OBB (10.72 GB, 138354 files) copied into /sdcard/starpoint_game/ (195 s over
   adb), the game opened: part 3, then 2, then 1 shrank and were deleted, all unpacked in ~2 min, title
   ResVer 1.4.800, then sign-in and the home screen.
+  Without any storage permission (READ/WRITE revoked), the same three split tests in
+  /sdcard/Android/obb/com.leiting.wf/: missing part 2 -> the message, nothing unpacked; interrupted
+  after part 3 was used up (part 2 cut to 27.27 MB) -> reopened, carried on, every part deleted;
+  a fresh 3-part set -> unpacked and deleted, title screen. So players who don't want to give the
+  game All files access can use the OBB folder, as long as their phone lets the game read what was
+  copied there (on Android 11+ that depends on the phone and the app that copied it: see above;
+  copying over USB from a PC is the safer way there). Android 9 emulator only; not yet on 11+.
 The OBB format is described at the top of scripts/build_cn_obb.cjs, and the storage layout and the
 info.json record in STORAGE_LAYOUT.txt.
 
