@@ -6,6 +6,8 @@
 // Until a stage's date (game clock, UTC) its rows ship instead of the game's own; the earliest stage
 // still ahead of the clock wins, so a unit changed by two patches lists its oldest kit first. Row keys
 // are "<table>#<row key>", values a full row or { cols: { <index>: text } } for one line's columns.
+// <table> is a logical name (master/ability/ability.orderedmap) or a stored path (upload/5c/6a4f...); a row key
+// in a nested table joins its keys with "/" (character_status "111001/80").
 const fs = require("fs")
 
 const parseDate = text => Date.parse(String(text).replace(" ", "T") + "Z")

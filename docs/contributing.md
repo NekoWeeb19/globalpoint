@@ -65,6 +65,8 @@ Node scripts that build data, translations, game updates and packages. The ones 
 - `gen_cn_art_fill.cjs`: global's pictures for CN pictures that were missing, as an art patch.
 - `build_kit_*.cjs`, `kit_dates.cjs`: the old unit kits for balance by date (`assets/kit_dates.json`).
 - `gen_cn_slim.cjs`: the small CN data set the phone needs for schedule changes.
+- `custom_units.cjs`: custom CN units (`assets/custom_units/`, [CUSTOM_UNITS.md](CUSTOM_UNITS.md)), read by the
+  schedule build and the server; `research/clone_cn_unit.cjs` makes one from an existing unit.
 - `cdn_hash.cjs` and `amf3.cjs`: shared helpers (the game's CDN file-name hash; reading and writing
   the game's AMF3 sprite layouts).
 - `run_tests.cjs`: runs the tests (`npm test`, below).

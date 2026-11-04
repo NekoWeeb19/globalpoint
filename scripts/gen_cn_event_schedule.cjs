@@ -318,6 +318,28 @@ function applyYearlyCampaigns(trees, files, cnWindows = {}) {
     return `${login} yearly login bonus rows, ${pulls} free pull copies, ${runRows} stamina/reward campaign copies`
 }
 
+/**
+ * Replaces rows of a table (assets/kit_dates.json stages, unit changes): row key ("/"-joined path) -> the whole
+ * row's text, or { cols: { <index>: value } } for some columns of its first line. Returns how many were found.
+ */
+function replaceRows(tree, wanted) {
+    let set = 0
+    for (const { path: keys, leaf } of R.leaves(tree)) {
+        const row = wanted.get(keys.join("/"))
+        if (row === undefined) continue
+        const end = leaf.text.endsWith("\n") ? "\n" : ""
+        if (typeof row === "string") R.setLeafText(leaf, row.replace(/\n$/, "") + end)
+        else {
+            const lines = R.splitCsvLines(leaf.text.replace(/\n$/, "")), cols = R.splitCsv(lines[0])
+            for (const [i, v] of Object.entries(row.cols ?? {})) cols[+i] = String(v)
+            lines[0] = cols.map(R.csvField).join(",")
+            R.setLeafText(leaf, lines.join("\n") + end)
+        }
+        set++
+    }
+    return set
+}
+
 async function main() {
     // the schedules this update is built from (compared by the server at start, src/nya/eventSchedule.ts)
     const fingerprint = scheduleFingerprint(dataDir())
@@ -439,23 +461,32 @@ async function main() {
     const PASS_BANNER = { banner: fileOf("master/feature_banner/feature_banner_secondary.orderedmap"), pass: fileOf("master/pass_card/pass_card_event.orderedmap"), id: "20016" }
     // Unit kits before a balance change (assets/kit_dates.json, scripts/kit_dates.cjs): until a stage's date
     // on the game clock its rows ship instead of the game's own. The tables are shipped whenever the file
-    // exists, so a later update puts the game's own rows back.
+    // exists, so a later update puts the game's own rows back. A stage with a far "until" (e.g. 2199) is a
+    // lasting change to an existing unit (docs/CUSTOM_UNITS.md, "Changing an existing unit"). Tables are named by
+    // logical name or by stored path (upload/xx/..., for tables without a known name, e.g. character_status).
+    const CU = require("./custom_units.cjs")
     const KIT = require("./kit_dates.cjs")
     const kits = KIT.readKits(path.join(ROOT, "assets", "kit_dates.json"))
     const kitRows = new Map() // file -> Map(row key -> old text or column patch)
     const kitTables = new Set()
     const kitNow = gameNowMs()
     for (const [unit, stages] of kits ?? []) {
-        for (const stage of stages) for (const ref of Object.keys(stage.rows)) kitTables.add(fileOf(ref.slice(0, ref.indexOf("#"))))
+        for (const stage of stages) for (const ref of Object.keys(stage.rows)) kitTables.add(CU.tableFile(ref.slice(0, ref.indexOf("#"))))
         const stage = KIT.activeStages(new Map([[unit, stages]]), kitNow).get(unit)
         if (stage === null) continue
         for (const [ref, text] of Object.entries(stage.rows)) {
-            const file = fileOf(ref.slice(0, ref.indexOf("#")))
+            const file = CU.tableFile(ref.slice(0, ref.indexOf("#")))
             if (!kitRows.has(file)) kitRows.set(file, new Map())
             kitRows.get(file).set(ref.slice(ref.indexOf("#") + 1), text)
         }
     }
     const kitState = KIT.kitState(kits, kitNow)
+    // Changes to existing units (<custom units folder>/changes/*.json, docs/CUSTOM_UNITS.md): always, on top of the
+    // game's rows and of any kit stage above
+    const changes = CU.readUnitChanges()
+    for (const p of changes.problems) console.log(`Unit change skipped: ${p}`)
+    // tables the last build changed ship once more, so a change taken away goes back to the game's own rows
+    const lastChanged = (() => { try { return JSON.parse(fs.readFileSync(path.join(dataDir(), "cn_schedule_built.json"), "utf8")).changedTables ?? [] } catch { return [] } })()
     // The CN client opens each unit's Mana Board 2 from a date in this table ("<unit>": "<from>,<until>") and
     // the game clock. A unit a save already has on board 2 (.database/cn_mb2_in_use.json, written by the
     // server before each build) crashes its board screen (F1009) while that date is ahead of the clock, so
@@ -466,7 +497,14 @@ async function main() {
     // the CN game's start (China time); launch units with board 2 before it are moved to later waves
     const LAUNCH_MB2_FROM = "2019-12-01 00:00:00"
     const mb2InUse = new Set((() => { try { return JSON.parse(fs.readFileSync(path.join(dataDir(), "cn_mb2_in_use.json"), "utf8")).map(String) } catch { return [] } })())
-    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...kitTables, MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES)])].sort()
+    // Custom units (assets/custom_units/*.json, scripts/custom_units.cjs, docs/CUSTOM_UNITS.md): their rows are
+    // added to every table they touch, and those tables always ship, so a rebuild never drops a unit a save has
+    // (C8601). The unit's own files (art, voices) are a separate update; a unit whose files aren't in the CN
+    // files or StarPoint's updates yet is left out (the game would ask for them: "Insufficient data").
+    const custom = CU.readCustomUnits()
+    for (const p of custom.problems) console.log(`Custom unit skipped: ${p}`)
+    const customTables = CU.unitTables(custom.units)
+    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...kitTables, MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES), ...customTables, ...changes.rows.keys(), ...lastChanged])].sort()
     const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
     const cn = await cnFiles(new Set([...fileList, featureFile]))
     // art StarPoint's patches added (scripts/gen_cn_banner_art.cjs) counts too: their file names and
@@ -502,13 +540,42 @@ async function main() {
             if (first && keys.length === 1) worldStoryStart.set(keys[0], first)
         }
     }
-    for (const file of fileList) {
-        // files.json's paths are the PC's; on a phone the copy sits in the dir itself (src/routes/companion.ts)
+    // files.json's paths are the PC's; on a phone the copy sits in the dir itself (src/routes/companion.ts)
+    const tableBuffer = async file => {
         const from = translatedFrom.get(file)
         const translated = from && fs.existsSync(from) ? from : path.join(TRANSLATED, file)
-        const buf = fs.existsSync(translated) ? fs.readFileSync(translated) : await cn.get(file)?.buffer()
+        return fs.existsSync(translated) ? fs.readFileSync(translated) : await cn.get(file)?.buffer()
+    }
+    // the custom units this update carries: not a CN unit's id or string id, and their files are there
+    const customUnits = [], customWaiting = []
+    if (custom.units.length > 0) {
+        const charBuf = await tableBuffer(CU.CHARACTER_TABLE)
+        const cnChars = charBuf ? R.decodeFile(charBuf).entries : []
+        const cnIds = new Set(cnChars.map(e => e.key))
+        const cnDevs = new Set(R.leaves({ kind: "map", entries: cnChars }).map(l => R.splitCsv(l.leaf.text)[0]))
+        for (const unit of custom.units) {
+            const missing = (unit.art?.files ?? []).filter(f => !cnNames.has(f.replace(/^production\/[a-z_]+\//, "")))
+            if (cnIds.has(unit.id)) console.log(`Custom unit ${unit.id} skipped: the CN game has a unit with that id`)
+            else if (cnDevs.has(unit.dev)) console.log(`Custom unit ${unit.id} skipped: the CN game has a unit with string id ${unit.dev}`)
+            else if (missing.length > 0) {
+                customWaiting.push(unit.id)
+                console.log(`Custom unit ${unit.id} skipped: ${missing.length} of its files aren't in the game files yet (build its art update first${unit.art?.patch ? `, ${unit.art.patch}` : ""})`)
+            }
+            else {
+                if (!unit.art?.files?.length) console.log(`Custom unit ${unit.id}: no files listed (art.files), shipped anyway`)
+                customUnits.push(unit)
+            }
+        }
+    }
+    for (const file of fileList) {
+        const buf = await tableBuffer(file)
         if (!buf) continue // a table CN doesn't have
         const tree = R.decodeFile(buf)
+        // custom units' rows first, so the fixes below (e.g. Mana Board 2 kept open for a save) apply to them too
+        for (const unit of customUnits) {
+            const rows = Object.entries(unit.rows).filter(([ref]) => CU.tableFile(ref) === file)
+            for (const [, r] of rows) CU.addRows(tree, r)
+        }
         if (EOS_TABLES.includes(file)) for (const { leaf } of R.leaves(tree)) {
             if (leaf.text.includes("2025-08-14 23:59:59")) R.setLeafText(leaf, leaf.text.split("2025-08-14 23:59:59").join("2199-12-31 23:59:59"))
         }
@@ -558,24 +625,8 @@ async function main() {
             fs.writeFileSync(path.join(dataDir(), "cn_mb2_dates.json"), JSON.stringify({ keptOpen: [...mb2InUse].sort(), dates }))
             if (kept > 0) console.log(`Mana Board 2: ${kept} unit(s) a save already uses kept open`)
         }
-        if (kitRows.has(file)) {
-            const wanted = kitRows.get(file)
-            let set = 0
-            for (const { path: keys, leaf } of R.leaves(tree)) {
-                const old = wanted.get(keys.join("/"))
-                if (old === undefined) continue
-                const end = leaf.text.endsWith("\n") ? "\n" : ""
-                if (typeof old === "string") R.setLeafText(leaf, old.replace(/\n$/, "") + end)
-                else {
-                    const lines = R.splitCsvLines(leaf.text.replace(/\n$/, "")), cols = R.splitCsv(lines[0])
-                    for (const [i, v] of Object.entries(old.cols ?? {})) cols[+i] = String(v)
-                    lines[0] = cols.map(R.csvField).join(",")
-                    R.setLeafText(leaf, lines.join("\n") + end)
-                }
-                set++
-            }
-            console.log(`Unit kits before a balance change: ${set} row(s) in ${file}`)
-        }
+        if (kitRows.has(file)) console.log(`Unit kits before a balance change: ${replaceRows(tree, kitRows.get(file))} row(s) in ${file}`)
+        if (changes.rows.has(file)) console.log(`Unit changes: ${replaceRows(tree, changes.rows.get(file))} of ${changes.rows.get(file).size} row(s) in ${file}`)
         trees.set(file, tree)
     }
 
@@ -756,8 +807,11 @@ async function main() {
         list.push({ path: file, from: out })
     }
     await build(version, last, list)
-    fs.writeFileSync(path.join(dataDir(), "cn_schedule_built.json"), JSON.stringify({ fingerprint, version, freePullCopyIds: builtFreePullCopyIds.sort((a, b) => a - b), kitState }))
+    fs.writeFileSync(path.join(dataDir(), "cn_schedule_built.json"), JSON.stringify({ fingerprint, version, freePullCopyIds: builtFreePullCopyIds.sort((a, b) => a - b), kitState, customUnits: customUnits.map(u => u.id),
+        // units left out only because their files weren't there yet: the server rebuilds once a newer update is listed
+        customWaitingForFiles: customWaiting, changedTables: [...changes.rows.keys()].sort() }))
     console.log(`CN schedule ${version}: ${events} event(s), ${moved} rows moved, ${campaignsMade}, ${list.length} files`)
+    if (custom.units.length > 0) console.log(`Custom units: ${customUnits.map(u => `${u.id} ${u.name ?? u.dev}`).join(", ") || "none"} (${customUnits.length} of ${custom.units.length}, rows in ${customTables.length} tables)`)
     // the server's copy of the CN missions follows the new dates
     await runScriptOrThrow(path.join(__dirname, "gen_cn_missions.cjs"), { env: { ...process.env, CN_TRANSLATED_DIR: TRANSLATED }, echo: true })
     // and the server's copy of the CN passes (a pass can be moved too)

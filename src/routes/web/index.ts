@@ -42,6 +42,12 @@ const routes = async (fastify: FastifyInstance) => {
         reply.send(newsBoardPage())
     })
 
+    // the unit editor: ability lines, numbers (scripts/unit_editor.cjs, docs/UNIT_EDITOR.md)
+    fastify.get("/unit-editor", async (_: FastifyRequest, reply: FastifyReply) => {
+        reply.header("content-type", "text/html; charset=utf-8")
+        reply.send(readFileSync(path.join(__dirname, staticPagesDir, "unit-editor.html")).toString("utf-8"))
+    })
+
     fastify.register(playerRoutePlugin, { prefix: "/player" })
 }
 

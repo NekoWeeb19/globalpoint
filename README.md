@@ -330,7 +330,8 @@ The server's date decides how units play, the way they did on that date.
   others) are mostly left as they are for that reason; Deep-Sea Princess Amelia is the exception,
   with her old abilities, leader skill, class and stats but today's skill.
 
-The units and their dates are in `assets/kit_dates.json`.
+The units and their dates are in `assets/kit_dates.json`. To change a unit for good, see
+[Changing an existing unit](docs/CUSTOM_UNITS.md#changing-an-existing-unit).
 
 ## What works
 
@@ -503,6 +504,10 @@ For working on GlobalPoint rather than playing it:
   server runs it by itself at start when the CN game files are there and the set is missing.
 - `scripts/build_kit_*.cjs`, `scripts/kit_dates.cjs`: build and read `assets/kit_dates.json`, the
   old unit kits for [Balance by date](#balance-by-date).
+- `scripts/custom_units.cjs`, `assets/custom_units/`: new units for the CN app from data and files only,
+  kept through every schedule rebuild. See [docs/CUSTOM_UNITS.md](docs/CUSTOM_UNITS.md), and
+  [Getting a custom unit onto your device](docs/CUSTOM_UNITS.md#getting-a-custom-unit-onto-your-device-or-emulator)
+  for each setup.
 - `scripts/client_mod/README.txt`: the game app patches, in order, and how to build the app.
 - `companion/README.md`: the StarPoint Companion app (Node.js on Android), and how to build it.
 

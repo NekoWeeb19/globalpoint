@@ -261,6 +261,7 @@ network use the dashboard too, so do that only on a network you trust, such as y
 | `/api/server/events/unschedule` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/events/unschedule-many` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/give` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/server/removeCharacter` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) | takes a unit out of a save ([nya/removeCharacter.ts](../src/nya/removeCharacter.ts)) |
 | `/api/server/loginBonus/again` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/news` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/news` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |

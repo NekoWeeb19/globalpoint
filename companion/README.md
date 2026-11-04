@@ -43,6 +43,10 @@ how to build it.
   - **Full game files** (~10 GB), for a phone whose game has never downloaded its files. See below.
 
   Files already on the phone are skipped, so pressing it again resumes an interrupted copy.
+  The PC's **custom units** ([docs/CUSTOM_UNITS.md](../docs/CUSTOM_UNITS.md)) always come along, whatever is
+  ticked: their unit files go to `files/data/.cdn/custom_units/` (changes to existing units to its `changes/`),
+  and a file the PC no longer has is removed
+  from the phone. Their pictures and voices are a game update, so tick **Game updates** the first time.
 - **Import pack...** takes a pack made on a PC (see [Packs](#packs)). It opens the system file
   picker, so it needs no storage permission.
 - **Choose zip...** takes a zip with `.database/` and `.cdn/` folders (and optionally `.env`), as
@@ -209,6 +213,12 @@ only read.
     in order, the newest copy of each file winning. Each file is streamed straight out of its zip,
     so the PC keeps no unpacked copy. `game/info.json` is generated, and the phone writes it last,
     so a half-filled folder is never taken as finished.
+- Always: the custom unit files (`CUSTOM_UNITS_DIR`, else `assets/custom_units`) as
+  `.cdn/custom_units/<id>.json`, the changes to existing units as `.cdn/custom_units/changes/<name>.json`,
+  and `.cdn/custom_units/_units.json` naming them. The phone fetches
+  them every time and deletes its unit files the index doesn't name (only when the index came, so an older
+  PC server leaves them alone). On the phone `CUSTOM_UNITS_DIR` is `files/data/.cdn/custom_units`
+  (`companion-main.js`): it survives app updates (unlike `files/server`) and save imports (unlike `.database`).
 - `GET /companion/file?path=` serves only paths a manifest can list (anything else is a 404). The
   list is cached for a minute.
 

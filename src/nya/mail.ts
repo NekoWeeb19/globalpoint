@@ -110,6 +110,16 @@ const date2str = (date: Date) => {
     return date.toISOString().replace("T", " ").replace(/\.\d+Z$/, "")
 }
 
+/** Drops a player's unclaimed mails that give this unit (removing a unit from a save). Returns how many. */
+export function removeCharacterMails(playerId: number, characterId: number): number {
+    const mails = CachedMails[playerId]
+    if (!mails) return 0
+    const kept = mails.filter(m => !(m.type === MAIL_TYPE.CHARACTER && Number(m.type_id) === characterId))
+    const removed = mails.length - kept.length
+    CachedMails[playerId] = kept
+    return removed
+}
+
 export const SendMail = (player_id: number, mail: Mail) => {
     if (!CachedMails[player_id]) CachedMails[player_id] = []
     const mail_ = {

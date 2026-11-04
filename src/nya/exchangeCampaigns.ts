@@ -10,7 +10,7 @@
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import exchangeData from "../../assets/cn_exchange_campaigns.json"
-import gachaData from "../../assets/gacha.json"
+import { getGachaSync } from "../lib/assets"
 import getDatabase, { Database } from "../data"
 import { getAccountPlayers, getPlayerItemSync, getPlayerSync, getSession, givePlayerItemSync, updatePlayerItemSync, updatePlayerSync } from "../data/wdfpData"
 import { givePlayerCharacterSync } from "../lib/character"
@@ -233,7 +233,7 @@ const routes = async (fastify: FastifyInstance) => {
         if (playerId === null || campaign === undefined) return bad(reply, "Unknown player or campaign.")
         const row = rowOf(playerId, "startDash", body.campaign_id)
         if (row?.status !== STATUS.TICKET) return bad(reply, "No ticket bought for this campaign.")
-        const pool = (gachaData as unknown as Record<string, { pool?: Record<string, { id: number }[]> }>)[String(row.gacha_id)]?.pool ?? {}
+        const pool = (getGachaSync(row.gacha_id)?.pool ?? {}) as Record<string, { id: number }[]> // custom units included
         if (![...(pool["1"] ?? []), ...(pool["2"] ?? [])].some(e => e.id === characterId)) return bad(reply, "That unit isn't in this portal.")
         const left = useTicket(playerId, campaign.ticketItem)
         if (left === null) return bad(reply, "No ticket.")

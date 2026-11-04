@@ -425,7 +425,8 @@ final class DataTransfer {
             // partway never leaves a list pointing at missing zips (the game's U0000)
             if (path.equals(".cdn/cn_patches/patches.json")) { updateList = item; continue; }
             // the update list is rewritten by this phone's own server (its schedule builds), so it's always fetched
-            boolean always = path.startsWith(".database/") || path.equals(".cdn/cn_patches/patches.json");
+            // so are custom unit files (small; an edited one can keep its size)
+            boolean always = path.startsWith(".database/") || path.equals(".cdn/cn_patches/patches.json") || path.startsWith(CUSTOM_UNITS + "/");
             if (!always && listed(listings, out)) {
                 // the record only stands in for the slow size checks of the game files on shared storage; the
                 // server's own files are in this app's storage (fast to check, and the server may change them)
@@ -507,11 +508,32 @@ final class DataTransfer {
         if (gameInfo != null) { fetch(base, gameInfo, done); count.incrementAndGet(); }
 
         if (!env.isEmpty()) mergeEnv(new File(data, ".env"), env);
+        removeOldCustomUnits(data, files);
         p.update("Done", total, total);
         return count.get();
     }
 
     private static final int THREADS = 6;
+
+    /** Custom units and changes to existing units (docs/CUSTOM_UNITS.md): the phone's server reads them from here (companion-main.js). */
+    private static final String CUSTOM_UNITS = ".cdn/custom_units";
+
+    /**
+     * Removes the custom unit files the PC no longer has. Only when the PC sent its index (_units.json):
+     * a PC server too old to send custom units leaves the phone's alone.
+     */
+    private static void removeOldCustomUnits(File data, List<String[]> files) {
+        java.util.Set<String> sent = new java.util.HashSet<>();
+        for (String[] f : files) if (f[0].startsWith(CUSTOM_UNITS + "/")) sent.add(f[0]);
+        if (!sent.contains(CUSTOM_UNITS + "/_units.json")) return;
+        // the unit files, and the changes to existing units (changes/)
+        for (String folder : new String[]{CUSTOM_UNITS, CUSTOM_UNITS + "/changes"}) {
+            File[] here = new File(data, folder).listFiles();
+            if (here != null) for (File f : here) {
+                if (f.isFile() && f.getName().endsWith(".json") && !sent.contains(folder + "/" + f.getName())) f.delete();
+            }
+        }
+    }
 
     /**
      * The files this app copied over Wi-Fi, with their sizes (in its own storage, which is fast to read), so a

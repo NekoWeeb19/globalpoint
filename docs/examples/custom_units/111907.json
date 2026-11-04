@@ -1,0 +1,822 @@
+{
+ "_about": "Example custom unit (docs/CUSTOM_UNITS.md): the research test unit, a clone of Haruhi (111069). Not active here; copy to assets/custom_units/ to use it. Its art update: scripts/research/clone_cn_unit.cjs art_files.json.",
+ "id": "111907",
+ "dev": "gp_test_haruhi",
+ "name": "Haruhi (GP Test)",
+ "character": {
+  "name": "",
+  "rarity": 5,
+  "element": 0,
+  "skill_count": 6,
+  "cn": true
+ },
+ "manaNodes": {
+  "1": {
+   "223814201": {
+    "items": {
+     "1": 3
+    },
+    "manaCost": 60,
+    "field1": "0",
+    "field5": "0",
+    "field6": "1"
+   },
+   "223814202": {
+    "items": {
+     "1": 5
+    },
+    "manaCost": 100,
+    "field1": "0",
+    "field5": "0",
+    "field6": "1"
+   },
+   "223814203": {
+    "items": {
+     "1": 5
+    },
+    "manaCost": 100,
+    "field1": "0",
+    "field5": "0",
+    "field6": "1"
+   },
+   "223814204": {
+    "items": {
+     "1": 8
+    },
+    "manaCost": 160,
+    "field1": "0",
+    "field5": "0",
+    "field6": "1"
+   },
+   "223814205": {
+    "items": {
+     "1": 12
+    },
+    "manaCost": 240,
+    "field1": "0",
+    "field5": "0",
+    "field6": "1"
+   },
+   "223814206": {
+    "items": {
+     "1": 5,
+     "2": 3
+    },
+    "manaCost": 340,
+    "field1": "0",
+    "field5": "0",
+    "field6": "1"
+   },
+   "223814207": {
+    "items": {
+     "1": 5,
+     "2": 3
+    },
+    "manaCost": 340,
+    "field1": "0",
+    "field5": "0",
+    "field6": "2"
+   },
+   "223814208": {
+    "items": {
+     "1": 8,
+     "2": 3
+    },
+    "manaCost": 400,
+    "field1": "0",
+    "field5": "0",
+    "field6": "2"
+   },
+   "223814209": {
+    "items": {
+     "1": 8,
+     "2": 3
+    },
+    "manaCost": 400,
+    "field1": "0",
+    "field5": "0",
+    "field6": "2"
+   },
+   "223814210": {
+    "items": {
+     "1": 12,
+     "2": 5
+    },
+    "manaCost": 640,
+    "field1": "0",
+    "field5": "0",
+    "field6": "2"
+   },
+   "223814211": {
+    "items": {
+     "1": 18,
+     "2": 12
+    },
+    "manaCost": 1320,
+    "field1": "0",
+    "field5": "0",
+    "field6": "2"
+   },
+   "223814212": {
+    "items": {
+     "1": 12,
+     "2": 8,
+     "3": 3
+    },
+    "manaCost": 1480,
+    "field1": "0",
+    "field5": "0",
+    "field6": "2"
+   },
+   "223814213": {
+    "items": {
+     "1": 18,
+     "2": 10,
+     "3": 8,
+     "4": 1
+    },
+    "manaCost": 3160,
+    "field1": "0",
+    "field5": "0",
+    "field6": "3"
+   },
+   "223814214": {
+    "items": {
+     "1": 60,
+     "2": 24,
+     "3": 14,
+     "4": 3,
+     "99": 1
+    },
+    "manaCost": 7120,
+    "field1": "0",
+    "field5": "0",
+    "field6": "3"
+   },
+   "223814215": {
+    "items": {
+     "1": 60,
+     "2": 24,
+     "3": 14,
+     "4": 3,
+     "99": 1
+    },
+    "manaCost": 7120,
+    "field1": "0",
+    "field5": "0",
+    "field6": "3"
+   },
+   "223814216": {
+    "items": {
+     "2": 36,
+     "3": 22,
+     "4": 5,
+     "99": 3
+    },
+    "manaCost": 13280,
+    "field1": "0",
+    "field5": "0",
+    "field6": "3"
+   },
+   "223814217": {
+    "items": {
+     "2": 60,
+     "3": 30,
+     "4": 8,
+     "99": 8
+    },
+    "manaCost": 18000,
+    "field1": "0",
+    "field5": "0",
+    "field6": "3"
+   },
+   "223814218": {
+    "items": {
+     "2": 60,
+     "3": 30,
+     "4": 8,
+     "99": 8
+    },
+    "manaCost": 18000,
+    "field1": "0",
+    "field5": "0",
+    "field6": "3"
+   },
+   "223814219": {
+    "items": {
+     "1": 10,
+     "2": 6,
+     "3": 3
+    },
+    "manaCost": 1280,
+    "field1": "0",
+    "field5": "2",
+    "field6": ""
+   },
+   "223814220": {
+    "items": {
+     "1": 16,
+     "2": 10,
+     "3": 5
+    },
+    "manaCost": 2120,
+    "field1": "0",
+    "field5": "1",
+    "field6": ""
+   },
+   "223814221": {
+    "items": {
+     "1": 35,
+     "2": 16,
+     "3": 12
+    },
+    "manaCost": 4380,
+    "field1": "0",
+    "field5": "1",
+    "field6": ""
+   },
+   "223814222": {
+    "items": {
+     "1": 120,
+     "2": 50,
+     "3": 30,
+     "4": 10,
+     "99": 5
+    },
+    "manaCost": 16800,
+    "field1": "0",
+    "field5": "1",
+    "field6": ""
+   },
+   "223814223": {
+    "items": {
+     "2": 50,
+     "3": 28,
+     "4": 8,
+     "99": 5
+    },
+    "manaCost": 16400,
+    "field1": "0",
+    "field5": "1",
+    "field6": ""
+   }
+  },
+  "2": {
+   "223814401": {
+    "items": {
+     "3": 10,
+     "4": 8,
+     "50": 10,
+     "99": 3
+    },
+    "manaCost": 4500,
+    "field1": "0",
+    "field5": "0",
+    "field6": "4"
+   },
+   "223814402": {
+    "items": {
+     "3": 12,
+     "4": 10,
+     "50": 12,
+     "99": 3
+    },
+    "manaCost": 5050,
+    "field1": "0",
+    "field5": "0",
+    "field6": "4"
+   },
+   "223814403": {
+    "items": {
+     "3": 18,
+     "4": 12,
+     "50": 12,
+     "51": 2,
+     "99": 5
+    },
+    "manaCost": 5600,
+    "field1": "0",
+    "field5": "0",
+    "field6": "4"
+   },
+   "223814404": {
+    "items": {
+     "4": 14,
+     "50": 14,
+     "51": 4,
+     "52": 1,
+     "99": 5
+    },
+    "manaCost": 6240,
+    "field1": "0",
+    "field5": "0",
+    "field6": "4"
+   },
+   "223814405": {
+    "items": {
+     "4": 16,
+     "50": 16,
+     "51": 6,
+     "52": 2,
+     "99": 8
+    },
+    "manaCost": 8360,
+    "field1": "0",
+    "field5": "0",
+    "field6": "4"
+   },
+   "223814406": {
+    "items": {
+     "4": 20,
+     "50": 20,
+     "51": 10,
+     "52": 4,
+     "99": 8
+    },
+    "manaCost": 10200,
+    "field1": "0",
+    "field5": "0",
+    "field6": "4"
+   },
+   "223814407": {
+    "items": {
+     "3": 16,
+     "4": 8,
+     "50": 12,
+     "51": 4,
+     "99": 3
+    },
+    "manaCost": 5100,
+    "field1": "0",
+    "field5": "0",
+    "field6": "5"
+   },
+   "223814408": {
+    "items": {
+     "3": 20,
+     "4": 10,
+     "50": 12,
+     "51": 5,
+     "99": 5
+    },
+    "manaCost": 5900,
+    "field1": "0",
+    "field5": "0",
+    "field6": "5"
+   },
+   "223814409": {
+    "items": {
+     "4": 12,
+     "50": 14,
+     "51": 6,
+     "52": 2,
+     "99": 5
+    },
+    "manaCost": 7420,
+    "field1": "0",
+    "field5": "0",
+    "field6": "5"
+   },
+   "223814410": {
+    "items": {
+     "4": 14,
+     "50": 16,
+     "51": 8,
+     "52": 4,
+     "99": 8
+    },
+    "manaCost": 10000,
+    "field1": "0",
+    "field5": "0",
+    "field6": "5"
+   },
+   "223814411": {
+    "items": {
+     "4": 16,
+     "50": 20,
+     "51": 10,
+     "52": 6,
+     "99": 8
+    },
+    "manaCost": 12700,
+    "field1": "0",
+    "field5": "0",
+    "field6": "5"
+   },
+   "223814412": {
+    "items": {
+     "4": 18,
+     "50": 24,
+     "51": 15,
+     "52": 10,
+     "99": 10
+    },
+    "manaCost": 14100,
+    "field1": "0",
+    "field5": "0",
+    "field6": "5"
+   },
+   "223814413": {
+    "items": {
+     "4": 10,
+     "50": 14,
+     "51": 6,
+     "52": 2,
+     "99": 5
+    },
+    "manaCost": 7300,
+    "field1": "0",
+    "field5": "0",
+    "field6": "6"
+   },
+   "223814414": {
+    "items": {
+     "4": 12,
+     "50": 18,
+     "51": 8,
+     "52": 4,
+     "99": 5
+    },
+    "manaCost": 9980,
+    "field1": "0",
+    "field5": "0",
+    "field6": "6"
+   },
+   "223814415": {
+    "items": {
+     "4": 14,
+     "50": 18,
+     "51": 10,
+     "52": 6,
+     "99": 8
+    },
+    "manaCost": 12250,
+    "field1": "0",
+    "field5": "0",
+    "field6": "6"
+   },
+   "223814416": {
+    "items": {
+     "4": 16,
+     "50": 20,
+     "51": 12,
+     "52": 8,
+     "99": 8
+    },
+    "manaCost": 14600,
+    "field1": "0",
+    "field5": "0",
+    "field6": "6"
+   },
+   "223814417": {
+    "items": {
+     "4": 18,
+     "50": 24,
+     "51": 16,
+     "52": 10,
+     "99": 10
+    },
+    "manaCost": 18300,
+    "field1": "0",
+    "field5": "0",
+    "field6": "6"
+   },
+   "223814418": {
+    "items": {
+     "4": 22,
+     "50": 28,
+     "51": 20,
+     "52": 15,
+     "99": 10
+    },
+    "manaCost": 22400,
+    "field1": "0",
+    "field5": "0",
+    "field6": "6"
+   }
+  }
+ },
+ "banners": [],
+ "art": {
+  "patch": "",
+  "files": [
+   "production/upload/83/79511292b78c26fab9a5ae967e19b09f7e0cdf",
+   "production/upload/8e/fa754a568ed6a94e2bc70be06078a98201c3ff",
+   "production/upload/df/d263afe4808a0bf50e9517a15d4578f830a3da",
+   "production/upload/6f/1d52c8b3826700ed614dd029f044bc2d0ed753",
+   "production/upload/22/f33c163eeeec24efd34bcb94391791f6b80f59",
+   "production/upload/d2/fce986030b9344a6026de5c5cd90cf1e997a9b",
+   "production/upload/d4/ab32d5f3a2a6b25762e69ff4d77f099625a413",
+   "production/upload/40/d59db767fa1c319338999b5a73ef1aefd70ebc",
+   "production/upload/f4/93959cccc6adca072c301f0ba8b4c34049a18e",
+   "production/upload/de/7a1aa3c267f1cda4ceacf5c540dbe1e375fb95",
+   "production/upload/e9/8f6f3a6f7fa98439e9cf552e0dc09b4cb89bcf",
+   "production/upload/bc/d6f1e09511e946ae41243bf81acbb6d3eba46f",
+   "production/medium_upload/f5/bbb520e284d71daf80bac63fb7c9122bca1e9a",
+   "production/medium_upload/cc/b2c26858ad355aea382fc404641122012fa7ea",
+   "production/medium_upload/c6/f66915c6a820b43d321d94fb8fda5ef15d338a",
+   "production/medium_upload/99/0184c76e88c620684dd570b9c8f2da01c407f8",
+   "production/medium_upload/2f/c03706cd47a155deaea8fa9e62affd43e5a3bf",
+   "production/medium_upload/c3/bc2e6a87327aeb0c845a29d8ee1ea1b36988fd",
+   "production/medium_upload/bc/06dbe73d94ae5ead2f0d21a9eca7f70613e992",
+   "production/medium_upload/70/887f4f4c0926c3eaa209e4d9c66ed8cdaf18cf",
+   "production/medium_upload/ab/db28771eb282be1095f71b22793bc8f755bc70",
+   "production/upload/09/5d8c5978f63b1ea345f0e0f603f7a1068c2d57",
+   "production/medium_upload/ad/0018a15ad412e0e79a283c99dccf89cb79739a",
+   "production/medium_upload/a7/1e64093d56d5523d5c0c8866c4d83d2fbd8851",
+   "production/medium_upload/6f/fa04bd5ecc13e2d3cbe15c1d43765e1abc360b",
+   "production/medium_upload/16/5b4d5c7517c570f877b40ebffd1e75ccf586d5",
+   "production/medium_upload/ef/bbe501d37f3122d655efc1226fe1b9dc9a0a31",
+   "production/medium_upload/04/406a609e37e48bb0438ce5b88f474f4ba35f2b",
+   "production/medium_upload/f2/5eb6d367f5d46ac6bcad159325b800d22f49a8",
+   "production/medium_upload/99/b24d92dc599f41afea903ce39b95e83abdf112",
+   "production/medium_upload/29/fc0ac07671ad64923dcc9f752f332fa8a61837",
+   "production/medium_upload/74/3eda3eb1d2d43cd1b1a92ec6b478be77d00bd4",
+   "production/medium_upload/3c/0fd19f8999f384537e01c29bdfd67dd5e35fe2",
+   "production/medium_upload/2c/aa1aa70288121691f28c70e335dd0df8652ddc",
+   "production/medium_upload/f6/3ed5d6845026d8e8b5a26d9b521a22fe4c5043",
+   "production/medium_upload/cb/9af694c99454e6cb6e1fb3516d08f8ae4c6aa1",
+   "production/medium_upload/0f/75671b7f315ae629e6e57ffd58b40aa21843b1",
+   "production/medium_upload/53/6ff34910a957460b151bad570d820ab0f1eca6",
+   "production/medium_upload/03/7e94b7affca09c3ae294bb663dd166433c65be",
+   "production/medium_upload/37/15328aded7994d74a3c77b6560bf7a33809a35",
+   "production/medium_upload/03/b0e07185201804ccca0a6ca0b07bd64efa5e93",
+   "production/medium_upload/9a/61e2b20968c4904342aaf2c62db8059375d02c",
+   "production/medium_upload/09/d3b6e91baf1e9da9bb82368d87e1d899c13550",
+   "production/medium_upload/5c/3e340f680370f11675df2a186c93704c05f310",
+   "production/medium_upload/0b/edb6d9b984185662caaf0451387bbeead662af",
+   "production/medium_upload/2d/c671a94ac0b01acc22e6751e3436ba26ed379c",
+   "production/medium_upload/9f/5db71f71de29ef4855069b519eb2219cf9504e",
+   "production/medium_upload/9a/86e4e9eca6ea3fd0aa8d924ef8fe4d416e8933",
+   "production/medium_upload/60/9079e7a8497ec09cc840974b1c91102d5035da",
+   "production/medium_upload/9c/20c9fbe664ad3a8c0f60ec87a056447477faa4",
+   "production/medium_upload/d1/e6e2df6876800063e116d52941f67ca2c788b6",
+   "production/medium_upload/28/9f4f4eb5704b3d50b48c84605032d1c1ae3f7e",
+   "production/upload/ae/74c00a79505ed80de7574571c50db2da00eda0",
+   "production/upload/7a/4c65b699ddaf754deee415a1fa6574c35982bd",
+   "production/upload/ac/0be06c09dea7e2675f701a0cf50faa88097b70",
+   "production/upload/23/6154325d68c58889e5cd8dc8c4527704a82087",
+   "production/upload/82/adfb7d13f66524cb28af6495acaf4117289005",
+   "production/upload/b2/aedea09ba7b2ea1c742b96f3ec1e4f1fd3fa86",
+   "production/upload/2a/7b5a9f5a3f75dc47f12b70d6f738276b401363",
+   "production/upload/2c/4f759e4d1d58d77a1189f007b771053f02ec37",
+   "production/upload/c1/c735e04419bf677245099079acca7adb37c240",
+   "production/upload/16/5abaf8493a05d1950b835f632bf8bab57a7445",
+   "production/upload/72/0a09e37bab3d2f406361d875ed59c49a103f30",
+   "production/upload/e4/94de8190c0baeb2ff579555f7cf89dd2b2f5db",
+   "production/upload/e6/ef1df709e4beb95e41d317039cf82a20784077",
+   "production/upload/41/4be6dc3663ae946f5cf18414e7aed555095a1d",
+   "production/upload/28/ee054104063f03398c0c16fc3e00acfd3a88d6",
+   "production/upload/11/518d5269891d1db3bce37c099ea7a24eeef5b8",
+   "production/upload/13/66526588c69b7ef591ea6fd197724afb244988",
+   "production/upload/df/a1a80739c7e783d339acc4cd6c3b31f79b5286",
+   "production/upload/79/46dde7feb53b27633a5a9ae3e50f2093a4a25f",
+   "production/upload/45/5cb316ad0b23ea5b376170f8d068f03106cb9e",
+   "production/upload/04/466fcc3e2f5bcac312a9f924999d4d85b17878",
+   "production/upload/07/bfb0b01526412ef9abb8d7005389489407f952",
+   "production/upload/95/616ae6d64e40e046aa5e8741cd06f84a8434b2",
+   "production/upload/7f/3e217e24b07e580729e766e9ab1e3586c76ebe",
+   "production/upload/9c/046b65822cb18988032328771f9e6d57bf3f24",
+   "production/upload/eb/59bec6b1f366f6a8fcc8a7f9038c11b17e7cd6",
+   "production/upload/f7/3bfb97489e1223293cb5819e59ce561bd4c76e",
+   "production/upload/26/f22392444f97494c31a9cec29fb5a22dea1207",
+   "production/upload/e6/7b1f94d4fb648f8754d6e8e502ac463ed26f15",
+   "production/upload/c5/e5b5c3b90f5af4e12cd94d71e152857bf9a6af",
+   "production/upload/a5/e3210c4fc4458dbdf2ec36175113ef63a802b1",
+   "production/upload/60/44f74605928bf9aec096a5776c71dd8ff0bcfa",
+   "production/upload/f6/ebf4659b56e072d6c734d2e5bedfdb883db494",
+   "production/upload/1f/0adaa3f5b9963d27072e53776235a190371c92",
+   "production/upload/dc/858ebd9e75b2364653ad7868979743eb7b740b",
+   "production/upload/6a/79ddf5a2c90ecdb3785bd2a202a84acd290837",
+   "production/upload/57/aaa8f077f233bfecb57558fca84f5d206ca569",
+   "production/upload/d1/b7345c44e3d4c3ba5bd6be3045c80be3eba54b",
+   "production/upload/c3/8e608fbd12dff14573906e643e31dca67b3b33",
+   "production/upload/f7/a9df7a39b73bb42866ad66103f75e0168cd3c4",
+   "production/upload/08/80fcedc0f1d95be64fe4408d0d661af4425967",
+   "production/upload/e3/80f7284e34dfe67195dd54b1b474cee9073282",
+   "production/upload/b9/1947151f3a4c68152092dc9f3c8c44f89be32a",
+   "production/upload/b3/cebabd024e4fac75072e52701330510ce67b3d",
+   "production/upload/c2/cfa4fe1a919337d9cf734400500a9f30425f6e",
+   "production/upload/78/fe37d191e83051ce6d24307a4809ea8990a37f",
+   "production/upload/91/56e1f0c84f6ed8a417f52ccb450b8527af0e5d",
+   "production/upload/af/fde9aee645ca0ab7115a2350f65b1397c60850",
+   "production/upload/0d/86f7df0e6cefdf0055585a76c5a240b7a7c0fe",
+   "production/upload/3a/39d3876cc891dac6c715012342ef0c1bea18d6",
+   "production/upload/36/346be9614f33490e795a0495de9f1710d0648f",
+   "production/upload/54/cea51c053cdb0409b1c138004f5b9c48923de9",
+   "production/upload/97/e96894d42f95a17bf20fa4cc0b184701411159",
+   "production/upload/1e/39f21efb1b2fa3d842d889fbbb376af8e26502",
+   "production/upload/fb/f33119090556f429a614a20c3efd5430cf2ddd",
+   "production/upload/11/9e9804a058ef5401e1ad373009bf9192eb41a5",
+   "production/upload/79/0ba9cd3f6812bc96f7ddb0688aa32a436c3f4f",
+   "production/upload/e7/8114c4d7a7268b4eee8017947251305f6428f8",
+   "production/upload/c7/c9e1592e66c637d47ff254c95e5fd017fd61ed",
+   "production/upload/e7/9e03962c8d712b206bd20d63fc158e50ad96b5",
+   "production/upload/66/afbcc5b2bac01d9d4f1c964e88ba454d77a788",
+   "production/upload/d1/790a4a1953eb554f292d8acb6ec6fbc9e347cb",
+   "production/upload/5a/22bfbd0bfdda8b05ea7772cc4c46a14730863d",
+   "production/upload/c0/5990d7897352f0f61118caaad27d7adcaff088",
+   "production/upload/69/b3d09432b5baa4c0105d8d1ef99732a88b82a2",
+   "production/upload/9c/e89ea5735d818917b42aca39f77643c718afc8",
+   "production/upload/47/389ea499667a3b53b8fc8956321f84141514d4",
+   "production/upload/d7/483789ad9697f3b64ad832c8cb63f0a059e43d",
+   "production/upload/34/0c477c6965165fb727e9afd0f9c3a03c3dcaba",
+   "production/upload/9a/4a21d54761a835538c40be077fa43eb5d5bc9c",
+   "production/upload/84/d122b7b6fb64b5972a503825f24df7478bbcfa",
+   "production/upload/21/cd77a3e3f878e3ccd7a1f098badffa6e78bc78",
+   "production/upload/99/e3f44cbb81c8538ff232f6ede4c16cd2ed0c3e"
+  ]
+ },
+ "rows": {
+  "upload/2d/5cb9b28d18f984a51b345a4d7aab03d77bddfc": {
+   "111907": "gp_test_haruhi,1,5,0,Human,,0,Female,gp_test_haruhi,(None),,,,,,,,111907,Clone of a Hero,1119071,1119072,1119073,1119074,1119075,1119076,2,Attacker,111907,(None),1,true,false,0,1,,,\"6,6,6,6,6,6\""
+  },
+  "upload/8b/035728b2151de044fb245988ec5f33ebb544ab": {
+   "111907": "Haruhi (GP Test),LIANGGONGCHUNRI,\"A hero who crossed over from another world and the leader of the SOS Brigade. She has the power to rewrite the world however she likes and has turned this world into a lively place too, though she's completely unaware of it.\",Unabashed Hero,All-Out Attack!,\"Swings the Hero's Sword (SOS Brigade Leader exclusive) with all her might, inflicting Fire damage on nearby foes / Increases skill damage for all units in your party\",All-Out Attack!+,\"Swings the Hero's Sword (SOS Brigade Leader exclusive) with all her might, inflicting Fire damage on nearby foes / Increases skill damage for all units in your party\",(None),(None),Power to Liven Up the World,Aya Hirano"
+  },
+  "upload/5c/6a4f0e2ceb1dbcf60f9b306b0f7bfd0eca55c9": {
+   "111907": {
+    "1": "47,13",
+    "10": "465,122",
+    "80": "2790,732",
+    "100": "3069,806"
+   }
+  },
+  "upload/b4/a28679b8eeefdbdcbe6071fd4f2ff85e5b3415": {
+   "111907": "0,0,,This place is SO much fun! There's something new to discover every day. I'm completely satisfied!,home/kokotte_hontoni\n0,2,,\"We have to eat before we go adventuring. How does that old saying go? \"\"An army marches on its...\"\" whatever. Hurry, bring all the good food!\",home/bokennomaeni\n0,2,,\"Say, are there any bandits around here? Think about it—if they're the bad guys, we don't have to hold back. We can just go raid them, right?\",home/neenee_dokkani\n0,1,,\"Aaah, that was a blast! I wonder what fun stuff will happen tomorrow! Huh? Why are you all collapsed on the floor?\",home/a_tanoshikatta\n0,1,,\"Today we're exploring a brand-new area! Of course, everyone's coming. No objections. An adventure's only worth it if we all go!\",home/kyowaatarashiieriao\n0,1,,\"Kyon, your shield's falling apart. How are you supposed to defend with that? I'll pick out a sturdier one for you next time...\",home/kyonnotate_boroboro\n2,,,\"I'm Haruhi Suzumiya, leader of the SOS Brigade! I have no interest in ordinary humans. Are you an alien? A time traveler? An esper? Or someone from another world?\",ally/join\n1,,1,You guys are pretty capable! I like you! I'll make an exception and let you join the SOS Brigade as honorary members of our Other World Branch!,ally/evolution"
+  },
+  "upload/1e/664c1cc8d80f4f9a69aae2c49ae8c01d1c4001": {
+   "1119071": "gp_test_haruhi_1,true,attack_common,0,,0,0,,,,,,,0,,,,,,,0,,,,,,,0,,,,,,,,,,,,(None),,,,,,,0,32,0,,,10000,20000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,\ngp_test_haruhi_1,true,attack_common,0,,1,0,,,,,,,0,,,,,,,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(None),,,,,,,,,,,,40,0,,100000,100000,4,,,,,,false,0,0,,,12500,25000,,,,,,,,,,,",
+   "1119072": "gp_test_haruhi_2,true,action_skill,0,,0,0,,,,,,,0,,,,,,,0,,,,,,,0,,,,,,,,,,,,(None),,,,,,,0,34,0,,,10000,20000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,\ngp_test_haruhi_2,true,action_skill,0,,1,0,,,,,,,0,,,,,,,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(None),,,,,,,,,,,,40,0,,100000,100000,4,,,,,,false,2,0,,,12500,25000,,,,,,,,,,,",
+   "1119073": "gp_test_haruhi_3,false,action_skill,0,,0,0,,,,,,,0,,,,,,,0,,,,,,,23,0,,100000,100000,,,(None),0,,,,(None),,,,,,,0,1,0,,,60000,120000,,,,,90000000,90000000,100000,100000,(None),(None),(None),(None),(None),,0,,,,,false,,1,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,\ngp_test_haruhi_3,false,action_skill,0,,0,0,,,,,,,0,,,,,,,0,,,,,,,2,,,1000000,1000000,,,2,0,,,,(None),,,,,,,0,35,0,,,5000,10000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+   "1119074": "gp_test_haruhi_4,true,action_skill,0,,0,0,,,,,,,0,,,,,,,0,,,,,,,0,,,,,,,,,,,,(None),,,,,,,0,211,0,,,25000,50000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+   "1119075": "gp_test_haruhi_5,true,action_skill,0,,1,3,,,,,Red,,0,,,,,,,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(None),,,,,,,,,,,,40,0,,100000,100000,4,,,,,,false,2,0,,,10000,20000,,,,,,,,,,,",
+   "1119076": "gp_test_haruhi_6,true,action_skill,0,,0,3,,,,,Red,,0,,,,,,,0,,,,,,,23,0,,100000,100000,,,(None),0,,,,(None),,,,,,,0,1,0,,,25000,50000,,,,,90000000,90000000,100000,100000,(None),(None),(None),(None),(None),,0,,,,,false,,1,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"
+  },
+  "upload/ff/84353774cb95e8d7dc90c679f96a5bca7f42e5": {
+   "111907": "gp_test_haruhi,0,,0,0,,,,,,,0,,,,,,,0,,,,,,,0,,,,,,,,,,,,(None),,,,,,,0,32,5,Red,,30000,40000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,\ngp_test_haruhi,0,,1,0,,,,,,,0,,,,,,,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(None),,,,,,,,,,,,40,0,,100000,100000,4,,,,,,false,0,5,Red,,20000,25000,,,,,,,,,,,\ngp_test_haruhi,0,,0,0,,,,,,,0,,,,,,,0,,,,,,,23,0,,100000,100000,,,(None),0,,,,(None),,,,,,,0,1,5,Red,,40000,50000,,,,,90000000,90000000,100000,100000,(None),(None),(None),(None),(None),,0,,,,,false,,1,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"
+  },
+  "upload/91/79892d704f88d98191c00548bce106402ad5b5": {
+   "gp_test_haruhi": {
+    "1": "All-Out Attack!,\"Swings the Hero's Sword (SOS Brigade Leader exclusive) with all her might, inflicting Fire damage on nearby foes / Increases skill damage for all units in your party\",dynamic/skill/atk_surround,true,600,600,1,battle/action/skill/action/rare5/gp_test_haruhi$gp_test_haruhi_1,1,0,225,,0,-100,,,(None),,,,,,,",
+    "2": "All-Out Attack!+,\"Swings the Hero's Sword (SOS Brigade Leader exclusive) with all her might, inflicting Fire damage on nearby foes / Increases skill damage for all units in your party\",dynamic/skill/atk_surround,true,600,550,1,battle/action/skill/action/rare5/gp_test_haruhi$gp_test_haruhi_2,1,0,225,,0,-100,,,(None),,,,,,,"
+   }
+  },
+  "upload/aa/abdd2e178d62dba4997034aab8c236a4422154": {
+   "111907": "901,false,false,901,false,false,(None),(None),"
+  },
+  "upload/d7/50c2f94f83dd053bfc79039a709f1ec6f766cb": {
+   "111907": ",1,1,2,,1,1,2"
+  },
+  "upload/b9/132d27178d27f9d91df89fc47e106bbaf2d5b5": {
+   "111907": {
+    "0": "1000,1000,1,1016,429",
+    "1": "1000,1000,1,1152,575"
+   }
+  },
+  "upload/3e/b411841802398d5b21d422579f2eaa65d30c0e": {
+   "111907": {
+    "0": "261,272,1399,1702",
+    "1": "124,289,1557,1497"
+   }
+  },
+  "upload/57/8872ecbc78561807e6846b3980c5dea980d8ce": {
+   "111907": "common_attack_up,skill_damage_up,(None),(None),(None),(None),common_attack_up,skill_damage_up,(None),(None),(None),(None)"
+  },
+  "upload/ac/b038c35f3048ba7ca07a6a84307b2fb10c041c": {
+   "111907": {
+    "11": "sound_effect/weapon/se_throw_slow",
+    "23": "sound_effect/fire/se_fire_spread",
+    "77": "sound_effect/slash/se_slash_short"
+   }
+  },
+  "upload/1d/222e5126fc7ebe3f22c7efe87325f73742eb4f": {
+   "111907": {
+    "1": {
+     "1": "223814201,0,1,3,60,0,1",
+     "2": "223814202,0,1,5,100,0,1",
+     "3": "223814203,0,1,5,100,0,1",
+     "4": "223814204,0,1,8,160,0,1",
+     "5": "223814205,0,1,12,240,0,1",
+     "6": "223814206,0,\"1,2\",\"5,3\",340,0,1",
+     "7": "223814207,0,\"1,2\",\"5,3\",340,0,2",
+     "8": "223814208,0,\"1,2\",\"8,3\",400,0,2",
+     "9": "223814209,0,\"1,2\",\"8,3\",400,0,2",
+     "10": "223814210,0,\"1,2\",\"12,5\",640,0,2",
+     "11": "223814211,0,\"1,2\",\"18,12\",1320,0,2",
+     "12": "223814212,0,\"1,2,3\",\"12,8,3\",1480,0,2",
+     "13": "223814213,0,\"1,2,3,4\",\"18,10,8,1\",3160,0,3",
+     "14": "223814214,0,\"1,2,3,4,99\",\"60,24,14,3,1\",7120,0,3",
+     "15": "223814215,0,\"1,2,3,4,99\",\"60,24,14,3,1\",7120,0,3",
+     "16": "223814216,0,\"2,3,4,99\",\"36,22,5,3\",13280,0,3",
+     "17": "223814217,0,\"2,3,4,99\",\"60,30,8,8\",18000,0,3",
+     "18": "223814218,0,\"2,3,4,99\",\"60,30,8,8\",18000,0,3",
+     "19": "223814219,0,\"1,2,3\",\"10,6,3\",1280,2,",
+     "20": "223814220,0,\"1,2,3\",\"16,10,5\",2120,1,",
+     "21": "223814221,0,\"1,2,3\",\"35,16,12\",4380,1,",
+     "22": "223814222,0,\"1,2,3,4,99\",\"120,50,30,10,5\",16800,1,",
+     "23": "223814223,0,\"2,3,4,99\",\"50,28,8,5\",16400,1,"
+    },
+    "2": {
+     "1": "223814401,0,\"3,4,99,50\",\"10,8,3,10\",4500,0,4",
+     "2": "223814402,0,\"3,4,99,50\",\"12,10,3,12\",5050,0,4",
+     "3": "223814403,0,\"3,4,99,50,51\",\"18,12,5,12,2\",5600,0,4",
+     "4": "223814404,0,\"4,99,50,51,52\",\"14,5,14,4,1\",6240,0,4",
+     "5": "223814405,0,\"4,99,50,51,52\",\"16,8,16,6,2\",8360,0,4",
+     "6": "223814406,0,\"4,99,50,51,52\",\"20,8,20,10,4\",10200,0,4",
+     "7": "223814407,0,\"3,4,99,50,51\",\"16,8,3,12,4\",5100,0,5",
+     "8": "223814408,0,\"3,4,99,50,51\",\"20,10,5,12,5\",5900,0,5",
+     "9": "223814409,0,\"4,99,50,51,52\",\"12,5,14,6,2\",7420,0,5",
+     "10": "223814410,0,\"4,99,50,51,52\",\"14,8,16,8,4\",10000,0,5",
+     "11": "223814411,0,\"4,99,50,51,52\",\"16,8,20,10,6\",12700,0,5",
+     "12": "223814412,0,\"4,99,50,51,52\",\"18,10,24,15,10\",14100,0,5",
+     "13": "223814413,0,\"4,99,50,51,52\",\"10,5,14,6,2\",7300,0,6",
+     "14": "223814414,0,\"4,99,50,51,52\",\"12,5,18,8,4\",9980,0,6",
+     "15": "223814415,0,\"4,99,50,51,52\",\"14,8,18,10,6\",12250,0,6",
+     "16": "223814416,0,\"4,99,50,51,52\",\"16,8,20,12,8\",14600,0,6",
+     "17": "223814417,0,\"4,99,50,51,52\",\"18,10,24,16,10\",18300,0,6",
+     "18": "223814418,0,\"4,99,50,51,52\",\"22,10,28,20,15\",22400,0,6"
+    }
+   }
+  },
+  "upload/27/7b65484214436114201ae654fefa60fdc822ea": {
+   "111907": {
+    "1": {
+     "1": "223814201,0,-10,wwwwwwwwww,2,(None)",
+     "2": "223814202,0,-15,wwwww,0,223814201",
+     "3": "223814203,-5,-15,qqqqq,0,223814202",
+     "4": "223814204,-5,-20,wwwww,0,223814203",
+     "5": "223814205,0,-20,sssss,0,223814204",
+     "6": "223814206,5,-10,sssss,0,223814201",
+     "7": "223814207,-5,-10,qqqqq,2,223814201",
+     "8": "223814208,-15,-10,qqqqqqqqqq,0,223814207",
+     "9": "223814209,-10,-15,qqqqqwwwww,0,223814207",
+     "10": "223814210,-15,-15,qqqqq,0,223814209",
+     "11": "223814211,-10,-20,wwwww,0,223814209",
+     "12": "223814212,-15,-20,qqqqq,0,223814211",
+     "13": "223814213,0,-25,wwwww,2,223814205",
+     "14": "223814214,5,-25,sssss,0,223814213",
+     "15": "223814215,-5,-25,qqqqq,0,223814213",
+     "16": "223814216,5,-30,wwwww,0,223814214",
+     "17": "223814217,-5,-30,wwwww,0,223814215",
+     "18": "223814218,0,-35,wwwwwwwwww,0,223814213",
+     "19": "223814219,10,-10,sssss,2,223814206",
+     "20": "223814220,15,-10,sssss,0,223814219",
+     "21": "223814221,15,-20,wwwwwwwwww,0,223814220",
+     "22": "223814222,10,-20,qqqqq,0,223814221",
+     "23": "223814223,10,-15,wwwwwqqqqq,0,223814220"
+    },
+    "2": {
+     "1": "223814401,-5,-5,wwwwwqqqqq,2,(None)",
+     "2": "223814402,-5,0,aaaaa,0,223814401",
+     "3": "223814403,-10,0,qqqqq,0,223814402",
+     "4": "223814404,-10,-5,wwwww,0,223814403",
+     "5": "223814405,-10,-10,wwwww,0,223814404",
+     "6": "223814406,-10,-15,wwwww,0,223814405",
+     "7": "223814407,0,-10,wwwwwsssss,2,223814401",
+     "8": "223814408,0,-15,wwwww,0,223814407",
+     "9": "223814409,-5,-15,qqqqq,0,223814408",
+     "10": "223814410,-5,-20,wwwww,0,223814409",
+     "11": "223814411,0,-20,sssss,0,223814410",
+     "12": "223814412,5,-20,sssss,0,223814411",
+     "13": "223814413,5,-15,ssssswwwww,2,223814407",
+     "14": "223814414,10,-15,sssss,0,223814413",
+     "15": "223814415,10,-10,aaaaa,0,223814414",
+     "16": "223814416,10,-5,aaaaa,0,223814415",
+     "17": "223814417,10,0,aaaaa,0,223814416",
+     "18": "223814418,5,0,qqqqq,0,223814417"
+    }
+   }
+  },
+  "upload/61/408ec4cc67e1bcf9b4d74722f57ee2f95bd995": {
+   "1111907": {
+    "1": "111190701,character_gp_test_haruhi,false,2022-11-10 12:20:20,1,111907,gp_test_haruhi,,,,,,,,,,,,,,\"The commander of the SOS Brigade, summoned from another world. She has the power to rewrite the world at will and has made this world wildly lively too, but she herself is completely unaware of it.\",111907,(None),(None),,,,(None),(None),,,,(None),(None),(None),(None),,(None),,33e7c0ab364c53dccf376b706d1e761b934c8290"
+   }
+  },
+  "upload/92/dcd1cc81f29794f0606ffe39f68d4e8740c8fa": {
+   "gp_test_haruhi": "Haruhi (GP Test),0xa32535,character/gp_test_haruhi/voice/,\"normal,anger,guess,normal_b,shame,smile,smile_b,surprise,sweat,think,wink,evolve\",\"character/gp_test_haruhi/ui/story/base_0,character/gp_test_haruhi/ui/story/base_0,character/gp_test_haruhi/ui/story/base_0,character/gp_test_haruhi/ui/story/base_0,character/gp_test_haruhi/ui/story/base_0,character/gp_test_haruhi/ui/story/base_0,character/gp_test_haruhi/ui/story/base_0,character/gp_test_haruhi/ui/story/base_0,character/gp_test_haruhi/ui/story/base_0,character/gp_test_haruhi/ui/story/base_0,character/gp_test_haruhi/ui/story/base_0,character/gp_test_haruhi/ui/story/base_1\",\"character/gp_test_haruhi/ui/story/normal,character/gp_test_haruhi/ui/story/anger,character/gp_test_haruhi/ui/story/guess,character/gp_test_haruhi/ui/story/normal_b,character/gp_test_haruhi/ui/story/shame,character/gp_test_haruhi/ui/story/smile,character/gp_test_haruhi/ui/story/smile_b,character/gp_test_haruhi/ui/story/surprise,character/gp_test_haruhi/ui/story/sweat,character/gp_test_haruhi/ui/story/think,character/gp_test_haruhi/ui/story/wink,(None)\""
+  },
+  "upload/bc/0bc800f482670f3ec8a7f2fee9b9deeeca3a04": {
+   "111907": "2024-03-21 12:00:00,2199-12-31 23:59:59"
+  },
+  "upload/fb/ab4344a7456dca88f3ce06f01208922f37e395": {
+   "character/gp_test_haruhi/ui/full_shot_1440_1920_0": "261,272,2000,2000",
+   "character/gp_test_haruhi/ui/skill_cutin_0": "279,117,1024,512",
+   "character/gp_test_haruhi/ui/full_shot_1440_1920_1": "124,289,2000,2000",
+   "character/gp_test_haruhi/ui/skill_cutin_1": "4,62,1024,512",
+   "character/gp_test_haruhi/ui/story/anger": "150,224,570,690",
+   "character/gp_test_haruhi/ui/story/base_0": "0,129,570,690",
+   "character/gp_test_haruhi/ui/story/base_1": "0,75,570,690",
+   "character/gp_test_haruhi/ui/story/guess": "150,233,570,690",
+   "character/gp_test_haruhi/ui/story/normal": "150,238,570,690",
+   "character/gp_test_haruhi/ui/story/normal_b": "150,238,570,690",
+   "character/gp_test_haruhi/ui/story/shame": "217,299,570,690",
+   "character/gp_test_haruhi/ui/story/smile": "150,228,570,690",
+   "character/gp_test_haruhi/ui/story/smile_b": "150,237,570,690",
+   "character/gp_test_haruhi/ui/story/surprise": "150,233,570,690",
+   "character/gp_test_haruhi/ui/story/sweat": "325,319,570,690",
+   "character/gp_test_haruhi/ui/story/think": "150,248,570,690",
+   "character/gp_test_haruhi/ui/story/wink": "150,229,570,690"
+  }
+ }
+}

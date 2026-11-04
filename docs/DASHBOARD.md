@@ -83,6 +83,9 @@ below.
 The player page also has:
 - **Unlock** / **Reset** a mission's reward (restart the game, then claim it on the missions screen);
 - **Give login bonus again**;
+- **Remove a unit**: takes a unit out of this save (with its Mana Boards, party places and records), e.g.
+  before a custom unit is deleted ([CUSTOM_UNITS.md](CUSTOM_UNITS.md#removing-a-unit-safely)). Close the game
+  first; it can't be undone, so download the save first if you want a copy;
 - **Link my reinstalled game to this player**: press it before you open a reinstalled game, and its
   next new guest login (within 30 minutes) loads this player instead of a new one.
 

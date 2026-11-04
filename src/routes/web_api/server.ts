@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { removeCharacterFromSaveSync } from "../../nya/removeCharacter"
 import { getServerDate, getServerTimeMode, isServerTimeTicking, setServerTime } from "../../utils";
 import { SendMail, MAIL_TYPE } from "../../nya/mail";
 import { getBannerRotationStatus, goToBannerRotation, resumeBannerRotation, skipBannerRotation } from "../../lib/bannerRotation";
@@ -359,6 +360,27 @@ const routes = async (fastify: FastifyInstance) => {
                 : `Mission ${missionId} (${mission.title}) was already received. Reset it first to unlock it again.`
         });
     });
+
+    // takes a unit out of a player's save (src/nya/removeCharacter.ts), e.g. before deleting a custom unit
+    fastify.get("/removeCharacter", async (request: FastifyRequest, reply: FastifyReply) => {
+        const q = request.query as { playerId?: string, characterId?: string }
+        const playerId = Number(q.playerId), characterId = Number(q.characterId)
+        if (!Number.isInteger(playerId) || !Number.isInteger(characterId)) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Invalid query parameters."
+        })
+        const result = removeCharacterFromSaveSync(playerId, characterId)
+        if (result === null) return reply.status(404).send({
+            "error": "Not Found",
+            "message": `Player ${playerId} doesn't have unit ${characterId}.`
+        })
+        return reply.send({
+            "error": "Success",
+            "message": `Removed unit ${characterId} from player ${playerId}`
+                + (result.newLeader !== null ? `; the home unit is now ${result.newLeader}` : "")
+                + `; ${result.partySlots} party slot(s) emptied, ${result.otherRecords} other record(s) and ${result.mails} unclaimed mail(s) removed. Restart the game.`
+        })
+    })
 
     fastify.get("/give", async (request: FastifyRequest, reply: FastifyReply) => {
         const q = request.query as { playerId: string, type: string, typeId: string, number?: string };

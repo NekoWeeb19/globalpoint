@@ -1,0 +1,738 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/public/tailwind.css">
+    <title>Starpoint · Unit editor</title>
+</head>
+
+<body
+    class="bg-background text-on-surface relative mt-16 m-auto max-w-screen-2xl min-h-screen box-border flex flex-col items-start px-3 pb-3">
+    <header class="flex gap-3 items-center md:justify-start justify-center mb-3 w-full">
+        <img src="/public/img/logo.png" class="w-9 h-9">
+        <h1 class="text-4xl mt-4 font-black mb-4 text-on-background">Starpoint</h1>
+    </header>
+    <div class="md:grid md:grid-cols-sidebar flex flex-col gap-5 w-full h-fit">
+        <nav class="px-3 py-5 gap-3 flex flex-col bg-surface-container-low rounded-3xl h-fit w-full">
+            <a href="/"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M520-600v-240h320v240H520ZM120-440v-400h320v400H120Zm400 320v-400h320v400H520Zm-400 0v-240h320v240H120Zm80-400h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z" />
+                </svg>
+                Dashboard
+            </a>
+            <a href="/events" data-nav="events"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z" />
+                </svg>
+                Events
+            </a>
+            <a href="/summons" data-nav="summons"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M480-80 371-371 80-480l291-109 109-291 109 291 291 109-291 109L480-80Z" />
+                </svg>
+                Summons
+            </a>
+            <a href="/campaigns" data-nav="campaigns"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-280v80h640v-80H160Zm0-440h88q-5-9-6.5-19t-1.5-21q0-50 35-85t85-35q30 0 55.5 15.5T460-826l20 26 20-26q18-24 44-39t56-15q50 0 85 35t35 85q0 11-1.5 21t-6.5 19h88q33 0 56.5 23.5T880-640v440q0 33-23.5 56.5T800-120H160q-33 0-56.5-23.5T80-200v-440q0-33 23.5-56.5T160-720Zm0 320h640v-240H596l84 114-64 46-136-184-136 184-64-46 82-114H160v240Zm200-320q17 0 28.5-11.5T400-760q0-17-11.5-28.5T360-800q-17 0-28.5 11.5T320-760q0 17 11.5 28.5T360-720Zm240 0q17 0 28.5-11.5T640-760q0-17-11.5-28.5T600-800q-17 0-28.5 11.5T560-760q0 17 11.5 28.5T600-720Z" />
+                </svg>
+                Campaigns
+            </a>
+            <a href="/news" data-nav="news"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120H160Zm0-80h640v-560H160v560Zm80-80h480v-80H240v80Zm0-160h160v-240H240v240Zm240 0h240v-80H480v80Zm0-160h240v-80H480v80ZM160-200v-560 560Z" />
+                </svg>
+                News
+            </a>
+            <a href="/player"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M40-160v-112q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0 130 15.5T616-378q29 15 46.5 43.5T680-272v112H40Zm720 0v-120q0-44-24.5-84.5T666-434q51 6 96 20.5t84 35.5q36 20 55 44.5t19 53.5v120H760ZM360-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm400-160q0 66-47 113t-113 47q-11 0-28-2.5t-28-5.5q27-32 41.5-71t14.5-81q0-42-14.5-81T544-792q14-5 28-6.5t28-1.5q66 0 113 47t47 113ZM120-240h480v-32q0-11-5.5-20T580-306q-54-27-109-40.5T360-360q-56 0-111 13.5T140-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T440-640q0-33-23.5-56.5T360-720q-33 0-56.5 23.5T280-640q0 33 23.5 56.5T360-560Zm0 320Zm0-400Z" />
+                </svg>
+                Players
+            </a>
+            <a href="/unit-editor" data-nav="unit-editor"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
+                </svg>
+                Unit editor
+            </a>
+            <a href="https://github.com/Duosion/starpoint"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M320-240 80-480l240-240 57 57-184 184 183 183-56 56Zm320 0-57-57 184-184-183-183 56-56 240 240-240 240Z" />
+                </svg>
+                Source Code
+            </a>
+        </nav>
+        <article class="w-full flex flex-col gap-5 min-w-0">
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3">
+                <h3 class="text-xl text-on-background font-semibold">Unit editor</h3>
+                <p class="text-on-surface-variant">Change what a unit's abilities do and its numbers. Saving writes a change file and rebuilds the CN game update; close and reopen the game to get it. Phones get it with <strong>Download from PC</strong>. Reset gives the game's own kit back. No unit ids change, so saves are never at risk.</p>
+                <div class="flex flex-wrap gap-3 items-center">
+                    <label for="unit-search" class="text-on-surface-variant">Unit</label>
+                    <input id="unit-search" list="unit-list" placeholder="Name or id" autocomplete="off"
+                        class="px-4 py-2 rounded-full border border-outline-variant bg-surface text-on-surface min-w-[260px]">
+                    <datalist id="unit-list"></datalist>
+                    <label class="flex gap-2 items-center text-on-surface-variant ml-auto">
+                        <input type="checkbox" id="advanced"> Advanced mode
+                    </label>
+                </div>
+                <p id="advanced-note" class="text-sm text-on-surface-variant hidden">Advanced mode offers every trigger, condition and effect the game can read. Anything CN's own units don't use is untested.</p>
+                <p id="load-status" class="text-sm text-on-surface-variant" role="status">Loading the game's tables...</p>
+                <details id="kits" class="text-sm">
+                    <summary class="text-on-surface cursor-pointer">Edited units and kits (download, share, import)</summary>
+                    <div class="flex flex-col gap-2 mt-3">
+                        <p class="text-on-surface-variant">Every unit this page changed. A download is one file with the chosen units' changes: send it to someone, and they import it here (or put it in their custom units folder's <code>changes</code>). Custom units' changes are in their own files and aren't listed.</p>
+                        <ul id="kit-list" class="flex flex-col gap-1"></ul>
+                        <div class="flex flex-wrap gap-2 items-center">
+                            <button type="button" id="kit-download-selected" class="px-3 py-1 rounded-full border border-outline-variant text-on-surface">Download selected</button>
+                            <button type="button" id="kit-download-all" class="px-3 py-1 rounded-full border border-outline-variant text-on-surface">Download all</button>
+                            <label class="px-3 py-1 rounded-full border border-outline-variant text-on-surface cursor-pointer">Import a kit file<input type="file" id="kit-upload" accept=".json,application/json" class="hidden"></label>
+                        </div>
+                        <p id="kit-message" class="text-on-surface-variant" role="status"></p>
+                    </div>
+                </details>
+            </section>
+
+            <section id="unit-head" class="hidden flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3">
+                <div class="flex flex-wrap gap-3 items-baseline">
+                    <h3 id="unit-name" class="text-2xl text-on-background font-semibold"></h3>
+                    <span id="unit-info" class="text-on-surface-variant"></span>
+                </div>
+                <ul id="unit-notes" class="flex flex-col gap-1 text-sm text-on-surface-variant"></ul>
+                <div class="flex flex-wrap gap-2" role="tablist" aria-label="Editor tabs">
+                    <button type="button" role="tab" data-tab="abilities" class="px-4 py-2 rounded-full">Abilities</button>
+                    <button type="button" role="tab" data-tab="numbers" class="px-4 py-2 rounded-full">Numbers</button>
+                    <button type="button" role="tab" data-tab="details" class="px-4 py-2 rounded-full">Details</button>
+                </div>
+            </section>
+
+            <div id="tab-abilities" class="hidden flex-col gap-5 w-full"></div>
+            <div id="tab-numbers" class="hidden flex-col gap-5 w-full"></div>
+            <div id="tab-details" class="hidden flex-col gap-5 w-full"></div>
+
+            <section id="copy-panel" class="hidden flex-col p-5 border border-primary rounded-3xl w-full gap-3">
+                <div class="flex flex-wrap gap-3 items-center">
+                    <h3 class="text-lg text-on-background font-semibold">Copy a line</h3>
+                    <span id="copy-target" class="text-on-surface-variant"></span>
+                    <button type="button" id="copy-close" class="ml-auto px-4 py-2 rounded-full border border-outline-variant">Close</button>
+                </div>
+                <div class="flex flex-wrap gap-3 items-center">
+                    <label for="copy-search" class="text-on-surface-variant">From unit</label>
+                    <input id="copy-search" list="unit-list" placeholder="Name or id" autocomplete="off"
+                        class="px-4 py-2 rounded-full border border-outline-variant bg-surface text-on-surface min-w-[260px]">
+                </div>
+                <ul id="copy-lines" class="flex flex-col gap-2"></ul>
+            </section>
+
+            <section id="save-bar" class="hidden sticky bottom-3 flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3 bg-background">
+                <div class="flex flex-wrap gap-3">
+                    <button type="button" id="save"
+                        class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center disabled:opacity-40 disabled:pointer-events-none">Save</button>
+                    <button type="button" id="undo"
+                        class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full disabled:opacity-40 disabled:pointer-events-none">Undo changes</button>
+                    <button type="button" id="reset"
+                        class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full disabled:opacity-40 disabled:pointer-events-none">Reset unit to game</button>
+                </div>
+                <p id="message" class="text-sm text-on-surface-variant" role="status"></p>
+            </section>
+        </article>
+    </div>
+
+    <script>
+        (function () {
+            const $ = (id) => document.getElementById(id)
+            for (const link of document.querySelectorAll("[data-nav]")) {
+                if (link.dataset.nav !== "unit-editor") continue
+                link.className = "px-5 py-3 flex gap-3 items-center bg-primary rounded-full w-full font-bold text-on-primary text-lg"
+                link.querySelector("svg").setAttribute("class", "fill-on-primary")
+            }
+            const api = (url, body) => fetch("/api/unit-editor" + url, body === undefined ? {} : { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
+                .then(async (r) => { const j = await r.json().catch(() => ({})); if (!r.ok && !j.check) throw new Error(j.message || r.statusText); return j })
+            const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e }
+            const INPUT = "px-3 py-1 rounded-lg border border-outline-variant bg-surface text-on-surface"
+            const BTN = "px-3 py-1 rounded-full border border-outline-variant text-on-surface text-sm hover:bg-surface-container-high"
+
+            let D = null, units = [], unit = null, edit = null, saved = null, tab = "abilities", checkTimer = null, lastCheck = null
+            const advanced = () => $("advanced").checked
+
+            // ---- values: raw column text <-> what people read ----
+            const HP_CODES = { condition: ["8", "9", "205"], whileTrigger: ["0", "1", "227"], whenTrigger: ["25"] }
+            function unitOf(field, part, code) {
+                if (field === "strength" || field === "strength2")
+                    return (D.words.percentEffects[part] ?? []).includes(code) ? { div: 1000, suffix: "%" }
+                        : D.words.scaledEffects[part]?.[code] ? { div: 100000, suffix: D.words.scaledEffects[part][code] } : { div: 1, suffix: " (game value)" }
+                if (field === "frame") return { div: 6000000, suffix: "s" }
+                if (field === "threshold" || field === "start_threshold" || field === "threshold2") {
+                    if ((HP_CODES[part] ?? []).includes(code)) return { div: 1000, suffix: "% HP" }
+                    // time triggers (every X seconds, keeps a buff for X, Fever lasts X) count frames: 60 a second
+                    if (part === "whenTrigger" && /^(ElapsedTime|ConditionKeepFrame|FeverFrame)/.test(D.parts[part][code]?.client ?? "")) return { div: 6000000, suffix: " s" }
+                    return { div: 100000, suffix: "" }
+                }
+                return { div: 1, suffix: "" }
+            }
+            const show = (raw, u) => raw === "" || raw === undefined ? "" : String(Math.round(Number(raw) / u.div * 1000) / 1000)
+            const store = (text, u) => text === "" ? "" : String(Math.round(Number(text) * u.div))
+            const groupName = (g) => D.words.groups[g] ?? g
+
+            // ---- line layout ----
+            const KIND = { when: "0", while: "1", start: "2" }
+            const parts = (c) => c[5] === "1"
+                ? { trig: "whileTrigger", who: "whileWho", eff: "whileEffect", trigAt: 97, trigBlock: [85, 109], effAt: 109, effBlock: [109, 126] }
+                : { trig: "whenTrigger", who: "whenWho", eff: "whenEffect", trigAt: 27, trigBlock: [27, 47], effAt: 47, effBlock: [47, 85] }
+            const codeName = (part, code) => D.parts[part][code]?.name ?? `#${code}`
+            const usedList = (part) => D.used[part] ?? []
+            function sentence(c) {
+                const p = parts(c), bits = []
+                for (const at of D.blocks.condition) {
+                    const code = c[at]
+                    if (!code || code === "0") continue
+                    const f = D.parts.condition[code]?.fields ?? {}
+                    let s = codeName("condition", code)
+                    if (f.character_groups && c[f.character_groups.cols[0]]) {
+                        const g = groupName(c[f.character_groups.cols[0]])
+                        s = /\bX\b/.test(s) && !f.threshold ? s.replace(/(element )?\bX\b/, g) : s.replace(/\ban element\b/, g) === s ? `${s} (${g})` : s.replace(/\ban element\b/, g)
+                    }
+                    if (code === "2" && f.threshold && f.character_groups) {
+                        const g = groupName(c[f.character_groups.cols[0]]), n = show(c[f.threshold.cols[0]], unitOf("threshold", "condition", code))
+                        s = `${n}+ ${g} units in the party (${g} resonates)`
+                    } else if (f.threshold) { const u = unitOf("threshold", "condition", code); s += ` [${show(c[f.threshold.cols[0]], u)}${u.suffix}]` }
+                    bits.push("if " + s)
+                }
+                let s = bits.length ? bits.join(", ") + ": " : ""
+                if (c[5] === "2") s += "at battle start"
+                else {
+                    const tf = D.parts[p.trig][c[p.trigAt]]?.fields ?? {}
+                    s += (c[5] === "1" ? "while " : "when ")
+                    if (tf.trigger_puller) s += codeName(p.who, c[tf.trigger_puller.cols[0]]) + ": "
+                    let tn = codeName(p.trig, c[p.trigAt])
+                    if (tf.character_groups && c[tf.character_groups.cols[0]] && c[tf.character_groups.cols[0]] !== "(None)") {
+                        const g = groupName(c[tf.character_groups.cols[0]])
+                        tn = /\bX\b/.test(tn) ? tn.replace(/(element )?\bX\b/, g) : `${tn} (${g})`
+                    }
+                    s += tn
+                    if (tf.threshold && c[tf.threshold.cols[0]] !== "") {
+                        const u = unitOf("threshold", p.trig, c[p.trigAt])
+                        const n = pairText(c, tf.threshold.cols, u)
+                        if (u.suffix === " s") s += ` (${n})`
+                        else if (u.suffix) s += ` [${n}]`
+                        else if (c[5] === "1") s += ` (N = ${n})`
+                        else if (n !== "1") s += ` (every ${n})`
+                    }
+                }
+                const ef = D.parts[p.eff][c[p.effAt]]?.fields ?? {}
+                s += " → " + codeName(p.eff, c[p.effAt])
+                if (ef.strength) s += " " + pairText(c, ef.strength.cols, unitOf("strength", p.eff, c[p.effAt]))
+                if (ef.target) s += " for " + codeName("target", c[ef.target.cols[0]]) + (ef.target.cols[1] !== undefined && c[ef.target.cols[1]] && c[ef.target.cols[1]] !== "(None)" ? ` (${groupName(c[ef.target.cols[1]])})` : "")
+                if (ef.frame && c[ef.frame.cols[0]] !== "") s += ", " + pairText(c, ef.frame.cols, unitOf("frame"))
+                if (ef.max_accumulation && /^d+$/.test(c[ef.max_accumulation.cols[0]])) s += `, up to ${c[ef.max_accumulation.cols[0]]} stacks`
+                return s
+            }
+            function pairText(c, cols, u) {
+                const a = show(c[cols[0]], u), b = show(c[cols[1]], u)
+                return (a === b ? a : `${a} → ${b}`) + u.suffix
+            }
+            // a block from the most common CN line with that code (blank when CN never uses it)
+            function applyTemplate(c, part, code, from, to) {
+                const t = D.templates[`${part}:${code}`]
+                for (let i = from; i < to; i++) c[i] = t ? (t[i - from] ?? "") : ""
+                c[from === 27 || from === 85 ? (from === 27 ? 27 : 97) : from] = code
+            }
+            function newLine(ability, kind) {
+                const c = Array(126).fill("")
+                const first = ability.lines[0] ?? ability.game[0]
+                for (let i = 0; i < 5; i++) c[i] = first?.[i] ?? ""
+                for (const at of D.blocks.condition) c[at] = "0"
+                c[5] = kind
+                if (kind === "1") { applyTemplate(c, "whileTrigger", "4", 85, 109); applyTemplate(c, "whileEffect", "0", 109, 126) }
+                else { applyTemplate(c, "whenTrigger", "0", 27, 47); applyTemplate(c, "whenEffect", "32", 47, 85) }
+                return c
+            }
+
+            // ---- loading ----
+            Promise.all([api("/data"), api("/units")]).then(([data, list]) => {
+                D = data; units = list
+                $("unit-list").innerHTML = ""
+                for (const u of units) {
+                    const o = el("option"); o.value = `${u.name} — ${u.title} (${u.id})`; $("unit-list").appendChild(o)
+                }
+                $("load-status").textContent = `${units.length} units. Lists come from ${data.lines} ability and leader lines of CN's units.`
+                renderKits()
+                const want = new URLSearchParams(location.search).get("id")
+                if (want) loadUnit(want)
+            }).catch((e) => { $("load-status").textContent = "Couldn't load the game's tables: " + e.message })
+
+            // ---- kits: the units this page changed, to download (one file) and import ----
+            function refreshKits() { return api("/units").then((list) => { units = list; renderKits() }) }
+            function renderKits() {
+                const list = $("kit-list"); list.innerHTML = ""
+                const edited = units.filter((u) => u.edited)
+                if (!edited.length) list.appendChild(el("li", "text-on-surface-variant", "No units changed yet."))
+                for (const u of edited) {
+                    const li = el("li", "flex flex-wrap gap-2 items-center")
+                    const box = el("input"); box.type = "checkbox"; box.value = u.id; box.setAttribute("aria-label", `Select ${u.name}`)
+                    const open = el("button", "text-primary underline", `${u.name} — ${u.title} (${u.id})`); open.type = "button"
+                    open.onclick = () => loadUnit(u.id)
+                    const one = el("a", "px-2 rounded-full border border-outline-variant text-on-surface", "Download"); one.href = `/api/unit-editor/kits?ids=${u.id}`
+                    li.append(box, open, one); list.appendChild(li)
+                }
+                $("kit-download-all").disabled = !edited.length
+            }
+            $("kit-download-selected").onclick = () => {
+                const ids = [...document.querySelectorAll("#kit-list input:checked")].map((b) => b.value)
+                if (!ids.length) { $("kit-message").textContent = "Tick the units to download first."; return }
+                $("kit-message").textContent = ""
+                location.href = "/api/unit-editor/kits?ids=" + ids.join(",")
+            }
+            $("kit-download-all").onclick = () => { location.href = "/api/unit-editor/kits" }
+            $("kit-upload").onchange = async () => {
+                const file = $("kit-upload").files[0]; if (!file) return
+                let data
+                try { data = JSON.parse(await file.text()) } catch { $("kit-message").textContent = "That file isn't a kit file (not JSON)."; return }
+                const r = await api("/kits", data).catch((e) => ({ imported: [], refused: [{ id: "", why: e.message }] }))
+                const name = (id) => (units.find((u) => u.id === id)?.name ?? id)
+                $("kit-message").textContent = (r.imported.length ? `Imported: ${r.imported.map(name).join(", ")}. The CN game update is rebuilding. ` : "Nothing imported. ")
+                    + r.refused.map((x) => `${x.id ? name(x.id) + ": " : ""}${x.why}`).join("; ")
+                $("kit-upload").value = ""
+                await refreshKits()
+                if (unit && r.imported.includes(unit.id)) loadUnit(unit.id, true)
+            }
+
+            const idFrom = (text) => (text.match(/\((\d+)\)\s*$/) ?? text.match(/^\s*(\d{6})\s*$/) ?? [])[1]
+            $("unit-search").addEventListener("change", () => { const id = idFrom($("unit-search").value); if (id) loadUnit(id) })
+            $("advanced").addEventListener("change", () => { $("advanced-note").classList.toggle("hidden", !advanced()); if (unit) { render(); scheduleCheck() } })
+
+            function loadUnit(id, force) {
+                if (!force && edit && dirty() && !confirm("Leave this unit without saving?")) return
+                if (!force) $("message").textContent = ""
+                api("/unit/" + id).then((u) => {
+                    unit = u
+                    edit = { abilities: u.abilities.map((a) => ({ key: a.key, slot: a.slot, lines: a.lines.map((l) => [...l]), game: a.game })),
+                        leader: u.leader ? { key: u.leader.key, name: u.leader.name, lines: u.leader.lines.map((l) => [...l]), game: u.leader.game } : null,
+                        stats: u.stats.map((s) => ({ ...s })), skills: u.skills.map((s) => ({ ...s })), details: { ...u.details } }
+                    saved = JSON.stringify(payload())
+                    history.replaceState(null, "", "/unit-editor?id=" + u.id)
+                    $("unit-search").value = `${u.name} — ${u.title} (${u.id})`
+                    render(); scheduleCheck()
+                }).catch((e) => { $("load-status").textContent = e.message })
+            }
+            const payload = () => ({ id: unit.id, abilities: edit.abilities.map((a) => ({ key: a.key, lines: a.lines })), leader: edit.leader ? { key: edit.leader.key, lines: edit.leader.lines } : null,
+                stats: edit.stats.map((s) => ({ level: s.level, hp: s.hp, atk: s.atk })), skills: edit.skills.map((s) => ({ key: s.key, gaugeMin: s.gaugeMin, gaugeMax: s.gaugeMax })),
+                details: (({ name, title, description, class: cls, role, leaderName }) => ({ name, title, description, class: cls, role, leaderName }))(edit.details) })
+            const dirty = () => edit && JSON.stringify(payload()) !== saved
+
+            // ---- drawing ----
+            function render() {
+                sentenceRefreshers = []
+                $("unit-head").classList.replace("hidden", "flex")
+                $("save-bar").classList.replace("hidden", "flex")
+                $("unit-name").textContent = unit.name
+                $("unit-info").textContent = `${unit.title} · ${"★".repeat(unit.rarity || 0)} ${unit.element} · ${unit.id}${unit.custom ? " · custom unit" : ""}`
+                const notes = $("unit-notes"); notes.innerHTML = ""
+                if (unit.saved) notes.appendChild(el("li", "", "Has saved editor changes (Reset unit to game takes them away)."))
+                for (const f of unit.others) notes.appendChild(el("li", "", `Also changed by another change file: ${f} (shown here, kept as it is).`))
+                if (unit.kit) notes.appendChild(el("li", "", "Has a Balance by Date kit (kit_dates.json): before its date the game uses that kit; your changes still apply on top."))
+                for (const b of document.querySelectorAll("[data-tab]")) {
+                    const on = b.dataset.tab === tab
+                    b.className = "px-4 py-2 rounded-full " + (on ? "bg-primary text-on-primary font-bold" : "bg-surface-container-high text-on-surface")
+                    b.setAttribute("aria-selected", String(on))
+                    b.onclick = () => { tab = b.dataset.tab; render() }
+                }
+                $("tab-abilities").className = tab === "abilities" ? "flex flex-col gap-5 w-full" : "hidden"
+                $("tab-numbers").className = tab === "numbers" ? "flex flex-col gap-5 w-full" : "hidden"
+                $("tab-details").className = tab === "details" ? "flex flex-col gap-5 w-full" : "hidden"
+                renderAbilities(); renderNumbers(); renderDetails(); renderButtons()
+            }
+
+            // ---- details tab: text and class/role columns of the unit's rows ----
+            function renderDetails() {
+                const box = $("tab-details"); box.innerHTML = ""
+                const d = edit.details, g = d.game
+                const sec = el("section", "flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3")
+                sec.appendChild(el("h3", "text-xl text-on-background font-semibold", "Details"))
+                sec.appendChild(el("p", "text-sm text-on-surface-variant", "What the unit page shows. Grey: the game's own. Name, title and description are the unit's own text; the story, the codex and other screens keep their own text."))
+                const field = (label, key, kind, note) => {
+                    const r = el("div", "flex flex-col gap-1")
+                    r.appendChild(el("label", "text-sm text-on-surface", label))
+                    let input
+                    if (kind === "select") {
+                        input = select(note.options, String(d[key]), (v) => { d[key] = v; changed() }, label)
+                    } else {
+                        input = el(kind === "area" ? "textarea" : "input", INPUT + " w-full max-w-[640px]" + (kind === "area" ? " h-[96px] py-2" : ""))
+                        input.value = d[key]; input.setAttribute("aria-label", label)
+                        input.oninput = () => { d[key] = input.value.replace(/[\r\n]+/g, " "); changed() }
+                    }
+                    r.appendChild(input)
+                    const gameText = kind === "select" ? (note.options.find(([v]) => v === String(g[key]))?.[1] ?? g[key]) : g[key]
+                    r.appendChild(el("span", "text-sm text-on-surface-variant", (note?.text ? note.text + " " : "") + `Game: ${gameText || "(empty)"}`))
+                    sec.appendChild(r)
+                }
+                if (d.hasText) {
+                    field("Name", "name", "input")
+                    field("Title", "title", "input")
+                    field("Description", "description", "area")
+                }
+                field("Class", "class", "select", { options: D.classes, text: "Also picks the unit's Power Flip attack, and counts for abilities that target a class." })
+                field("Role", "role", "select", { options: D.roles.map((r) => [r, r]), text: "Label, icon and list filter only." })
+                if (edit.leader) field("Leader skill name", "leaderName", "input")
+                const errs = el("ul", "flex flex-col gap-1 text-sm"); errs.id = "details-msgs"; sec.appendChild(errs)
+                box.appendChild(sec)
+            }
+            function renderButtons() {
+                $("save").disabled = !dirty() || (lastCheck !== null && !lastCheck.ok)
+                $("undo").disabled = !dirty()
+                $("reset").disabled = !unit.saved && !dirty()
+                if (unit.custom) $("reset").title = "A custom unit's changes are in its own file"
+            }
+            function changed() { renderButtons(); scheduleCheck() }
+
+            function renderAbilities() {
+                const box = $("tab-abilities"); box.innerHTML = ""
+                edit.abilities.forEach((a, i) => box.appendChild(abilityCard(a, `Ability ${a.slot}`, ["abilities", i])))
+                if (edit.leader) box.appendChild(abilityCard(edit.leader, `Leader skill: ${edit.leader.name}`, ["leader"]))
+            }
+            function abilityCard(a, title, where) {
+                const sec = el("section", "flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3")
+                const head = el("div", "flex flex-wrap gap-3 items-center")
+                head.appendChild(el("h3", "text-xl text-on-background font-semibold", title))
+                const differs = JSON.stringify(a.lines) !== JSON.stringify(a.game)
+                if (differs) head.appendChild(el("span", "px-3 py-1 rounded-full text-sm bg-primary-container text-on-primary-container", "changed"))
+                const tools = el("div", "flex flex-wrap gap-2 ml-auto")
+                const add = el("button", BTN, "+ New line"); add.type = "button"
+                add.onclick = () => { a.lines.push(newLine(a, "0")); render(); changed() }
+                const copy = el("button", BTN, "Copy a line from another unit"); copy.type = "button"
+                copy.onclick = () => openCopy(a, title)
+                const reset = el("button", BTN, "Reset to game"); reset.type = "button"; reset.disabled = !differs
+                reset.onclick = () => { a.lines = a.game.map((l) => [...l]); render(); changed() }
+                tools.append(add, copy, reset); head.appendChild(tools); sec.appendChild(head)
+                a.lines.forEach((c, n) => sec.appendChild(lineEditor(a, c, n, where)))
+                const game = el("div", "hidden"); game.dataset.abilityGame = JSON.stringify(where); sec.appendChild(game)
+                if (a.lines.length === 0) sec.appendChild(el("p", "text-on-surface-variant", "No lines: this ability does nothing."))
+                return sec
+            }
+
+            function select(options, value, onChange, label) {
+                const s = el("select", INPUT)
+                if (label) s.setAttribute("aria-label", label)
+                for (const [v, text] of options) { const o = el("option", "", text); o.value = v; s.appendChild(o) }
+                if (!options.some(([v]) => v === value)) { const o = el("option", "", `${value} (current)`); o.value = value; s.appendChild(o) }
+                s.value = value
+                s.onchange = () => onChange(s.value)
+                return s
+            }
+            // code lists: default mode = what CN uses; advanced = everything (unused ones marked)
+            function codeOptions(part, current, filter) {
+                const used = new Set(usedList(part))
+                const all = Object.keys(D.parts[part])
+                const list = (advanced() ? all : all.filter((k) => used.has(k) || k === current)).filter((k) => !filter || filter(k) || k === current)
+                // two codes with the same plain words get the client's name too, so they can be told apart
+                const count = {}
+                for (const k of list) count[codeName(part, k)] = (count[codeName(part, k)] ?? 0) + 1
+                return list.map((k) => [k, codeName(part, k) + (count[codeName(part, k)] > 1 ? ` [${D.parts[part][k].client}]` : "") + (used.has(k) ? "" : " (untested)")])
+                    .sort((x, y) => x[1].localeCompare(y[1]))
+            }
+            const groupOptions = () => [["", "(none)"], ["(None)", "(none, explicit)"], ...D.groups.map((g) => [g, groupName(g)])]
+            const row = (label) => { const r = el("div", "flex flex-wrap gap-2 items-center"); r.appendChild(el("span", "text-sm text-on-surface-variant w-[80px]", label)); return r }
+            function numInput(c, col, u, label) {
+                const i = el("input", INPUT + " w-[96px]"); i.type = "number"; i.step = "any"; i.value = show(c[col], u); i.setAttribute("aria-label", label)
+                i.onchange = () => { c[col] = store(i.value, u); refreshSentence(); changed() }
+                return i
+            }
+            function pairInputs(r, c, cols, u, label) {
+                r.appendChild(numInput(c, cols[0], u, label + " (lowest)"))
+                r.appendChild(el("span", "text-on-surface", "→"))
+                r.appendChild(numInput(c, cols[1], u, label + " (highest)"))
+                if (u.suffix) r.appendChild(el("span", "text-sm text-on-surface-variant", u.suffix))
+            }
+            // the fields a code reads (from the client's parser), drawn by kind
+            function fieldRows(box, c, fields, part, code, skip) {
+                const more = []
+                for (const [f, d] of Object.entries(fields)) {
+                    if (skip.includes(f)) continue
+                    let label = D.words.fields[f] ?? f.replace(/_/g, " ")
+                    if (f === "threshold" && (part === "whenTrigger" || part === "whileTrigger")) { const s = unitOf(f, part, code).suffix; label = s === " s" ? "seconds" : s ? "HP" : part === "whileTrigger" ? "N" : "every N times" }
+                    if (d.pair) { const r = row(label); pairInputs(r, c, d.cols, unitOf(f, part, code), label); box.appendChild(r); continue }
+                    if (f === "character_groups" && d.cols.length === 1) {
+                        const r = row(label); r.appendChild(select(groupOptions(), c[d.cols[0]], (v) => { c[d.cols[0]] = v; refreshSentence(); changed() }, label)); box.appendChild(r); continue
+                    }
+                    if (["trigger_limit", "cooltime", "max_accumulation", "flip_limit", "power_flip_limit"].includes(f) && d.cols.length === 1) {
+                        const r = row(label); const i = el("input", INPUT + " w-[96px]"); i.value = c[d.cols[0]]; i.setAttribute("aria-label", label)
+                        i.onchange = () => { c[d.cols[0]] = i.value.trim(); refreshSentence(); changed() }
+                        r.appendChild(i); r.appendChild(el("span", "text-sm text-on-surface-variant", "(empty or (None) = no limit)")); box.appendChild(r); continue
+                    }
+                    more.push([f, d, label])
+                }
+                if (more.length) {
+                    const det = el("details", "text-sm"); det.appendChild(el("summary", "text-on-surface-variant cursor-pointer", "More settings (as the game has them)"))
+                    for (const [f, d, label] of more) {
+                        const r = row(label)
+                        for (const col of d.cols) {
+                            const i = el("input", INPUT + " w-[120px]"); i.value = c[col]; i.setAttribute("aria-label", `${label} column ${col}`)
+                            i.onchange = () => { c[col] = i.value; refreshSentence(); changed() }
+                            r.appendChild(i)
+                        }
+                        det.appendChild(r)
+                    }
+                    box.appendChild(det)
+                }
+            }
+
+            let sentenceRefreshers = []
+            function refreshSentence() { for (const f of sentenceRefreshers) f() }
+
+            function lineEditor(a, c, n, where) {
+                const p = parts(c)
+                const box = el("div", "flex flex-col gap-2 p-4 rounded-2xl bg-surface-container-low")
+                box.dataset.where = JSON.stringify([...where, n])
+                const top = el("div", "flex flex-wrap gap-2 items-start")
+                const sen = el("p", "flex-1 text-on-surface font-medium")
+                const refresh = () => { sen.textContent = `${n + 1}. ` + sentence(c) }
+                refresh(); sentenceRefreshers.push(refresh)
+                const del = el("button", BTN, "Remove line"); del.type = "button"
+                del.onclick = () => { a.lines.splice(n, 1); render(); changed() }
+                top.append(sen, del); box.appendChild(top)
+
+                // conditions
+                const conds = D.blocks.condition.filter((at) => c[at] && c[at] !== "0")
+                for (const at of D.blocks.condition) {
+                    if (!c[at] || c[at] === "0") continue
+                    const r = row("Only if")
+                    r.appendChild(select(codeOptions("condition", c[at]), c[at], (v) => { applyCondition(c, at, v); render(); changed() }, "Condition"))
+                    const f = D.parts.condition[c[at]]?.fields ?? {}
+                    const rm = el("button", BTN, "Remove"); rm.type = "button"
+                    rm.onclick = () => { removeCondition(c, at); render(); changed() }
+                    r.appendChild(rm); box.appendChild(r)
+                    const sub = el("div", "flex flex-col gap-2 pl-[88px]"); fieldRows(sub, c, f, "condition", c[at], []); box.appendChild(sub)
+                }
+                if (conds.length < 3) {
+                    const r = row(conds.length ? "" : "Only if")
+                    const addc = el("button", BTN, conds.length ? "+ Another condition" : "+ Add a condition (none now)"); addc.type = "button"
+                    addc.onclick = () => { const at = D.blocks.condition.find((x) => !c[x] || c[x] === "0"); applyCondition(c, at, usedList("condition").find((k) => k !== "0") ?? "2"); render(); changed() }
+                    r.appendChild(addc); box.appendChild(r)
+                }
+
+                // a leader line's awakening tag (leader column 1): shown always, only before awakening, or only after
+                if (where[0] === "leader") {
+                    const r = row("Shown")
+                    const tag = ["0", "1", "2"].includes(c[3]) ? c[3] : "0"
+                    r.appendChild(select([["0", "always"], ["1", "before awakening only"], ["2", "after awakening only"]], tag, (v) => { c[3] = v; changed() }, "Shown"))
+                    box.appendChild(r)
+                }
+
+                // kind + trigger
+                const kr = row("Kind")
+                const kinds = [["0", "when (the moment it happens)"], ["1", "while (as long as it's true)"]]
+                if (c[5] === "2") kinds.push(["2", "at battle start"])
+                kr.appendChild(select(kinds, c[5], (v) => { const fresh = newLine(a, v); for (let i = 0; i < 27; i++) fresh[i] = c[i]; fresh[5] = v; c.splice(0, 126, ...fresh); render(); changed() }, "Kind"))
+                if (c[5] !== "2") {
+                    kr.appendChild(select(codeOptions(p.trig, c[p.trigAt]), c[p.trigAt], (v) => { applyTemplate(c, p.trig, v, p.trigBlock[0], p.trigBlock[1]); render(); changed() }, "Trigger"))
+                }
+                box.appendChild(kr)
+                if (c[5] !== "2") {
+                    const tf = D.parts[p.trig][c[p.trigAt]]?.fields ?? {}
+                    if (tf.trigger_puller) {
+                        const r = row("Who")
+                        const whoAt = tf.trigger_puller.cols[0]
+                        const seen = new Set(D.pairs[p.who === "whileWho" ? "whileWho" : "whenWho"].filter((x) => x.startsWith(c[p.trigAt] + "|")).map((x) => x.split("|")[1]))
+                        const opts = Object.keys(D.parts[p.who]).filter((k) => advanced() || seen.has(k) || k === c[whoAt]).map((k) => [k, codeName(p.who, k) + (seen.has(k) ? "" : " (untested)")])
+                        r.appendChild(select(opts, c[whoAt], (v) => { c[whoAt] = v; refreshSentence(); changed() }, "Who"))
+                        const wf = D.parts[p.who][c[whoAt]]?.fields ?? {}
+                        if (wf.character_groups) r.appendChild(select(groupOptions(), c[wf.character_groups.cols[0]], (v) => { c[wf.character_groups.cols[0]] = v; refreshSentence(); changed() }, "Who: group"))
+                        box.appendChild(r)
+                    }
+                    const sub = el("div", "flex flex-col gap-2"); fieldRows(sub, c, tf, p.trig, c[p.trigAt], ["trigger_puller"]); box.appendChild(sub)
+                }
+
+                // effect
+                const er = row("Do")
+                er.appendChild(select(codeOptions(p.eff, c[p.effAt]), c[p.effAt], (v) => { applyTemplate(c, p.eff, v, p.effBlock[0], p.effBlock[1]); render(); changed() }, "Effect"))
+                box.appendChild(er)
+                const ef = D.parts[p.eff][c[p.effAt]]?.fields ?? {}
+                if (ef.target) {
+                    const r = row("For"), tAt = ef.target.cols[0]
+                    // "the unit that triggered it" only with a trigger that has a "who"
+                    const hasWho = c[5] !== "2" && Boolean(D.parts[p.trig][c[p.trigAt]]?.fields?.trigger_puller)
+                    r.appendChild(select(Object.keys(D.parts.target).filter((k) => k !== "7" || hasWho || k === c[tAt]).map((k) => [k, codeName("target", k)]), c[tAt], (v) => { c[tAt] = v; refreshSentence(); changed() }, "Target"))
+                    const tf2 = D.parts.target[c[tAt]]?.fields ?? {}
+                    if (tf2.character_groups) r.appendChild(select(groupOptions(), c[tf2.character_groups.cols[0]], (v) => { c[tf2.character_groups.cols[0]] = v; refreshSentence(); changed() }, "Target group"))
+                    box.appendChild(r)
+                }
+                const sub = el("div", "flex flex-col gap-2"); fieldRows(sub, c, ef, p.eff, c[p.effAt], ["target"]); box.appendChild(sub)
+                const msgs = el("ul", "flex flex-col gap-1 text-sm"); msgs.dataset.msgs = JSON.stringify([...where, n]); box.appendChild(msgs)
+                return box
+            }
+            function applyCondition(c, at, code) {
+                const t = D.templates[`condition:${code}`]
+                for (let i = 0; i < 7; i++) c[at + i] = t ? (t[i] ?? "") : ""
+                c[at] = code
+            }
+            function removeCondition(c, at) {
+                // conditions fill the slots in order
+                const blocks = D.blocks.condition.filter((x) => x !== at && c[x] && c[x] !== "0").map((x) => c.slice(x, x + 7))
+                D.blocks.condition.forEach((x, i) => { const b = blocks[i] ?? ["0", "", "", "", "", "", ""]; for (let k = 0; k < 7; k++) c[x + k] = b[k] })
+            }
+
+            // ---- numbers tab ----
+            function renderNumbers() {
+                const box = $("tab-numbers"); box.innerHTML = ""
+                const st = el("section", "flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3")
+                st.appendChild(el("h3", "text-xl text-on-background font-semibold", "Stats"))
+                st.appendChild(el("p", "text-sm text-on-surface-variant", "HP and ATK at these levels; the game fills in the levels between. Grey: the game's own."))
+                for (const s of edit.stats) {
+                    const r = row("Lv " + s.level)
+                    for (const k of ["hp", "atk"]) {
+                        r.appendChild(el("span", "text-sm text-on-surface-variant", k.toUpperCase()))
+                        const i = el("input", INPUT + " w-[96px]"); i.type = "number"; i.value = s[k]; i.setAttribute("aria-label", `${k} at level ${s.level}`)
+                        i.onchange = () => { s[k] = Math.round(Number(i.value)); changed() }
+                        r.appendChild(i); r.appendChild(el("span", "text-sm text-on-surface-variant", `(${s.game[k]})`))
+                    }
+                    st.appendChild(r)
+                }
+                box.appendChild(st)
+                const sk = el("section", "flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3")
+                sk.appendChild(el("h3", "text-xl text-on-background font-semibold", "Skill gauge"))
+                sk.appendChild(el("p", "text-sm text-on-surface-variant", "At skill level 1 → the highest skill level (Mana Board skill nodes). Skill+ is the version after its evolution node. Skill damage itself is in the skill's script, not here."))
+                for (const s of edit.skills) {
+                    const r = row(s.plus ? "Skill+" : "Skill")
+                    r.appendChild(el("span", "text-sm text-on-surface", s.name))
+                    for (const k of ["gaugeMin", "gaugeMax"]) {
+                        if (k === "gaugeMax") r.appendChild(el("span", "", "→"))
+                        const i = el("input", INPUT + " w-[96px]"); i.type = "number"; i.value = s[k]; i.setAttribute("aria-label", `${s.name} gauge ${k === "gaugeMin" ? "lowest" : "highest"}`)
+                        i.onchange = () => { s[k] = Math.round(Number(i.value)); changed() }
+                        r.appendChild(i)
+                    }
+                    r.appendChild(el("span", "text-sm text-on-surface-variant", `(${s.game.gaugeMin} → ${s.game.gaugeMax})`))
+                    sk.appendChild(r)
+                }
+                box.appendChild(sk)
+                // every min -> max pair of every line, the same values as the Abilities tab
+                const ab = el("section", "flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3")
+                ab.appendChild(el("h3", "text-xl text-on-background font-semibold", "Ability and leader numbers"))
+                ab.appendChild(el("p", "text-sm text-on-surface-variant", "Lowest → highest. Abilities: first Mana node → sixth; leader skill: before → after awakening. The steps between are filled in by the game."))
+                const all = [...edit.abilities.map((a) => [`Ability ${a.slot}`, a]), ...(edit.leader ? [["Leader skill", edit.leader]] : [])]
+                for (const [title, a] of all) a.lines.forEach((c, n) => {
+                    const p = parts(c)
+                    const groups = [["condition", D.blocks.condition.map((at) => [c[at], D.parts.condition[c[at]]?.fields ?? {}]).filter(([k]) => k && k !== "0")],
+                        [p.trig, c[5] === "2" ? [] : [[c[p.trigAt], D.parts[p.trig][c[p.trigAt]]?.fields ?? {}]]], [p.eff, [[c[p.effAt], D.parts[p.eff][c[p.effAt]]?.fields ?? {}]]]]
+                    const pairs = []
+                    for (const [part, list] of groups) for (const [code, fields] of list) for (const [f, d] of Object.entries(fields)) if (d.pair && c[d.cols[0]] !== "") pairs.push([part, code, f, d])
+                    if (!pairs.length) return
+                    const r = el("div", "flex flex-col gap-1 p-3 rounded-2xl bg-surface-container-low")
+                    r.appendChild(el("p", "text-sm text-on-surface", `${title} · line ${n + 1}: ${sentence(c)}`))
+                    for (const [part, code, f, d] of pairs) { const rr = row(D.words.fields[f] ?? f); pairInputs(rr, c, d.cols, unitOf(f, part, code), `${title} line ${n + 1} ${f}`); r.appendChild(rr) }
+                    ab.appendChild(r)
+                })
+                box.appendChild(ab)
+            }
+
+            // ---- copy a line ----
+            let copyInto = null
+            function openCopy(a, title) {
+                copyInto = a
+                $("copy-target").textContent = "into " + title
+                $("copy-panel").classList.replace("hidden", "flex")
+                $("copy-panel").scrollIntoView({ behavior: "smooth" })
+                $("copy-search").focus()
+            }
+            $("copy-close").onclick = () => $("copy-panel").classList.replace("flex", "hidden")
+            $("copy-search").addEventListener("change", () => {
+                const id = idFrom($("copy-search").value); if (!id) return
+                api("/lines/" + id).then((u) => {
+                    const list = $("copy-lines"); list.innerHTML = ""
+                    const groups = [...u.abilities.map((x) => [`Ability ${x.slot}`, x.lines]), ["Leader skill", u.leader]]
+                    for (const [title, lines] of groups) for (const c of lines) {
+                        const li = el("li", "flex flex-wrap gap-3 items-center p-3 rounded-2xl bg-surface-container-low")
+                        li.appendChild(el("span", "flex-1 text-on-surface", `${title}: ${sentence(c)}`))
+                        const b = el("button", BTN, "Copy"); b.type = "button"
+                        b.onclick = () => {
+                            const line = [...c], first = copyInto.lines[0] ?? copyInto.game[0]
+                            for (let i = 0; i < 5; i++) if (i !== 5) line[i] = first?.[i] ?? line[i]
+                            line[5] = c[5]
+                            copyInto.lines.push(line); render(); changed()
+                            $("message").textContent = `Copied: ${sentence(c)}`
+                        }
+                        li.appendChild(b); list.appendChild(li)
+                    }
+                })
+            })
+
+            // ---- checks ----
+            function scheduleCheck() { clearTimeout(checkTimer); checkTimer = setTimeout(runCheck, 250) }
+            function runCheck() {
+                api("/check", { edit: payload(), advanced: advanced() }).then((res) => {
+                    lastCheck = res
+                    // each ability in the game's own words (its lines grouped as the unit page shows them), at both ends of its range
+                    for (const div of document.querySelectorAll("[data-ability-game]")) {
+                        const where = JSON.parse(div.dataset.abilityGame), leader = where[0] === "leader"
+                        const tx = leader ? res.texts?.leader : res.texts?.abilities?.[where[1]]
+                        div.innerHTML = ""
+                        if (!tx) { div.className = "hidden"; continue }
+                        div.className = "flex flex-col gap-2 text-sm px-4 py-3 rounded-2xl bg-surface-container-high"
+                        div.appendChild(el("span", "text-on-surface-variant", "In game (the unit page's wording):"))
+                        const show = (label, list) => {
+                            const block = el("div", "flex flex-col gap-1")
+                            if (label) block.appendChild(el("span", "text-on-surface-variant", label))
+                            for (const p of list) block.appendChild(el("span", p === null ? "text-on-surface-variant italic" : "text-on-surface", p ?? "(a line the editor can't word like the game yet: the unit page shows it after saving)"))
+                            div.appendChild(block)
+                        }
+                        if (JSON.stringify(tx.low) === JSON.stringify(tx.high)) show("", tx.high)
+                        else { show(leader ? "Before awakening:" : "First Mana node:", tx.low); show(leader ? "After awakening:" : "All six nodes:", tx.high) }
+                    }
+                    for (const ul of document.querySelectorAll("[data-msgs]")) {
+                        const where = JSON.parse(ul.dataset.msgs)
+                        const r = where[0] === "leader" ? res.leader[where[1]] : res.abilities[where[1]]?.[where[2]]
+                        ul.innerHTML = ""
+                        if (!r) continue
+                        for (const e of r.errors) ul.appendChild(el("li", "px-3 py-1 rounded-lg bg-error-container text-on-error-container", "Can't save: " + e))
+                        for (const w of r.warnings) ul.appendChild(el("li", "px-3 py-1 rounded-lg " + (w.level === "strong" ? "bg-tertiary-container text-on-tertiary-container" : "bg-secondary-container text-on-secondary-container"), w.text))
+                    }
+                    const dm = $("details-msgs")
+                    if (dm) { dm.innerHTML = ""; for (const e of res.details ?? []) dm.appendChild(el("li", "px-3 py-1 rounded-lg bg-error-container text-on-error-container", "Can't save: " + e)) }
+                    renderButtons()
+                    const bad = [...res.abilities.flat(), ...res.leader].filter((r) => r.errors.length).length + (res.details?.length ? 1 : 0)
+                    if (bad) $("message").textContent = `${bad} line(s) can't be saved yet: see the red notes.`
+                    else if (dirty()) $("message").textContent = "Unsaved changes."
+                }).catch(() => { })
+            }
+
+            // ---- save / undo / reset ----
+            $("save").onclick = () => {
+                $("save").disabled = true; $("message").textContent = "Saving..."
+                api("/unit/" + unit.id, { edit: payload(), advanced: advanced() }).then((r) => {
+                    if (r.check) { lastCheck = r.check; $("message").textContent = "Some lines can't be saved: see the red notes."; return }
+                    $("message").textContent = r.saved ? `Saved ${r.saved} changed row(s). The CN game update is rebuilding: close and reopen the game to get it.` : "Nothing differs from the game: the change file was removed."
+                    loadUnit(unit.id, true); refreshKits()
+                }).catch((e) => { $("message").textContent = "Couldn't save: " + e.message; renderButtons() })
+            }
+            $("undo").onclick = () => loadUnit(unit.id, true)
+            $("reset").onclick = () => {
+                if (unit.custom) { $("message").textContent = "A custom unit's rows are in its own file: edit it back, or use Undo changes."; return }
+                if (!confirm(`Give ${unit.name} the game's own abilities and numbers back?`)) return
+                api(`/unit/${unit.id}/reset`, {}).then((r) => { $("message").textContent = r.reset ? "Reset: the CN game update is rebuilding with the game's own rows." : "Nothing was saved for this unit."; loadUnit(unit.id, true); refreshKits() })
+            }
+            window.addEventListener("beforeunload", (e) => { if (dirty()) { e.preventDefault(); e.returnValue = "" } })
+        })()
+    </script>
+</body>
+
+</html>

@@ -1,4 +1,4 @@
-// A fingerprint of the saved schedules the CN game update is built from (.database/event_schedule.json
+// A fingerprint of the saved schedules (and the custom units) the CN game update is built from (.database/event_schedule.json
 // and campaign_schedule.json). scripts/gen_cn_event_schedule.cjs stores the fingerprint it built from in
 // .database/cn_schedule_built.json; the server compares it at start (src/nya/eventSchedule.ts) and rebuilds
 // the update when the schedules changed without a dashboard edit (an imported save, a data pack, a copy from a PC).
@@ -23,7 +23,14 @@ function scheduleFingerprint(dataDir) {
     const campaigns = readJson(path.join(dataDir, "campaign_schedule.json")) ?? {}
     const yearly = ["yearlyLoginBonuses", "yearlyFreePulls", "yearlyRewardRuns", "yearlyStaminaRuns"]
         .map(key => [key, Array.isArray(campaigns[key]) ? [...campaigns[key]].map(String).sort() : []])
-    return crypto.createHash("sha1").update(JSON.stringify(stable({ events, yearly, builder: BUILDER_REVISION }))).digest("hex")
+    // custom units (assets/custom_units, scripts/custom_units.cjs): a unit added or changed needs its rows shipped
+    // (only counted when there are any, so installs without custom units keep their fingerprint)
+    const CU = require("./custom_units.cjs")
+    const custom = [CU.readCustomUnits().fingerprint, CU.readUnitChanges().fingerprint].filter(Boolean).join(",")
+    // and the kit rows (assets/kit_dates.json): an edited row ships at the next start, not only when a date passes
+    let kits = ""
+    try { kits = crypto.createHash("sha1").update(fs.readFileSync(path.join(__dirname, "..", "assets", "kit_dates.json"))).digest("hex") } catch { }
+    return crypto.createHash("sha1").update(JSON.stringify(stable({ events, yearly, builder: BUILDER_REVISION, ...(custom ? { custom } : {}), ...(kits ? { kits } : {}) }))).digest("hex")
 }
 
 /** What the current CN update was built from, or null (an update built before this was recorded). */

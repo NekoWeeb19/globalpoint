@@ -12,8 +12,11 @@
 //         (with CDN_DIR pointing somewhere else than the real .cdn while testing)
 //   <out dir>/server.json: the assets/character.json entry and assets/mana_node_cn.json board for the server.
 //
-// Limits (see the doc): the schedule rebuild ships 7 of these tables again WITHOUT the new rows, so a
-// real feature needs these rows added inside scripts/gen_cn_event_schedule.cjs; this script is the test.
+// To keep the unit (docs/CUSTOM_UNITS.md), use the other two outputs instead of the test patch above:
+//   <out dir>/custom_unit.json  the unit's rows + server data: copy to assets/custom_units/<id>.json; every
+//                               CN schedule build then adds the rows to the tables it ships
+//   <out dir>/art_files.json    the unit's own files only (no tables), for its art update:
+//                               node scripts/build_cn_patch.cjs 1.4.9xx <last version> <out dir>/art_files.json
 const fs = require("fs")
 const path = require("path")
 const zlib = require("zlib")
@@ -22,6 +25,7 @@ const R = require("../cdn_rows.cjs")
 const A = require("../amf3.cjs")
 const { cnZips, cnDir, cdnDir } = require("../cn_archives.cjs")
 const { uploadPath } = require("../cdn_hash.cjs")
+const CU = require("../custom_units.cjs")
 
 // edit these for another unit
 const SRC = { id: "111069", dev: "suzumiya_haruhi" }
@@ -116,6 +120,7 @@ async function main() {
     const files = await newestFiles(newer)
     const list = []
     const server = { character: { [NEW.id]: null }, manaNodes: {} }
+    const unitRows = {} // stored table path (without production/) -> new row key -> rows (scripts/custom_units.cjs)
 
     for (const [file, rule] of Object.entries(TABLES)) {
         const entry = files.get(file)
@@ -128,7 +133,9 @@ async function main() {
             const src = tree.entries.find(e => e.key === oldKey)
             if (!src) { console.log(`  (no row ${oldKey} in ${file})`); continue }
             tree.entries = tree.entries.filter(e => e.key !== newKey)
-            tree.entries.push({ key: newKey, node: clone(src.node, fn) })
+            const made = clone(src.node, fn)
+            tree.entries.push({ key: newKey, node: made })
+            ;(unitRows[file] ??= {})[newKey] = CU.fromNode(made)
             tree.dirty = true
             if (file.startsWith("upload/1d/")) for (const b of src.node.entries) for (const n of b.node.entries) {
                 const c = R.splitCsv(n.node.text.replace(/\n$/, ""))
@@ -171,6 +178,18 @@ async function main() {
     }
     fs.writeFileSync(path.join(out, "files.json"), JSON.stringify(list, null, 1))
     fs.writeFileSync(path.join(out, "server.json"), JSON.stringify(server, null, 1))
+    const art = list.filter(f => !Object.keys(TABLES).includes(f.path.replace(/^production\//, "")))
+    fs.writeFileSync(path.join(out, "art_files.json"), JSON.stringify(art, null, 1))
+    const unit = {
+        id: NEW.id, dev: NEW.dev, name: NEW.name,
+        character: server.character[NEW.id], manaNodes: server.manaNodes, banners: [], // manaNodes: board -> node id -> node
+        art: { patch: "", files: art.map(f => f.path) },
+        rows: unitRows,
+    }
+    const problems = CU.unitProblems(unit)
+    if (problems.length > 0) console.log("custom_unit.json problems:\n  " + problems.join("\n  "))
+    fs.writeFileSync(path.join(out, "custom_unit.json"), JSON.stringify(unit, null, 1))
+    console.log(`custom_unit.json: ${Object.values(unitRows).reduce((n, r) => n + Object.keys(r).length, 0)} rows in ${Object.keys(unitRows).length} tables; art_files.json: ${art.length} files`)
 }
 
 main().catch(e => { console.error(e); process.exit(1) })
