@@ -360,9 +360,9 @@
   ]
  },
  "scaledEffects": {
-  "_note": "effects whose value is on the game's base scale (100000 = 1), with the unit to show. Checked against the wiki text of Amelia's leader skill (Fever gauge +1000, combo +5).",
+  "_note": "effects whose value is on the game's base scale (100000 = 1), with the unit to show. Checked against the wiki text of Amelia's leader skill (Fever gauge +1000, combo +5). Fever gauge: each battle quest sets its own size (main story: 12 to 10000, most 120), x1.25 after each Fever; more than full is wasted.",
   "whenEffect": {
-   "213": " Fever gauge points",
+   "213": " Fever gauge points (a typical quest gauge is 120 = full)",
    "226": " combo",
    "489": " combo"
   }
