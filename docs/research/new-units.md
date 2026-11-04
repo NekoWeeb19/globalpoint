@@ -149,8 +149,16 @@ Not tested yet: multiplayer with another device, a real phone, a schedule rebuil
 
 ## Checklist: everything a custom unit needs
 
-Everything below was required for, or verified on, the test unit. "Optional" means the unit works without it.
-Sizes and formats are Haruhi's own files, measured.
+How sure each part is:
+- **Proven in game:** a unit with exactly these ids, rows, files and server entries works in everything tested
+  (see the proof of concept). Every failure listed under error codes was seen, explained and fixed.
+- **Measured:** sizes, formats, the lowercase `png` signature, the MP3 frame headers (`7FFB`, checked), the ATF header,
+  the animation sequence names: what Haruhi's files are, not tested limits.
+- **Not tested:** whether the "required by screens" tables are all really required (everything Haruhi has was
+  copied; none was left out to see); whether screens not opened in the test (Town, home-screen character, codex) ask
+  for more files (the log would name them); whether plain PNG / plain MP3 / a `png2atf` cut-in are accepted for new
+  art; the id digit rule below 5★ and the `character.json` element numbering beyond Fire. "Optional" items were
+  tested only where said (titles, the Rates list).
 
 ### 1. Ids (pick first; everything else derives from them)
 
