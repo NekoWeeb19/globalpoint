@@ -120,6 +120,71 @@ again: the phone deletes unit files the PC no longer has. The art update can sta
   After a C8601 the game deletes its copy of that table; the next update puts it back. Fix the cause, then
   restart the server so it rebuilds.
 
+## Changing an existing unit
+
+Custom unit files are only for new units: a file that uses a CN unit's id or string id is refused. To change a
+unit the game already has, use one of these two. Both last through every schedule rebuild.
+
+### Its numbers and text (table rows): `assets/kit_dates.json`
+
+This is the file behind [Balance by Date](../README.md#balance-by-date). A stage whose `until` date is far ahead
+(2199) never ends, so its rows always replace the game's own:
+
+```json
+"111069": {
+  "name": "Haruhi: my changes",
+  "stages": [{
+    "until": "2199-12-31 00:00:00",
+    "source": "my edit",
+    "rows": {
+      "upload/5c/6a4f0e2ceb1dbcf60f9b306b0f7bfd0eca55c9#111069/80": { "cols": { "0": 3000 } },
+      "upload/5c/6a4f0e2ceb1dbcf60f9b306b0f7bfd0eca55c9#111069/100": "3300,850",
+      "master/ability/ability.orderedmap#1110691": "<the whole row>"
+    }
+  }]
+}
+```
+
+- **Row names** are `<table>#<row key>`. The table is a logical name (`master/ability/ability.orderedmap`) or a
+  stored path (`upload/5c/6a4f…`, for tables without a known name, like the stats table above). In a nested
+  table the keys join with `/`: stats are `<id>/<level>`, Mana Board nodes `<id>/<board>/<index>`. The research
+  doc's [table list](research/new-units.md#the-tables-19) and
+  [column appendix](research/new-units.md#appendix-the-19-tables-column-by-column) give every table, key and
+  column.
+- **Values** are the whole row's text, or `{ "cols": { "<column>": value } }` to change only some columns of
+  the row's first line (the example sets Lv 80 HP to 3000 and keeps ATK).
+- **A unit that already has balance stages** (e.g. Vagner, 111001) uses the earliest stage whose date is still
+  ahead, and only that stage's rows. Add your rows to each of its stages too, or they don't apply until its
+  old stages' dates have passed.
+- **Then restart the server**: an edited `kit_dates.json` makes it rebuild the game update (on a phone, copy
+  from the PC first; the file comes with the companion app's server, so it needs an app built from the edited
+  repository). The build log says `Unit kits before a balance change: N row(s) in <table>`.
+- What the game can do is fixed, as for new units: new numbers and combinations of existing ability kinds and
+  skill commands, no new mechanics. The server keeps its own copy of a few things (rarity and element in
+  `assets/character.json`, Mana Board costs in `assets/mana_node.json`): change those to match if you change
+  them in the rows.
+
+### Its pictures, voices and animations: an art update
+
+An update can carry a file under the same name as the game's own; the newest copy wins (StarPoint's translation
+and art updates replace CN files this way). Make a files list with the unit's existing file names and your new
+files, and build it like a custom unit's art update:
+
+```json
+[{ "path": "production/medium_upload/ab/cdef…", "from": "D:/my art/square_0.png" }]
+```
+```bash
+node scripts/build_cn_patch.cjs 1.4.950 <newest version> my_art.json
+```
+
+- `scripts/research/unit_files.cjs <id>` lists the unit's files by logical path. The stored name is
+  `uploadPath(<logical path>, <folder>)` from `scripts/cdn_hash.cjs`, in the same folder (`upload`,
+  `medium_upload` or `android_upload`) the game's copy is in. `clone_cn_unit.cjs` shows how to look the folder up.
+- Keep the formats and sizes (see [the files](research/new-units.md#3-files-76-most-players-never-see-the-folder-names)).
+  An animation's sprite sheet, `.atlas` and `.frame` files must match each other, and a picture of another shape
+  may need its crop rows (`trimmed_image`, `character_image`) changed too, through `kit_dates.json` above.
+- Phones get it like any game update: **Download from PC** with **Game updates** ticked.
+
 ## Adding a unit (details)
 
 1. **Make the unit**: a unit file (format in [The unit file](#the-unit-file)) plus its files. Nothing after this

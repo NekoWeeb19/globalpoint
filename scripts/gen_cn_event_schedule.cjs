@@ -439,18 +439,21 @@ async function main() {
     const PASS_BANNER = { banner: fileOf("master/feature_banner/feature_banner_secondary.orderedmap"), pass: fileOf("master/pass_card/pass_card_event.orderedmap"), id: "20016" }
     // Unit kits before a balance change (assets/kit_dates.json, scripts/kit_dates.cjs): until a stage's date
     // on the game clock its rows ship instead of the game's own. The tables are shipped whenever the file
-    // exists, so a later update puts the game's own rows back.
+    // exists, so a later update puts the game's own rows back. A stage with a far "until" (e.g. 2199) is a
+    // lasting change to an existing unit (docs/CUSTOM_UNITS.md, "Changing an existing unit"). Tables are named by
+    // logical name or by stored path (upload/xx/..., for tables without a known name, e.g. character_status).
+    const CU = require("./custom_units.cjs")
     const KIT = require("./kit_dates.cjs")
     const kits = KIT.readKits(path.join(ROOT, "assets", "kit_dates.json"))
     const kitRows = new Map() // file -> Map(row key -> old text or column patch)
     const kitTables = new Set()
     const kitNow = gameNowMs()
     for (const [unit, stages] of kits ?? []) {
-        for (const stage of stages) for (const ref of Object.keys(stage.rows)) kitTables.add(fileOf(ref.slice(0, ref.indexOf("#"))))
+        for (const stage of stages) for (const ref of Object.keys(stage.rows)) kitTables.add(CU.tableFile(ref.slice(0, ref.indexOf("#"))))
         const stage = KIT.activeStages(new Map([[unit, stages]]), kitNow).get(unit)
         if (stage === null) continue
         for (const [ref, text] of Object.entries(stage.rows)) {
-            const file = fileOf(ref.slice(0, ref.indexOf("#")))
+            const file = CU.tableFile(ref.slice(0, ref.indexOf("#")))
             if (!kitRows.has(file)) kitRows.set(file, new Map())
             kitRows.get(file).set(ref.slice(ref.indexOf("#") + 1), text)
         }
@@ -470,7 +473,6 @@ async function main() {
     // added to every table they touch, and those tables always ship, so a rebuild never drops a unit a save has
     // (C8601). The unit's own files (art, voices) are a separate update; a unit whose files aren't in the CN
     // files or StarPoint's updates yet is left out (the game would ask for them: "Insufficient data").
-    const CU = require("./custom_units.cjs")
     const custom = CU.readCustomUnits()
     for (const p of custom.problems) console.log(`Custom unit skipped: ${p}`)
     const customTables = CU.unitTables(custom.units)
