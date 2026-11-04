@@ -6,7 +6,8 @@ patch, plus two server data entries. On the StarPointTest emulator it was mailed
 the unit list. Its detail page worked, and so did its skill **Preview** (a real battle run, with the new skill script,
 skill effects and voices). It was leveled to 80, uncapped and EX Boosted. Mana Board 1 was unlocked in full,
 **awakening included** (awakened art, voice line and upgraded leader talent), it **finished a single-player quest battle and a co-op battle**, and it took an armament and
-an ability soul.
+an ability soul. A second copy stacked as a normal duplicate (with its Fire EX Boost material), and it
+**dropped from a real summon banner** once its id was added to that banner's pool.
 
 The test unit is a clone of Haruhi Suzumiya (111069) under a new id and string id, so every one of its files is a
 *new* file. That makes it the same path a hand-made unit would take. What a hand-made unit would still need is new
@@ -135,7 +136,8 @@ Test run (emulator 5556, companion server, game at schedule build 1.4.805):
    server; levels 1-80, uncap, EX Boost, Mana Board 1 with awakening all work. A quest battle → **asset recovery**
    for `ui/skill_cutin_1.atf.deflate`.
 5. 1.4.954: the two `.atf.deflate` cut-ins added (Android folder) → single-player quest battle and co-op battle
-   finished; equipping an armament and an ability soul works.
+   finished; equipping an armament and an ability soul works. A second copy by mail: the unit-obtained scene, stack +1
+   and a Fire EX Boost item. Added to banner 1613's 5★ pool (`assets/gacha.json`): pulled with the normal result screen.
 
 Not tested yet: Mana Board 2 (its open date row is copied from Haruhi), multiplayer with another device.
 
@@ -157,6 +159,18 @@ Not tested yet: Mana Board 2 (its open date row is copied from Haruhi), multipla
 5. **Voices.** Optional. Game MP3s have each frame's sync byte 0xFF stored as 0x7F (wdfp-extractor's restoreMp3);
    a new clip should be stored the same way (untested whether plain MP3 also plays).
 6. **Ids.** Pick an id with the right rarity/element digits that CN never used; Mana Board ids follow from it.
+
+## Summoning
+
+The draw is server data: each banner in `assets/gacha.json` lists its pool by tier, and adding the unit's id there is
+enough to pull it (tested on banner 1613). The result screen uses files the unit already has. Two details:
+- `src/lib/gacha.ts` rolls 0-1000 and walks the tier's list in order, so the weights (`rarity`, per mille) must still
+  sum to about 1000: rescale the others, or the added unit at the end is almost never picked.
+- The banner's Rates screen comes from CN's odds table (`master/gacha_odds/<id>`), so without a row there the unit
+  drops but isn't listed. A featured banner (pictures, feature content, pickup movie) is a much larger job.
+
+An id the server doesn't know is skipped (the roll is lost, no error); an id the server knows but the game's tables
+don't would be saved and then break the save (C8601), so pools must only name units that exist on both sides.
 
 **Bosses and events** follow the same rules (data tables + files + the server's own quest data); the Haunt and
 the event schedule already add rows that way. They weren't tested here.
