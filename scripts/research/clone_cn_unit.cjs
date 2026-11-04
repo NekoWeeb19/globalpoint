@@ -62,13 +62,15 @@ const TABLES = {
     "upload/b9/132d27178d27f9d91df89fc47e106bbaf2d5b5": [[SRC.id, NEW.id, t => t]], // full_shot_image_attribute
     "upload/3e/b411841802398d5b21d422579f2eaa65d30c0e": [[SRC.id, NEW.id, t => t]], // character_image
     "upload/57/8872ecbc78561807e6846b3980c5dea980d8ce": [[SRC.id, NEW.id, t => t]], // upskill
-    "upload/ac/b038c35f3048ba7ca07a6a84307b2fb10c041c": [[SRC.id, NEW.id, t => t]], // battle sound effects by frame
+    "upload/ac/b038c35f3048ba7ca07a6a84307b2fb10c041c": [[SRC.id, NEW.id, t => t]], // character_gacha_sound: "unit joins" animation sounds by frame
     "upload/1d/222e5126fc7ebe3f22c7efe87325f73742eb4f": [[SRC.id, NEW.id, t => csvMap(t, c => { c[0] = node(c[0]) })]], // mana_node
     "upload/27/7b65484214436114201ae654fefa60fdc822ea": [[SRC.id, NEW.id, t => csvMap(t, c => { // generated/mana_board
         c[0] = node(c[0]); if (c[5] && c[5] !== "(None)") c[5] = c[5].split(",").map(node).join(",")
     })]],
     "upload/61/408ec4cc67e1bcf9b4d74722f57ee2f95bd995": [["1" + SRC.id, "1" + NEW.id, t => csvMap(t, c => { // encyclopedia
         c[0] = c[0].replace(SRC.id, NEW.id); c[1] = "character_" + NEW.dev; c[5] = NEW.id; c[6] = NEW.dev
+        // 21/22 condition_owned_character_1/2: the entry unlocks when this unit is owned
+        for (let i = 7; i < c.length; i++) if (c[i] === SRC.id) c[i] = NEW.id
     })]],
     "upload/92/dcd1cc81f29794f0606ffe39f68d4e8740c8fa": [[SRC.dev, NEW.dev, t => csvMap(t, c => { // story_character
         c[0] = NEW.name; for (let i = 2; i < c.length; i++) c[i] = c[i].replace(devRe, NEW.dev)

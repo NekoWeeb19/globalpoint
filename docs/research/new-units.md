@@ -1,5 +1,13 @@
 # New units in the CN app from data only (research, 2026-11-03)
 
+> [!IMPORTANT]
+> ## 🤖 Written by AI
+> This research and write-up were done by **Claude** (Anthropic's AI) in a Claude Code session, with the
+> repository owner testing in the game alongside. The facts come from the game's own data (every CN table scanned,
+> the file list checked, files measured), the decompiled CN client, and tests on an Android emulator; the owner
+> confirmed the battle, co-op, equipment, uncap, Mana Board 2 and summon results by hand. Parts that were not
+> tested are marked as such in the checklist. Treat those as educated guesses until someone tries them.
+
 **Result: it works.** A brand-new unit (id 111907, string id `gp_test_haruhi`, "Haruhi (GP Test)") was added to the
 patched CN 1.8.1 app with **no game-code change**: table rows plus files, shipped as an ordinary StarPoint update
 patch, plus two server data entries. On the StarPointTest emulator it was mailed to a save and claimed, and it showed in
@@ -36,8 +44,10 @@ content: art, a kit, a skill script. The full list of what a unit needs is the
 
 ## How the game finds a unit
 
-- **The id** (`111907`) keys most tables. Digit 1 = rarity (1 = 5★), digit 2 = element (1 fire … 6 dark). Unused ids
-  work; nothing checks a range.
+- **The id** (`111907`) keys most tables. By convention digit 1 = rarity (1 = 5★) and digit 2 = element (1 fire …
+  6 dark), but the game reads rarity and element from the character row, not the id: CN's own 700000-700019 and
+  999999 break the pattern. Only StarPoint reads a digit (`src/lib/gacha.ts`: the first digit picks the summon
+  animation's rarity). Unused ids work; nothing checks a range.
 - **The string id** (character column 0, `gp_test_haruhi`) is the folder of every file:
   `character/<string id>/ui/...`, `/pixelart/...`, `/voice/...`, `/battle/...`. *(code)*
 - **Character column 8** names the skill (`master/skill/action_skill` key `<name>/1`, `/2`). The skill row's
@@ -64,7 +74,7 @@ Found by decoding every CN table (3,895) and searching for the id and the string
 | character stance_detail `d7/50c2…` | id | |
 | full_shot_image_attribute `b9/132d…`, character_image `3e/b411…`, trimmed_image `fb/ab43…` | id/0,1; picture path | picture crops |
 | upskill `57/8872…` | id | |
-| battle sound effects `ac/b038…` | id/frame | |
+| character_gacha_sound `ac/b038…` | id/frame | sounds of the "unit joins" animation |
 | master/mana_board/mana_node | id/board/index | node ids as above |
 | master/generated/mana_board | id/board/index | layout; col 5 = parent node ids |
 | master/mana_board/mana_board2_open_condition | id | |
@@ -148,17 +158,27 @@ Test run (emulator 5556, companion server, game at schedule build 1.4.805):
 
 Not tested yet: multiplayer with another device, a real phone. A schedule rebuild with the unit as a custom unit
 (docs/CUSTOM_UNITS.md) works on the emulator: see the test there.
+The codex (encyclopedia) entry wasn't opened; the tested patches still had Haruhi's id as its unlock condition
+(column 21), which `clone_cn_unit.cjs` now replaces.
 
 ## Checklist: everything a custom unit needs
 
-Everything below was required for, or verified on, the test unit. "Optional" means the unit works without it.
-Sizes and formats are Haruhi's own files, measured.
+How sure each part is:
+- **Proven in game:** a unit with exactly these ids, rows, files and server entries works in everything tested
+  (see the proof of concept). Every failure listed under error codes was seen, explained and fixed.
+- **Measured:** sizes, formats, the lowercase `png` signature, the MP3 frame headers (`7FFB`, checked), the ATF header,
+  the animation sequence names: what Haruhi's files are, not tested limits.
+- **Not tested:** whether the "required by screens" tables are all really required (everything Haruhi has was
+  copied; none was left out to see); whether screens not opened in the test (Town, home-screen character, codex) ask
+  for more files (the log would name them); whether plain PNG / plain MP3 / a `png2atf` cut-in are accepted for new
+  art; the `character.json` element numbering beyond Fire. "Optional" items were
+  tested only where said (titles, the Rates list).
 
 ### 1. Ids (pick first; everything else derives from them)
 
 | Id | Rule | Test unit |
 |---|---|---|
-| Unit id | 6 digits; digit 1 = rarity (1 = 5★ … 5 = 1★), digit 2 = element (1 fire, 2 water, 3 thunder, 4 wind, 5 light, 6 dark); never used by CN | 111907 |
+| Unit id | 6 digits, not one of CN's 505 ids. Keep digit 1 = rarity (1 = 5★ … 5 = 1★) if the unit can be summoned (the server picks the summon animation from it); digit 2 = element (1 fire, 2 water, 3 thunder, 4 wind, 5 light, 6 dark) is convention only; digits 3-6 are free | 111907 |
 | String id | lowercase folder name for every file; unique | `gp_test_haruhi` |
 | Skill name | character column 8, key of the skill rows (usually = string id) | `gp_test_haruhi` |
 | Ability ids | unit id × 10 + 1..6 | 1119071-1119076 |
@@ -175,7 +195,8 @@ All copied from a template unit and edited. Text fields are what players read (E
   mana_node + generated/mana_board (both boards), mana_board2_open_condition (board 2 open date).
 - **Required by screens:** character_speech (home lines, voice names), story_character (name, expressions),
   stance_detail, skill_preview_character, upskill, full_shot_image_attribute, character_image and
-  trimmed_image (picture crops), encyclopedia, the battle sound-effect table (`ac/b038…`).
+  trimmed_image (picture crops), encyclopedia (its unlock condition, column 21, names the unit itself), character_gacha_sound (`ac/b038…`, the
+  "unit joins" animation sounds).
 - **Optional:** degree + degree_mission + degree_mission_reward (Lv 100 / board titles), gacha_odds (Rates list),
   gacha / feature banner rows, character episodes, event stories.
 
@@ -245,6 +266,15 @@ companion's `files/server/logs/cn_requests.log` (`/cn/crash`, `未找到素材 <
    sequences such as `special_land`/`special_pose`); portraits and icons at fixed sizes (the `ui/` list above);
    `trimmed_image`/`character_image` crop rows. `scripts/cn_sprite_merge.cjs`/`amf3.cjs` already write sheets and
    atlases. Drawing the art is the real cost.
+   **Art is data-driven:** no picture or animation is in the game code. The code fixes only names: the file paths
+   built from the string id, and the animation sequences it plays (battle: `neutral`, `walk_front`/`walk_back`,
+   `skill_ready`, `kachidoki`, `into_coffin`, `ghost_raise`, `ghost_neutral`, `revive`; join movie and skill:
+   `special_land`, `special_pose`). Everything else is in the unit's files and rows: how many frames each
+   sequence has and how long they show (`.timeline`), where each frame sits on the sheet and how it is offset
+   (`.atlas`: `n` frame name, `x`/`y`/`w`/`h`, `r` rotated, `fx`/`fy`/`fw`/`fh` placement in a 256×256 cell),
+   the drawing scale (`.frame`), and the portrait crops (`trimmed_image`, `character_image`,
+   `full_shot_image_attribute`). **Not studied yet:** the rules behind those values (frame counts per sequence,
+   timing, how crops are measured, which atlas fields are required); copy a template unit's and compare.
 4. **Skills.** A skill script is a JSON-shaped AMF3 tree (`["ActionDsl", 2, …, ["Block", [["Command",
    ["StopBall", …]], ["Command", ["ShowEffect", …, "battle/effect/skill_unique/<x>/<y>"]] …]]]`). New skills can
    combine existing commands and reuse any unit's effects. Writing one by hand needs the command list documented
@@ -267,3 +297,393 @@ don't would be saved and then break the save (C8601), so pools must only name un
 
 **Bosses and events** follow the same rules (data tables + files + the server's own quest data); the Haunt and
 the event schedule already add rows that way. They weren't tested here.
+
+## Appendix: the 19 tables, column by column
+
+Field names are the CN client's own (`pinball/master/generated/<Parser>.as` in the decompiled client, extracted by
+`scripts/research/table_columns.cjs`, not guessed); values are the test unit's rows as shipped (English text). Columns that are
+always empty for this unit are left out except where the client names them. "Example key" is one row; tables keyed
+by unit/level, unit/board/node etc. have one row per sub-key.
+
+**ability and leader_ability** carry a whole effect tree per row (one CSV line per effect). The decompiler could
+not read the large effect parsers (stack overflow), so only their block layout is from the client:
+
+| Ability col | Leader col | Block (client name) |
+|---|---|---|
+| 0-2 | 0 | string_id, unisonable (false = main unit only), statue_group_id (icon group); leader: string_id |
+| 3 | 1 | trigger kind: Instant / During / Opening |
+| 4, 11, 18 | 2, 9, 16 | precondition, precondition2, precondition3 (unit / party conditions) |
+| 25 | 23 | instant_trigger |
+| 37 | 35 | instant_precontent (target, threshold, limit) |
+| 44 | 42 | instant_content (the effect) |
+| 67 | 65 | during_accumulation_trigger |
+| 79 | 77 | during_trigger |
+| 90 | 88 | even_if_owner_dead |
+| 91 | 89 | during_content (the effect) |
+| 102 | 100 | opening (strength) |
+
+Columns inside those blocks that were changed and checked in game during the kit-by-date work (Amelia's old kit):
+ability 6 unit condition (9/10 count, 11 element), 27 trigger (8 Fever starts, 23 skill, 77 elapsed seconds, …),
+28 who triggers, 30/31 threshold, 34 max stacks, 47 effect (32 attack up, 205 HP, 206 heal %, 213 Fever gauge, …),
+48 target (0 this unit, 2 leader, 5 party filtered by 49), 51/52 value at Lv 1/max (100000 = 100%), 57/58 duration
+in frames × 100000; during: 97 condition (0 HP above, 1 HP below, 4 in Fever), 98 subject, 100/101 threshold,
+109 effect, 110 target, 113/114 values. Leader: the same columns −2; 56 = Fever time.
+
+### master/character/character (`2d/5cb9…`, parser `CharacterValues`)
+
+Example key: `111907`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | string_id | gp_test_haruhi |
+| 1 | gacha_odds_weight | 1 |
+| 2 | rarity | 5 |
+| 3 | element | 0 |
+| 4 | race | Human |
+| 5 | character_tag |  |
+| 6 | speciality_type | 0 |
+| 7 | gender | Female |
+| 8 | action_skill | gp_test_haruhi |
+| 9 | action_skill_switching | (None) |
+| 10 | action_skill_switching.condition |  |
+| 11 | action_skill_switching.condition.unique_condition_id |  |
+| 12 | action_skill_switching.multiballs |  |
+| 13 | action_skill_switching.threshold |  |
+| 14 | action_skill_switching.action_skill |  |
+| 15 | action_skill_switching.no_voice |  |
+| 16 | action_skill_switching.no_ready_voice |  |
+| 17 | leader_ability (id = unit id) | 111907 |
+| 18 | leader_ability (name) | Clone of a Hero |
+| 19 | ability_1 | 1119071 |
+| 20 | ability_2 | 1119072 |
+| 21 | ability_3 | 1119073 |
+| 22 | ability_4 | 1119074 |
+| 23 | ability_5 | 1119075 |
+| 24 | ability_6 | 1119076 |
+| 25 | mana_board_kind | 2 |
+| 26 | stance | Attacker |
+| 27 | identity_character_id | 111907 |
+| 28 | pedestal_image | (None) |
+| 29 | max_evolution_level | 1 |
+| 30 | omit_character_quest | true |
+| 31 | web_site_publish | false |
+| 32 | obtain_source | 0 |
+| 33 | mana_node_auto_mode | 1 |
+| 34 | mana_node_auto_mode.kind |  |
+| 35 | mana_node_auto_mode.has_board2 |  |
+| 36 | max_ability_powers | 6,6,6,6,6,6 |
+
+### master/character/character_text (`8b/0357…`, parser `CharacterTextValues`)
+
+Example key: `111907`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | name | Haruhi (GP Test) |
+| 1 | furigana | LIANGGONGCHUNRI |
+| 2 | description | A hero who crossed over from another world and the leader… |
+| 3 | nickname | Unabashed Hero |
+| 4 | skill_name_1 | All-Out Attack! |
+| 5 | skill_description_1 | Swings the Hero's Sword (SOS Brigade Leader exclusive) wi… |
+| 6 | skill_name_2 | All-Out Attack!+ |
+| 7 | skill_description_2 | Swings the Hero's Sword (SOS Brigade Leader exclusive) wi… |
+| 8 | leader_ability_name | (None) |
+| 9 | voice_actor | (None) |
+| 10 | (not read by this client) leader skill name | Power to Liven Up the World |
+| 11 | (not read by this client) voice actor | Aya Hirano |
+
+### character_status (`5c/6a4f…`, parser `CharacterStatusValues`)
+
+Example key: `111907/1`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | hp | 47 |
+| 1 | atk | 13 |
+
+### master/character/character_speech (`b4/a286…`, parser `CharacterSpeechValues`)
+
+Example key: `111907`; 8 lines in this row.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | kind | 0 |
+| 1 | kind.constraint | 0 |
+| 2 | kind.evolution_level | 1 |
+| 3 | speech | This place is SO much fun! There's something new to disco… |
+| 4 | voice_path | home/kokotte_hontoni |
+
+### ability (`1e/664c…`, parser `AbilityValues`)
+
+Example key: `1119073`; 2 lines in this row.
+
+See the block layout above; the named columns the client decodes:
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | string_id | gp_test_haruhi_3 |
+| 1 | unisonable | false |
+| 2 | statue_group_id | action_skill |
+| 3 | trigger | 0 |
+| 37 | trigger.instant_precontent |  |
+| 38 | trigger.instant_precontent.target |  |
+| 40 | trigger.instant_precontent.threshold |  |
+| 41 | trigger.instant_precontent.threshold |  |
+| 42 | trigger.instant_precontent.limit |  |
+| 43 | trigger.instant_precontent.unique_condition_id |  |
+| 90 | trigger.even_if_owner_dead |  |
+| 102 | trigger.opening |  |
+| 103 | trigger.opening.strength |  |
+| 104 | trigger.opening.strength |  |
+
+### leader_ability (`ff/8435…`, parser `LeaderAbilityValues`)
+
+Example key: `111907`; 3 lines in this row.
+
+See the block layout above; the named columns the client decodes:
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | string_id | gp_test_haruhi |
+| 1 | trigger | 0 |
+| 2 | trigger.precondition |  |
+| 3 | trigger.precondition.trigger_puller | 0 |
+| 4 | trigger.precondition.trigger_puller.character_groups | 0 |
+| 5 | trigger.precondition.threshold |  |
+| 6 | trigger.precondition.threshold |  |
+| 7 | trigger.precondition.character_groups |  |
+| 8 | trigger.precondition.unique_condition_id |  |
+| 9 | trigger.precondition2 |  |
+| 10 | trigger.precondition2.trigger_puller |  |
+| 11 | trigger.precondition2.trigger_puller.character_groups | 0 |
+| 12 | trigger.precondition2.threshold |  |
+| 13 | trigger.precondition2.threshold |  |
+| 14 | trigger.precondition2.character_groups |  |
+| 15 | trigger.precondition2.unique_condition_id |  |
+| 35 | trigger.instant_precontent |  |
+| 36 | trigger.instant_precontent.target |  |
+| 38 | trigger.instant_precontent.threshold |  |
+| 39 | trigger.instant_precontent.threshold |  |
+| 40 | trigger.instant_precontent.limit |  |
+| 41 | trigger.instant_precontent.unique_condition_id |  |
+| 88 | trigger.even_if_owner_dead |  |
+| 100 | trigger.opening | 4 |
+| 101 | trigger.opening.strength |  |
+| 102 | trigger.opening.strength |  |
+
+### master/skill/action_skill (`91/7989…`, parser `ActionSkillValues`)
+
+Example key: `gp_test_haruhi/1`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | name | All-Out Attack! |
+| 1 | description | Swings the Hero's Sword (SOS Brigade Leader exclusive) wi… |
+| 2 | icon_id | dynamic/skill/atk_surround |
+| 3 | unisonable | true |
+| 4 | min_skill_weight | 600 |
+| 5 | max_skill_weight | 600 |
+| 6 | skill_chain_strength | 1 |
+| 7 | program_path | battle/action/skill/action/rare5/gp_test_haruhi$gp_test_h… |
+| 8 | autoplay_auto_invocation_condition | 1 |
+| 9 | autoplay_auto_invocation_condition.area_shape | 0 |
+| 10 | autoplay_auto_invocation_condition.area_shape.p1 | 225 |
+| 11 | autoplay_auto_invocation_condition.area_shape.p2 |  |
+| 12 | autoplay_auto_invocation_condition.area_shape.offset_x | 0 |
+| 13 | autoplay_auto_invocation_condition.area_shape.offset_y | -100 |
+| 14 | autoplay_auto_invocation_condition.area_shape.direction_kind |  |
+| 15 | autoplay_auto_invocation_condition.area_shape.direction_degrees |  |
+| 16 | autoplay_auto_invocation_condition_changed_by_skill_flag | (None) |
+| 17 | autoplay_auto_invocation_condition_changed_by_skill_flag.area_shape |  |
+| 18 | autoplay_auto_invocation_condition_changed_by_skill_flag.area_shape.p1 |  |
+| 19 | autoplay_auto_invocation_condition_changed_by_skill_flag.area_shape.p2 |  |
+| 20 | autoplay_auto_invocation_condition_changed_by_skill_flag.area_shape.offset_x |  |
+| 21 | autoplay_auto_invocation_condition_changed_by_skill_flag.area_shape.offset_y |  |
+| 22 | autoplay_auto_invocation_condition_changed_by_skill_flag.area_shape.direction_kind |  |
+| 23 | autoplay_auto_invocation_condition_changed_by_skill_flag.area_shape.direction_degrees |  |
+
+### skill_preview_character (`aa/abdd…`, parser `SkillPreviewCharacterValues`)
+
+Example key: `111907`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | character_detail_quest_id | 901 |
+| 1 | character_detail_enables_ability | false |
+| 2 | character_detail_enables_powerflip | false |
+| 3 | character_info_quest_id | 901 |
+| 4 | character_info_enables_ability | false |
+| 5 | character_info_enables_powerflip | false |
+| 6 | log | (None) |
+| 7 | clip | (None) |
+
+### character_stance_detail (`d7/50c2…`, parser `CharacterStanceDetailValues`)
+
+Example key: `111907`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | main_stance |  |
+| 1 | main_stance | 1 |
+| 2 | main_stance | 1 |
+| 3 | unison_stance | 2 |
+| 4 | unison_stance |  |
+| 5 | unison_stance | 1 |
+| 6 | unison_stance | 1 |
+| 7 | unison_stance | 2 |
+
+### full_shot_image_attribute (`b9/132d…`, parser `FullShotImageAttributeValues`)
+
+Example key: `111907/0`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | pivot_x | 1000 |
+| 1 | pivot_y | 1000 |
+| 2 | scale | 1 |
+| 3 | face_x | 1016 |
+| 4 | face_y | 429 |
+
+### generated/character_image (`3e/b411…`, parser `CharacterImageValues`)
+
+Example key: `111907/0`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | full_shot_x | 261 |
+| 1 | full_shot_y | 272 |
+| 2 | full_shot_width | 1399 |
+| 3 | full_shot_height | 1702 |
+
+### generated/trimmed_image (`fb/ab43…`, parser `TrimmedImageValues`)
+
+Example key: `character/gp_test_haruhi/ui/full_shot_1440_1920_0`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | x | 261 |
+| 1 | y | 272 |
+| 2 | width | 2000 |
+| 3 | height | 2000 |
+
+### upskill (`57/8872…`, parser `UpskillValues`)
+
+Example key: `111907`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | skillevolution | common_attack_up |
+| 1 | skillevolution | skill_damage_up |
+| 2 | skillevolution | (None) |
+| 3 | skillevolution | (None) |
+| 4 | skillevolution | (None) |
+| 5 | skillevolution | (None) |
+| 6 | skilllevel | common_attack_up |
+| 7 | skilllevel | skill_damage_up |
+| 8 | skilllevel | (None) |
+| 9 | skilllevel | (None) |
+| 10 | skilllevel | (None) |
+| 11 | skilllevel | (None) |
+
+### character_gacha_sound (`ac/b038…`, parser `CharacterGachaSoundValues`)
+
+Example key: `111907/11`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | sound | sound_effect/weapon/se_throw_slow |
+
+### master/mana_board/mana_node (`1d/222e…`, parser `ManaNodeValues`)
+
+Example key: `111907/1/1`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | multiplied_id | 223814201 |
+| 1 | kind | 0 |
+| 2 | kind.required_item_ids | 1 |
+| 3 | kind.required_item_counts | 3 |
+| 4 | kind.required_mana | 60 |
+| 5 | kind.effect | 0 |
+| 6 | kind.effect.skill_slot_index | 1 |
+
+### master/generated/mana_board (`27/7b65…`, parser `ManaBoardValues`)
+
+Example key: `111907/1/6`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | multiplied_id | 223814206 |
+| 1 | x | 5 |
+| 2 | y | -10 |
+| 3 | road | sssss |
+| 4 | pedestal_size | 0 |
+| 5 | parent | 223814201 |
+
+### master/mana_board/mana_board2_open_condition (`bc/0bc8…`, parser `ManaBoard2OpenConditionValues`)
+
+Example key: `111907`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | start_time | 2024-03-21 12:00:00 |
+| 1 | end_time | 2199-12-31 23:59:59 |
+
+### master/encyclopedia/encyclopedia (`61/408e…`, parser `EncyclopediaValues`)
+
+Example key: `1111907/1`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | multiplied_id | 111190701 |
+| 1 | string_id | character_gp_test_haruhi |
+| 2 | is_secret | false |
+| 3 | open_time | 2022-11-10 12:20:20 |
+| 4 | kind | 1 |
+| 5 | kind.character_id | 111907 |
+| 6 | kind.story_character_id | gp_test_haruhi |
+| 7 | kind.npc_character_id |  |
+| 8 | kind.has_pixel_art |  |
+| 9 | kind.voice_actor |  |
+| 10 | kind.race |  |
+| 11 | kind.gender |  |
+| 12 | kind.chapter_id |  |
+| 13 | kind.event |  |
+| 14 | kind.event |  |
+| 15 | kind.world_banner |  |
+| 16 | kind.world_header_background |  |
+| 17 | kind.name |  |
+| 18 | kind.furigana |  |
+| 19 | related_keywords |  |
+| 20 | information | The commander of the SOS Brigade, summoned from another w… |
+| 21 | condition_owned_character_1 | 111907 |
+| 22 | condition_owned_character_2 | (None) |
+| 23 | condition_quest_clear_1 | (None) |
+| 24 | condition_quest_clear_1 |  |
+| 25 | condition_quest_clear_1 |  |
+| 26 | condition_quest_clear_1 |  |
+| 27 | condition_quest_clear_1_multiplied_ids | (None) |
+| 28 | condition_quest_clear_2 | (None) |
+| 29 | condition_quest_clear_2 |  |
+| 30 | condition_quest_clear_2 |  |
+| 31 | condition_quest_clear_2 |  |
+| 32 | condition_quest_clear_2_multiplied_ids | (None) |
+| 33 | condition_tag_1 | (None) |
+| 34 | condition_tag_2 | (None) |
+| 35 | condition_other_keyword_1 | (None) |
+| 36 | condition_other_keyword_2 |  |
+| 37 | condition_other_keyword_2 | (None) |
+| 39 | (not read by this client) hash | 33e7c0ab364c53dccf376b706d1e761b934c8290 |
+
+### master/story/story_character (`92/dcd1…`, parser `StoryCharacterValues`)
+
+Example key: `gp_test_haruhi`.
+
+| Col | Client field | Test unit value |
+|---|---|---|
+| 0 | name | Haruhi (GP Test) |
+| 1 | name_label_background_color | 0xa32535 |
+| 2 | voice_directory | character/gp_test_haruhi/voice/ |
+| 3 | face | normal,anger,guess,normal_b,shame,smile,smile_b,surprise,… |
+| 4 | base_image_path | character/gp_test_haruhi/ui/story/base_0,character/gp_tes… |
+| 5 | face_image_path | character/gp_test_haruhi/ui/story/normal,character/gp_tes… |
