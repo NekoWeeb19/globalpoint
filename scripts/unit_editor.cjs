@@ -27,6 +27,8 @@ const T = {
 const FILE = Object.fromEntries(Object.entries(T).map(([k, v]) => [k, uploadPath(v)]))
 const STATUS_LEVELS = ["1", "10", "80", "100"]
 const ABILITY_COLUMNS = 126
+/** The most lines an ability or leader skill may have (decided with the user; CN uses up to 8) */
+const MAX_LINES = 8
 const PREFIX = "unit-editor-"
 
 // ---- reading the game's tables ----------------------------------------------------------------------------
@@ -428,8 +430,11 @@ async function checkEdit(edit, advanced = false) {
         out.details = e
     } else out.details = []
     for (const s of edit.skills ?? []) out.skills.push(Number.isInteger(s.gaugeMin) && Number.isInteger(s.gaugeMax) && s.gaugeMin > 0 && s.gaugeMax > 0 ? [] : ["the skill gauge must be whole numbers above 0"])
+    // at most MAX_LINES lines per ability and leader skill (CN's own most: 6 per ability, 8 per leader skill)
+    out.tooMany = [...(edit.abilities ?? []).map((a, i) => [`Ability ${i + 1}`, a.lines.length]), ["Leader skill", edit.leader?.lines.length ?? 0]]
+        .filter(([, n]) => n > MAX_LINES).map(([what, n]) => `${what} has ${n} lines; the most is ${MAX_LINES}`)
     const lineErrors = [...out.abilities.flat(), ...out.leader].some(r => r.errors.length > 0)
-    out.ok = !lineErrors && [...out.stats, ...out.skills, out.details].every(e => e.length === 0)
+    out.ok = !lineErrors && out.tooMany.length === 0 && [...out.stats, ...out.skills, out.details].every(e => e.length === 0)
     return out
 }
 
@@ -530,7 +535,7 @@ async function editorData() {
     for (const part of ["condition", "conditionWho", "whenTrigger", "whenWho", "whileTrigger", "whileWho", "whenEffect", "whileEffect", "target"]) {
         parts[part] = Object.fromEntries(Object.entries(CODES[part]).map(([code, v]) => [code, { name: name(part, code), client: v.name, fields: v.fields }]))
     }
-    return { parts, blocks: CODES.blocks, words: WORDS, used: cat.used, pairs: cat.pairs, templates: cat.templates, groups: cat.groups, lines: cat.lines, classes: CLASSES, roles: ROLES }
+    return { parts, blocks: CODES.blocks, words: WORDS, used: cat.used, pairs: cat.pairs, templates: cat.templates, groups: cat.groups, lines: cat.lines, classes: CLASSES, roles: ROLES, maxLines: MAX_LINES }
 }
 
 /** Another unit's ability lines, to copy one. */
@@ -590,4 +595,4 @@ async function importKits(data) {
     return { imported, refused }
 }
 
-module.exports = { exportKits, importKits, CLASSES, ROLES, listUnits, getUnit, checkEdit, checkLine, saveUnit, resetUnit, editorData, unitLines, catalog, leaderToAbility, abilityToLeader, contradictions, _setBase: b => { base = b; catalogCache = null } }
+module.exports = { exportKits, importKits, CLASSES, ROLES, MAX_LINES, listUnits, getUnit, checkEdit, checkLine, saveUnit, resetUnit, editorData, unitLines, catalog, leaderToAbility, abilityToLeader, contradictions, _setBase: b => { base = b; catalogCache = null } }

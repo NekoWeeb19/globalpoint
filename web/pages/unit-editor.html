@@ -419,8 +419,11 @@
                 if (differs) head.appendChild(el("span", "px-3 py-1 rounded-full text-sm bg-primary-container text-on-primary-container", "changed"))
                 const tools = el("div", "flex flex-wrap gap-2 ml-auto")
                 const add = el("button", BTN, "+ New line"); add.type = "button"
-                add.onclick = () => { a.lines.push(newLine(a, "0")); render(); changed() }
+                const full = a.lines.length >= D.maxLines
+                if (full) { add.disabled = true; add.title = `The most is ${D.maxLines} lines` }
+                add.onclick = () => { if (a.lines.length >= D.maxLines) return; a.lines.push(newLine(a, "0")); render(); changed() }
                 const copy = el("button", BTN, "Copy a line from another unit"); copy.type = "button"
+                if (full) { copy.disabled = true; copy.title = `The most is ${D.maxLines} lines` }
                 copy.onclick = () => openCopy(a, title)
                 const reset = el("button", BTN, "Reset to game"); reset.type = "button"; reset.disabled = !differs
                 reset.onclick = () => { a.lines = a.game.map((l) => [...l]); render(); changed() }
@@ -668,6 +671,7 @@
                             const line = [...c], first = copyInto.lines[0] ?? copyInto.game[0]
                             for (let i = 0; i < 5; i++) if (i !== 5) line[i] = first?.[i] ?? line[i]
                             line[5] = c[5]
+                            if (copyInto.lines.length >= D.maxLines) { $("message").textContent = `That ability already has ${D.maxLines} lines, the most.`; return }
                             copyInto.lines.push(line); render(); changed()
                             $("message").textContent = `Copied: ${sentence(c)}`
                         }
@@ -710,7 +714,8 @@
                     if (dm) { dm.innerHTML = ""; for (const e of res.details ?? []) dm.appendChild(el("li", "px-3 py-1 rounded-lg bg-error-container text-on-error-container", "Can't save: " + e)) }
                     renderButtons()
                     const bad = [...res.abilities.flat(), ...res.leader].filter((r) => r.errors.length).length + (res.details?.length ? 1 : 0)
-                    if (bad) $("message").textContent = `${bad} line(s) can't be saved yet: see the red notes.`
+                    if (res.tooMany?.length) $("message").textContent = "Can't save: " + res.tooMany.join("; ") + "."
+                    else if (bad) $("message").textContent = `${bad} line(s) can't be saved yet: see the red notes.`
                     else if (dirty()) $("message").textContent = "Unsaved changes."
                 }).catch(() => { })
             }
