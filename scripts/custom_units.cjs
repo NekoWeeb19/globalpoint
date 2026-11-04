@@ -48,7 +48,12 @@ const nodeIdFits = (unit, board, id) => {
 /** What's wrong with a unit file (empty when nothing). */
 function unitProblems(unit) {
     const problems = []
-    if (!/^[1-5][1-6]\d{4}$/.test(String(unit.id ?? ""))) problems.push(`id "${unit.id}" isn't a unit id (6 digits: rarity 1-5, element 1-6, then 4)`)
+    // the game reads rarity and element from the character row (columns 2, 3), not the id (CN has 700000-700019, 999999);
+    // only StarPoint's summon reads the first digit (src/lib/gacha.ts: stars = 6 - digit), so it must match the rarity
+    // when the unit is in a summon banner. The second digit (element) is convention only.
+    if (!/^\d{6}$/.test(String(unit.id ?? ""))) problems.push(`id "${unit.id}" isn't a unit id (6 digits)`)
+    else if ((unit.banners ?? []).length > 0 && unit.character && Number(String(unit.id)[0]) !== 6 - Number(unit.character.rarity))
+        problems.push(`id ${unit.id} starts with ${String(unit.id)[0]}, but a summonable ${unit.character.rarity}★ unit needs ${6 - Number(unit.character.rarity)} (the summon screen's rarity comes from it)`)
     if (!/^[a-z0-9_]+$/.test(String(unit.dev ?? ""))) problems.push(`dev (string id) "${unit.dev}" must be lower case letters, digits and _`)
     if (!unit.character || typeof unit.character !== "object") problems.push("no character entry")
     if (!unit.rows || typeof unit.rows !== "object") problems.push("no rows")

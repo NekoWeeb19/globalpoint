@@ -27,6 +27,9 @@ check("Mana Board node ids are unit * 2000 + board * 200 + index", CU.manaNodeId
 const badNode = { ...example, manaNodes: { 1: { "222138201": {} } } }
 check("a Mana Board node id of another unit is refused", CU.unitProblems(badNode).some(p => p.includes("222138201")))
 check("a bad unit id is refused", CU.unitProblems({ ...example, id: "1234" }).length > 0)
+check("an id outside the digit pattern is fine when not summoned", CU.unitProblems({ ...example, id: "700050", manaNodes: {}, rows: {} }).length === 0)
+check("a summonable unit's first digit must match its rarity", CU.unitProblems({ ...example, id: "211907", banners: ["1613"], manaNodes: {}, rows: {} }).length === 1
+    && CU.unitProblems({ ...example, banners: ["1613"] }).length === 0)
 check("a table by stored path or logical name", CU.tableFile("upload/2d/5cb9b28d18f984a51b345a4d7aab03d77bddfc") === CU.CHARACTER_TABLE
     && CU.tableFile("master/character/character.orderedmap") === CU.CHARACTER_TABLE)
 

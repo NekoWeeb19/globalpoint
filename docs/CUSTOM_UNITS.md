@@ -52,7 +52,7 @@ art update into its game updates (a Wi-Fi copy with "Game updates" ticked), then
 
 ```jsonc
 {
-  "id": "111907",                 // 6 digits: rarity (1 = 5★), element (1 fire … 6 dark), then 4 unused by CN
+  "id": "111907",                 // 6 digits, not a CN id; first digit = 6 − rarity (1 = 5★) if it's in a banner
   "dev": "gp_test_haruhi",        // the string id: the folder of all its files, not used by CN
   "name": "Haruhi (GP Test)",     // for logs only (the game's name is in the character_text row)
   "character": { "name": "", "rarity": 5, "element": 0, "skill_count": 6, "cn": true },  // = assets/character.json entry
@@ -71,6 +71,9 @@ art update into its game updates (a Wi-Fi copy with "Game updates" ticked), then
   logical name (`master/character/character.orderedmap`). Rows nest like the table: a string is a row, an
   object is a map of rows. The rows are added at the end of the table (the game looks rows up by key);
   a row with the same key is replaced.
+- **Id**: the game reads rarity and element from the character row, not the id (CN itself has 700000-700019 and
+  999999). Only StarPoint's summon uses the first digit (★ = 6 − digit), so a unit listed in `banners` must start
+  with the digit of its rarity. The second digit (1 fire … 6 dark) is just the usual convention.
 - **Mana Board node ids** must be `unit × 2000 + board × 200 + index` (the game finds a node's row from its
   id). Files that break this are refused, in `manaNodes` and in the `mana_node` table's rows.
 - **Summon pools**: the unit goes into each listed banner's tier of its rarity at the tier's average weight,
