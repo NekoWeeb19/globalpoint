@@ -30,7 +30,9 @@ function scheduleFingerprint(dataDir) {
     // and the kit rows (assets/kit_dates.json): an edited row ships at the next start, not only when a date passes
     let kits = ""
     try { kits = crypto.createHash("sha1").update(fs.readFileSync(path.join(__dirname, "..", "assets", "kit_dates.json"))).digest("hex") } catch { }
-    return crypto.createHash("sha1").update(JSON.stringify(stable({ events, yearly, builder: BUILDER_REVISION, ...(custom ? { custom } : {}), ...(kits ? { kits } : {}) }))).digest("hex")
+    // and the enemy strength (scripts/enemy_scaling.cjs; only when set, so other installs keep their fingerprint)
+    const ES = require("./enemy_scaling.cjs"), enemy = ES.readEnemyScaling(dataDir)
+    return crypto.createHash("sha1").update(JSON.stringify(stable({ events, yearly, builder: BUILDER_REVISION, ...(custom ? { custom } : {}), ...(kits ? { kits } : {}), ...(ES.isDefault(enemy) ? {} : { enemy }) }))).digest("hex")
 }
 
 /** What the current CN update was built from, or null (an update built before this was recorded). */

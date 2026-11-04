@@ -200,6 +200,72 @@
                 </script>
             </section>
 
+            <section id="enemies" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                    <h3 class="text-xl text-on-background font-semibold">Enemy strength</h3>
+                    <span id="enemies-badge"
+                        class="px-4 py-1 rounded-full text-sm font-semibold bg-surface-container-high text-on-surface">Loading...</span>
+                </div>
+                <p class="text-on-surface-variant">Multiplies every enemy's HP and attack (regular enemies, bosses and what bosses summon) in every quest. 1x is the base game; above 1x is harder, below 1x easier. Saving rebuilds the CN game update: close and reopen the game to get it.</p>
+                <form id="enemies-form" class="flex flex-col gap-3">
+                    <div class="flex gap-3 flex-wrap items-end">
+                        <label class="flex flex-col gap-1 text-sm text-on-surface-variant">HP
+                            <input id="enemies-hp" type="number" min="0.1" max="10" step="0.05" required
+                                class="bg-surface-container rounded-2xl border border-outline-variant p-3 text-base text-on-surface" />
+                        </label>
+                        <label class="flex flex-col gap-1 text-sm text-on-surface-variant">Attack
+                            <input id="enemies-atk" type="number" min="0.1" max="10" step="0.05" required
+                                class="bg-surface-container rounded-2xl border border-outline-variant p-3 text-base text-on-surface" />
+                        </label>
+                        <button type="submit" id="enemies-save"
+                            class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Save</button>
+                    </div>
+                    <div class="flex gap-3 flex-wrap" id="enemies-presets">
+                        <button type="button" data-hp="1" data-atk="1" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">1x (base game)</button>
+                        <button type="button" data-hp="1.5" data-atk="1.2" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">HP 1.5x, attack 1.2x</button>
+                        <button type="button" data-hp="2" data-atk="2" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">2x both</button>
+                        <button type="button" data-hp="0.5" data-atk="0.5" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">0.5x both</button>
+                    </div>
+                    <p class="text-sm text-on-surface-variant">Any value from 0.1x to 10x; the presets fill the boxes, then press Save.</p>
+                </form>
+                <p id="enemies-message" class="text-sm text-on-surface-variant" role="status"></p>
+                <script>
+                    (function () {
+                        const $ = (id) => document.getElementById(id)
+                        const show = (data) => {
+                            $("enemies-badge").textContent = data.hp === 1 && data.atk === 1 ? "Base game" : `HP ${data.hp}x · attack ${data.atk}x`
+                            $("enemies-hp").value = data.hp
+                            $("enemies-atk").value = data.atk
+                        }
+                        fetch("/api/server/enemies").then(r => r.json()).then(show)
+                            .catch(error => { $("enemies-badge").textContent = "Unavailable"; $("enemies-message").textContent = "Could not load: " + error.message })
+                        for (const button of $("enemies-presets").querySelectorAll("button"))
+                            button.addEventListener("click", () => { $("enemies-hp").value = button.dataset.hp; $("enemies-atk").value = button.dataset.atk })
+                        $("enemies-form").addEventListener("submit", async (event) => {
+                            event.preventDefault()
+                            $("enemies-save").disabled = true
+                            $("enemies-message").textContent = "Saving..."
+                            try {
+                                const response = await fetch("/api/server/enemies", {
+                                    method: "POST", headers: { "content-type": "application/json" },
+                                    body: JSON.stringify({ hp: Number($("enemies-hp").value), atk: Number($("enemies-atk").value) })
+                                })
+                                const data = await response.json().catch(() => ({}))
+                                if (!response.ok) throw new Error(data.message || response.statusText)
+                                show(data)
+                                $("enemies-message").textContent = data.rebuilding
+                                    ? `Saved: enemies have ${data.hp}x HP and ${data.atk}x attack. The game update is rebuilding; close and reopen the game to get it.`
+                                    : "Saved (no change)."
+                            } catch (error) {
+                                $("enemies-message").textContent = "Error: " + error.message
+                            } finally {
+                                $("enemies-save").disabled = false
+                            }
+                        })
+                    })()
+                </script>
+            </section>
+
             <section id="gacha-rates" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
                 <div class="flex items-center justify-between gap-3 flex-wrap">
                     <h3 class="text-xl text-on-background font-semibold">Summon rates</h3>
