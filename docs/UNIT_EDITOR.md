@@ -79,8 +79,11 @@ works (the battle code is separate from the description code).
   `assets/custom_units/changes/unit-editor-<id>.json` (a unit change file, [CUSTOM_UNITS.md](CUSTOM_UNITS.md#changing-an-existing-unit));
   for a custom unit, its own file. The server rebuilds the CN game update right away.
 - **Close and reopen the game**: it downloads the update at the title screen.
-- **Phones** get it with **Download from PC** in StarPoint Companion (change files always come along). Edit on the
-  PC: a phone's own copy is replaced by the PC's at each copy.
+- **Phone only (no PC)**: the editor is also in StarPoint Companion's **Dashboard**. Saving there writes the change
+  file on the phone, and the phone rebuilds its own game update.
+- **With a PC**: phones get the PC's edits with **Download from PC** (change files always come along). That copy
+  replaces the phone's own edits with the PC's, so either edit on one side only, or **Download** a kit on the phone
+  first and import it on the PC.
 - **Reset unit to game** deletes the editor's change file and rebuilds. Other change files and Balance by Date kits
   for the unit are listed on the page and stay as they are (changes apply on top of a dated kit).
 
@@ -104,3 +107,10 @@ combination no CN unit has: the "not seen before" notice) and Lv 80 HP 3000. The
 update. Her unit page showed the line in the game's own words ("When this unit is a/the ⟨Water⟩ unit → 6 seconds have
 passed → +50 Combo", locked until her Mana node), and in a quest battle with the node learned the combo jumped by 50
 every few seconds (108 combo 11 s in). Not tested yet: a custom unit's edit, a phone getting it by Download from PC.
+
+**Phone only (2026-11-04, StarPointTest emulator, companion 0.7.1):** with no PC involved, Amelia's ability 1 was
+edited and saved through the companion's own server (15 → 30% attack made 40 → 80%). The change file was written to
+the phone's `custom_units/changes/`, the phone rebuilt its update (1.4.963), the game downloaded it (21 MB) at the
+title screen, and her unit page read "+ 80 % to attack for this unit (Max + 240 %)". **Reset unit to game** removed
+the file and rebuilt. At phone width (375 px) some of the page's dropdowns (e.g. an effect's "Do") run past the
+right edge of the screen.
