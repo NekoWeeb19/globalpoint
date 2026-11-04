@@ -20,7 +20,7 @@ No unit ids change, so saves are never at risk.
   Under each line, **In game** shows it in the unit page's own words, at both ends of its range (first Mana node and
   all six; leader skills before and after awakening), e.g. "When this unit is a/the ⟨Water⟩ unit → 6 seconds have
   passed → +50 Combo". It's built from the game's own English text pieces (the UI string table) filled in the way the
-  client does; 92% of CN's 4,928 ability and leader lines are covered, and Amelia's and Beaucy's pages matched word for
+  client does; 92% of CN's 4,928 ability and leader lines are covered, and all of Amelia's lines matched her unit page on the emulator word for
   word (elements show as ⟨Water⟩ where the game draws an icon). Lines it can't word yet (skill switching,
   multiball groups, unit-specific buffs) say so; the unit page shows the game's text after saving either way.
 - **Numbers tab**: HP/ATK at Lv 1/10/80/100, the skill gauge (skill and Skill+), and every min → max pair of every
