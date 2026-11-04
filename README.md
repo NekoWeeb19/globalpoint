@@ -300,6 +300,8 @@ gotchas are in the [dashboard guide](docs/DASHBOARD.md).
   - **Daily paid beads and free mails:** the paid beads added to each daily login bonus (150 by
     default, 0 turns it off), and the three never-ending mails (Bread, Mana and EXP x1500) that can
     be claimed again and again. Turn any of them off to remove it.
+  - **Summon rates:** the 5★ and 4★ chance per pull for standard, featured and armament portals
+    (base game: 7.5% / 25% standard, 5% / 25% the others).
   - **Banner rotation** (off by default).
 - **Events, Summons and Campaigns** list everything by start date, with the CN game's own dates.
 - **Events:** every event, CN-only ones included. Move any of them to any date. Each change builds a

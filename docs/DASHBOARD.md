@@ -115,6 +115,19 @@ First tab (**Dashboard**):
 - **Never-ending mails:** Bread x1500, Mana x1500 and EXP x1500 sit in the mailbox and can be
   claimed again and again. Untick one to remove it.
 
+### Change summon rates
+
+First tab (**Dashboard**) > **Summon rates**: the chance of a 5★ and a 4★ per pull, for three kinds
+of portal: **Standard units**, **Featured units** and **Armaments**. 3★ is the rest.
+1. Type the percentages (0 to 100, one decimal) and press **Save**. The badge then says **Custom**.
+2. **Base game rates** puts them back: standard 7.5% 5★ / 25% 4★, featured and armament 5% / 25%.
+
+It applies from the next pull, and no game update is needed. Featured units keep their boost within
+their rarity. The 10th pull of a 10-pull is still 4★ or better (5★ at the 5★ rate), and special
+pulls with their own rules (like a once-per-account guaranteed 5★) keep them. The game's own Rates
+screen keeps showing the original numbers. The companion's **Download from PC** brings the PC's
+rates along when **My save** is ticked.
+
 ---
 
 ## Gotchas
