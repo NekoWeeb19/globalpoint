@@ -125,6 +125,23 @@ try {
     const rb = await UE.importKits(broken)
     check("a kit with a line the game can't read is refused, and the saved changes stay", rb.imported.length === 0 && JSON.stringify(JSON.parse(fs.readFileSync(file, "utf8"))[ID].rows) === JSON.stringify(kit[ID].rows), rb)
     UE.resetUnit(ID)
+
+    // the game's own wording (scripts/unit_editor_text.cjs), with the game's pieces for one line
+    const TX = require("./unit_editor_text.cjs"), CODES = require("../assets/unit_editor/ability_codes.json")
+    check("the template engine fills names and if/else like the game's", TX.render("::if once::A::elseif (n >= 2)::B ::n::::else::C::end::", { once: false, n: 3 }) === "B 3")
+    const pieces = {
+        ability_description_instant_trigger_kind_myself: "when this unit is a/the ::constraint::",
+        ability_description_instant_trigger_kind_elapsed_time: "::second:: seconds have passed::if once::::else::::end::",
+        ability_description_instant_content_add_combo: "::count:: Combo",
+        ability_description_count_up: "::if (0 <= count)::+::count::::else::-::(-count)::::end::",
+    }
+    const line = Array(126).fill(""); line[1] = "true"; line[5] = "0"; line[6] = "3"; line[11] = "Blue"; line[13] = "0"; line[20] = "0"
+    line[27] = "77"; line[30] = "36000000"; line[31] = "6000000"; line[47] = "226"; line[51] = "5000000"; line[52] = "10000000"
+    // the text Amelia's unit page showed on the emulator for this line (2026-11-03)
+    check("a line in the game's words, as its unit page shows it", TX.lineText(line, "low", pieces, CODES) === "When this unit is a/the ⟨Water⟩ unit → 6 seconds have passed → +50 Combo", TX.lineText(line, "low", pieces, CODES))
+    check("... and at the top of its range", TX.lineText(line, "high", pieces, CODES) === "When this unit is a/the ⟨Water⟩ unit → 1 seconds have passed → +100 Combo")
+    const unknownPiece = [...line]; unknownPiece[47] = "704"
+    check("a line with a part it can't word yet gives null (the page keeps its own sentence)", TX.lineText(unknownPiece, "low", pieces, CODES) === null)
 } finally {
     fs.rmSync(dir, { recursive: true, force: true })
 }

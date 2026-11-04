@@ -16,6 +16,13 @@ No unit ids change, so saves are never at risk.
   - **Do**: the effect, its target and its numbers (value, duration, max stacks...).
 
   Lines can be removed, added, or copied from any other unit. **Reset to game** on an ability gives its own lines back.
+
+  Under each line, **In game** shows it in the unit page's own words, at both ends of its range (first Mana node and
+  all six; leader skills before and after awakening), e.g. "When this unit is a/the ⟨Water⟩ unit → 6 seconds have
+  passed → +50 Combo". It's built from the game's own English text pieces (the UI string table) filled in the way the
+  client does; 92% of CN's 4,928 ability and leader lines are covered, and Amelia's and Beaucy's pages matched word for
+  word (elements show as ⟨Water⟩ where the game draws an icon). Lines it can't word yet (skill switching,
+  multiball groups, unit-specific buffs) say so; the unit page shows the game's text after saving either way.
 - **Numbers tab**: HP/ATK at Lv 1/10/80/100, the skill gauge (skill and Skill+), and every min → max pair of every
   line (the same values as the Abilities tab).
 - **Details tab**: name, title, description, leader skill name, **class** and **role**. Class (Swordsman, Fighter,
@@ -76,6 +83,8 @@ works (the battle code is separate from the description code).
   (columns) it reads, from the CN 1.8.1 client's own table parser (`scripts/research/ability_codes_from_pcode.cjs`;
   the research is [research/ability-triggers.md](research/ability-triggers.md)).
 - `assets/unit_editor/words.json`: plain words, and which effects are percentages or on the base scale.
+- `scripts/unit_editor_text.cjs`: lines in the game's own words (a copy of the game's template engine, and its
+  wording rules for the common triggers, conditions and effects).
 - `scripts/test_unit_editor.mjs` (`npm test`): offline test.
 
 ## Tested (2026-11-03, StarPointTest emulator, companion 0.6.24 server)

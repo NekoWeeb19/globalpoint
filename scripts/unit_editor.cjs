@@ -10,6 +10,7 @@ const fs = require("fs")
 const path = require("path")
 const R = require("./cdn_rows.cjs")
 const CU = require("./custom_units.cjs")
+const TEXT = require("./unit_editor_text.cjs")
 const { uploadPath } = require("./cdn_hash.cjs")
 
 const CODES = require(path.join(__dirname, "..", "assets", "unit_editor", "ability_codes.json"))
@@ -107,6 +108,8 @@ async function catalog() {
         used: Object.fromEntries(Object.entries(used).map(([k, v]) => [k, [...v].sort((a, b) => a - b)])),
         pairs: Object.fromEntries(Object.entries(pairs).map(([k, v]) => [k, [...v]])),
         templates, groups: [...groups].sort(), lines: all.length,
+        // the game's English text pieces (ability_description_*), for lines in the game's own words
+        strings: await gameTable("master/string/ui_string.orderedmap").catch(() => ({})),
     }
     return catalogCache
 }
@@ -379,8 +382,16 @@ const humanize = s => String(s).replace(/([a-z0-9])([A-Z])/g, "$1 $2").toLowerCa
 async function checkEdit(edit, advanced = false) {
     const cat = await catalog()
     const out = { abilities: [], leader: [], stats: [], skills: [], ok: true }
-    for (const a of edit.abilities ?? []) out.abilities.push(a.lines.map(l => checkLine(pad(l), cat, advanced)))
-    if (edit.leader) out.leader = edit.leader.lines.map(l => checkLine(pad(l), cat, advanced))
+    // each line also in the game's own words, at both ends of its range (null: not covered yet)
+    const withText = l => {
+        const r = checkLine(pad(l), cat, advanced)
+        if (r.errors.length === 0) {
+            try { r.text = { low: TEXT.lineText(pad(l), "low", cat.strings, CODES), high: TEXT.lineText(pad(l), "high", cat.strings, CODES) } } catch { r.text = null }
+        }
+        return r
+    }
+    for (const a of edit.abilities ?? []) out.abilities.push(a.lines.map(withText))
+    if (edit.leader) out.leader = edit.leader.lines.map(withText)
     for (const s of edit.stats ?? []) out.stats.push(Number.isInteger(s.hp) && Number.isInteger(s.atk) && s.hp >= 0 && s.atk >= 0 ? [] : ["HP and ATK must be whole numbers, 0 or more"])
     if (edit.details) {
         const d = edit.details, e = []

@@ -569,6 +569,7 @@
                     box.appendChild(r)
                 }
                 const sub = el("div", "flex flex-col gap-2"); fieldRows(sub, c, ef, p.eff, c[p.effAt], ["target"]); box.appendChild(sub)
+                const game = el("div", "flex flex-col gap-1 text-sm px-3 py-2 rounded-lg bg-surface-container-high"); game.dataset.game = JSON.stringify([...where, n]); box.appendChild(game)
                 const msgs = el("ul", "flex flex-col gap-1 text-sm"); msgs.dataset.msgs = JSON.stringify([...where, n]); box.appendChild(msgs)
                 return box
             }
@@ -672,6 +673,23 @@
             function runCheck() {
                 api("/check", { edit: payload(), advanced: advanced() }).then((res) => {
                     lastCheck = res
+                    // the line in the game's own words, at both ends of its range
+                    for (const div of document.querySelectorAll("[data-game]")) {
+                        const where = JSON.parse(div.dataset.game)
+                        const r = where[0] === "leader" ? res.leader[where[1]] : res.abilities[where[1]]?.[where[2]]
+                        div.innerHTML = ""
+                        const leader = where[0] === "leader"
+                        if (!r || r.errors.length) { div.className = "hidden"; continue }
+                        div.className = "flex flex-col gap-1 text-sm px-3 py-2 rounded-lg bg-surface-container-high"
+                        if (!r.text || r.text.high === null) { div.appendChild(el("span", "text-on-surface-variant", "In game: this kind of line isn't worded like the game yet (the unit page shows the game's text after saving).")); continue }
+                        div.appendChild(el("span", "text-on-surface-variant", "In game (the unit page's wording):"))
+                        const same = r.text.low === r.text.high
+                        if (same) div.appendChild(el("span", "text-on-surface", r.text.high))
+                        else {
+                            div.appendChild(el("span", "text-on-surface", (leader ? "Before awakening: " : "First Mana node: ") + r.text.low))
+                            div.appendChild(el("span", "text-on-surface", (leader ? "After awakening: " : "All six nodes: ") + r.text.high))
+                        }
+                    }
                     for (const ul of document.querySelectorAll("[data-msgs]")) {
                         const where = JSON.parse(ul.dataset.msgs)
                         const r = where[0] === "leader" ? res.leader[where[1]] : res.abilities[where[1]]?.[where[2]]
