@@ -112,5 +112,5 @@ every few seconds (108 combo 11 s in). Not tested yet: a custom unit's edit, a p
 edited and saved through the companion's own server (15 → 30% attack made 40 → 80%). The change file was written to
 the phone's `custom_units/changes/`, the phone rebuilt its update (1.4.963), the game downloaded it (21 MB) at the
 title screen, and her unit page read "+ 80 % to attack for this unit (Max + 240 %)". **Reset unit to game** removed
-the file and rebuilt. At phone width (375 px) some of the page's dropdowns (e.g. an effect's "Do") run past the
-right edge of the screen.
+the file and rebuilt. At phone width (375 px) some of the page's dropdowns (e.g. an effect's "Do") ran past the
+right edge of the screen; since companion 0.7.2 they fit the screen and long choices end in "…".
