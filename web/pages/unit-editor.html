@@ -350,7 +350,11 @@
                 const used = new Set(usedList(part))
                 const all = Object.keys(D.parts[part])
                 const list = (advanced() ? all : all.filter((k) => used.has(k) || k === current)).filter((k) => !filter || filter(k) || k === current)
-                return list.map((k) => [k, codeName(part, k) + (used.has(k) ? "" : " (untested)")]).sort((x, y) => x[1].localeCompare(y[1]))
+                // two codes with the same plain words get the client's name too, so they can be told apart
+                const count = {}
+                for (const k of list) count[codeName(part, k)] = (count[codeName(part, k)] ?? 0) + 1
+                return list.map((k) => [k, codeName(part, k) + (count[codeName(part, k)] > 1 ? ` [${D.parts[part][k].client}]` : "") + (used.has(k) ? "" : " (untested)")])
+                    .sort((x, y) => x[1].localeCompare(y[1]))
             }
             const groupOptions = () => [["", "(none)"], ["(None)", "(none, explicit)"], ...D.groups.map((g) => [g, groupName(g)])]
             const row = (label) => { const r = el("div", "flex flex-wrap gap-2 items-center"); r.appendChild(el("span", "text-sm text-on-surface-variant w-[80px]", label)); return r }

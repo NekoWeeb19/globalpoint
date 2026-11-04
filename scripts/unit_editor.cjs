@@ -292,8 +292,61 @@ const name = (part, code) => {
     if (WORDS[part]?.[code]) return WORDS[part][code]
     const client = CODES[part]?.[code]?.name ?? String(code)
     // "when" effects 0-31 (ConditionAttackPoint, ...) are the timed versions of the plain ones
-    if (part === "whenEffect" && /^Condition[A-Z]/.test(client) && Number(code) < 32) return humanize(client.slice(9)) + " (timed)"
+    
+    if (part === "whenEffect" || part === "whileEffect") return effectWords(client)
     return humanize(client)
+}
+
+// Effect names follow patterns (PoisonPrevent, DebuffAttackSlayer, PowerFlipDamageUpExtend, EnemyDamageByAttackRed...):
+// plain words from them
+const ELEMENT = { Red: "fire", Blue: "water", Yellow: "thunder", Green: "wind", White: "light", Black: "dark", AllElement: "all elements" }
+const STATE = {
+    Debuff: "debuffed", Poison: "poisoned", Paralysis: "paralyzed", Frozen: "frozen", Silence: "silenced", Unique: "unit-specific debuffed",
+    AttackPointDown: "attack-down", ...Object.fromEntries(Object.entries(ELEMENT).map(([k, v]) => [`Resistance${k}Down`, `${v}-resistance-down`])),
+}
+const ATTACK_KIND = { "": "", Attack: "", DirectDamage: " (direct hits)", Skill: " (skills)", DirectAttack: " (direct hits)" }
+function effectWords(n) {
+    let m
+    const fixed = {
+        AttackPoint: "attack up", SkillDamage: "skill damage up", DirectDamage: "direct damage up", PowerFlipDamage: "Power Flip damage up",
+        PiercingMultiballSelf: "Pierce for its multiball", FlyingMultiballSelf: "Float for its multiball", Swift: "Swift",
+        FixedSpeedMultiballSelf: "fixed speed for its multiball", ScapegoatWithLength: "take damage for others (for a time)",
+        ScapegoatRatio: "take part of the damage for others", TakeOverDamageRatio: "take over part of the damage", InvokeSkill: "use its skill",
+        ConsumeUniqueCondition: "use up a unit-specific buff", OverrideCharacterElement: "change the unit's element",
+        PowerFlipOverride: "change its Power Flip", PowerFlipLv3DamageAdd: "Power Flip Lv 3 extra damage", Unique: "unit-specific buff",
+        TriggerEnemyDisguiseStunWinceSlayer: "damage up vs the enemy that triggered it while it's stunned or wincing",
+        Buff: "buff", BuffExtend: "buffs last longer", Invincible: "invincible", Regeneration: "Recover (heal over time)",
+        FeverPoint: "Fever gauge gain up", StunWinceSlayer: "damage up vs stunned or wincing enemies", Piercing: "Pierce", Flying: "Float",
+        Stunify: "stun gauge damage up", CharacterSlayer: "damage up vs a kind of enemy", Speedup: "speed up",
+        CountUpFever: "counts as one more Fever", CountUpPowerFlip: "counts as one more Power Flip", SetCombo: "set the combo to",
+        DeleteConditionDebuff: "remove debuffs", DeleteUniqueCondition: "remove a unit-specific buff", Guts: "Guts", Adversity: "Adversity buff",
+        HealRejection: "heal block", AdditionalUnisonAttack: "add part of the second unit's attack",
+        PowerFlipComboCountDown: "Power Flip charges faster", PowerFlipLv1ComboCountDown: "Power Flip Lv 1 charges faster",
+        RatioDamageMaxHpIfHpHigh: "damage (% of max HP) while HP is high", ComboBoost: "combo boost",
+    }
+    if (fixed[n]) return fixed[n]
+    if ((m = n.match(/^SeparatedTerm(.+)$/))) return effectWords(m[1]) + " (separate category)"
+    if ((m = n.match(/^Condition([A-Z].+)$/))) return effectWords(m[1]) + " (timed)"
+    if ((m = n.match(/^TriggerEnemy(Attack|DirectDamage|Skill)?Slayer$/))) return `damage up vs the enemy that triggered it${ATTACK_KIND[m[1] ?? ""]}`
+    if ((m = n.match(/^(.+)Prevent$/))) {
+        const what = { Frozen: "freeze", AttackPointDown: "attack down", SkillDamageDown: "skill damage down" }[m[1]]
+            ?? (STATE[m[1]] && m[1].startsWith("Resistance") ? STATE[m[1]].replace(/-/g, " ") : humanize(m[1]))
+        return `immune to ${what}`
+    }
+    if ((m = n.match(/^(Debuff|Poison|Paralysis|Frozen|Silence|Unique|AttackPointDown|Resistance(?:Red|Blue|Yellow|Green|White|Black)Down)(Attack|DirectDamage|Skill)?Slayer$/)))
+        return `damage up vs ${STATE[m[1]]} enemies${ATTACK_KIND[m[2] ?? ""]}`
+    if ((m = n.match(/^PowerFlipLv(\d)DamageSlayer$/))) return `Power Flip Lv ${m[1]} damage up`
+    if ((m = n.match(/^(.+)Extend$/))) return `${effectWords(m[1].replace(/Up$/, ""))} buffs last longer`
+    if ((m = n.match(/^(Enemy|TriggerEnemy|NearestEnemy)DamageBy(Attack|MaxHp)(Red|Blue|Yellow|Green|White|Black)$/)))
+        return `${ELEMENT[m[3]]} damage to ${{ Enemy: "all enemies", TriggerEnemy: "the enemy that triggered it", NearestEnemy: "the nearest enemy" }[m[1]]} (from ${m[2] === "Attack" ? "attack" : "max HP"})`
+    if ((m = n.match(/^ResistanceTo(.+)Enemy$/))) return `resists ${{ AttackPointDown: "attack down", Poison: "poison", Unique: "unit-specific debuffs" }[m[1]] ?? humanize(m[1])} from enemies`
+    if ((m = n.match(/^EnemyCondition(.+)$/))) return `enemy ${effectWords(m[1])} (timed)`
+    if ((m = n.match(/^Resistance(Red|Blue|Yellow|Green|White|Black|AllElement)$/))) return `${ELEMENT[m[1]]} resistance up`
+    if ((m = n.match(/^DamageCut(Red|Blue|Yellow|Green|White|Black|AllElement)$/))) return `${ELEMENT[m[1]]} damage cut`
+    if ((m = n.match(/^DirectAttack(\d)$/))) return `extra direct attack (kind ${m[1]})`
+    if ((m = n.match(/^SpecificMultiball(Attack|DirectDamage|Hp)$/))) return `multiball ${{ Attack: "attack", DirectDamage: "direct damage", Hp: "HP" }[m[1]]} up`
+    if ((m = n.match(/^ChangeSkillFlag(\d?)$/))) return `switch skill${m[1] ? ` (variant ${m[1]})` : ""}`
+    return humanize(n)
 }
 const label = f => WORDS.fields?.[f] ?? f.replace(/_/g, " ")
 const humanize = s => String(s).replace(/([a-z0-9])([A-Z])/g, "$1 $2").toLowerCase()
