@@ -146,3 +146,15 @@ tables in [assets/unit_editor/ability_codes.json](../../assets/unit_editor/abili
 line in CN by the English ability text of the unit it comes from, so unknown codes can still be picked by
 example. Skills are out (their behaviour is the skill script); leader skills use the same line format
 (columns − 2), so they may work the same way later, but that's untested.
+
+### After the unit editor (2026-11-03)
+
+Built and proven in game: the unit editor ([../UNIT_EDITOR.md](../UNIT_EDITOR.md)), A and B above in one page.
+Decided with the user for what's next:
+- **Dropped: "new unit from the dashboard"**: editing any unit's abilities, leader skill and numbers covers what a
+  new unit was for; a new unit only adds a second copy of a unit or its own art (asset swaps).
+- **Dropped: skill editing (skill numbers)**: skills are scripts of many commands, hits and conditions (a hit's
+  `{min: 6.11, max: 7}` is its damage multiplier by skill level), too much for an easy editor.
+- Left, in order: a **validator** for custom units and mods; a small **Details tab** (name, title, description,
+  class: plain text/number columns; not element or rarity, which the server also keeps); then the exact in-game
+  wording preview, share (download/upload) buttons, "Save as Balance by Date".
