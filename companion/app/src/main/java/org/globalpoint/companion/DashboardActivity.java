@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The server's dashboard (http://127.0.0.1:8000/) inside the app, so no browser setup screens get in
@@ -114,13 +116,36 @@ public class DashboardActivity extends Activity {
             pendingDownload = url;
             Intent i = new Intent(Intent.ACTION_CREATE_DOCUMENT);
             i.addCategory(Intent.CATEGORY_OPENABLE);
-            i.setType(mimeType == null || mimeType.isEmpty() ? "application/octet-stream" : mimeType);
-            i.putExtra(Intent.EXTRA_TITLE, URLUtil.guessFileName(url, contentDisposition, mimeType));
+            // the type without "; charset=...", which Android's lookups don't match
+            String type = mimeType == null ? "" : mimeType.split(";")[0].trim();
+            if (type.isEmpty()) type = "application/octet-stream";
+            i.setType(type);
+            i.putExtra(Intent.EXTRA_TITLE, downloadName(url, contentDisposition, type));
             startActivityForResult(i, SAVE_FILE);
         });
         setContentView(web);
         if (saved != null) web.restoreState(saved);
         else web.loadUrl(ServerProbe.URL_ROOT);
+    }
+
+    /**
+     * The file name the server gave (Content-Disposition filename="..."). Android's own guess can turn a .json
+     * into .bin, so it's only the fallback, with .json kept for JSON.
+     */
+    static String downloadName(String url, String contentDisposition, String type) {
+        if (contentDisposition != null) {
+            Matcher m = Pattern.compile("filename\\s*=\\s*\"?([^\";]+)\"?", Pattern.CASE_INSENSITIVE).matcher(contentDisposition);
+            if (m.find()) {
+                String name = m.group(1).trim().replaceAll("[\\\\/:*?<>|]", "_");
+                if (!name.isEmpty()) return name;
+            }
+        }
+        String guess = URLUtil.guessFileName(url, contentDisposition, type);
+        if (type.equals("application/json") && !guess.toLowerCase().endsWith(".json")) {
+            int dot = guess.lastIndexOf('.');
+            guess = (dot > 0 ? guess.substring(0, dot) : guess) + ".json";
+        }
+        return guess;
     }
 
     private boolean isNight() {

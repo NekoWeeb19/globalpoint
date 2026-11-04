@@ -42,7 +42,7 @@ const routes = async (fastify: FastifyInstance) => {
         if (data === null) return reply.redirect("/player");
 
         // otherwise, send
-        reply.header("content-disposition", "attachment; save.json")
+        reply.header("content-disposition", `attachment; filename="save-${playerId}.json"`)
         reply.type('application/json').send(data)
     })
 
