@@ -168,8 +168,12 @@
                     return (D.words.percentEffects[part] ?? []).includes(code) ? { div: 1000, suffix: "%" }
                         : D.words.scaledEffects[part]?.[code] ? { div: 100000, suffix: D.words.scaledEffects[part][code] } : { div: 1, suffix: " (game value)" }
                 if (field === "frame") return { div: 6000000, suffix: "s" }
-                if (field === "threshold" || field === "start_threshold" || field === "threshold2")
-                    return (HP_CODES[part] ?? []).includes(code) ? { div: 1000, suffix: "% HP" } : { div: 100000, suffix: "" }
+                if (field === "threshold" || field === "start_threshold" || field === "threshold2") {
+                    if ((HP_CODES[part] ?? []).includes(code)) return { div: 1000, suffix: "% HP" }
+                    // time triggers (every X seconds, keeps a buff for X, Fever lasts X) count frames: 60 a second
+                    if (part === "whenTrigger" && /^(ElapsedTime|ConditionKeepFrame|FeverFrame)/.test(D.parts[part][code]?.client ?? "")) return { div: 6000000, suffix: " s" }
+                    return { div: 100000, suffix: "" }
+                }
                 return { div: 1, suffix: "" }
             }
             const show = (raw, u) => raw === "" || raw === undefined ? "" : String(Math.round(Number(raw) / u.div * 1000) / 1000)
@@ -215,7 +219,8 @@
                     if (tf.threshold && c[tf.threshold.cols[0]] !== "") {
                         const u = unitOf("threshold", p.trig, c[p.trigAt])
                         const n = pairText(c, tf.threshold.cols, u)
-                        if (u.suffix) s += ` [${n}]`
+                        if (u.suffix === " s") s += ` (${n})`
+                        else if (u.suffix) s += ` [${n}]`
                         else if (c[5] === "1") s += ` (N = ${n})`
                         else if (n !== "1") s += ` (every ${n})`
                     }
@@ -375,7 +380,7 @@
                 for (const [f, d] of Object.entries(fields)) {
                     if (skip.includes(f)) continue
                     let label = D.words.fields[f] ?? f.replace(/_/g, " ")
-                    if (f === "threshold" && (part === "whenTrigger" || part === "whileTrigger")) label = unitOf(f, part, code).suffix ? "HP" : part === "whileTrigger" ? "N" : "every N times"
+                    if (f === "threshold" && (part === "whenTrigger" || part === "whileTrigger")) { const s = unitOf(f, part, code).suffix; label = s === " s" ? "seconds" : s ? "HP" : part === "whileTrigger" ? "N" : "every N times" }
                     if (d.pair) { const r = row(label); pairInputs(r, c, d.cols, unitOf(f, part, code), label); box.appendChild(r); continue }
                     if (f === "character_groups" && d.cols.length === 1) {
                         const r = row(label); r.appendChild(select(groupOptions(), c[d.cols[0]], (v) => { c[d.cols[0]] = v; refreshSentence(); changed() }, label)); box.appendChild(r); continue
