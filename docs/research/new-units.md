@@ -306,6 +306,10 @@ Rules, from this research:
 - **Replace pairs together.** A sprite sheet `.png` and its `.atlas` must match (a mismatch draws scrambled
   frames: the handbook's "scrambled portals"). `.frame` files name their own path, which stays right when the path
   is the same, so they only change if the drawing scale or offset changes.
+- **Pixel sprites have been reskinned before.** V1.0.0 (Shakari's flame_witch / wild_wolfgirl reskin) ships all
+  8 sprite files for flame_witch and 4 for wild_wolfgirl: new sheets (repacked, e.g. a 1953×81 strip) with new
+  atlases, and frame/timeline files with exactly the game's frame counts per sequence (redrawn frames on the
+  original animation). Shakari's working folder holds the single-frame PNGs and GIF previews behind it.
 - **The battle cut-in is two files.** `ui/skill_cutin_N.png` (menus) and `ui/skill_cutin_N.atf.deflate`
   (Android folder) both exist; the battle asked for the `.atf.deflate`. V1.0.0 replaced only the PNGs, so its
   battle cut-in very likely still showed the original. A full reskin needs an ATF encoder (not tested).
