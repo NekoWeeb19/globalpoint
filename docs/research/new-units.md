@@ -5,7 +5,8 @@ patched CN 1.8.1 app with **no game-code change**: table rows plus files, shippe
 patch, plus two server data entries. On the StarPointTest emulator it was mailed to a save and claimed, and it showed in
 the unit list. Its detail page worked, and so did its skill **Preview** (a real battle run, with the new skill script,
 skill effects and voices). It was leveled to 80, uncapped and EX Boosted. Mana Board 1 was unlocked in full,
-**awakening included** (awakened art, voice line and upgraded leader talent), and it **finished a single-player quest battle**.
+**awakening included** (awakened art, voice line and upgraded leader talent), it **finished a single-player quest battle and a co-op battle**, and it took an armament and
+an ability soul.
 
 The test unit is a clone of Haruhi Suzumiya (111069) under a new id and string id, so every one of its files is a
 *new* file. That makes it the same path a hand-made unit would take. What a hand-made unit would still need is new
@@ -133,9 +134,10 @@ Test run (emulator 5556, companion server, game at schedule build 1.4.805):
 4. 1.4.953: the two preview files added → Preview battle with the skill firing; Mana Board unlocks accepted by the
    server; levels 1-80, uncap, EX Boost, Mana Board 1 with awakening all work. A quest battle → **asset recovery**
    for `ui/skill_cutin_1.atf.deflate`.
-5. 1.4.954: the two `.atf.deflate` cut-ins added (Android folder) → single-player quest battle finished.
+5. 1.4.954: the two `.atf.deflate` cut-ins added (Android folder) → single-player quest battle and co-op battle
+   finished; equipping an armament and an ability soul works.
 
-Not tested yet: Mana Board 2, co-op.
+Not tested yet: Mana Board 2 (its open date row is copied from Haruhi), multiplayer with another device.
 
 ## What a "new unit" tool needs
 
