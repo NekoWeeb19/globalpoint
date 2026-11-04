@@ -132,7 +132,9 @@ format stays the output when a date is wanted (Balance by Date).
   uses (target, numbers, duration). When CN never pairs that effect with that trigger or kind (e.g. a heal on
   a "while" line; CN has 408 trigger + effect pairs), the line is still allowed and shows: "The game has not
   seen this combination before. It may or may not work."
-- **Advanced mode** allows anything the game can read, labelled "not used in the game, untested".
+- **Advanced mode** allows anything the game can read. A trigger, condition or trigger combination no CN
+  unit uses gets the stronger warning: "Untested: trigger not used in the game. May lead to crashes."
+  (Two levels: the effect notice above is mild; this one is for triggers and conditions.)
 - **Always refused, in both modes:** contradictions (a condition that rules out the line's own trigger, e.g.
   "not in Fever" + "while in Fever"; "this unit is the leader" + "isn't the leader"; the leader being two
   elements; HP above X + HP below a lower Y), and rows the game can't read (bad code, missing value: the
