@@ -71,6 +71,19 @@ try {
     const rp = UE.checkLine(pair, cat, false)
     check("a condition never used with this trigger: refused by default", rp.errors.some(e => e.includes("together")) || !cat.used.condition.includes("12"), rp)
 
+    // three modes: default (CN's combinations), advanced (CN's parts in any combination), unrestricted (everything)
+    // a line of the example unit plus a condition CN uses but never with that line's trigger
+    const base = [whenLine, whileLine].find(l => cat.used.condition.some(k => !cat.pairs.condTrig.includes(`${l[5]}|${l[5] === "1" ? l[97] : l[27]}|${k}`)))
+    const trigOf = l => l[5] === "1" ? l[97] : l[27]
+    const newCond = cat.used.condition.find(k => !cat.pairs.condTrig.includes(`${base[5]}|${trigOf(base)}|${k}`) && !["186", "12", "42", "46", "202", "203"].includes(k))
+    const combo = [...base]; combo[6] = newCond; combo[13] = "0"; combo[20] = "0"
+    const inDefault = UE.checkLine(combo, cat, "default"), inAdvanced = UE.checkLine(combo, cat, "advanced")
+    check("a CN condition with a CN trigger CN never pairs: refused by default", inDefault.errors.some(e => e.includes("together") && e.includes("advanced mode")), inDefault)
+    check("... allowed in advanced mode with a note (not the crash warning)", !inAdvanced.errors.some(e => e.includes("together")) && inAdvanced.warnings.some(w => w.level === "notice" && w.text.startsWith("Not used together")) && !inAdvanced.warnings.some(w => w.level === "strong"), inAdvanced)
+    check("a trigger CN never uses: refused in advanced mode too", UE.checkLine(strong, cat, "advanced").errors.some(e => e.includes("unrestricted mode")))
+    check("... allowed in unrestricted mode with the crash warning (true = unrestricted, for older pages)", UE.checkLine(strong, cat, "unrestricted").warnings.some(w => w.level === "strong") && UE.checkLine(strong, cat, true).errors.length === 0)
+    check("contradictions stay refused in unrestricted mode", UE.checkLine(contra, cat, "unrestricted").errors.some(e => e.includes("can't both be true")))
+
     // saving
     const e1 = edit()
     e1.stats.find(s => s.level === "80").hp = 3000

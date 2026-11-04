@@ -15,8 +15,8 @@ const UE = require(path.join(__dirname, "..", "..", "..", "scripts", "unit_edito
     getUnit: (id: string) => Promise<unknown | null>
     editorData: () => Promise<unknown>
     unitLines: (id: string) => Promise<unknown | null>
-    checkEdit: (edit: Edit, advanced: boolean) => Promise<{ ok: boolean }>
-    saveUnit: (id: string, edit: Edit, advanced: boolean) => Promise<{ file?: string | null, rows?: number, errors?: unknown }>
+    checkEdit: (edit: Edit, mode: Mode) => Promise<{ ok: boolean }>
+    saveUnit: (id: string, edit: Edit, mode: Mode) => Promise<{ file?: string | null, rows?: number, errors?: unknown }>
     resetUnit: (id: string) => boolean
     exportKits: (ids: string[]) => object
     importKits: (data: unknown) => Promise<{ imported: string[], refused: { id: string, why: string }[] }>
@@ -27,12 +27,16 @@ const AE = require(path.join(__dirname, "..", "..", "..", "scripts", "armament_e
     listArmaments: () => Promise<unknown[]>
     getArmament: (id: string) => Promise<unknown | null>
     armamentLines: (id: string) => Promise<unknown | null>
-    checkArmament: (id: string, edit: Edit, advanced: boolean) => Promise<{ ok: boolean }>
-    saveArmament: (id: string, edit: Edit, advanced: boolean) => Promise<{ file?: string | null, rows?: number, errors?: unknown }>
+    checkArmament: (id: string, edit: Edit, mode: Mode) => Promise<{ ok: boolean }>
+    saveArmament: (id: string, edit: Edit, mode: Mode) => Promise<{ file?: string | null, rows?: number, errors?: unknown }>
     resetArmament: (id: string) => boolean
     exportArmamentKits: (ids: string[]) => object
     importArmamentKits: (data: unknown) => Promise<{ imported: string[], refused: { id: string, why: string }[] }>
 }
+
+type Mode = string | boolean
+// the editor's mode: "default", "advanced" or "unrestricted" (older pages send advanced: true = unrestricted)
+const modeOf = (b: { advanced?: boolean, mode?: string }): Mode => typeof b.mode === "string" ? b.mode : b.advanced === true
 
 const failed = (reply: FastifyReply, e: unknown) =>
     reply.status(500).send({ error: "Unit editor", message: e instanceof Error ? e.message : String(e) })
@@ -61,15 +65,15 @@ const routes = async (fastify: FastifyInstance) => {
         } catch (e) { return failed(reply, e) }
     })
     fastify.post("/check", async (request: FastifyRequest, reply: FastifyReply) => {
-        const body = (request.body ?? {}) as { edit?: Edit, advanced?: boolean }
-        try { return reply.send(await UE.checkEdit(body.edit ?? {}, body.advanced === true)) } catch (e) { return failed(reply, e) }
+        const body = (request.body ?? {}) as { edit?: Edit, advanced?: boolean, mode?: string }
+        try { return reply.send(await UE.checkEdit(body.edit ?? {}, modeOf(body))) } catch (e) { return failed(reply, e) }
     })
     // saves (a change file, or the custom unit's file) and rebuilds the CN game update
     fastify.post("/unit/:id", async (request: FastifyRequest, reply: FastifyReply) => {
         const { id } = request.params as { id: string }
-        const body = (request.body ?? {}) as { edit?: Edit, advanced?: boolean }
+        const body = (request.body ?? {}) as { edit?: Edit, advanced?: boolean, mode?: string }
         try {
-            const result = await UE.saveUnit(id, body.edit ?? {}, body.advanced === true)
+            const result = await UE.saveUnit(id, body.edit ?? {}, modeOf(body))
             if (result.errors) return reply.status(400).send({ error: "Bad Request", message: "Some lines can't be saved", check: result.errors })
             rebuildCnUpdate()
             return reply.send({ saved: result.rows ?? 0, file: result.file ?? null })
@@ -106,14 +110,14 @@ const routes = async (fastify: FastifyInstance) => {
         try { const a = await AE.armamentLines(id); return a === null ? reply.status(404).send({ error: "Not Found", message: `No armament ${id}` }) : reply.send(a) } catch (e) { return failed(reply, e) }
     })
     fastify.post("/armament-check", async (request: FastifyRequest, reply: FastifyReply) => {
-        const body = (request.body ?? {}) as { id?: string, edit?: Edit, advanced?: boolean }
-        try { return reply.send(await AE.checkArmament(String(body.id ?? ""), body.edit ?? {}, body.advanced === true)) } catch (e) { return failed(reply, e) }
+        const body = (request.body ?? {}) as { id?: string, edit?: Edit, advanced?: boolean, mode?: string }
+        try { return reply.send(await AE.checkArmament(String(body.id ?? ""), body.edit ?? {}, modeOf(body))) } catch (e) { return failed(reply, e) }
     })
     fastify.post("/armament/:id", async (request: FastifyRequest, reply: FastifyReply) => {
         const { id } = request.params as { id: string }
-        const body = (request.body ?? {}) as { edit?: Edit, advanced?: boolean }
+        const body = (request.body ?? {}) as { edit?: Edit, advanced?: boolean, mode?: string }
         try {
-            const result = await AE.saveArmament(id, body.edit ?? {}, body.advanced === true)
+            const result = await AE.saveArmament(id, body.edit ?? {}, modeOf(body))
             if (result.errors) return reply.status(400).send({ error: "Bad Request", message: "Some lines can't be saved", check: result.errors })
             rebuildCnUpdate()
             return reply.send({ saved: result.rows ?? 0, file: result.file ?? null })

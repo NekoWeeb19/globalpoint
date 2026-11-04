@@ -406,20 +406,21 @@ const finish = (s, mark) => { s = s.replace(/([A-Za-z])⟨/g, "$1 ⟨").replace(
  * joined with "&"; a new trigger starts a new paragraph (another entry of the result). Lines not covered come back as
  * null in their place.
  */
-function abilityText(lines, level, strings, codes) {
+// onMissing(i): what to put for line i when it can't be worded yet (default null), e.g. { line: i } so a page can word it itself
+function abilityText(lines, level, strings, codes, onMissing = () => null) {
     const parts = lines.map(c => lineParts(c, level, strings, codes))
     // lines with the same conditions and trigger are one sentence, wherever they are in the ability (first one's place)
     const groups = []
-    for (const p of parts) {
-        if (p === null) { groups.push(null); continue }
+    for (const [i, p] of parts.entries()) {
+        if (p === null) { groups.push({ missing: onMissing(i) }); continue }
         // on battle start with a lasting effect, one without a target stands alone ("Power Flip damage + 70 %")
         const alone = p.battleStart && !p.oneOff && !p.hasTarget
-        const g = alone ? null : groups.find(x => x && !x.alone && x[0].kind === p.kind && x[0].head === p.head && x[0].mark === p.mark)
+        const g = alone ? null : groups.find(x => Array.isArray(x) && !x.alone && x[0].kind === p.kind && x[0].head === p.head && x[0].mark === p.mark)
         if (g) g.push(p)
         else { const n = [p]; n.alone = alone; groups.push(n) }
     }
     return groups.map(group => {
-        if (group === null) return null
+        if (!Array.isArray(group)) return group.missing
         const p = group[0]
         let body = group[0].effect
         // the game writes " & " before a number ("& + 4 % to attack") and "&" before words ("&Power Flip damage", "&for 3 second(s)")

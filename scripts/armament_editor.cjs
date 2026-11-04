@@ -103,8 +103,9 @@ async function getArmament(id) {
 /** The armament in the game's words: at level 1 (each slot's version learned by then) and at its max level. */
 function armamentText(slots, maxLevel, strings) {
     const at = (level, power) => {
-        const chosen = slots.map(ls => ls.filter(c => Number(c[2] || 1) <= level).sort((a, b) => Number(b[2]) - Number(a[2]))[0]).filter(Boolean)
-        return TEXT.abilityText(chosen, power, strings, CODES)
+        // per effect, the version from the highest level reached ({ slot, line } kept for a line the game's wording can't cover yet)
+        const chosen = slots.map((ls, slot) => ls.map((c, line) => ({ c, slot, line })).filter(x => Number(x.c[2] || 1) <= level).sort((a, b) => Number(b.c[2]) - Number(a.c[2]))[0]).filter(Boolean)
+        return TEXT.abilityText(chosen.map(x => x.c), power, strings, CODES, i => ({ slot: chosen[i].slot, line: chosen[i].line }))
     }
     return { low: at(1, "low"), high: at(maxLevel, "high") }
 }
