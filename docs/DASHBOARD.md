@@ -120,6 +120,8 @@ First tab (**Dashboard**):
 
 ### Change summon rates
 
+![The Summon rates box on the first tab](images/dashboard-rates.png)
+
 First tab (**Dashboard**) > **Summon rates**: the chance of a 5★ and a 4★ per pull, for three kinds
 of portal: **Standard units**, **Featured units** and **Armaments**. 3★ is the rest.
 1. Type the percentages (0 to 100, one decimal) and press **Save**. The badge then says **Custom**.
@@ -130,6 +132,39 @@ their rarity. The 10th pull of a 10-pull is still 4★ or better (5★ at the 5�
 pulls with their own rules (like a once-per-account guaranteed 5★) keep them. The game's own Rates
 screen keeps showing the original numbers. The companion's **Download from PC** brings the PC's
 rates along when **My save** is ticked.
+
+### Edit a unit's abilities and numbers
+
+**Unit editor** in the menu (`/unit-editor`): works for every CN unit and for custom units. No unit
+ids change, so saves are never at risk. The full guide is [UNIT_EDITOR.md](UNIT_EDITOR.md).
+
+![The Unit editor with Amelia open on the Abilities tab](images/dashboard-unit-editor.png)
+
+1. Pick a unit.
+2. Change it on one of three tabs:
+   - **Abilities**: each ability (1-6) and the leader skill, one line per effect (**Only if**
+     conditions, the trigger, and what it **Does**). Add, remove or copy lines from another unit;
+     **Reset to game** gives an ability its own lines back. **In game** under each ability shows it
+     in the unit page's own words.
+
+     ![One ability: its line, its fields, and the In game wording](images/dashboard-unit-ability.png)
+   - **Numbers**: HP/ATK, the skill gauge, and every min → max value.
+   - **Details**: name, title, description, leader skill name, class (it also picks the Power Flip)
+     and role.
+3. Press **Save**. It stays greyed out while a line breaks a rule (a contradiction, a target the
+   trigger can't have, or something the game can't read). The server rebuilds the game update.
+4. Close and reopen the game.
+
+- **Default mode** only offers the triggers and conditions CN's own units use. **Advanced mode**
+  offers everything the game can read, with a warning on the unused ones: they may not work or may
+  crash the game.
+- **Edited units and kits** at the top lists every edited unit: **Download** them as a kit file, or
+  **Import a kit file** from someone else.
+- **Reset unit to game** removes the editor's changes for that unit.
+- **On a phone**, make the edits on the PC: the companion's **Download from PC** brings them along,
+  and replaces the phone's own copy each time.
+
+New units are added with files, not on the dashboard: see [CUSTOM_UNITS.md](CUSTOM_UNITS.md).
 
 ---
 

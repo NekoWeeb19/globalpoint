@@ -310,6 +310,8 @@ gotchas are in the [dashboard guide](docs/DASHBOARD.md).
 - **Campaigns:** yearly login bonuses, free pulls and stamina/reward campaigns.
 - **News:** posts shown on the game's in-game News board.
 - **Players:** accounts, saves (download and upload) and gifts.
+- **Unit editor:** change any unit's abilities, numbers and details
+  ([docs/UNIT_EDITOR.md](docs/UNIT_EDITOR.md)).
 
 ## Balance by Date
 
