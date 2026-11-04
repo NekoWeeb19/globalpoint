@@ -10,18 +10,31 @@ top), a file lister (`unit_files.cjs`), and the server/dashboard side (Give, sum
 What's missing is everything between "a copy of Haruhi" and "my own unit": changing a copy in a readable way,
 checking it before the game sees it, and bringing in other people's work.
 
-## Ranking
+## Outcome (2026-11-04)
 
-Ranked by (how often it saves a failed test on a device) × (how many people it helps) ÷ effort.
+**Built and proven in game: the unit editor** ([../UNIT_EDITOR.md](../UNIT_EDITOR.md)), the user's picks A and B
+below in one dashboard page, plus a Details tab, kit sharing and each ability in the game's own words. It edits any
+existing CN unit (or custom unit) instead of making new ones, which covers what tools 2 and 6 were for. The user
+dropped the rest of the original plan (see "After the unit editor" at the end): the validator (no support is given
+for community-made units), a new-unit page, skill editing, a Mana Board editor and pixel art tools. Mod import (3)
+and art drop-in (4) were not taken up; replacing an existing unit's files is described in
+[new-units.md](new-units.md#replacing-an-existing-units-files-reskins-voice-swaps).
 
-| # | Tool | Value | Effort | Why this rank |
-|---|---|---|---|---|
-| 1 | **Validator** (`unit_check`) | high | small | Every failure met so far (missing file → asset recovery, frame naming the old unit → C8003, bad node id → C8601, null where a file name belongs) can be found offline. One emulator round trip costs minutes; the check costs a second. Works on any unit file, and on mods. |
-| 2 | **Unit maker from a spec** (`make_unit`) | high | medium | Today a new unit means editing a script's constants and then hand-editing 19 tables of CSV. A short spec (template unit, id, names, stats, text, "abilities from unit X", "skill from unit Y", "art from folder Z") covers the common "remix" units without touching CSV. |
-| 3 | **Mod import** | medium | medium–large | Packed mods (hashed `production/...` files) are easy: a files list for `build_cn_patch.cjs`, plus a check of which CN unit each file belongs to. Unpacked mods (`assets/<logical path>` + whole `orderedmap/*.json` table dumps from *global*) need a diff against global's tables and a column check against CN's, which may differ per table. Art-only swaps (the gojo/haruhi picture mods) are the realistic first target. |
-| 4 | **Art drop-in** | medium | small (pictures) / large (animations) | Pictures: put `full_shot_1440_1920_0.png` etc. in a folder by their game names, the tool checks sizes, writes the lowercase PNG signature, hashes the names. Pixel animations: wfax-style unpacked frames + `.atlas.json` can be packed back to sheet + AMF3 (`amf3.cjs`, `cn_sprite_merge.cjs`); drawing new frames is the real cost. The `.atf` battle cut-in needs Adobe's `png2atf`: untested. |
-| 5 | **Skill script helpers** | medium | small (dump/copy) / large (authoring) | Dump a skill as readable JSON, list the effect files it names, copy a skill from one unit to another (with its effects). Writing new skills needs the command list documented first. |
-| 6 | **Dashboard page** | low–medium | medium | List custom units with their check results, Give, banner choice. Nice for players, but the dashboard already gives by id; the tools above come first. |
+## Original plan (2026-11-03, before the user's picks)
+
+Ranked by (how often it saves a failed test on a device) × (how many people it helps) ÷ effort. The last column
+says what became of each.
+
+| # | Tool | Value | Effort | Why this rank | Outcome |
+|---|---|---|---|---|---|
+| 1 | **Validator** (`unit_check`) | high | small | Every failure met so far (missing file → asset recovery, frame naming the old unit → C8003, bad node id → C8601, null where a file name belongs) can be found offline. One emulator round trip costs minutes; the check costs a second. Works on any unit file, and on mods. | dropped by the user; the unit editor checks every line it saves |
+| 2 | **Unit maker from a spec** (`make_unit`) | high | medium | Today a new unit means editing a script's constants and then hand-editing 19 tables of CSV. A short spec (template unit, id, names, stats, text, "abilities from unit X", "skill from unit Y", "art from folder Z") covers the common "remix" units without touching CSV. | replaced by the unit editor (edit any unit; copy lines from others) |
+| 3 | **Mod import** | medium | medium–large | Packed mods (hashed `production/...` files) are easy: a files list for `build_cn_patch.cjs`, plus a check of which CN unit each file belongs to. Unpacked mods (`assets/<logical path>` + whole `orderedmap/*.json` table dumps from *global*) need a diff against global's tables and a column check against CN's, which may differ per table. The picture-only reskins (gojo / wf-modded: `dimension_witch`) are the realistic first target; V1.0.0 is a pixel-sprite reskin (`flame_witch`, `wild_wolfgirl`), and the Haruhi mod is a whole new unit (tables and about 380 files). | not taken up |
+| 4 | **Art drop-in** | medium | small (pictures) / large (animations) | Pictures: put `full_shot_1440_1920_0.png` etc. in a folder by their game names, the tool checks sizes, writes the lowercase PNG signature, hashes the names. Pixel animations: wfax-style unpacked frames + `.atlas.json` can be packed back to sheet + AMF3 (`amf3.cjs`, `cn_sprite_merge.cjs`); drawing new frames is the real cost. The `.atf` battle cut-in needs Adobe's `png2atf`: untested. | not taken up (pixel art tools dropped) |
+| 5 | **Skill script helpers** | medium | small (dump/copy) / large (authoring) | Dump a skill as readable JSON, list the effect files it names, copy a skill from one unit to another (with its effects). Writing new skills needs the command list documented first. | dropped (skills too complex for an easy editor) |
+| 6 | **Dashboard page** | low–medium | medium | List custom units with their check results, Give, banner choice. Nice for players, but the dashboard already gives by id; the tools above come first. | became the unit editor page |
+
+Sections 1–6 below are the plan as written then.
 
 ## 1. Validator
 
@@ -68,7 +81,8 @@ Kept as notes until 1 and 2 are built; see the table above. For import, the safe
 
 ## User's picks (2026-11-03)
 
-Asked for first, in this order. Both are notes only; nothing built yet.
+Asked for first, in this order. Both were then built as one page, the unit editor ([../UNIT_EDITOR.md](../UNIT_EDITOR.md),
+tested in game 2026-11-03); the notes below are the design as agreed before building.
 
 ### A. Numbers editor (the simplest tool: change a number, that's it)
 
