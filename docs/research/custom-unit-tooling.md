@@ -120,8 +120,9 @@ The tool would have done this as: open Amelia's current abilities, remove the li
 the old ones from the effect library (or type their numbers), save as a change. The `kit_dates.json` stage
 format stays the output when a date is wanted (Balance by Date).
 
-What it needs that isn't decoded yet: names for more trigger, condition, effect and target codes (the known
-ones are in the memory note kit-rows-decode and `new-units.md`'s appendix). An effect library can label every
+Every trigger, condition and effect code now has its client name: [ability-triggers.md](ability-triggers.md)
+(262 "when" events, 230 "while" states, 209 conditions, 687 + 422 effects; CN uses 52, 49, 20, 142 + 35),
+tables in [data/ability_codes.json](data/ability_codes.json). What's left is which columns each kind reads. An effect library can label every
 line in CN by the English ability text of the unit it comes from, so unknown codes can still be picked by
 example. Skills are out (their behaviour is the skill script); leader skills use the same line format
 (columns − 2), so they may work the same way later, but that's untested.
