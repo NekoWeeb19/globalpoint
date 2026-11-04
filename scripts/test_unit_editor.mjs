@@ -140,6 +140,19 @@ try {
     // the text Amelia's unit page showed on the emulator for this line (2026-11-03)
     check("a line in the game's words, as its unit page shows it", TX.lineText(line, "low", pieces, CODES) === "When this unit is a/the ⟨Water⟩ unit → 6 seconds have passed → +50 Combo", TX.lineText(line, "low", pieces, CODES))
     check("... and at the top of its range", TX.lineText(line, "high", pieces, CODES) === "When this unit is a/the ⟨Water⟩ unit → 1 seconds have passed → +100 Combo")
+    // lines with the same conditions and trigger are one sentence joined with "&", as the unit page shows them
+    const pieces2 = { ...pieces, ability_description_common_content_attack: "::percent_up_down:: to attack for ::target::", ability_description_target_myself: "this unit",
+        ability_description_target_leader: "Leader", ability_description_instant_trigger_kind_first_flip: "when a battle starts, ", ability_description_percent_up: "+&nbsp;::percent::&nbsp;%" }
+    const atk = Array(126).fill(""); atk[1] = "true"; atk[5] = "0"; atk[6] = "0"; atk[13] = "0"; atk[20] = "0"; atk[27] = "0"; atk[47] = "32"; atk[48] = "0"; atk[51] = "15000"; atk[52] = "30000"
+    const atkLeader = [...atk]; atkLeader[48] = "2"
+    const grouped = TX.abilityText([atk, atkLeader, line], "low", pieces2, CODES)
+    check("same trigger: one sentence joined with '&'; a new trigger: a new paragraph", grouped.length === 2 && grouped[0] === "+ 15 % to attack for this unit & + 15 % to attack for Leader", grouped)
+
+    // a unit-specific buff (another unit's own) is refused
+    const foreignBuff = edit(); const fb = [...foreignBuff.abilities[0].lines[0]]; fb[68] = "13"; foreignBuff.abilities[0].lines.push(fb)
+    const rf = await UE.checkEdit({ ...foreignBuff, id: ID }, true)
+    check("another unit's own buff (unique condition) is refused, in advanced mode too", rf.abilities[0].at(-1).errors.some(e => e.includes("another unit's own buff")), rf.abilities[0].at(-1))
+
     const unknownPiece = [...line]; unknownPiece[47] = "704"
     check("a line with a part it can't word yet gives null (the page keeps its own sentence)", TX.lineText(unknownPiece, "low", pieces, CODES) === null)
 } finally {

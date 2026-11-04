@@ -17,8 +17,11 @@ No unit ids change, so saves are never at risk.
 
   Lines can be removed, added, or copied from any other unit. **Reset to game** on an ability gives its own lines back.
 
-  Under each line, **In game** shows it in the unit page's own words, at both ends of its range (first Mana node and
-  all six; leader skills before and after awakening), e.g. "When this unit is a/the ⟨Water⟩ unit → 6 seconds have
+  Under each ability, **In game** shows it in the unit page's own words, at both ends of its range (first Mana node
+  and all six; leader skills before and after awakening). Lines with the same conditions and trigger are one sentence
+  with their effects joined by "&" ("& " between lasting effects, "&" between timed ones), as the game does; a new
+  trigger starts a new paragraph. "When a battle starts," is written for one-off effects (Skill Gauge, Fever gauge),
+  not for lasting ones (attack, HP). Example: e.g. "When this unit is a/the ⟨Water⟩ unit → 6 seconds have
   passed → +50 Combo". It's built from the game's own English text pieces (the UI string table) filled in the way the
   client does; 92% of CN's 4,928 ability and leader lines are covered, and all of Amelia's lines matched her unit page on the emulator word for
   word (elements show as ⟨Water⟩ where the game draws an icon). Lines it can't word yet (skill switching,
@@ -56,6 +59,8 @@ folder's `changes/`. Custom units' changes are in their own files and aren't lis
   (tested: "every X seconds" + "combo +", a pair no CN unit has, worked in battle).
 - **Advanced mode** (tick box) offers every kind the game can read. A trigger, condition or effect CN doesn't use shows
   "Unused trigger / condition / effect: may not work or crash the game." Triggers are what decides whether a line works.
+- **Unit-specific buffs** ("Energy Drain", "Cursed"...: 19 in CN, each tied to its unit) can only be used by a unit
+  whose own kit uses them; a line that names another unit's buff is refused in both modes.
 - **Always refused**: contradictions (a condition that rules out the line's own trigger, e.g. "not in Fever" +
   "while in Fever"; the leader being two elements; HP above X and below a lower Y), "for the unit that triggered it" with
   a trigger that has no "who" (e.g. "every X seconds": nobody triggered it; that target isn't offered then), and

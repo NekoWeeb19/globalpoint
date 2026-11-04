@@ -379,12 +379,31 @@ const label = f => WORDS.fields?.[f] ?? f.replace(/_/g, " ")
 const humanize = s => String(s).replace(/([a-z0-9])([A-Z])/g, "$1 $2").toLowerCase()
 
 /** Checks a whole edit (the page sends it on every change and before saving). */
+// Columns holding a unit-specific buff's id (client field unique_condition_id: conditions, trigger, target, accumulation,
+// "while" trigger, effects). Each buff (assets: master/character/unique_condition) belongs to its unit.
+const UNIQUE_COLS = [12, 19, 26, 37, 45, 68, 95, 104, 118]
+const uniqueIds = c => UNIQUE_COLS.map(i => c[i]).filter(v => /^\d+$/.test(String(v ?? "")))
+let uniqueNames = null
+async function uniqueName(id) {
+    uniqueNames ??= await gameTable("master/character/unique_condition.orderedmap").catch(() => ({}))
+    return lines(uniqueNames[id] ?? "")[0]?.[1] || `#${id}`
+}
+
 async function checkEdit(edit, advanced = false) {
     const cat = await catalog()
     const out = { abilities: [], leader: [], stats: [], skills: [], ok: true }
+    // unit-specific buffs ("Energy Drain"...): only the unit whose own kit uses one may use it
+    let own = null
+    if (edit.id !== undefined) {
+        const r = await unitRows(String(edit.id))
+        own = new Set([...Object.values(r?.own.ability ?? {}).flatMap(t => lines(t).map(pad)), ...Object.values(r?.own.leader ?? {}).flatMap(t => lines(t).map(l => pad(leaderToAbility(l))))].flatMap(uniqueIds))
+    }
+    const foreign = new Map()
+    for (const l of [...(edit.abilities ?? []).flatMap(a => a.lines), ...(edit.leader?.lines ?? [])]) for (const id of uniqueIds(pad(l))) if (own && !own.has(id)) foreign.set(id, await uniqueName(id))
     // each line also in the game's own words, at both ends of its range (null: not covered yet)
     const withText = l => {
         const r = checkLine(pad(l), cat, advanced)
+        for (const id of uniqueIds(pad(l))) if (foreign.has(id)) r.errors.push(`uses "${foreign.get(id)}", another unit's own buff: only that unit can use it`)
         if (r.errors.length === 0) {
             try { r.text = { low: TEXT.lineText(pad(l), "low", cat.strings, CODES), high: TEXT.lineText(pad(l), "high", cat.strings, CODES) } } catch { r.text = null }
         }
@@ -392,6 +411,9 @@ async function checkEdit(edit, advanced = false) {
     }
     for (const a of edit.abilities ?? []) out.abilities.push(a.lines.map(withText))
     if (edit.leader) out.leader = edit.leader.lines.map(withText)
+    // each whole ability in the game's words (lines with the same trigger joined with "&", as the unit page shows them)
+    const whole = ls => { try { return { low: TEXT.abilityText(ls.map(pad), "low", cat.strings, CODES), high: TEXT.abilityText(ls.map(pad), "high", cat.strings, CODES) } } catch { return null } }
+    out.texts = { abilities: (edit.abilities ?? []).map(a => whole(a.lines)), leader: edit.leader ? whole(edit.leader.lines) : null }
     for (const s of edit.stats ?? []) out.stats.push(Number.isInteger(s.hp) && Number.isInteger(s.atk) && s.hp >= 0 && s.atk >= 0 ? [] : ["HP and ATK must be whole numbers, 0 or more"])
     if (edit.details) {
         const d = edit.details, e = []
@@ -416,7 +438,7 @@ async function checkEdit(edit, advanced = false) {
  */
 async function saveUnit(id, edit, advanced = false) {
     id = String(id)
-    const check = await checkEdit(edit, advanced)
+    const check = await checkEdit({ ...edit, id }, advanced)
     if (!check.ok) return { errors: check }
     const r = await unitRows(id)
     if (!r) return { errors: { message: `no unit ${id}` } }

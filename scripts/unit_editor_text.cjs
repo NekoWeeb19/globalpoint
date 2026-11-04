@@ -92,15 +92,18 @@ const at = (c, cols, level) => Number(c[level === "high" ? cols[1] : cols[0]] ||
 const percentUpDown = (strings, v) => v >= 0 ? piece(strings, "percent_up", { percent: num(v) }) : piece(strings, "percent_down", { percent: num(-v) })
 const countUp = (strings, n) => piece(strings, "count_up", { count: Math.round(n) })
 const groupWord = g => ELEMENT[g] ? `⟨${ELEMENT[g]}⟩` : g
+// "⟨Water⟩ unit" for an element (the game draws an icon), "Dragonunit" for a race (as the game writes it)
+const unitWord = g => ELEMENT[g] ? `⟨${ELEMENT[g]}⟩ unit` : `${g ?? ""}unit`
 
 /** "this unit", "party", "Leader"... for an effect target (target code + its group column). */
 function targetText(strings, code, group) {
     const g = group && group !== "(None)" ? group : ""
     switch (String(code)) {
         case "0": return piece(strings, "target_myself")
-        case "1": return g ? piece(strings, "target_others_constraint", { constraint: groupWord(g) + " unit" }) : piece(strings, "target_others_all")
+        case "1": return g ? piece(strings, "target_others_constraint", { constraint: unitWord(g) }) : piece(strings, "target_others_all")
         case "2": return piece(strings, "target_leader")
-        case "5": return g ? piece(strings, "target_ally_constraint", { constraint: groupWord(g) + " unit" }) : piece(strings, "target_party")
+        // a party target with an explicit "no group" reads "The party", an empty one "party"
+        case "5": return g ? piece(strings, "target_ally_constraint", { constraint: unitWord(g) }) : group === "(None)" ? piece(strings, "target_ally_all") : piece(strings, "target_party")
         case "7": return piece(strings, "target_trigger_puller")
         case "8": return piece(strings, "target_multiball")
         case "9": return piece(strings, "target_min_hp_absolute")
@@ -114,9 +117,9 @@ function pullerText(strings, code, group) {
     switch (String(code)) {
         case "0": return piece(strings, "target_myself")
         case "1": return piece(strings, "target_leader")
-        case "5": return g ? piece(strings, "target_one_of_ally_constraint", { constraint: groupWord(g) + " unit" }) : piece(strings, "target_one_of_ally_all")
-        case "7": return g ? piece(strings, "target_total_of_ally_constraint_instant", { constraint: groupWord(g) + " unit" }) : piece(strings, "target_total_of_ally_all_instant")
-        case "9": return g ? piece(strings, "target_sum_of_ally_constraint_during", { constraint: groupWord(g) + " unit" }) : "party"
+        case "5": return g ? piece(strings, "target_one_of_ally_constraint", { constraint: unitWord(g) }) : piece(strings, "target_one_of_ally_all")
+        case "7": return g ? piece(strings, "target_total_of_ally_constraint_instant", { constraint: unitWord(g) }) : piece(strings, "target_total_of_ally_all_instant")
+        case "9": return g ? piece(strings, "target_sum_of_ally_constraint_during", { constraint: unitWord(g) }) : "party"
         default: return null
     }
 }
@@ -144,7 +147,10 @@ function effectText(strings, codes, c, level) {
     if (timed) base = name.slice(9)
     const el = base.match(/^(Resistance|DamageCut)(Red|Blue|Yellow|Green|White|Black|AllElement)$/)
     if (el) { ctx.element = el[2] === "AllElement" ? "All " : groupWord(el[2]) + " "; base = el[1] === "Resistance" ? "ElementResistance" : "ElementDamageCut" }
-    const pieceName = EFFECT_PIECE[name] ?? EFFECT_PIECE[base] ?? snake(base)
+    let pieceName = EFFECT_PIECE[name] ?? EFFECT_PIECE[base] ?? snake(base)
+    // separate damage multipliers have their own pieces: common_content_<x>_separated_term / condition_content_separated_term_<x>
+    const sep = base.match(/^SeparatedTerm(.+)$/)
+    if (sep) pieceName = timed ? "separated_term_" + snake(sep[1]) : snake(sep[1]) + "_separated_term"
     // counts (Fever gauge points, combo, activation counts): base scale, shown as "+5"
     if (f.strength && /^(AddFeverPoint|AddCombo|SetCombo|CountUp.+)$/.test(name)) ctx.count = countUp(strings, at(c, f.strength.cols, level) / 100000)
     if (name === "ConditionComboBoost") { ctx.count = countUp(strings, at(c, f.strength.cols, level) / 100000); key = "condition_content_combo_boost" }
@@ -178,6 +184,11 @@ function effectText(strings, codes, c, level) {
         if (frames > 0 && frames < 9e6) prefix += piece(strings, "for_second", { second: num(frames / 60) })
     } else key ??= (part === "whileEffect" ? "common_content_" : (strings["ability_description_common_content_" + pieceName] !== undefined ? "common_content_" : "instant_content_")) + pieceName
     let body = piece(strings, key.replace(/^ability_description_/, ""), ctx)
+    // "(Category N)": the separate damage multiplier the effect adds to
+    const category = /^(Debuff|Poison|Paralysis|Frozen|Silence|Unique|AttackPointDown|Resistance\w+Down)(DirectDamage|Skill)?Slayer$/.test(base) ? "condition_slayer"
+        : base === "CharacterSlayer" ? "character_slayer" : base === "StunWinceSlayer" ? "stun_wince_slayer" : /^PowerFlipLv\dDamageSlayer$/.test(base) ? "powerflip_lv"
+        : sep ? { PowerFlipDamage: "powerflip_lv", DirectDamage: "direct_damage", SkillDamage: "skill_damage", AbilityDamage: "ability_damage" }[sep[1]] : null
+    if (body !== null && category) body += piece(strings, "separated_term_" + category) ?? ""
     // a piece that names its target unconditionally, for an effect without one: drop the dangling "for"
     if (body !== null && !target) body = body.replace(/\s+for\s*$/, "").replace(/\s+for\s+\)/, ")")
     if (body === null || prefix === null) return null
@@ -190,14 +201,14 @@ function conditionText(strings, codes, c, at0) {
     if (!def) return null
     const name = def.name, group = c[at0 + 5], g = group && group !== "(None)" ? group : ""
     switch (name) {
-        case "MySelf": return piece(strings, "instant_trigger_kind_myself", { constraint: groupWord(g) + " unit" })
-        case "LeaderCharacter": return piece(strings, "instant_trigger_kind_leader_character", { constraint: groupWord(g) + " unit" })
+        case "MySelf": return piece(strings, "instant_trigger_kind_myself", { constraint: unitWord(g) })
+        case "LeaderCharacter": return piece(strings, "instant_trigger_kind_leader_character", { constraint: unitWord(g) })
         case "Leader": return piece(strings, "instant_trigger_kind_leader", { omittable: false })
         case "IsNotLeader": return piece(strings, "instant_trigger_kind_is_not_leader", { omittable: false })
         case "Member": {
             const n = Number(c[at0 + 3]) / 100000
             if (n >= 6 && ELEMENT[g]) return piece(strings, "instant_trigger_kind_member_element_unified", { element_full: groupWord(g) })
-            return piece(strings, "instant_trigger_kind_member", { once: true, count: num(n), constraint: groupWord(g) + " unit" })
+            return piece(strings, "instant_trigger_kind_member", { once: true, count: num(n), constraint: unitWord(g) })
         }
         case "HpHigh": return piece(strings, "during_trigger_kind_hp_high", { omittable: true, includesThreshold: true, percent: num(Number(c[at0 + 3]) / 1000) + "%", isBeforeInstantTrigger: true }).trim()
         case "HpLow": return piece(strings, "during_trigger_kind_hp_low", { omittable: true, includesThreshold: true, percent: num(Number(c[at0 + 3]) / 1000) + "%", isBeforeInstantTrigger: true }).trim()
@@ -224,8 +235,8 @@ function whenText(strings, codes, c, level) {
     let text
     switch (name) {
         case "Initial": return piece(strings, "instant_trigger_kind_first_flip")
-        case "MySelf": return piece(strings, "instant_trigger_kind_myself", { constraint: groupWord(c[36]) + " unit" })
-        case "LeaderCharacter": return piece(strings, "instant_trigger_kind_leader_character", { constraint: groupWord(c[36]) + " unit" })
+        case "MySelf": return piece(strings, "instant_trigger_kind_myself", { constraint: unitWord(c[36]) })
+        case "LeaderCharacter": return piece(strings, "instant_trigger_kind_leader_character", { constraint: unitWord(c[36]) })
         case "ElapsedTime": return piece(strings, "instant_trigger_kind_elapsed_time", { ...ctx, second: num(at(c, f.threshold.cols, level) / 6000000) })
         case "HpLow": return piece(strings, "instant_trigger_kind_hp_low", { ...ctx, percent: num(at(c, f.threshold.cols, level) / 1000) + "%" })
         case "HealHigh": return piece(strings, "instant_trigger_kind_heal_high", ctx)
@@ -233,6 +244,8 @@ function whenText(strings, codes, c, level) {
         case "FeverEnd": text = piece(strings, "instant_trigger_kind_feverend", ctx); break
         case "AbilityDamage": text = piece(strings, "instant_trigger_kind_abiility_damage", ctx); break
         case "MemberDirectAttack": text = piece(strings, "instant_trigger_kind_direct_attack", ctx); break
+        // "When 3 or more Dragon units are in the party" (a line that fires once: limit 1)
+        case "Member": return piece(strings, "instant_trigger_kind_member", { ...ctx, once: c[34] === "1", count: num(n), constraint: unitWord(c[36] && c[36] !== "(None)" ? c[36] : "") })
         case "ElementVariety": case "RaceVariety": case "SpecialityVariety":
             return piece(strings, "instant_trigger_kind_variety", { ...ctx, once: true, varietyKind: piece(strings, { ElementVariety: "variety_element", RaceVariety: "variety_race", SpecialityVariety: "variety_speciality" }[name]) })
         case "PowerFlipLv1": case "PowerFlipLv2": case "PowerFlipLv3":
@@ -241,7 +254,12 @@ function whenText(strings, codes, c, level) {
     }
     if (text === null) return null
     // for combo triggers the number is the combo itself ("the combo reaches 30"), not "every N times"
-    return n > 1 && !/^Combo/.test(name) ? piece(strings, "n_times", { count: num(n) }) + text : text
+    if (!(n > 1) || /^Combo/.test(name)) return text
+    // "every N time(s)" goes where the piece has its "::if once::" slot: in front ("Every 20 time(s)a party member...")
+    // or after ("Dragonunit a skill hits every 20 time(s)")
+    const raw = String(strings["ability_description_instant_trigger_kind_" + snake(name)] ?? "").replace(/^"/, "").trim()
+    const every = piece(strings, "n_times", { count: num(n) })
+    return raw === "" || raw.startsWith("::if once::") ? every + text : text.replace(/\s+$/, "") + " " + every
 }
 
 /** The "while" trigger part ("while in Fever Mode, ", "for each 1 Power Flip Damage Buff party has, "). */
@@ -290,11 +308,8 @@ function conditionName(strings, n) {
     return null
 }
 
-/**
- * A whole line in the game's words at its lowest or highest level (abilities: first / sixth Mana node; leader:
- * before / after awakening), or null when a part isn't covered yet.
- */
-function lineText(c, level, strings, codes) {
+/** A line split into what the game groups by (conditions + trigger) and the effect, or null when not covered. */
+function lineParts(c, level, strings, codes) {
     const kind = c[5]
     const conds = []
     for (const at0 of codes.blocks.condition) if (c[at0] && c[at0] !== "0") {
@@ -302,30 +317,70 @@ function lineText(c, level, strings, codes) {
         if (t === null) return null
         conds.push(t)
     }
-    const effect = effectText(strings, codes, c, level)
+    let effect = effectText(strings, codes, c, level)
     if (effect === null) return null
-    let s
+    const part = kind === "1" ? "whileEffect" : "whenEffect", def = codes[part][c[kind === "1" ? 109 : 47]]
+    const timed = /^(For the next|for \S+ second)/.test(effect)
+    // one-off effects (skill gauge, Fever gauge, barrier...) vs lasting ones (attack, HP...)
+    const oneOff = kind === "0" && Boolean(def) && !/^Condition/.test(def.name) && !/^(Hp|AdditionalUnison.+)$/.test(def.name)
+        && strings["ability_description_common_content_" + snake(def.name)] === undefined && !/(Slayer|Extend|Prevent)$/.test(def.name)
+        && !["AttackPoint", "SkillDamage", "DirectDamage", "PowerFlipDamage", "SkillGaugeCharging", "FeverPoint", "EaseOfHeal"].includes(def.name) && !/^(Resistance|DamageCut)/.test(def.name)
+    let head, battleStart = false
     if (kind === "0") {
         const trig = whenText(strings, codes, c, level)
         if (trig === null) return null
-        // "when a battle starts" (a line on from the start) is only written after a condition
-        if (c[27] === "0" && conds.length === 0) s = effect
-        else s = [...conds, trig].join(" → ") + (/,\s*$/.test(trig) ? "" : " → ") + effect
-        // a line that can fire several times shows its total: "(Max + 120 %)"
-        const def = codes.whenEffect[c[47]], limit = Number(c[34])
-        if (def?.fields?.strength && !/^Condition/.test(def.name) && limit > 1)
-            s += piece(strings, "instant_max_strength", { max_strength: percentUpDown(strings, at(c, def.fields.strength.cols, level) / 1000 * limit) })
+        battleStart = c[27] === "0" && conds.length === 0
+        head = [...conds, trig].join(" → ") + (/,\s*$/.test(trig) ? "" : " → ")
+        const limit = Number(c[34])
+        if (def?.fields?.strength && limit > 1) {
+            if (oneOff) effect = piece(strings, "instant_trigger_limit_n_times", { count: limit }) + effect
+            else if (!timed) effect += piece(strings, "instant_max_strength", { max_strength: percentUpDown(strings, at(c, def.fields.strength.cols, level) / 1000 * limit) })
+        }
+        const cool = Number(c[35])
+        if (cool > 0) effect += piece(strings, "cooltime", { second: num(cool / 60) })
     } else if (kind === "1") {
         const trig = whileText(strings, codes, c, level)
         if (trig === null) return null
-        s = (conds.length ? conds.join(" → ") + " → " : "") + trig + effect
-        // a stacking line shows its total at the limit: "(Max + 37.5 %)"
-        const def = codes.whileEffect[c[109]], limit = Number(c[102])
-        if (def?.fields?.strength && limit > 1) s += piece(strings, "instant_max_strength", { max_strength: percentUpDown(strings, at(c, def.fields.strength.cols, level) / 1000 * limit) })
+        head = (conds.length ? conds.join(" → ") + " → " : "") + trig
+        const limit = Number(c[102])
+        if (def?.fields?.strength && limit > 1) effect += piece(strings, "instant_max_strength", { max_strength: percentUpDown(strings, at(c, def.fields.strength.cols, level) / 1000 * limit) })
     } else return null
-    s = s.replace(/\s+/g, " ").replace(/ ,/g, ",").trim()
-    s = s.charAt(0).toUpperCase() + s.slice(1)
-    return (c[1] === "false" ? "Ⓜ " : "") + s
+    return { kind, head, battleStart, effect, timed, oneOff, mark: c[1] === "false" ? "Ⓜ " : "" }
 }
 
-module.exports = { lineText, render }
+const finish = s => { s = s.replace(/ {2,}/g, " ").replace(/ ,/g, ",").trim(); return s.charAt(0).toUpperCase() + s.slice(1) }
+
+/**
+ * A whole ability (its lines) in the game's words at its lowest or highest level (abilities: first / sixth Mana node;
+ * leader: before / after awakening): lines with the same conditions and trigger are one sentence, their effects
+ * joined with "&"; a new trigger starts a new paragraph (another entry of the result). Lines not covered come back as
+ * null in their place.
+ */
+function abilityText(lines, level, strings, codes) {
+    const parts = lines.map(c => lineParts(c, level, strings, codes))
+    const out = []
+    for (let i = 0; i < parts.length;) {
+        const p = parts[i]
+        if (p === null) { out.push(null); i++; continue }
+        const group = [p]
+        while (i + group.length < parts.length) {
+            const q = parts[i + group.length]
+            if (!q || q.kind !== p.kind || q.head !== p.head || q.mark !== p.mark) break
+            group.push(q)
+        }
+        let body = group[0].effect
+        for (let k = 1; k < group.length; k++) body += (group[k - 1].timed && group[k].timed ? "&" : " & ") + group[k].effect
+        // "when a battle starts," on its own is only written for one-off effects ("When a battle starts, + 50 % to Skill Gauge...")
+        const head = p.battleStart && !group.some(g => g.oneOff) ? "" : p.head
+        out.push(p.mark + finish(head + body))
+        i += group.length
+    }
+    return out
+}
+
+/** One line in the game's words (see abilityText), or null when a part isn't covered yet. */
+function lineText(c, level, strings, codes) {
+    return abilityText([c], level, strings, codes)[0]
+}
+
+module.exports = { lineText, abilityText, render }

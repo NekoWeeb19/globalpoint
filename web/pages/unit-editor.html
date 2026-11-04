@@ -336,7 +336,7 @@
                     render(); scheduleCheck()
                 }).catch((e) => { $("load-status").textContent = e.message })
             }
-            const payload = () => ({ abilities: edit.abilities.map((a) => ({ key: a.key, lines: a.lines })), leader: edit.leader ? { key: edit.leader.key, lines: edit.leader.lines } : null,
+            const payload = () => ({ id: unit.id, abilities: edit.abilities.map((a) => ({ key: a.key, lines: a.lines })), leader: edit.leader ? { key: edit.leader.key, lines: edit.leader.lines } : null,
                 stats: edit.stats.map((s) => ({ level: s.level, hp: s.hp, atk: s.atk })), skills: edit.skills.map((s) => ({ key: s.key, gaugeMin: s.gaugeMin, gaugeMax: s.gaugeMax })),
                 details: (({ name, title, description, class: cls, role, leaderName }) => ({ name, title, description, class: cls, role, leaderName }))(edit.details) })
             const dirty = () => edit && JSON.stringify(payload()) !== saved
@@ -426,6 +426,7 @@
                 reset.onclick = () => { a.lines = a.game.map((l) => [...l]); render(); changed() }
                 tools.append(add, copy, reset); head.appendChild(tools); sec.appendChild(head)
                 a.lines.forEach((c, n) => sec.appendChild(lineEditor(a, c, n, where)))
+                const game = el("div", "hidden"); game.dataset.abilityGame = JSON.stringify(where); sec.appendChild(game)
                 if (a.lines.length === 0) sec.appendChild(el("p", "text-on-surface-variant", "No lines: this ability does nothing."))
                 return sec
             }
@@ -569,7 +570,6 @@
                     box.appendChild(r)
                 }
                 const sub = el("div", "flex flex-col gap-2"); fieldRows(sub, c, ef, p.eff, c[p.effAt], ["target"]); box.appendChild(sub)
-                const game = el("div", "flex flex-col gap-1 text-sm px-3 py-2 rounded-lg bg-surface-container-high"); game.dataset.game = JSON.stringify([...where, n]); box.appendChild(game)
                 const msgs = el("ul", "flex flex-col gap-1 text-sm"); msgs.dataset.msgs = JSON.stringify([...where, n]); box.appendChild(msgs)
                 return box
             }
@@ -673,22 +673,22 @@
             function runCheck() {
                 api("/check", { edit: payload(), advanced: advanced() }).then((res) => {
                     lastCheck = res
-                    // the line in the game's own words, at both ends of its range
-                    for (const div of document.querySelectorAll("[data-game]")) {
-                        const where = JSON.parse(div.dataset.game)
-                        const r = where[0] === "leader" ? res.leader[where[1]] : res.abilities[where[1]]?.[where[2]]
+                    // each ability in the game's own words (its lines grouped as the unit page shows them), at both ends of its range
+                    for (const div of document.querySelectorAll("[data-ability-game]")) {
+                        const where = JSON.parse(div.dataset.abilityGame), leader = where[0] === "leader"
+                        const tx = leader ? res.texts?.leader : res.texts?.abilities?.[where[1]]
                         div.innerHTML = ""
-                        const leader = where[0] === "leader"
-                        if (!r || r.errors.length) { div.className = "hidden"; continue }
-                        div.className = "flex flex-col gap-1 text-sm px-3 py-2 rounded-lg bg-surface-container-high"
-                        if (!r.text || r.text.high === null) { div.appendChild(el("span", "text-on-surface-variant", "In game: this kind of line isn't worded like the game yet (the unit page shows the game's text after saving).")); continue }
+                        if (!tx) { div.className = "hidden"; continue }
+                        div.className = "flex flex-col gap-2 text-sm px-4 py-3 rounded-2xl bg-surface-container-high"
                         div.appendChild(el("span", "text-on-surface-variant", "In game (the unit page's wording):"))
-                        const same = r.text.low === r.text.high
-                        if (same) div.appendChild(el("span", "text-on-surface", r.text.high))
-                        else {
-                            div.appendChild(el("span", "text-on-surface", (leader ? "Before awakening: " : "First Mana node: ") + r.text.low))
-                            div.appendChild(el("span", "text-on-surface", (leader ? "After awakening: " : "All six nodes: ") + r.text.high))
+                        const show = (label, list) => {
+                            const block = el("div", "flex flex-col gap-1")
+                            if (label) block.appendChild(el("span", "text-on-surface-variant", label))
+                            for (const p of list) block.appendChild(el("span", p === null ? "text-on-surface-variant italic" : "text-on-surface", p ?? "(a line the editor can't word like the game yet: the unit page shows it after saving)"))
+                            div.appendChild(block)
                         }
+                        if (JSON.stringify(tx.low) === JSON.stringify(tx.high)) show("", tx.high)
+                        else { show(leader ? "Before awakening:" : "First Mana node:", tx.low); show(leader ? "After awakening:" : "All six nodes:", tx.high) }
                     }
                     for (const ul of document.querySelectorAll("[data-msgs]")) {
                         const where = JSON.parse(ul.dataset.msgs)
