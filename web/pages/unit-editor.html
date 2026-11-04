@@ -99,7 +99,7 @@
         <article class="w-full flex flex-col gap-5 min-w-0">
             <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3">
                 <h3 class="text-xl text-on-background font-semibold">Unit editor</h3>
-                <p class="text-on-surface-variant">Change what a unit's or an armament's abilities do and its numbers. Saving writes a change file and rebuilds the CN game update; close and reopen the game to get it. Phones get it with <strong>Download from PC</strong>. Reset gives the game's own kit back. No unit ids change, so saves are never at risk.</p>
+                <p class="text-on-surface-variant">Change what a unit's or an armament's abilities do and its numbers. Saving writes a change file and rebuilds the CN game update; close and reopen the game to get it. Reset gives the game's own kit back. No unit ids change, so saves are never at risk.</p>
                 <div class="flex flex-wrap gap-2" role="tablist" aria-label="What to edit">
                     <button type="button" role="tab" data-mode="unit" class="px-4 py-2 rounded-full">Units</button>
                     <button type="button" role="tab" data-mode="armament" class="px-4 py-2 rounded-full">Armaments</button>
@@ -109,11 +109,15 @@
                     <input id="unit-search" list="unit-list" placeholder="Name or id" autocomplete="off"
                         class="px-4 py-2 rounded-full border border-outline-variant bg-surface text-on-surface min-w-[260px]">
                     <datalist id="unit-list"></datalist>
-                    <label class="flex gap-2 items-center text-on-surface-variant ml-auto">
-                        <input type="checkbox" id="advanced"> Advanced mode
+                    <label class="flex gap-2 items-center text-on-surface-variant ml-auto">Mode
+                        <select id="check-mode" class="px-3 py-1 rounded-lg border border-outline-variant bg-surface text-on-surface">
+                            <option value="default">Default</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="unrestricted">Unrestricted</option>
+                        </select>
                     </label>
                 </div>
-                <p id="advanced-note" class="text-sm text-on-surface-variant hidden">Advanced mode offers every trigger, condition and effect the game can read. Anything CN's own units don't use is untested.</p>
+                <p id="mode-note" class="text-sm text-on-surface-variant"></p>
                 <p id="load-status" class="text-sm text-on-surface-variant" role="status">Loading the game's tables...</p>
                 <details id="kits" class="text-sm">
                     <summary class="text-on-surface cursor-pointer">Edited units and kits (download, share, import)</summary>
@@ -190,7 +194,20 @@
             const BTN = "px-3 py-1 rounded-full border border-outline-variant text-on-surface text-sm hover:bg-surface-container-high"
 
             let D = null, units = [], unit = null, edit = null, saved = null, tab = "abilities", checkTimer = null, lastCheck = null
-            const advanced = () => $("advanced").checked
+            // Default: only what CN's units use, in their combinations. Advanced: CN's own conditions, triggers, "who" and effects
+            // in any combination. Unrestricted: everything the game can read. (Remembered in this browser.)
+            const MODE_NOTES = {
+                default: "Default: only the conditions, triggers and effects CN's own units use, in the combinations they use.",
+                advanced: "Advanced: CN's own conditions, triggers, \"who\" and effects in any combination. A combination CN's units never use gets a note.",
+                unrestricted: "Unrestricted: also the conditions, triggers and effects CN never uses. Those are untested: they may not work or crash the game.",
+            }
+            const prefs = { get: (k) => { try { return localStorage.getItem(k) } catch { return null } }, set: (k, v) => { try { localStorage.setItem(k, v) } catch { } } }
+            const checkMode = () => $("check-mode").value
+            const unrestricted = () => checkMode() === "unrestricted"
+            $("check-mode").value = MODE_NOTES[prefs.get("unit-editor-mode")] ? prefs.get("unit-editor-mode") : "default"
+            $("mode-note").textContent = MODE_NOTES[checkMode()]
+            // the editor's own sentence for a line the game's wording can't cover yet (In game boxes)
+            let editorWording = prefs.get("unit-editor-own-wording") === "1"
 
             // ---- values: raw column text <-> what people read ----
             const HP_CODES = { condition: ["8", "9", "205"], whileTrigger: ["0", "1", "227"], whenTrigger: ["25"] }
@@ -364,7 +381,7 @@
 
             const idFrom = (text) => (text.match(/\((\d+)\)\s*$/) ?? text.match(/^\s*(\d{6,7})\s*$/) ?? [])[1]
             $("unit-search").addEventListener("change", () => { const id = idFrom($("unit-search").value); if (id) loadUnit(id) })
-            $("advanced").addEventListener("change", () => { $("advanced-note").classList.toggle("hidden", !advanced()); if (unit) { render(); scheduleCheck() } })
+            $("check-mode").addEventListener("change", () => { prefs.set("unit-editor-mode", checkMode()); $("mode-note").textContent = MODE_NOTES[checkMode()]; if (unit) { render(); scheduleCheck() } })
 
             function loadUnit(id, force) {
                 if (!force && edit && dirty() && !confirm("Leave this unit without saving?")) return
@@ -517,11 +534,11 @@
                 s.onchange = () => onChange(s.value)
                 return s
             }
-            // code lists: default mode = what CN uses; advanced = everything (unused ones marked)
+            // code lists: what CN uses; unrestricted = everything (unused ones marked)
             function codeOptions(part, current, filter) {
                 const used = new Set(usedList(part))
                 const all = Object.keys(D.parts[part])
-                const list = (advanced() ? all : all.filter((k) => used.has(k) || k === current)).filter((k) => !filter || filter(k) || k === current)
+                const list = (unrestricted() ? all : all.filter((k) => used.has(k) || k === current)).filter((k) => !filter || filter(k) || k === current)
                 // two codes with the same plain words get the client's name too, so they can be told apart
                 const count = {}
                 for (const k of list) count[codeName(part, k)] = (count[codeName(part, k)] ?? 0) + 1
@@ -639,7 +656,10 @@
                         const r = row("Who")
                         const whoAt = tf.trigger_puller.cols[0]
                         const seen = new Set(D.pairs[p.who === "whileWho" ? "whileWho" : "whenWho"].filter((x) => x.startsWith(c[p.trigAt] + "|")).map((x) => x.split("|")[1]))
-                        const opts = Object.keys(D.parts[p.who]).filter((k) => advanced() || seen.has(k) || k === c[whoAt]).map((k) => [k, codeName(p.who, k) + (seen.has(k) ? "" : " (untested)")])
+                        // default: the "who" CN uses with this trigger; advanced: any "who" CN uses; unrestricted: all
+                        const usedWho = new Set(D.used[p.who === "whileWho" ? "whileWho" : "whenWho"] ?? [])
+                        const opts = Object.keys(D.parts[p.who]).filter((k) => unrestricted() || seen.has(k) || (checkMode() === "advanced" && usedWho.has(k)) || k === c[whoAt])
+                            .map((k) => [k, codeName(p.who, k) + (seen.has(k) ? "" : usedWho.has(k) ? " (new combination)" : " (untested)")])
                         r.appendChild(select(opts, c[whoAt], (v) => { c[whoAt] = v; refreshSentence(); changed() }, "Who"))
                         const wf = D.parts[p.who][c[whoAt]]?.fields ?? {}
                         if (wf.character_groups) r.appendChild(select(groupOptions(), c[wf.character_groups.cols[0]], (v) => { c[wf.character_groups.cols[0]] = v; refreshSentence(); changed() }, "Who: group"))
@@ -765,7 +785,7 @@
             // ---- checks ----
             function scheduleCheck() { clearTimeout(checkTimer); checkTimer = setTimeout(runCheck, 250) }
             function runCheck() {
-                api(A() ? "/armament-check" : "/check", { id: unit.id, edit: payload(), advanced: advanced() }).then((res) => {
+                api(A() ? "/armament-check" : "/check", { id: unit.id, edit: payload(), mode: checkMode() }).then((res) => {
                     lastCheck = res
                     // each ability in the game's own words (its lines grouped as the unit page shows them), at both ends of its range
                     for (const div of document.querySelectorAll("[data-ability-game]")) {
@@ -775,11 +795,25 @@
                         if (!tx) { div.className = "hidden"; continue }
                         div.className = "flex flex-col gap-2 text-sm px-4 py-3 rounded-2xl bg-surface-container-high"
                         div.appendChild(el("span", "text-on-surface-variant", A() ? "In game (the armament page's wording):" : "In game (the unit page's wording):"))
+                        const lineOf = (p) => arm ? edit.abilities[p.slot]?.lines[p.line] : leader ? edit.leader?.lines[p.line] : edit.abilities[where[1]]?.lines[p.line]
+                        const missing = (p) => p === null || typeof p === "object"
                         const show = (label, list) => {
                             const block = el("div", "flex flex-col gap-1")
                             if (label) block.appendChild(el("span", "text-on-surface-variant", label))
-                            for (const p of list) block.appendChild(el("span", p === null ? "text-on-surface-variant italic" : "text-on-surface", p ?? "(a line the editor can't word like the game yet: the unit page shows it after saving)"))
+                            for (const p of list) {
+                                if (!missing(p)) { block.appendChild(el("span", "text-on-surface", p)); continue }
+                                const c = p && lineOf(p)
+                                if (editorWording && c) block.appendChild(el("span", "text-on-surface italic", "(editor's wording) " + sentence(c)))
+                                else block.appendChild(el("span", "text-on-surface-variant italic", `(a line the editor can't word like the game yet: the ${A() ? "armament" : "unit"} page shows it after saving)`))
+                            }
                             div.appendChild(block)
+                        }
+                        if ([...tx.low, ...tx.high].some(missing)) {
+                            const tick = el("label", "flex gap-2 items-center text-on-surface-variant")
+                            const box = el("input"); box.type = "checkbox"; box.checked = editorWording
+                            box.onchange = () => { editorWording = box.checked; prefs.set("unit-editor-own-wording", box.checked ? "1" : "0"); runCheck() }
+                            tick.appendChild(box); tick.appendChild(document.createTextNode("Use the editor's wording where the game's can't be shown"))
+                            div.appendChild(tick)
                         }
                         if (JSON.stringify(tx.low) === JSON.stringify(tx.high)) show("", tx.high)
                         else if (arm) { show("Armament level 1:", tx.low); show(`Armament level ${unit.maxLevel} (max):`, tx.high) }
@@ -806,7 +840,7 @@
             // ---- save / undo / reset ----
             $("save").onclick = () => {
                 $("save").disabled = true; $("message").textContent = "Saving..."
-                api(EP.one(unit.id), { edit: payload(), advanced: advanced() }).then((r) => {
+                api(EP.one(unit.id), { edit: payload(), mode: checkMode() }).then((r) => {
                     if (r.check) { lastCheck = r.check; $("message").textContent = "Some lines can't be saved: see the red notes."; return }
                     $("message").textContent = r.saved ? `Saved ${r.saved} changed row(s). The CN game update is rebuilding: close and reopen the game to get it.` : "Nothing differs from the game: the change file was removed."
                     loadUnit(unit.id, true); refreshKits()

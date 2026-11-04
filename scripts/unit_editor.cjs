@@ -80,7 +80,7 @@ let catalogCache = null
 async function catalog() {
     if (catalogCache) return catalogCache
     const b = await baseTables()
-    const used = { condition: new Set(), whenTrigger: new Set(), whileTrigger: new Set(), whenEffect: new Set(), whileEffect: new Set() }
+    const used = { condition: new Set(), whenTrigger: new Set(), whileTrigger: new Set(), whenEffect: new Set(), whileEffect: new Set(), whenWho: new Set(), whileWho: new Set() }
     const pairs = { whenWho: new Set(), whileWho: new Set(), trigEffect: new Set(), effectTarget: new Set(), condTrig: new Set() }
     const counts = {} // part:code -> Map(block text -> n)
     const groups = new Set()
@@ -103,10 +103,12 @@ async function catalog() {
         for (const at of [11, 18, 25, 29, 36, 49, 99, 103, 111]) if (c[at] && c[at] !== "(None)") for (const g of c[at].split(",")) groups.add(g)
         if (c[5] === "0") {
             used.whenTrigger.add(c[27]); used.whenEffect.add(c[47])
+            if (fieldsOf("whenTrigger", c[27]).trigger_puller) used.whenWho.add(c[28])
             pairs.whenWho.add(`${c[27]}|${c[28]}`); pairs.trigEffect.add(`0|${c[27]}|${c[47]}`); pairs.effectTarget.add(`0|${c[47]}|${c[48]}`)
             count("whenTrigger", c[27], c.slice(27, 47)); count("whenEffect", c[47], c.slice(47, 85))
         } else if (c[5] === "1") {
             used.whileTrigger.add(c[97]); used.whileEffect.add(c[109])
+            if (fieldsOf("whileTrigger", c[97]).trigger_puller) used.whileWho.add(c[98])
             pairs.whileWho.add(`${c[97]}|${c[98]}`); pairs.trigEffect.add(`1|${c[97]}|${c[109]}`); pairs.effectTarget.add(`1|${c[109]}|${c[110]}`)
             count("whileTrigger", c[97], c.slice(85, 109)); count("whileEffect", c[109], c.slice(109, ABILITY_COLUMNS))
         }
@@ -247,25 +249,31 @@ const fieldsOf = (part, code) => CODES[part]?.[code]?.fields ?? {}
 
 /**
  * Problems with one line (ability layout). errors: the line is refused (the game can't read it, or it can never
- * work). warnings: "strong" (a trigger or condition the game never uses; advanced mode only) or "notice" (an
- * effect CN never pairs with this trigger).
+ * work). warnings: "strong" (a trigger, condition or effect CN never uses; unrestricted mode only) or "notice" (CN's
+ * own parts in a combination CN never uses; advanced and unrestricted modes).
+ * mode: "default" (only what CN's units use, and only their combinations), "advanced" (CN's own conditions,
+ * triggers, "who" and effects in any combination) or "unrestricted" (everything the game can read). true = unrestricted.
  */
-function checkLine(c, cat, advanced) {
+const MODES = ["default", "advanced", "unrestricted"]
+const modeOf = m => m === true ? "unrestricted" : MODES.includes(m) ? m : "default"
+function checkLine(c, cat, mode) {
     const errors = [], warnings = []
+    mode = modeOf(mode)
+    const combos = mode !== "default", unrestricted = mode === "unrestricted"
+    const combo = what => combos ? warnings.push({ level: "notice", text: `Not used together by CN's units: ${what}.` }) : errors.push(`${what} isn't used together in the game (advanced mode)`)
     const kind = c[5]
     if (!["0", "1", "2"].includes(kind)) { errors.push(`unknown line kind "${kind}"`); return { errors, warnings } }
     const conds = CODES.blocks.condition.map(at => ({ at, code: c[at] })).filter(x => x.code !== "" && x.code !== "0")
     for (const x of conds) {
         if (!CODES.condition[x.code]) errors.push(`condition code ${x.code} isn't one the game knows`)
-        else if (!cat.used.condition.includes(x.code)) (advanced ? warnings.push({ level: "strong", text: `Unused condition "${name("condition", x.code)}": may not work or crash the game.` }) : errors.push(`the condition "${name("condition", x.code)}" isn't used in the game (advanced mode only)`))
+        else if (!cat.used.condition.includes(x.code)) (unrestricted ? warnings.push({ level: "strong", text: `Unused condition "${name("condition", x.code)}": may not work or crash the game.` }) : errors.push(`the condition "${name("condition", x.code)}" isn't used in the game (unrestricted mode)`))
         else {
             // the condition with this trigger: CN's units use only some pairs
             const trig = kind === "1" ? c[97] : kind === "0" ? c[27] : ""
             const part = kind === "1" ? "whileTrigger" : "whenTrigger"
             if (!cat.pairs.condTrig.includes(`${kind}|${trig}|${x.code}`)) {
-                const what = `the condition "${name("condition", x.code)}" with "${kind === "2" ? "at battle start" : name(part, trig)}"`
-                if (advanced) warnings.push({ level: "strong", text: `Unused trigger: ${what} isn't used in the game. May not work or crash the game.` })
-                else errors.push(`${what} isn't used together in the game (advanced mode only)`)
+                // (a trigger CN never uses is reported below, once)
+                if (kind === "2" || cat.used[part].includes(trig)) combo(`the condition "${name("condition", x.code)}" with "${kind === "2" ? "at battle start" : name(part, trig)}"`)
             }
         }
     }
@@ -278,18 +286,20 @@ function checkLine(c, cat, advanced) {
             const fields = fieldsOf(trigPart, trig)
             const usedTrig = cat.used[trigPart].includes(trig)
             const whoSeen = !fields.trigger_puller || cat.pairs[kind === "1" ? "whileWho" : "whenWho"].includes(`${trig}|${c[whoAt]}`)
-            if (!usedTrig || !whoSeen) {
-                const what = !usedTrig ? `the trigger "${name(trigPart, trig)}"` : `"${name(trigPart, trig)}" with who "${name(kind === "1" ? "whileWho" : "whenWho", c[whoAt])}"`
-                if (advanced) warnings.push({ level: "strong", text: `Unused trigger: ${what} isn't used in the game. May not work or crash the game.` })
-                else errors.push(`${what} isn't used in the game (advanced mode only)`)
-            }
+            const whoCode = c[whoAt], whoPart = kind === "1" ? "whileWho" : "whenWho"
+            const whoUsed = !fields.trigger_puller || !CODES[whoPart][whoCode] || cat.used[whoPart]?.includes(whoCode)
+            if (!usedTrig) unrestricted ? warnings.push({ level: "strong", text: `Unused trigger: "${name(trigPart, trig)}" isn't used in the game. May not work or crash the game.` })
+                : errors.push(`the trigger "${name(trigPart, trig)}" isn't used in the game (unrestricted mode)`)
+            else if (!whoUsed) unrestricted ? warnings.push({ level: "strong", text: `Unused who: "${name(whoPart, whoCode)}" isn't used in the game. May not work or crash the game.` })
+                : errors.push(`who "${name(whoPart, whoCode)}" isn't used in the game (unrestricted mode)`)
+            else if (!whoSeen) combo(`"${name(trigPart, trig)}" with who "${name(whoPart, whoCode)}"`)
             if (fields.trigger_puller && !CODES[kind === "1" ? "whileWho" : "whenWho"][c[whoAt]]) errors.push(`"who" code ${c[whoAt]} isn't one the game knows`)
             for (const [f, d] of Object.entries(fields)) if (d.pair && !d.cols.every(i => isNum(c[i]))) errors.push(`${label(f)} must be a number`)
         }
         if (!CODES[effPart][eff]) errors.push(`effect code ${eff} isn't one the game knows`)
         else {
             const fields = fieldsOf(effPart, eff)
-            if (!cat.used[effPart].includes(eff) && !advanced) errors.push(`the effect "${name(effPart, eff)}" isn't used in the game (advanced mode only)`)
+            if (!cat.used[effPart].includes(eff) && !unrestricted) errors.push(`the effect "${name(effPart, eff)}" isn't used in the game (unrestricted mode)`)
             else if (!cat.used[effPart].includes(eff)) warnings.push({ level: "strong", text: `Unused effect "${name(effPart, eff)}": may not work or crash the game.` })
             for (const [f, d] of Object.entries(fields)) if (d.pair && !d.cols.every(i => isNum(c[i]))) errors.push(`${label(f)} must be a number`)
             if (fields.target && !CODES.target[c[fields.target.cols[0]]]) errors.push(`target code ${c[fields.target.cols[0]]} isn't one the game knows`)
@@ -421,11 +431,13 @@ async function checkEdit(edit, advanced = false) {
     for (const a of edit.abilities ?? []) out.abilities.push(a.lines.map(withText))
     if (edit.leader) out.leader = edit.leader.lines.map(withText)
     // each whole ability in the game's words (lines with the same trigger joined with "&", as the unit page shows them)
-    const whole = ls => { try { return { low: TEXT.abilityText(ls.map(pad), "low", cat.strings, CODES), high: TEXT.abilityText(ls.map(pad), "high", cat.strings, CODES) } } catch { return null } }
+    const whole = ls => { try { return { low: TEXT.abilityText(ls.map(pad), "low", cat.strings, CODES, i => ({ line: i })), high: TEXT.abilityText(ls.map(pad), "high", cat.strings, CODES, i => ({ line: i })) } } catch { return null } }
     // a leader line's awakening tag (leader column 1, here column 3): 0 always, 1 only before awakening, 2 only after
-    const wholeLeader = ls => { try { return {
-        low: TEXT.abilityText(ls.map(pad).filter(c => c[3] !== "2"), "low", cat.strings, CODES),
-        high: TEXT.abilityText(ls.map(pad).filter(c => c[3] !== "1"), "high", cat.strings, CODES) } } catch { return null } }
+    // a line the game's wording can't cover yet comes back as { line: n } (its place in the ability), for the page's own words
+    const wholeLeader = ls => { try {
+        const at = drop => ls.map((c, i) => [pad(c), i]).filter(([c]) => c[3] !== drop)
+        const words = (list, level) => TEXT.abilityText(list.map(x => x[0]), level, cat.strings, CODES, i => ({ line: list[i][1] }))
+        return { low: words(at("2"), "low"), high: words(at("1"), "high") } } catch { return null } }
     out.texts = { abilities: (edit.abilities ?? []).map(a => whole(a.lines)), leader: edit.leader ? wholeLeader(edit.leader.lines) : null }
     for (const s of edit.stats ?? []) out.stats.push(Number.isInteger(s.hp) && Number.isInteger(s.atk) && s.hp >= 0 && s.atk >= 0 ? [] : ["HP and ATK must be whole numbers, 0 or more"])
     if (edit.details) {
@@ -605,4 +617,4 @@ async function importKits(data) {
 // shared with the armament editor (scripts/armament_editor.cjs)
 const _internal = { gameTable, lines, rowText, pad, uniqueIds, uniqueName, soulToAbility, abilityToSoul, ABILITY_COLUMNS }
 
-module.exports = { _internal, exportKits, importKits, CLASSES, ROLES, MAX_LINES, listUnits, getUnit, checkEdit, checkLine, saveUnit, resetUnit, editorData, unitLines, catalog, leaderToAbility, abilityToLeader, contradictions, _setBase: b => { base = b; catalogCache = null } }
+module.exports = { MODES, _internal, exportKits, importKits, CLASSES, ROLES, MAX_LINES, listUnits, getUnit, checkEdit, checkLine, saveUnit, resetUnit, editorData, unitLines, catalog, leaderToAbility, abilityToLeader, contradictions, _setBase: b => { base = b; catalogCache = null } }

@@ -29,7 +29,9 @@ No unit ids change, so saves are never at risk.
   passed → +50 Combo". It's built from the game's own English text pieces (the UI string table) filled in the way the
   client does; 92% of CN's 4,928 ability and leader lines are covered, and all of Amelia's lines matched her unit page on the emulator word for
   word (elements show as ⟨Water⟩ where the game draws an icon). Lines it can't word yet (skill switching,
-  multiball groups, unit-specific buffs) say so; the unit page shows the game's text after saving either way.
+  multiball groups, unit-specific buffs) say so, and a tick box there, **Use the editor's wording where the game's
+  can't be shown**, puts the editor's own sentence for that line in its place (marked "(editor's wording)"); the unit
+  page shows the game's text after saving either way.
 - **Numbers tab**: HP/ATK at Lv 1/10/80/100, the skill gauge (skill and Skill+), and every min → max pair of every
   line (the same values as the Abilities tab).
 - **Details tab**: name, title, description, leader skill name, **class** and **role**. Class (Swordsman, Fighter,
@@ -61,8 +63,12 @@ folder's `changes/`. Custom units' changes are in their own files and aren't lis
   their triggers, conditions, condition + trigger pairs and "who" choices. **Any effect goes with any of these
   triggers, with no warning**: the game fires the trigger, then applies the effect the same way whatever fired it
   (tested: "every X seconds" + "combo +", a pair no CN unit has, worked in battle).
-- **Advanced mode** (tick box) offers every kind the game can read. A trigger, condition or effect CN doesn't use shows
-  "Unused trigger / condition / effect: may not work or crash the game." Triggers are what decides whether a line works.
+- **Advanced mode** (the Mode picker) keeps to the conditions, triggers, "who" and effects CN's units use, in any
+  combination: e.g. "not in Fever" with "while this unit has attack up" or "while a multiball is out", which no CN unit
+  pairs. Such a line gets a note ("Not used together by CN's units"), not a block.
+- **Unrestricted mode** also offers the conditions, triggers, "who" and effects CN never uses (marked "untested").
+  Those show "Unused trigger / condition / effect: may not work or crash the game." Triggers are what decides whether a
+  line works. (The mode is remembered in the browser.)
 - **Unit-specific buffs** ("Energy Drain", "Cursed"...: 19 in CN, each tied to its unit) can only be used by a unit
   whose own kit uses them; a line that names another unit's buff is refused in both modes.
 - **Always refused**: contradictions (a condition that rules out the line's own trigger, e.g. "not in Fever" +
