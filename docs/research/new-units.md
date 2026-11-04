@@ -294,6 +294,31 @@ don't would be saved and then break the save (C8601), so pools must only name un
 **Bosses and events** follow the same rules (data tables + files + the server's own quest data); the Haunt and
 the event schedule already add rows that way. They weren't tested here.
 
+## Replacing an existing unit's files (reskins, voice swaps)
+
+Much smaller than a new unit: no ids, no table rows, no server data. Ship the replacement files in a game update
+under the **same logical paths** (so the same hashed names and the same folder kind: `upload`, `medium_upload`,
+`android_upload`); the newer update wins. This is what the community reskins (`V1.0.0.zip`: flame_witch and
+wild_wolfgirl, 223 files) and voice swaps (`Shakari_unpacked.rar`) did on global. On CN the same files go into a
+StarPoint update patch (`scripts/build_cn_patch.cjs`) instead of global's `.cdn/mods`.
+
+Rules, from this research:
+- **Replace pairs together.** A sprite sheet `.png` and its `.atlas` must match (a mismatch draws scrambled
+  frames: the handbook's "scrambled portals"). `.frame` files name their own path, which stays right when the path
+  is the same, so they only change if the drawing scale or offset changes.
+- **The battle cut-in is two files.** `ui/skill_cutin_N.png` (menus) and `ui/skill_cutin_N.atf.deflate`
+  (Android folder) both exist; the battle asked for the `.atf.deflate`. V1.0.0 replaced only the PNGs, so its
+  battle cut-in very likely still showed the original. A full reskin needs an ATF encoder (not tested).
+- **Portraits with a different framing** also need their crop rows changed (`trimmed_image`, `character_image`,
+  `full_shot_image_attribute`), which are table rows, not files.
+- **Voices:** the game's own MP3s have the frame sync byte stored as `7F`, but the Shakari swap used plain MP3s
+  (`FF`) and was released as working on global, so plain MP3 very likely plays. Not tested on CN.
+- **Missing or wrong files** show the same way as for new units: the asset recovery screen, or C8003 for an
+  animation that names the wrong path; the path is in `cn_requests.log`.
+- **Undo** by shipping the original files in a later update (the game keeps whatever it got last).
+- **Text** (names, skill descriptions) is table rows, not files; several of those tables are rebuilt by the
+  schedule, so text changes belong in the schedule build (like `assets/kit_dates.json`), not in a one-off update.
+
 ## Appendix: the 19 tables, column by column
 
 Field names are the CN client's own (`pinball/master/generated/<Parser>.as` in the decompiled client, extracted by
