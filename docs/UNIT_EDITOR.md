@@ -18,7 +18,8 @@ No unit ids change, so saves are never at risk.
   Leader skill lines also have **Shown**: always, before awakening only, or after awakening only (the game keeps a
   separate line for each where the numbers change at awakening, e.g. Barrek's "+ 55 %" before and "+ 70 %" after).
 
-  Lines can be removed, added, or copied from any other unit. **Reset to game** on an ability gives its own lines back.
+  Lines can be removed, added (at most **8 lines** per ability or leader skill; CN's own units use up to 6 and 8), or
+  copied from any other unit. **Reset to game** on an ability gives its own lines back.
 
   Under each ability, **In game** shows it in the unit page's own words, at both ends of its range (first Mana node
   and all six; leader skills before and after awakening). Lines with the same conditions and trigger are one sentence

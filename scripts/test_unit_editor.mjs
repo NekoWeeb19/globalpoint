@@ -153,6 +153,13 @@ try {
     const rf = await UE.checkEdit({ ...foreignBuff, id: ID }, true)
     check("another unit's own buff (unique condition) is refused, in advanced mode too", rf.abilities[0].at(-1).errors.some(e => e.includes("another unit's own buff")), rf.abilities[0].at(-1))
 
+    // at most 8 lines per ability or leader skill
+    const many = edit(); while (many.abilities[0].lines.length < 9) many.abilities[0].lines.push([...many.abilities[0].lines[0]])
+    const rm = await UE.checkEdit(many, false)
+    check("more than 8 lines in an ability is refused", !rm.ok && rm.tooMany.length === 1, rm.tooMany)
+    many.abilities[0].lines.pop()
+    check("... and 8 is fine", (await UE.checkEdit(many, false)).tooMany.length === 0)
+
     const unknownPiece = [...line]; unknownPiece[47] = "704"
     check("a line with a part it can't word yet gives null (the page keeps its own sentence)", TX.lineText(unknownPiece, "low", pieces, CODES) === null)
 } finally {
