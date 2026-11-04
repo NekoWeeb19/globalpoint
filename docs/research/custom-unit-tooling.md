@@ -128,9 +128,12 @@ format stays the output when a date is wanted (Balance by Date).
 - **Default mode allows only combinations CN's own units use** (built from every CN unit: 2,875 abilities, 3,974
   lines, plus 496 leader skills). Every effect can be picked; for a chosen effect, only the triggers, "who" and
   targets CN uses with it are offered (CN: 408 trigger + effect, 76 when + who, 69 while + who, 238 effect +
-  target pairs). Clear contradictions (not in Fever + while in Fever, leader is two elements) are refused.
-- **Advanced mode** allows anything the game can read, labelled "not used in the game, untested". Rows the game
-  can't read (bad code, missing value) are refused in both modes (the validator's check).
+  target pairs).
+- **Advanced mode** allows anything the game can read, labelled "not used in the game, untested".
+- **Always refused, in both modes:** contradictions (a condition that rules out the line's own trigger, e.g.
+  "not in Fever" + "while in Fever"; "this unit is the leader" + "isn't the leader"; the leader being two
+  elements; HP above X + HP below a lower Y), and rows the game can't read (bad code, missing value: the
+  validator's check).
 - No guessing whether a line is "useful"; dropped.
 
 Every trigger, condition and effect code now has its client name: [ability-triggers.md](ability-triggers.md)
