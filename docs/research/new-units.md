@@ -146,8 +146,8 @@ Test run (emulator 5556, companion server, game at schedule build 1.4.805):
    (board 2 ids 111907 × 2000 + 400 + index). No title is awarded, since the degree rows weren't copied, and
    there's no error.
 
-Not tested yet: multiplayer with another device, a real phone. A schedule rebuild with the unit as a custom unit was
-checked offline (all 40 rows in the 19 built tables, CN's rows unchanged), not yet on a device.
+Not tested yet: multiplayer with another device, a real phone. A schedule rebuild with the unit as a custom unit
+(docs/CUSTOM_UNITS.md) works on the emulator: see the test there.
 
 ## Checklist: everything a custom unit needs
 

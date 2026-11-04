@@ -98,6 +98,21 @@ Things to know:
 - A translation update ships whole tables without the unit's rows, so rebuild the schedule after one (the
   usual rule for translation updates).
 
+## Tested (2026-11-03, emulator, companion server)
+
+The research test unit 111907 moved to a custom unit file on the emulator that already had it (save at Lv 100,
+Mana Boards 1+2 complete). Its rows and server entries were taken out of the bundled `character.json`,
+`mana_node_cn.json` and `gacha.json`, so the server only knew it from `assets/custom_units/111907.json`.
+- The server logged `[custom units] 111907 Haruhi (GP Test)` and rebuilt the schedule on start by itself (fingerprint).
+- The phone's own build 1.4.955 had all 19 tables with the rows; the Mana Board 2 date was moved to 2015 because
+  the save uses board 2 (the usual keep-open fix).
+- The game took the 7 MB update. The save loaded with no C8601. The home screen showed the unit, and so did the
+  detail page (Lv 100, uncap 4) and Mana Board 2 (complete). No crash reports.
+- Dashboard Give (`/api/server/give`) → mail → claim: the unit-obtained scene and its Fire EX Boost item.
+
+Not tested: a summon from a listed banner after the merge, battles after the rebuild (same rows as the research
+test), a real phone.
+
 ## Code
 
 - `scripts/custom_units.cjs`: reads and checks unit files, adds rows to a table, adds units to summon pools.
