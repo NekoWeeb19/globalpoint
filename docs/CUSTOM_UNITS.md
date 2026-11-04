@@ -90,8 +90,8 @@ dashboard from the companion app):
 1. Close the game.
 2. In the dashboard, open **Players** > the player, and under **Remove a unit** type the unit's id and press
    **Remove from save** (it asks to confirm). Download the save first if you want a copy.
-   It removes the unit with its level, Mana Boards and amity. It also takes it out of your parties (a party
-   left empty gets the hero), the home screen, Favorite Units, Rush and Score Attack records, the item log
+   It removes the unit with its level, Mana Boards and amity. It also takes it out of your parties (a party it led gets the hero, or another
+   unit, as leader: a party can't be without one), the home screen, Favorite Units, Rush and Score Attack records, the item log
    and unclaimed mail. Armaments and ability souls stay.
 3. Do this for every player that has it.
 
@@ -324,6 +324,19 @@ Mana Boards 1+2 complete). Its rows and server entries were taken out of the bun
 - The game took the 7 MB update. The save loaded with no C8601. The home screen showed the unit, and so did the
   detail page (Lv 100, uncap 4) and Mana Board 2 (complete). No crash reports.
 - Dashboard Give (`/api/server/give`) → mail → claim: the unit-obtained scene and its Fire EX Boost item.
+
+Then with companion 0.6.24 (same emulator, 2026-11-03):
+- Installed over 0.6.23 with the unit file moved to `files/data/.cdn/custom_units/` first: the server found it there
+  and rebuilt by itself (1.4.957).
+- **Download from PC** from a PC server running this code, with nothing ticked: the unit file, a change file
+  (`changes/`, Lv 100 stats of 111907) and the index arrived; after **Start** the phone rebuilt (1.4.958), and in the
+  game Lv 100 HP/ATK went from 4038/1023 to 11799/1239. With the change file deleted on the PC, the next copy
+  deleted it on the phone, the rebuild (1.4.959) shipped the game's own rows, and the stats were back to 4038/1023.
+- **Remove a unit** on 111907 (the leader of the selected party): the first version emptied the leader slot and the
+  game stopped with C2330 ("the leader can't be empty"); fixed (the hero takes the slot), and the save then loaded
+  with Alk leading that party. The save was put back afterwards.
+- Seen on the way: after a copy the server stays stopped until **Start** is pressed, although the copy screen says
+  it starts by itself (not caused by this change).
 
 Not tested: a summon from a listed banner after the merge, battles after the rebuild (same rows as the research
 test), a real phone.

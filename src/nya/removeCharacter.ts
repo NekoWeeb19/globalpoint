@@ -2,7 +2,7 @@
 // unit is deleted (docs/CUSTOM_UNITS.md): a save holding a unit the game's tables don't have stops with C8601.
 // Everything that names the unit goes with it, so nothing left behind points at it:
 // - the unit itself, its Mana Board nodes, amity (bond token) rows and awakened nodes;
-// - the leader (home unit) and party slots: emptied, and a party left with no main unit gets the new leader;
+// - the leader and party slots: emptied; a party whose first slot (its leader) was it gets a stand-in;
 // - the Favorite Units party (profile), Rush records and played parties, Score Attack history that used it;
 // - item log entries (players_receive_history) and unclaimed mails that give it.
 // Armaments and ability souls are separate items and stay.
@@ -44,21 +44,30 @@ export function removeCharacterFromSaveSync(playerId: number, characterId: numbe
             db.prepare(`DELETE FROM players_mana_node_awake WHERE player_id = ? AND character_id = ?`).run(playerId, characterId)
         }
 
-        // a unit still owned for the leader and empty parties: the hero (1) if owned, else the first one
-        const replacement = (db.prepare(`SELECT id FROM players_characters WHERE player_id = ? ORDER BY (id = 1) DESC, join_time, id LIMIT 1`)
-            .get(playerId) as { id: number } | undefined)?.id ?? null
+        // units still owned, the hero (1) first: stand-ins for the leader and for a party's first slot
+        const owned = (db.prepare(`SELECT id FROM players_characters WHERE player_id = ? ORDER BY (id = 1) DESC, join_time, id`)
+            .all(playerId) as { id: number }[]).map(row => row.id)
+        const standIn = (inParty: (number | null)[]) => owned.find(id => !inParty.includes(id)) ?? null
+        const replacement = owned[0] ?? null
         const player = db.prepare(`SELECT leader_character_id FROM players WHERE id = ?`).get(playerId) as { leader_character_id: number } | undefined
         if (player?.leader_character_id === characterId && replacement !== null) {
             db.prepare(`UPDATE players SET leader_character_id = ? WHERE id = ?`).run(replacement, playerId)
             result.newLeader = replacement
         }
 
-        for (const column of ["character_id_1", "character_id_2", "character_id_3", "unison_character_1", "unison_character_2", "unison_character_3"]) {
+        const SLOTS = ["character_id_1", "character_id_2", "character_id_3", "unison_character_1", "unison_character_2", "unison_character_3"]
+        for (const column of SLOTS) {
             result.partySlots += db.prepare(`UPDATE players_parties SET ${column} = NULL WHERE player_id = ? AND ${column} = ?`).run(playerId, characterId).changes
         }
-        if (replacement !== null) {
-            db.prepare(`UPDATE players_parties SET character_id_1 = ? WHERE player_id = ? AND character_id_1 IS NULL AND character_id_2 IS NULL AND character_id_3 IS NULL`)
-                .run(replacement, playerId)
+        // a party's first slot is its leader and can't be empty (the game stops with C2330 "the leader can't be
+        // empty", on the home screen for the selected party): it gets a unit that isn't in that party yet
+        const leaderless = db.prepare(`SELECT slot, group_id, category, ${SLOTS.join(", ")} FROM players_parties WHERE player_id = ? AND character_id_1 IS NULL`)
+            .all(playerId) as Record<string, number | null>[]
+        for (const party of leaderless) {
+            const unit = standIn(SLOTS.map(column => party[column]))
+            if (unit === null) continue
+            db.prepare(`UPDATE players_parties SET character_id_1 = ? WHERE player_id = ? AND slot = ? AND group_id = ? AND category = ?`)
+                .run(unit, playerId, party.slot, party.group_id, party.category)
         }
 
         const profile = db.prepare(`SELECT favorite_party FROM players_profile WHERE player_id = ?`).get(playerId) as { favorite_party: string | null } | undefined
@@ -69,7 +78,9 @@ export function removeCharacterFromSaveSync(playerId: number, characterId: numbe
                     const clear = (ids?: (number | null)[]) => ids?.map(id => id === characterId ? null : id)
                     party.characterIds = clear(party.characterIds)
                     party.unisonCharacterIds = clear(party.unisonCharacterIds)
-                    if (party.characterIds && party.characterIds.every(id => id === null)) party.characterIds[0] = replacement
+                    if (party.characterIds && party.characterIds[0] === null) {
+                        party.characterIds[0] = standIn([...party.characterIds, ...(party.unisonCharacterIds ?? [])])
+                    }
                     db.prepare(`UPDATE players_profile SET favorite_party = ? WHERE player_id = ?`).run(JSON.stringify(party), playerId)
                     result.otherRecords++
                 }
