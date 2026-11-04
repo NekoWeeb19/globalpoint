@@ -7,7 +7,8 @@ the unit list. Its detail page worked, and so did its skill **Preview** (a real 
 skill effects and voices). It was leveled to 80, uncapped and EX Boosted. Mana Board 1 was unlocked in full,
 **awakening included** (awakened art, voice line and upgraded leader talent), it **finished a single-player quest battle and a co-op battle**, and it took an armament and
 an ability soul. A second copy stacked as a normal duplicate (with its Fire EX Boost material), and it
-**dropped from a real summon banner** once its id was added to that banner's pool.
+**dropped from a real summon banner** once its id was added to that banner's pool. Level 100, both amity scrolls and
+a fully unlocked **Mana Board 2** work too.
 
 The test unit is a clone of Haruhi Suzumiya (111069) under a new id and string id, so every one of its files is a
 *new* file. That makes it the same path a hand-made unit would take. What a hand-made unit would still need is new
@@ -69,7 +70,7 @@ Found by decoding every CN table (3,895) and searching for the id and the string
 | master/encyclopedia/encyclopedia | 1<id> | |
 | master/story/story_character | string id | name, voice folder, expressions |
 
-Not needed for a playable unit: degree (title), degree_mission, gacha/banner rows, shops, event stories.
+Not needed for a playable unit (tested: nothing breaks without them): degree (title), degree_mission, gacha/banner rows, shops, event stories.
 Rows can be appended anywhere: lookups are by key (`OrderedMap`, `indexOf`), not binary search.
 
 ## The files (76 for Haruhi)
@@ -139,7 +140,11 @@ Test run (emulator 5556, companion server, game at schedule build 1.4.805):
    finished; equipping an armament and an ability soul works. A second copy by mail: the unit-obtained scene, stack +1
    and a Fire EX Boost item. Added to banner 1613's 5★ pool (`assets/gacha.json`): pulled with the normal result screen.
 
-Not tested yet: Mana Board 2 (its open date row is copied from Haruhi), multiplayer with another device.
+6. Same 1.4.954: Lv 100, both amity scrolls (`receive_bond_token`), Mana Board 2 opened and all its nodes learned
+   (board 2 ids 111907 × 2000 + 400 + index). No title is awarded, since the degree rows weren't copied, and
+   there's no error.
+
+Not tested yet: multiplayer with another device, a real phone, a schedule rebuild (known to drop the rows).
 
 ## What a "new unit" tool needs
 
