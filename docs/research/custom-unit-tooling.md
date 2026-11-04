@@ -126,9 +126,10 @@ format stays the output when a date is wanted (Balance by Date).
   trigger uses (number, who), then the effect ("do") with its target and min → max numbers. Fields a choice
   doesn't use are hidden (e.g. no element box for "no condition"; no "who" for "Fever starts").
 - **Default mode allows only combinations CN's own units use** (built from every CN unit: 2,875 abilities, 3,974
-  lines, plus 496 leader skills). Every effect can be picked; for a chosen effect, only the triggers, "who" and
-  targets CN uses with it are offered (CN: 408 trigger + effect, 76 when + who, 69 while + who, 238 effect +
-  target pairs).
+  lines, plus 496 leader skills). **The guard rails are on the triggers**: kind, trigger, "who", its number
+  and the conditions only in combinations CN uses (76 when + who, 69 while + who pairs). **Effects ("do") are
+  free**: any effect goes with any trigger (in theory every one should work), with the fields that effect
+  uses (target, numbers, duration).
 - **Advanced mode** allows anything the game can read, labelled "not used in the game, untested".
 - **Always refused, in both modes:** contradictions (a condition that rules out the line's own trigger, e.g.
   "not in Fever" + "while in Fever"; "this unit is the leader" + "isn't the leader"; the leader being two
