@@ -22,6 +22,18 @@ const UE = require(path.join(__dirname, "..", "..", "..", "scripts", "unit_edito
     importKits: (data: unknown) => Promise<{ imported: string[], refused: { id: string, why: string }[] }>
 }
 
+// armaments (scripts/armament_editor.cjs): the same edit shape, abilities = slots
+const AE = require(path.join(__dirname, "..", "..", "..", "scripts", "armament_editor.cjs")) as {
+    listArmaments: () => Promise<unknown[]>
+    getArmament: (id: string) => Promise<unknown | null>
+    armamentLines: (id: string) => Promise<unknown | null>
+    checkArmament: (id: string, edit: Edit, advanced: boolean) => Promise<{ ok: boolean }>
+    saveArmament: (id: string, edit: Edit, advanced: boolean) => Promise<{ file?: string | null, rows?: number, errors?: unknown }>
+    resetArmament: (id: string) => boolean
+    exportArmamentKits: (ids: string[]) => object
+    importArmamentKits: (data: unknown) => Promise<{ imported: string[], refused: { id: string, why: string }[] }>
+}
+
 const failed = (reply: FastifyReply, e: unknown) =>
     reply.status(500).send({ error: "Unit editor", message: e instanceof Error ? e.message : String(e) })
 
@@ -78,6 +90,55 @@ const routes = async (fastify: FastifyInstance) => {
             return reply.send(result)
         } catch (e) { return failed(reply, e) }
     })
+    // ---- armaments ----
+    fastify.get("/armaments", async (_: FastifyRequest, reply: FastifyReply) => {
+        try { return reply.send(await AE.listArmaments()) } catch (e) { return failed(reply, e) }
+    })
+    fastify.get("/armament/:id", async (request: FastifyRequest, reply: FastifyReply) => {
+        const { id } = request.params as { id: string }
+        try {
+            const a = await AE.getArmament(id)
+            return a === null ? reply.status(404).send({ error: "Not Found", message: `No armament ${id}` }) : reply.send(a)
+        } catch (e) { return failed(reply, e) }
+    })
+    fastify.get("/armament-lines/:id", async (request: FastifyRequest, reply: FastifyReply) => {
+        const { id } = request.params as { id: string }
+        try { const a = await AE.armamentLines(id); return a === null ? reply.status(404).send({ error: "Not Found", message: `No armament ${id}` }) : reply.send(a) } catch (e) { return failed(reply, e) }
+    })
+    fastify.post("/armament-check", async (request: FastifyRequest, reply: FastifyReply) => {
+        const body = (request.body ?? {}) as { id?: string, edit?: Edit, advanced?: boolean }
+        try { return reply.send(await AE.checkArmament(String(body.id ?? ""), body.edit ?? {}, body.advanced === true)) } catch (e) { return failed(reply, e) }
+    })
+    fastify.post("/armament/:id", async (request: FastifyRequest, reply: FastifyReply) => {
+        const { id } = request.params as { id: string }
+        const body = (request.body ?? {}) as { edit?: Edit, advanced?: boolean }
+        try {
+            const result = await AE.saveArmament(id, body.edit ?? {}, body.advanced === true)
+            if (result.errors) return reply.status(400).send({ error: "Bad Request", message: "Some lines can't be saved", check: result.errors })
+            rebuildCnUpdate()
+            return reply.send({ saved: result.rows ?? 0, file: result.file ?? null })
+        } catch (e) { return failed(reply, e) }
+    })
+    fastify.post("/armament/:id/reset", async (request: FastifyRequest, reply: FastifyReply) => {
+        const { id } = request.params as { id: string }
+        const removed = AE.resetArmament(id)
+        if (removed) rebuildCnUpdate()
+        return reply.send({ reset: removed })
+    })
+    fastify.get("/armament-kits", async (request: FastifyRequest, reply: FastifyReply) => {
+        const { ids } = request.query as { ids?: string }
+        const list = (ids ?? "").split(",").map(s => s.trim()).filter(Boolean)
+        reply.header("content-disposition", `attachment; filename="armament-kits${list.length === 1 ? "-" + list[0] : ""}.json"`)
+        return reply.type("application/json").send(JSON.stringify(AE.exportArmamentKits(list), null, 1))
+    })
+    fastify.post("/armament-kits", async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+            const result = await AE.importArmamentKits(request.body)
+            if (result.imported.length > 0) rebuildCnUpdate()
+            return reply.send(result)
+        } catch (e) { return failed(reply, e) }
+    })
+
     fastify.post("/unit/:id/reset", async (request: FastifyRequest, reply: FastifyReply) => {
         const { id } = request.params as { id: string }
         const removed = UE.resetUnit(id)

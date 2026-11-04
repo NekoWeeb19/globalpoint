@@ -87,8 +87,40 @@ works (the battle code is separate from the description code).
 - **Reset unit to game** deletes the editor's change file and rebuilds. Other change files and Balance by Date kits
   for the unit are listed on the page and stay as they are (changes apply on top of a dated kit).
 
+## Armaments
+
+The **Units / Armaments** switch at the top of the page edits armaments (all 436 of CN's) the same way, with the
+same guard rails, saving, kits and reset (`/unit-editor?armament=<id>`).
+
+- **Abilities tab**: each of the armament's abilities is an **Effect** (at most **10**, the game's own limit: slots 0-9;
+  CN uses up to 10). An effect has up to **3 versions**, each with **From level**: the game uses, per effect, the
+  version from the highest armament level reached (e.g. Ukonvasara: + 50 % skill damage from level 3, + 100 % from
+  level 5). Two versions can't be from the same level. CN uses at most 2 versions. **In game** shows the whole
+  armament at level 1 and at its max level.
+- **Numbers tab**: HP/ATK at the levels the game lists (1, and 3 and 5 for most), and every min → max pair. Values
+  scale from armament level 1 to its max level (5, or 1 for 51 armaments).
+- **Details tab**: name and description.
+- **Armaments with only level 1** can't scale: every min must equal its max (the client stops with an error
+  otherwise), so the editor refuses a line where they differ.
+- Unit-specific buffs work only if the armament's own rows use them, as for units.
+
+Saved as `changes/armament-editor-<id>.json`, with these tables (from the CN 1.8.1 client's parsers):
+`master/item/equipment` (name column 1, description 7, max level 8), `master/item/equipment_status`
+(`<id>/<level>`: hp, atk) and `master/ability/ability_soul` (one line per effect version: slot, learn level, kind,
+then the unit ability layout). The server keeps no copy of armament stats or abilities (`src/lib/equipment.ts` only
+stores owner, level, enhancement and stack), so the update alone changes them.
+
+**Tested (2026-11-04, StarPointTest emulator, companion 0.7.4):** change files from the armament editor in the
+phone's `custom_units/changes/`; the phone rebuilt its update (1.4.966, both armament tables in it) and the game took
+it (7 MB). At max level, Protostar Bident's page read "Protostar Bident (Edited)" and "+ 90 % to attack for this unit"
+(was + 70 %), and Infernal Axe's "Infernal Axe (Edited)" and "+ 40 % to HP for multiballs" (was + 20 %). The game's
+armament page lists the version reached and tags a later version "Awakening Lv5". The files were then removed
+(update 1.4.967, the game's own rows).
+
 ## Code
 
+- `scripts/armament_editor.cjs`: the armament side (uses the unit editor's checks and wording);
+  `scripts/test_armament_editor.mjs` (`npm test`): its offline test.
 - `scripts/unit_editor.cjs`: reading units, the checks, saving. `src/routes/web_api/unitEditor.ts`: its API
   (`/api/unit-editor/...`). `web/pages/unit-editor.html`: the page.
 - `assets/unit_editor/ability_codes.json`: every condition, trigger, effect, who and target code with the fields
