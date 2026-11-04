@@ -346,8 +346,10 @@ and against [ability-triggers.md](ability-triggers.md), which reads them from th
 | 97, 98 | 95, 96 | "while" state and who; 100/101 its threshold |
 | 109, 110 | 107, 108 | "while" effect and its target |
 
-The other 17 tables' names come from the same older decompile; they line up with CN 1.8.1's rows value by value
-(every named column holds the kind of value its name says), so they're kept as they are.
+The other 17 tables' names come from the same older decompile. Their column counts match CN 1.8.1's rows and the
+values read sensibly under the names (spot-checked: character, character_text, encyclopedia, skill preview, Mana
+Board), but a column added or moved since that client could still be misnamed; the p-code reader behind
+ability-triggers.md is the exact source if one ever looks wrong.
 
 Columns inside those blocks that were changed and checked in game during the kit-by-date work (Amelia's old kit):
 ability 6 unit condition (9/10 count, 11 element), 27 trigger (8 Fever starts, 23 skill, 77 elapsed seconds, …),
