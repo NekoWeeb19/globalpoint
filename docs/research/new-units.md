@@ -334,22 +334,26 @@ Field names are the CN client's own (`pinball/master/generated/<Parser>.as` in t
 always empty for this unit are left out except where the client names them. "Example key" is one row; tables keyed
 by unit/level, unit/board/node etc. have one row per sub-key.
 
-**ability and leader_ability** carry a whole effect tree per row (one CSV line per effect). The decompiler could
-not read the large effect parsers (stack overflow), so only their block layout is from the client:
+**ability and leader_ability** carry a whole effect tree per row (one CSV line per effect). Their layout is
+the one exception to "the client's own names" here: the decompile used for this appendix is from an **older
+client**, whose ability rows are 2 columns shorter (124/122, like the 2024 Haruhi mod's rows), and it couldn't read
+the big effect parsers anyway (stack overflow). The columns below are CN 1.8.1's, checked against the shipped rows
+and against [ability-triggers.md](ability-triggers.md), which reads them from the installed client's p-code:
 
-| Ability col | Leader col | Block (client name) |
+| Ability col | Leader col | Part |
 |---|---|---|
 | 0-2 | 0 | string_id, unisonable (false = main unit only), statue_group_id (icon group); leader: string_id |
-| 3 | 1 | trigger kind: Instant / During / Opening |
-| 4, 11, 18 | 2, 9, 16 | precondition, precondition2, precondition3 (unit / party conditions) |
-| 25 | 23 | instant_trigger |
-| 37 | 35 | instant_precontent (target, threshold, limit) |
-| 44 | 42 | instant_content (the effect) |
-| 67 | 65 | during_accumulation_trigger |
-| 79 | 77 | during_trigger |
-| 90 | 88 | even_if_owner_dead |
-| 91 | 89 | during_content (the effect) |
-| 102 | 100 | opening (strength) |
+| 5 | 3 | line kind: 0 when (instant), 1 while (during), battle start |
+| 6, 13, 20 | 4, 11, 18 | condition, condition 2, condition 3 ("only if"), each with its element/count columns next to it |
+| 27, 28 | 25, 26 | "when" event and who; 30/31 its threshold (min/max) |
+| 47, 48 | 45, 46 | "when" effect and its target |
+| 97, 98 | 95, 96 | "while" state and who; 100/101 its threshold |
+| 109, 110 | 107, 108 | "while" effect and its target |
+
+The other 17 tables' names come from the same older decompile. Their column counts match CN 1.8.1's rows and the
+values read sensibly under the names (spot-checked: character, character_text, encyclopedia, skill preview, Mana
+Board), but a column added or moved since that client could still be misnamed; the p-code reader behind
+ability-triggers.md is the exact source if one ever looks wrong.
 
 Columns inside those blocks that were changed and checked in game during the kit-by-date work (Amelia's old kit):
 ability 6 unit condition (9/10 count, 11 element), 27 trigger (8 Fever starts, 23 skill, 77 elapsed seconds, …),
@@ -442,63 +446,10 @@ Example key: `111907`; 8 lines in this row.
 | 3 | speech | This place is SO much fun! There's something new to disco… |
 | 4 | voice_path | home/kokotte_hontoni |
 
-### ability (`1e/664c…`, parser `AbilityValues`)
+### ability (`1e/664c…`) and leader_ability (`ff/8435…`)
 
-Example key: `1119073`; 2 lines in this row.
-
-See the block layout above; the named columns the client decodes:
-
-| Col | Client field | Test unit value |
-|---|---|---|
-| 0 | string_id | gp_test_haruhi_3 |
-| 1 | unisonable | false |
-| 2 | statue_group_id | action_skill |
-| 3 | trigger | 0 |
-| 37 | trigger.instant_precontent |  |
-| 38 | trigger.instant_precontent.target |  |
-| 40 | trigger.instant_precontent.threshold |  |
-| 41 | trigger.instant_precontent.threshold |  |
-| 42 | trigger.instant_precontent.limit |  |
-| 43 | trigger.instant_precontent.unique_condition_id |  |
-| 90 | trigger.even_if_owner_dead |  |
-| 102 | trigger.opening |  |
-| 103 | trigger.opening.strength |  |
-| 104 | trigger.opening.strength |  |
-
-### leader_ability (`ff/8435…`, parser `LeaderAbilityValues`)
-
-Example key: `111907`; 3 lines in this row.
-
-See the block layout above; the named columns the client decodes:
-
-| Col | Client field | Test unit value |
-|---|---|---|
-| 0 | string_id | gp_test_haruhi |
-| 1 | trigger | 0 |
-| 2 | trigger.precondition |  |
-| 3 | trigger.precondition.trigger_puller | 0 |
-| 4 | trigger.precondition.trigger_puller.character_groups | 0 |
-| 5 | trigger.precondition.threshold |  |
-| 6 | trigger.precondition.threshold |  |
-| 7 | trigger.precondition.character_groups |  |
-| 8 | trigger.precondition.unique_condition_id |  |
-| 9 | trigger.precondition2 |  |
-| 10 | trigger.precondition2.trigger_puller |  |
-| 11 | trigger.precondition2.trigger_puller.character_groups | 0 |
-| 12 | trigger.precondition2.threshold |  |
-| 13 | trigger.precondition2.threshold |  |
-| 14 | trigger.precondition2.character_groups |  |
-| 15 | trigger.precondition2.unique_condition_id |  |
-| 35 | trigger.instant_precontent |  |
-| 36 | trigger.instant_precontent.target |  |
-| 38 | trigger.instant_precontent.threshold |  |
-| 39 | trigger.instant_precontent.threshold |  |
-| 40 | trigger.instant_precontent.limit |  |
-| 41 | trigger.instant_precontent.unique_condition_id |  |
-| 88 | trigger.even_if_owner_dead |  |
-| 100 | trigger.opening | 4 |
-| 101 | trigger.opening.strength |  |
-| 102 | trigger.opening.strength |  |
+Example keys: `1119071`…`1119076` (two lines each for Haruhi's), leader `111907` (3 lines). Columns: the table at
+the start of this appendix, and every code in [ability-triggers.md](ability-triggers.md).
 
 ### master/skill/action_skill (`91/7989…`, parser `ActionSkillValues`)
 
