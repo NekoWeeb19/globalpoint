@@ -152,7 +152,8 @@ function effectText(strings, codes, c, level) {
     const sep = base.match(/^SeparatedTerm(.+)$/)
     if (sep) pieceName = timed ? "separated_term_" + snake(sep[1]) : snake(sep[1]) + "_separated_term"
     // counts (Fever gauge points, combo, activation counts): base scale, shown as "+5"
-    if (f.strength && /^(AddFeverPoint|AddCombo|SetCombo|CountUp.+)$/.test(name)) ctx.count = countUp(strings, at(c, f.strength.cols, level) / 100000)
+    if (f.strength && /^(AddFeverPoint|AddCombo|SetCombo|CountUp.+|CoffinBaseCountUp)$/.test(name)) ctx.count = countUp(strings, at(c, f.strength.cols, level) / 100000)
+    if (f.strength && name === "CoffinBaseCountDown") ctx.count = piece(strings, "count_down", { count: Math.round(at(c, f.strength.cols, level) / 100000) })
     if (name === "ConditionComboBoost") { ctx.count = countUp(strings, at(c, f.strength.cols, level) / 100000); key = "condition_content_combo_boost" }
     // "…lasts longer" and "damage vs foes with …" name a buff or debuff
     let m
@@ -173,7 +174,11 @@ function effectText(strings, codes, c, level) {
     } else if ((m = base.match(/^PowerFlipLv(\d)DamageSlayer$/))) {
         ctx.level = m[1]; key = "common_content_power_flip_damage_lv"
     } else if ((m = base.match(/^DirectAttack(\d)$/))) {
-        ctx.count = m[1]; key = "condition_content_aditional_direct_attack"
+        // Multihit: "grant this unit Multihit [2 direct hit / + 20 % to total damage dealt]" (timed) or
+        // "Set this unit's direct hits to 3" (lasting); with damage it also counts as "(Category 6)"
+        ctx.count = m[1]
+        ctx.multihitDamage = Boolean(f.strength) && at(c, f.strength.cols, level) !== 0
+        key = (timed ? "condition_content_" : "common_content_") + "aditional_direct_attack" + (ctx.multihitDamage ? "_and_damage" : "")
     }
     if (timed || name === "ConditionComboBoost") {
         key ??= "condition_content_" + pieceName
@@ -187,10 +192,12 @@ function effectText(strings, codes, c, level) {
     // "(Category N)": the separate damage multiplier the effect adds to
     const category = /^(Debuff|Poison|Paralysis|Frozen|Silence|Unique|AttackPointDown|Resistance\w+Down)(DirectDamage|Skill)?Slayer$/.test(base) ? "condition_slayer"
         : base === "CharacterSlayer" ? "character_slayer" : base === "StunWinceSlayer" ? "stun_wince_slayer" : /^PowerFlipLv\dDamageSlayer$/.test(base) ? "powerflip_lv"
-        : sep ? { PowerFlipDamage: "powerflip_lv", DirectDamage: "direct_damage", SkillDamage: "skill_damage", AbilityDamage: "ability_damage" }[sep[1]] : null
+        : sep ? { PowerFlipDamage: "powerflip_lv", DirectDamage: "direct_damage", SkillDamage: "skill_damage", AbilityDamage: "ability_damage" }[sep[1]]
+        : ctx.multihitDamage ? "direct_damage" : null
     if (body !== null && category) body += piece(strings, "separated_term_" + category) ?? ""
     // a piece that names its target unconditionally, for an effect without one: drop the dangling "for"
-    if (body !== null && !target) body = body.replace(/\s+for\s*$/, "").replace(/\s+for\s+\)/, ")")
+    if (body !== null && !target && key === "common_content_condition_extend") body = piece(strings, key, { ...ctx, target: piece(strings, "target_party"), withoutTarget: false })
+    else if (body !== null && !target) body = body.replace(/\s+for\s*$/, "").replace(/\s+for\s+\)/, ")")
     if (body === null || prefix === null) return null
     return prefix + body
 }
@@ -210,18 +217,30 @@ function conditionText(strings, codes, c, at0) {
             if (n >= 6 && ELEMENT[g]) return piece(strings, "instant_trigger_kind_member_element_unified", { element_full: groupWord(g) })
             return piece(strings, "instant_trigger_kind_member", { once: true, count: num(n), constraint: unitWord(g) })
         }
-        case "HpHigh": return piece(strings, "during_trigger_kind_hp_high", { omittable: true, includesThreshold: true, percent: num(Number(c[at0 + 3]) / 1000) + "%", isBeforeInstantTrigger: true }).trim()
-        case "HpLow": return piece(strings, "during_trigger_kind_hp_low", { omittable: true, includesThreshold: true, percent: num(Number(c[at0 + 3]) / 1000) + "%", isBeforeInstantTrigger: true }).trim()
+        case "HpHigh": return piece(strings, "during_trigger_kind_hp_high", { omittable: true, includesThreshold: true, percent: piece(strings, "percent", { percent: num(Number(c[at0 + 3]) / 1000) }), isBeforeInstantTrigger: true }).trim()
+        case "HpLow": return piece(strings, "during_trigger_kind_hp_low", { omittable: true, includesThreshold: true, percent: piece(strings, "percent", { percent: num(Number(c[at0 + 3]) / 1000) }), isBeforeInstantTrigger: true }).trim()
         case "Fever": return piece(strings, "during_trigger_kind_fever", { isBeforeInstantTrigger: true }).trim()
         case "NotFever": return piece(strings, "during_trigger_kind_not_fever", { isBeforeInstantTrigger: true })?.trim() ?? null
-        case "HpLowExcludesThreshold": return piece(strings, "during_trigger_kind_hp_low", { omittable: true, includesThreshold: false, percent: num(Number(c[at0 + 3]) / 1000) + "%", isBeforeInstantTrigger: true }).trim()
+        case "HpLowExcludesThreshold": return piece(strings, "during_trigger_kind_hp_low", { omittable: true, includesThreshold: false, percent: piece(strings, "percent", { percent: num(Number(c[at0 + 3]) / 1000) }), isBeforeInstantTrigger: true }).trim()
         default: {
             // "has Pierce", "has a buff": the while-condition piece, written before the trigger
             const m = name.match(/^Condition(Piercing|Flying|Buff|Debuff|AttackPointUp)$/)
             const cond = m ? conditionName(strings, m[1]) : null
-            return cond === null ? null : piece(strings, "during_trigger_kind_condition", { condition: cond, omittable: true, isBeforeInstantTrigger: true })?.trim() ?? null
+            // who has it: "while Pierce is active for party", "... for this unit", "... for Leader"
+            const who = conditionWho(strings, c[at0 + 1], c[at0 + 2])
+            return cond === null || who === null ? null : piece(strings, "during_trigger_kind_condition", { condition: cond, omittable: false, triggerPuller: who, isBeforeInstantTrigger: true })?.trim() ?? null
         }
     }
+}
+
+/** Who a "while ... is active" names: this unit, Leader, party (any or all of the party), or a group's units. */
+function conditionWho(strings, code, group) {
+    const g = group && group !== "(None)" ? group : ""
+    if (code === "") return piece(strings, "target_party")
+    if (code === "0") return piece(strings, "target_myself")
+    if (code === "1") return piece(strings, "target_leader")
+    if (["5", "7", "9"].includes(String(code))) return g ? unitWord(g) : piece(strings, "target_party")
+    return null
 }
 
 /** The "when" trigger part ("Fever is activated", "every 10 time(s)a unit Power Flips", "when a battle starts, "). */
@@ -231,14 +250,14 @@ function whenText(strings, codes, c, level) {
     const name = def.name, f = def.fields
     const n = f.threshold ? at(c, f.threshold.cols, level) / 100000 : 1
     const puller = f.trigger_puller ? pullerText(strings, c[28], c[29]) : null
-    const ctx = { once: false, omittable: !puller || c[28] === "5", triggerPuller: puller, count: num(n), includesThreshold: true }
+    const ctx = { once: false, omittable: !puller || (c[28] === "5" && !(c[29] && c[29] !== "(None)")), triggerPuller: puller, count: num(n), includesThreshold: true }
     let text
     switch (name) {
         case "Initial": return piece(strings, "instant_trigger_kind_first_flip")
         case "MySelf": return piece(strings, "instant_trigger_kind_myself", { constraint: unitWord(c[36]) })
         case "LeaderCharacter": return piece(strings, "instant_trigger_kind_leader_character", { constraint: unitWord(c[36]) })
         case "ElapsedTime": return piece(strings, "instant_trigger_kind_elapsed_time", { ...ctx, second: num(at(c, f.threshold.cols, level) / 6000000) })
-        case "HpLow": return piece(strings, "instant_trigger_kind_hp_low", { ...ctx, percent: num(at(c, f.threshold.cols, level) / 1000) + "%" })
+        case "HpLow": return piece(strings, "instant_trigger_kind_hp_low", { ...ctx, percent: piece(strings, "percent", { percent: num(at(c, f.threshold.cols, level) / 1000) }) })
         case "HealHigh": return piece(strings, "instant_trigger_kind_heal_high", ctx)
         case "Combo": return piece(strings, "instant_trigger_kind_combo", ctx)
         case "FeverEnd": text = piece(strings, "instant_trigger_kind_feverend", ctx); break
@@ -255,11 +274,15 @@ function whenText(strings, codes, c, level) {
     if (text === null) return null
     // for combo triggers the number is the combo itself ("the combo reaches 30"), not "every N times"
     if (!(n > 1) || /^Combo/.test(name)) return text
+    // "damage is taken by Leader →", "a direct hit is dealt by this unit →": the game shows no count for these
+    if (name === "DamageCount" || name === "MemberDirectAttack") return text
     // "every N time(s)" goes where the piece has its "::if once::" slot: in front ("Every 20 time(s)a party member...")
     // or after ("Dragonunit a skill hits every 20 time(s)")
     const raw = String(strings["ability_description_instant_trigger_kind_" + snake(name)] ?? "").replace(/^"/, "").trim()
     const every = piece(strings, "n_times", { count: num(n) })
-    return raw === "" || raw.startsWith("::if once::") ? every + text : text.replace(/\s+$/, "") + " " + every
+    // "every N time(s)" goes in front ("Every 4 time(s)this unit destroys a foe"), or after when the trigger names who
+    // did it ("a skill hits every 20 time(s)", "a skill is activated by ⟨Fire⟩ unitevery 3 time(s)")
+    return raw.includes("::triggerPuller::") && !ctx.omittable ? text + every : every + text
 }
 
 /** The "while" trigger part ("while in Fever Mode, ", "for each 1 Power Flip Damage Buff party has, "). */
@@ -269,11 +292,11 @@ function whileText(strings, codes, c, level) {
     const name = def.name, f = def.fields
     const puller = f.trigger_puller ? pullerText(strings, c[98], c[99]) : null
     const partyCount = !f.trigger_puller && /^ConditionCount/.test(name)
-    const ctx = { omittable: partyCount ? false : !puller || c[98] === "0", triggerPuller: partyCount ? piece(strings, "target_party") : puller, includesThreshold: true, isBeforeInstantTrigger: false, hasAccumulationTrigger: false, isPrecondition: false }
+    const ctx = { omittable: partyCount ? false : !puller, triggerPuller: partyCount ? piece(strings, "target_party") : puller, includesThreshold: true, isBeforeInstantTrigger: false, hasAccumulationTrigger: false, isPrecondition: false }
     const thr = f.threshold ? at(c, f.threshold.cols, level) : 0
     let m
-    if (name === "HpHigh" || name === "HpLow") return piece(strings, "during_trigger_kind_" + snake(name), { ...ctx, percent: num(thr / 1000) + "%" })
-    if (name === "HpLowExcludesThreshold") return piece(strings, "during_trigger_kind_hp_low", { ...ctx, includesThreshold: false, percent: num(thr / 1000) + "%" })
+    if (name === "HpHigh" || name === "HpLow") return piece(strings, "during_trigger_kind_" + snake(name), { ...ctx, percent: piece(strings, "percent", { percent: num(thr / 1000) }) })
+    if (name === "HpLowExcludesThreshold") return piece(strings, "during_trigger_kind_hp_low", { ...ctx, includesThreshold: false, percent: piece(strings, "percent", { percent: num(thr / 1000) }) })
     if ((m = name.match(/^OneOfEnemyConditionCount(.+)$/))) {
         const cond = conditionName(strings, m[1])
         return cond === null ? null : piece(strings, "during_trigger_kind_one_of_enemy_condition_high_count", { ...ctx, count: num(thr / 100000), condition: cond, decidedTarget: false })
@@ -283,11 +306,11 @@ function whileText(strings, codes, c, level) {
         return cond === null ? null : piece(strings, "during_trigger_kind_condition_high_count", { ...ctx, count: num(thr / 100000), condition: cond })
     }
     if ((m = name.match(/^Condition(.+)$/))) {
-        const cond = conditionName(strings, m[1])
-        return cond === null ? null : piece(strings, "during_trigger_kind_condition", { ...ctx, condition: cond })
+        const cond = conditionName(strings, m[1]), who = conditionWho(strings, c[98], c[99])
+        return cond === null || who === null ? null : piece(strings, "during_trigger_kind_condition", { ...ctx, condition: cond, omittable: false, triggerPuller: who })
     }
     if (name === "ComboHigh" || name === "ComboLow") return piece(strings, "during_trigger_kind_" + snake(name), { ...ctx, count: num(thr / 100000) })
-    return piece(strings, "during_trigger_kind_" + snake(name), { ...ctx, count: num(thr / 100000), percent: num(thr / 1000) + "%" })
+    return piece(strings, "during_trigger_kind_" + snake(name), { ...ctx, count: num(thr / 100000), percent: piece(strings, "percent", { percent: num(thr / 1000) }) })
 }
 /** "Power Flip Damage Buff" for a condition (buff) name such as PowerFlipDamageUp. */
 function conditionName(strings, n) {
@@ -325,12 +348,16 @@ function lineParts(c, level, strings, codes) {
     const oneOff = kind === "0" && Boolean(def) && !/^Condition/.test(def.name) && !/^(Hp|AdditionalUnison.+)$/.test(def.name)
         && strings["ability_description_common_content_" + snake(def.name)] === undefined && !/(Slayer|Extend|Prevent)$/.test(def.name)
         && !["AttackPoint", "SkillDamage", "DirectDamage", "PowerFlipDamage", "SkillGaugeCharging", "FeverPoint", "EaseOfHeal"].includes(def.name) && !/^(Resistance|DamageCut)/.test(def.name)
-    let head, battleStart = false
+    let head, condHead = "", battleStart = false
     if (kind === "0") {
         const trig = whenText(strings, codes, c, level)
         if (trig === null) return null
-        battleStart = c[27] === "0" && conds.length === 0
-        head = [...conds, trig].join(" → ") + (/,\s*$/.test(trig) ? "" : " → ")
+        battleStart = c[27] === "0"
+        // a "while ..." condition runs straight into the trigger: "while Pierce is active for party a unit Power Flips →"
+        head = ""
+        conds.forEach((t, k) => { head += t + (/^while\b/i.test(t) && k === conds.length - 1 ? " " : " → ") })
+        condHead = conds.length ? conds.join(" → ") + " → " : ""
+        head += trig + (/,\s*$/.test(trig) ? "" : " → ")
         const limit = Number(c[34])
         if (def?.fields?.strength && limit > 1) {
             if (oneOff) effect = piece(strings, "instant_trigger_limit_n_times", { count: limit }) + effect
@@ -345,10 +372,11 @@ function lineParts(c, level, strings, codes) {
         const limit = Number(c[102])
         if (def?.fields?.strength && limit > 1) effect += piece(strings, "instant_max_strength", { max_strength: percentUpDown(strings, at(c, def.fields.strength.cols, level) / 1000 * limit) })
     } else return null
-    return { kind, head, battleStart, effect, timed, oneOff, mark: c[1] === "false" ? "Ⓜ " : "" }
+    return { kind, head, condHead, battleStart, effect, timed, oneOff, hasTarget: Boolean(def?.fields?.target), mark: c[1] === "false" ? "Ⓜ " : "" }
 }
 
-const finish = s => { s = s.replace(/ {2,}/g, " ").replace(/ ,/g, ",").trim(); return s.charAt(0).toUpperCase() + s.slice(1) }
+// tidy spaces; capital first letter, except after the Ⓜ mark (the game writes "Ⓜ while Pierce...", "Ⓜ a skill...")
+const finish = (s, mark) => { s = s.replace(/ {2,}/g, " ").replace(/ ,/g, ",").trim(); return mark ? mark + s : s.charAt(0).toUpperCase() + s.slice(1) }
 
 /**
  * A whole ability (its lines) in the game's words at its lowest or highest level (abilities: first / sixth Mana node;
@@ -358,24 +386,26 @@ const finish = s => { s = s.replace(/ {2,}/g, " ").replace(/ ,/g, ",").trim(); r
  */
 function abilityText(lines, level, strings, codes) {
     const parts = lines.map(c => lineParts(c, level, strings, codes))
-    const out = []
-    for (let i = 0; i < parts.length;) {
-        const p = parts[i]
-        if (p === null) { out.push(null); i++; continue }
-        const group = [p]
-        while (i + group.length < parts.length) {
-            const q = parts[i + group.length]
-            if (!q || q.kind !== p.kind || q.head !== p.head || q.mark !== p.mark) break
-            group.push(q)
-        }
-        let body = group[0].effect
-        for (let k = 1; k < group.length; k++) body += (group[k - 1].timed && group[k].timed ? "&" : " & ") + group[k].effect
-        // "when a battle starts," on its own is only written for one-off effects ("When a battle starts, + 50 % to Skill Gauge...")
-        const head = p.battleStart && !group.some(g => g.oneOff) ? "" : p.head
-        out.push(p.mark + finish(head + body))
-        i += group.length
+    // lines with the same conditions and trigger are one sentence, wherever they are in the ability (first one's place)
+    const groups = []
+    for (const p of parts) {
+        if (p === null) { groups.push(null); continue }
+        // on battle start with a lasting effect, one without a target stands alone ("Power Flip damage + 70 %")
+        const alone = p.battleStart && !p.oneOff && !p.hasTarget
+        const g = alone ? null : groups.find(x => x && !x.alone && x[0].kind === p.kind && x[0].head === p.head && x[0].mark === p.mark)
+        if (g) g.push(p)
+        else { const n = [p]; n.alone = alone; groups.push(n) }
     }
-    return out
+    return groups.map(group => {
+        if (group === null) return null
+        const p = group[0]
+        let body = group[0].effect
+        // the game writes " & " before a number ("& + 4 % to attack") and "&" before words ("&Power Flip damage", "&for 3 second(s)")
+        for (let k = 1; k < group.length; k++) body += (group[k].hasTarget && !group[k].timed ? " & " : "&") + group[k].effect
+        // "when a battle starts," is only written for one-off effects ("When a battle starts, + 50 % to Skill Gauge...")
+        const head = p.battleStart && !group.some(g => g.oneOff) ? p.condHead : p.head
+        return finish(head + body, p.mark)
+    })
 }
 
 /** One line in the game's words (see abilityText), or null when a part isn't covered yet. */
