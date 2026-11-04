@@ -123,49 +123,37 @@ again: the phone deletes unit files the PC no longer has. The art update can sta
 ## Changing an existing unit
 
 Custom unit files are only for new units: a file that uses a CN unit's id or string id is refused. To change a
-unit the game already has, use one of these two. Both last through every schedule rebuild.
+unit the game already has, use one of these. All of them last through every schedule rebuild.
 
-**Easiest:** the dashboard's **Unit editor** ([UNIT_EDITOR.md](UNIT_EDITOR.md)) edits abilities, leader skills, stats and the
-skill gauge in a form and writes the change file below for you.
+### Abilities, leader skill, stats, skill gauge, name, class: the Unit editor
 
-### Its numbers and text (table rows): a change file
+Use the dashboard's **Unit editor** ([UNIT_EDITOR.md](UNIT_EDITOR.md)). It edits these in a form, checks what the
+game can read, saves a change file and rebuilds the game update for you. It also covers phones (the companion's own
+dashboard) and sharing kits between players.
 
-Put a file in `assets/custom_units/changes/` (any name ending in `.json`, e.g. `haruhi.json`):
+### Other rows: a change file by hand
+
+The editor saves change files, and you can write one yourself for rows it doesn't edit (another of the
+[19 tables](research/new-units.md#the-tables-19), e.g. a picture's crop rows). Put it in
+`assets/custom_units/changes/` (any name ending in `.json`):
 
 ```json
-{
-  "111069": {
-    "name": "Haruhi: my changes",
-    "rows": {
-      "upload/5c/6a4f0e2ceb1dbcf60f9b306b0f7bfd0eca55c9#111069/80": { "cols": { "0": 3000 } },
-      "upload/5c/6a4f0e2ceb1dbcf60f9b306b0f7bfd0eca55c9#111069/100": "3300,850",
-      "master/ability/ability.orderedmap#1110691": "<the whole row>"
-    }
-  }
-}
+{ "111069": { "name": "Haruhi: my changes", "rows": {
+    "upload/5c/6a4f0e2ceb1dbcf60f9b306b0f7bfd0eca55c9#111069/80": { "cols": { "0": 3000 } },
+    "master/ability/ability.orderedmap#1110691": "<the whole row>" } } }
 ```
 
-- **Row names** are `<table>#<row key>`. The table is a logical name (`master/ability/ability.orderedmap`) or a
-  stored path (`upload/5c/6a4f…`, for tables without a known name, like the stats table above). In a nested
-  table the keys join with `/`: stats are `<id>/<level>`, Mana Board nodes `<id>/<board>/<index>`. The research
-  doc's [table list](research/new-units.md#the-tables-19) and
-  [column appendix](research/new-units.md#appendix-the-19-tables-column-by-column) give every table, key and
-  column.
-- **Values** are the whole row's text, or `{ "cols": { "<column>": value } }` to change only some columns of
-  the row's first line (the example sets Lv 80 HP to 3000 and keeps ATK).
-- Changes always apply, on top of the game's rows and of [Balance by Date](../README.md#balance-by-date)'s old
-  kits. Several files can change the same unit; for the same row, the file whose name sorts last wins.
-- **Then restart the server**: it rebuilds the game update with them. The build log says
-  `Unit changes: 2 of 2 row(s) in <table>` (fewer found than listed means a row name doesn't exist).
-- **Phones** get them with **Download from PC**, like custom units (always, whatever is ticked). A change file
-  deleted on the PC is deleted on the phone at the next copy, and the phone's game goes back to the game's own
-  rows after its rebuild.
-- (`assets/kit_dates.json`, the file behind Balance by Date, takes the same row names, with dates. It's part of
-  GlobalPoint itself, so a phone only gets edits to it through a companion app built from the edited copy.)
-- What the game can do is fixed, as for new units: new numbers and combinations of existing ability kinds and
-  skill commands, no new mechanics. The server keeps its own copy of a few things (rarity and element in
-  `assets/character.json`, Mana Board costs in `assets/mana_node.json`): change those to match if you change
-  them in the rows.
+- A row is named `<table>#<row key>`. The table is a logical name or a stored path (`upload/5c/6a4f…`), and nested
+  keys join with `/` (stats are `<id>/<level>`). The value is the whole row, or `{ "cols": { … } }` for some columns
+  of its first line. The [column appendix](research/new-units.md#appendix-the-19-tables-column-by-column) lists every
+  table and column.
+- Restart the server to rebuild; the log says `Unit changes: N of N row(s) in <table>` (fewer found than listed
+  means a row name doesn't exist). Changes apply on top of the game's rows and of
+  [Balance by Date](../README.md#balance-by-date); for the same row, the file whose name sorts last wins.
+- Phones get change files with **Download from PC**, whatever is ticked. The copy makes the phone's change files
+  match the PC's, so a file deleted on the PC goes away on the phone too.
+- Element, rarity and Mana Board costs also live in the server's own data (`assets/character.json`,
+  `assets/mana_node.json`): change those to match if you change them in the rows.
 
 ### Its pictures, voices and animations: an art update
 
@@ -185,7 +173,7 @@ node scripts/build_cn_patch.cjs 1.4.950 <newest version> my_art.json
   `medium_upload` or `android_upload`) the game's copy is in. `clone_cn_unit.cjs` shows how to look the folder up.
 - Keep the formats and sizes (see [the files](research/new-units.md#3-files-76-most-players-never-see-the-folder-names)).
   An animation's sprite sheet, `.atlas` and `.frame` files must match each other, and a picture of another shape
-  may need its crop rows (`trimmed_image`, `character_image`) changed too, through `kit_dates.json` above.
+  may need its crop rows (`trimmed_image`, `character_image`) changed too, with a change file above.
 - Phones get it like any game update: **Download from PC** with **Game updates** ticked.
 
 ## Adding a unit (details)
@@ -206,7 +194,8 @@ node scripts/build_cn_patch.cjs 1.4.950 <newest version> my_art.json
 
    It writes `out/custom_unit.json` (the unit file), `out/art_files.json` (its files, no tables) and the files.
    (`out/files.json` is the old one-off test patch with the tables in it; don't ship that for a kept unit.)
-   A copy is also a good starting point for a new unit: change its rows and replace its files.
+   A copy is also a good starting point for a new unit: change its abilities, stats and name in the
+   [Unit editor](UNIT_EDITOR.md) (it edits custom units too), and replace its files.
 
    **b. Make one by hand (or with your own tool).** You need:
    - **The unit file** with its rows in the 19 tables. The tables, and every column with the client's names,
