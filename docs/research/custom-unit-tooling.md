@@ -129,7 +129,9 @@ format stays the output when a date is wanted (Balance by Date).
   lines, plus 496 leader skills). **The guard rails are on the triggers**: kind, trigger, "who", its number
   and the conditions only in combinations CN uses (76 when + who, 69 while + who pairs). **Effects ("do") are
   free**: any effect goes with any trigger (in theory every one should work), with the fields that effect
-  uses (target, numbers, duration).
+  uses (target, numbers, duration). When CN never pairs that effect with that trigger or kind (e.g. a heal on
+  a "while" line; CN has 408 trigger + effect pairs), the line is still allowed and shows: "The game has not
+  seen this combination before. It may or may not work."
 - **Advanced mode** allows anything the game can read, labelled "not used in the game, untested".
 - **Always refused, in both modes:** contradictions (a condition that rules out the line's own trigger, e.g.
   "not in Fever" + "while in Fever"; "this unit is the leader" + "isn't the leader"; the leader being two
