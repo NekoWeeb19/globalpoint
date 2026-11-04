@@ -80,7 +80,7 @@ Downloads:
 | File | What it is | Where | Size |
 |---|---|---|---|
 | **World Flipper (game) APK** | the patched game app (build 25; installs over builds 23 and 24), for every setup | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 139 MB |
-| **StarPoint Companion APK** | the server-on-your-phone app (0.6.22), for setups B and C | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 76 MB |
+| **StarPoint Companion APK** | the server-on-your-phone app (0.7.2), for setups B and C | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 76 MB |
 | **OBB in 3 parts** (`main.1008001.com.leiting.wf.part1of3.obb`, `part2of3`, `part3of3`) | every game file (game files 1.4.800, up to date), for setup C; download all three | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 3.6 GB each |
 | **OBB** (`main.1008001.com.leiting.wf.obb`), the alternative | the same as one 10 GB file (game files 1.4.203: older, the game updates after unpacking), for phones and file apps that handle one big file | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 10.3 GB |
 | **`starpoint-data.zip`** | GlobalPoint's English tables, game updates (art and text patches), schedule files, dashboard pictures and news. Setup A unzips it into the server folder; setup C imports it into the companion | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 2.25 GB |
@@ -161,7 +161,9 @@ You need setup A running on a PC on the same Wi-Fi, and ~25 GB free on the phone
 7. On the same screen, tap the button that opens **World Flipper's "All files access"** page and turn
    it on. The game never asks for it itself.
 8. On the companion's main screen, check that it says **Server: running**, then tap **Let the server
-   run in the background**. Allow notifications if asked.
+   run in the background**. Allow notifications if asked. If your phone still stops the server in
+   the background, tick **Keep the server awake**, and try **Battery and auto-start settings** and
+   **Allow usage access** on the same screen.
 9. Open the game. The first start moves the game files into place (a few minutes), then you're in,
    with no download.
 
@@ -309,7 +311,7 @@ gotchas are in the [dashboard guide](docs/DASHBOARD.md).
 - **Summons:** schedule summon banners, with their banner art.
 - **Campaigns:** yearly login bonuses, free pulls and stamina/reward campaigns.
 - **News:** posts shown on the game's in-game News board.
-- **Players:** accounts, saves (download and upload) and gifts.
+- **Players:** accounts, saves (download and upload), gifts, and removing a unit from a save.
 - **Unit editor:** change any unit's abilities, numbers and details
   ([docs/UNIT_EDITOR.md](docs/UNIT_EDITOR.md)).
 
@@ -353,7 +355,12 @@ Confirmed in the game on the CN app:
 - Treasure Hunt drops, with CN's own events, items and dates
 - Special Exchange and Start Dash Exchange: paid-bead selector tickets traded for a unit or an
   armament (a Start Dash purchase also gives the bundle's wildcard 10-pull ticket)
+- The unit editor: an edited ability showed on the unit page and worked in battle
 - The English text and art
+
+Newer, tested on the emulator so far: custom units (a copy of an existing unit worked in menus,
+battles, co-op, Mana Boards and summons; see [docs/CUSTOM_UNITS.md](docs/CUSTOM_UNITS.md)) and the
+dashboard's summon rates.
 
 ## Errors and 404s
 
@@ -482,8 +489,9 @@ setup C).
 | `CN_ACCOUNT_ID` | empty | play every device on one account (empty = one account per device) |
 | `CN_CDN_DIR`, `CN_TRANSLATED_DIR` | `.cdn/cn`, `.cdn/cn_text` | the CN game files and their English tables |
 | `CN_SLIM_DIR` | `.cdn/cn_slim` | the small CN data set phones copy for schedule edits (the server builds it at start if missing) |
+| `CUSTOM_UNITS_DIR` | `assets/custom_units` | the folder of custom unit files and unit change files ([docs/CUSTOM_UNITS.md](docs/CUSTOM_UNITS.md)) |
 
-The quest drop amount and the never-ending mails are set on the dashboard, not in `.env`.
+The quest drop amount, summon rates and the never-ending mails are set on the dashboard, not in `.env`.
 `.env.example` also lists a few settings that are only for rebuilding the translation and art
 patches (see [docs/contributing.md](docs/contributing.md)); playing never needs them.
 
@@ -495,6 +503,8 @@ For working on GlobalPoint rather than playing it:
 - [docs/routes.md](docs/routes.md): every route the server answers (generated from the server).
 - [docs/CN_CLIENT_SETUP.md](docs/CN_CLIENT_SETUP.md): how the CN app was connected and globalized,
   from nothing.
+- [docs/UNIT_EDITOR.md](docs/UNIT_EDITOR.md) and [docs/CUSTOM_UNITS.md](docs/CUSTOM_UNITS.md): changing
+  units and adding new ones; [docs/research/](docs/research/new-units.md) has the research behind them.
 - [docs/global/](docs/global/README.md): the original StarPoint pages for the global app (legacy),
   including captured traffic from the official global servers.
 - `scripts/package_release.cjs`: copies a working setup A (code, game files and the game APK) into

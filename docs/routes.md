@@ -218,7 +218,7 @@ Static downloads.
 | `/patch/Live/2.0.0/*` | global game files and mods (`CDN_DIR`) |
 | `/public/*` | the dashboard's stylesheet, fonts and images |
 
-## Dashboard pages (8)
+## Dashboard pages (9)
 
 | Endpoint | Method | Source | Notes |
 |---|---|---|---|
@@ -230,8 +230,9 @@ Static downloads.
 | `/player` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 | `/player/:playerId` | GET | [web/player.ts](../src/routes/web/player.ts) |  |
 | `/summons` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
+| `/unit-editor` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 
-## Dashboard API (37)
+## Dashboard API (49)
 
 What the dashboard pages call. These change the server's state and have no login. With
 `LISTEN_HOST` at `127.0.0.1` (the default, also on the phone companion) only the same device
@@ -260,14 +261,16 @@ network use the dashboard too, so do that only on a network you trust, such as y
 | `/api/server/events/schedule-many` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/events/unschedule` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/events/unschedule-many` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/server/gacha-rates` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/server/gacha-rates` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/give` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
-| `/api/server/removeCharacter` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) | takes a unit out of a save ([nya/removeCharacter.ts](../src/nya/removeCharacter.ts)) |
 | `/api/server/loginBonus/again` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/news` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/news` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/news/delete` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/phone-connection` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/phone-connection/server.txt` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/server/removeCharacter` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/resetTime` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/rotation` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/rotation/goto` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
@@ -278,6 +281,15 @@ network use the dashboard too, so do that only on a network you trust, such as y
 | `/api/server/settings` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/time` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/time/match-real` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/unit-editor/check` | POST | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/data` | GET | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/kits` | GET | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/kits` | POST | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/lines/:id` | GET | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/unit/:id` | GET | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/unit/:id` | POST | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/unit/:id/reset` | POST | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/units` | GET | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
 
 ## Other (3)
 

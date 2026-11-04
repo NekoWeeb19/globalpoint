@@ -67,6 +67,9 @@ Node scripts that build data, translations, game updates and packages. The ones 
 - `gen_cn_slim.cjs`: the small CN data set the phone needs for schedule changes.
 - `custom_units.cjs`: custom CN units (`assets/custom_units/`, [CUSTOM_UNITS.md](CUSTOM_UNITS.md)), read by the
   schedule build and the server; `research/clone_cn_unit.cjs` makes one from an existing unit.
+- `unit_editor.cjs` and `unit_editor_text.cjs`: the dashboard's Unit editor (reading and checking a unit's
+  ability lines, and writing them in the game's own words), with its code tables in `assets/unit_editor/`
+  ([UNIT_EDITOR.md](UNIT_EDITOR.md)).
 - `cdn_hash.cjs` and `amf3.cjs`: shared helpers (the game's CDN file-name hash; reading and writing
   the game's AMF3 sprite layouts).
 - `run_tests.cjs`: runs the tests (`npm test`, below).

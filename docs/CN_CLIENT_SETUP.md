@@ -124,8 +124,8 @@ version the app already has is never downloaded again — always use a new numbe
 
 The numbers below are the first ones used. Today the dashboard's schedule builds also take numbers
 from this chain, and every phone running the companion builds its own. So hand-made patches (like
-the art patches from `scripts/gen_cn_art_fill.cjs`) now use numbers far above them: 1.4.500,
-1.4.600, 1.4.700 so far. Build each one on the newest version in `.cdn/cn_patches/patches.json`,
+the art patches from `scripts/gen_cn_art_fill.cjs`) now use numbers far above them: 1.4.500 to
+1.4.800 so far, and custom units' art updates use 1.4.9xx. Build each one on the newest version in `.cdn/cn_patches/patches.json`,
 then save any schedule change on the dashboard so the schedule builds continue above it.
 
 ```
