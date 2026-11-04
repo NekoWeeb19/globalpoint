@@ -114,6 +114,9 @@ async function catalog() {
 // ---- units -------------------------------------------------------------------------------------------------
 
 const ELEMENTS = ["Fire", "Water", "Thunder", "Wind", "Light", "Dark"]
+// character column 6 (client SpecialityTypeTools: also picks the unit's Power Flip) and column 26 (display only)
+const CLASSES = [["0", "Swordsman"], ["1", "Fighter"], ["2", "Deadeye"], ["3", "Support"], ["4", "Special"]]
+const ROLES = ["Attacker", "Tank", "Healer", "Supporter", "Jammer", "Balance"]
 
 /** Every unit: CN's and the custom units. */
 async function listUnits() {
@@ -168,7 +171,9 @@ async function unitRows(id) {
     own.leader = pick("leader", [String(id)])
     own.status = pick("status", STATUS_LEVELS.map(l => `${id}/${l}`))
     own.skill = pick("skill", [`${skillName}/1`, `${skillName}/2`])
-    const textRow = custom ? Object.fromEntries(flat(customRows(custom, FILE.text).rows))[id] : b.text[id]
+    own.character = pick("character", [String(id)])
+    own.text = pick("text", [String(id)])
+    const textRow = own.text[id]
     // change files (all of them, sorted, a later file wins), as the schedule build applies them
     const current = JSON.parse(JSON.stringify(own))
     const changes = CU.readUnitChanges()
@@ -196,7 +201,10 @@ async function getUnit(id) {
     id = String(id)
     const r = await unitRows(id)
     if (!r) return null
-    const t = lines(r.textRow ?? "")[0] ?? [], c = lines(r.charRow)[0]
+    const t = lines(r.current.text[id] ?? "")[0] ?? [], c = lines(r.current.character[id])[0]
+    const gt = lines(r.own.text[id] ?? "")[0] ?? [], gc = lines(r.own.character[id])[0]
+    const detailsOf = (tx, ch) => ({ name: tx[0] ?? "", description: tx[2] ?? "", title: tx[3] ?? "", class: ch[6] ?? "", role: ch[26] ?? "", leaderName: ch[18] ?? "" })
+    const details = { ...detailsOf(t, c), hasText: r.own.text[id] !== undefined, game: detailsOf(gt, gc) }
     const abilities = [1, 2, 3, 4, 5, 6].map(n => `${id}${n}`).filter(k => r.current.ability[k] !== undefined)
         .map((key, i) => ({ key, slot: i + 1, lines: lines(r.current.ability[key]).map(pad), game: lines(r.own.ability[key]).map(pad) }))
     const leaderKey = id
@@ -213,7 +221,7 @@ async function getUnit(id) {
     return {
         id, name: t[0] || c[0], title: t[3] ?? "", element: ELEMENTS[Number(c[3])] ?? "", rarity: Number(c[2]),
         custom: Boolean(r.custom), saved: fs.existsSync(editorFile(id)), others: r.others, kit: r.kit,
-        abilities, leader, stats, skills,
+        abilities, leader, stats, skills, details,
     }
 }
 
@@ -374,9 +382,17 @@ async function checkEdit(edit, advanced = false) {
     for (const a of edit.abilities ?? []) out.abilities.push(a.lines.map(l => checkLine(pad(l), cat, advanced)))
     if (edit.leader) out.leader = edit.leader.lines.map(l => checkLine(pad(l), cat, advanced))
     for (const s of edit.stats ?? []) out.stats.push(Number.isInteger(s.hp) && Number.isInteger(s.atk) && s.hp >= 0 && s.atk >= 0 ? [] : ["HP and ATK must be whole numbers, 0 or more"])
+    if (edit.details) {
+        const d = edit.details, e = []
+        if (d.name !== undefined && !String(d.name).trim()) e.push("the name can't be empty")
+        for (const k of ["name", "title", "description", "leaderName"]) if (/[\r\n]/.test(String(d[k] ?? ""))) e.push(`${k} can't have line breaks`)
+        if (d.class !== undefined && !CLASSES.some(([v]) => v === String(d.class))) e.push(`class "${d.class}" isn't one the game knows`)
+        if (d.role !== undefined && !ROLES.includes(String(d.role))) e.push(`role "${d.role}" isn't one the game knows`)
+        out.details = e
+    } else out.details = []
     for (const s of edit.skills ?? []) out.skills.push(Number.isInteger(s.gaugeMin) && Number.isInteger(s.gaugeMax) && s.gaugeMin > 0 && s.gaugeMax > 0 ? [] : ["the skill gauge must be whole numbers above 0"])
     const lineErrors = [...out.abilities.flat(), ...out.leader].some(r => r.errors.length > 0)
-    out.ok = !lineErrors && [...out.stats, ...out.skills].every(e => e.length === 0)
+    out.ok = !lineErrors && [...out.stats, ...out.skills, out.details].every(e => e.length === 0)
     return out
 }
 
@@ -417,6 +433,20 @@ async function saveUnit(id, edit, advanced = false) {
         if (String(s.gaugeMin) !== g[4]) cols[4] = String(s.gaugeMin)
         if (String(s.gaugeMax) !== g[5]) cols[5] = String(s.gaugeMax)
         if (Object.keys(cols).length) rows[`${T.skill}#${s.key}`] = { cols }
+    }
+    if (edit.details) {
+        const d = edit.details
+        const colsOf = (row, map) => {
+            const g = lines(row)[0], cols = {}
+            for (const [i, v] of Object.entries(map)) if (v !== undefined && String(v) !== (g[i] ?? "")) cols[i] = String(v)
+            return cols
+        }
+        if (r.own.text[id] !== undefined) {
+            const cols = colsOf(r.own.text[id], { 0: d.name, 2: d.description, 3: d.title })
+            if (Object.keys(cols).length) rows[`${T.text}#${id}`] = { cols }
+        }
+        const cols = colsOf(r.own.character[id], { 6: d.class, 18: d.leaderName, 26: d.role })
+        if (Object.keys(cols).length) rows[`${T.character}#${id}`] = { cols }
     }
     if (r.custom) return saveCustom(r.custom, rows, edit)
     const file = editorFile(id)
@@ -463,7 +493,7 @@ async function editorData() {
     for (const part of ["condition", "conditionWho", "whenTrigger", "whenWho", "whileTrigger", "whileWho", "whenEffect", "whileEffect", "target"]) {
         parts[part] = Object.fromEntries(Object.entries(CODES[part]).map(([code, v]) => [code, { name: name(part, code), client: v.name, fields: v.fields }]))
     }
-    return { parts, blocks: CODES.blocks, words: WORDS, used: cat.used, pairs: cat.pairs, templates: cat.templates, groups: cat.groups, lines: cat.lines }
+    return { parts, blocks: CODES.blocks, words: WORDS, used: cat.used, pairs: cat.pairs, templates: cat.templates, groups: cat.groups, lines: cat.lines, classes: CLASSES, roles: ROLES }
 }
 
 /** Another unit's ability lines, to copy one. */
@@ -473,4 +503,54 @@ async function unitLines(id) {
     return { id: u.id, name: u.name, abilities: u.abilities.map(a => ({ slot: a.slot, lines: a.lines })), leader: u.leader ? u.leader.lines : [] }
 }
 
-module.exports = { listUnits, getUnit, checkEdit, checkLine, saveUnit, resetUnit, editorData, unitLines, catalog, leaderToAbility, abilityToLeader, contradictions, _setBase: b => { base = b; catalogCache = null } }
+// ---- sharing kits ------------------------------------------------------------------------------------------
+
+const KIT_FORMAT = "globalpoint-unit-kits"
+
+/**
+ * The editor's changes for some units (all when ids is empty) as one file. It is itself a unit change file
+ * ({ "<id>": { name, rows } }), so it also works dropped into <custom units>/changes/.
+ */
+function exportKits(ids = []) {
+    const want = new Set(ids.map(String))
+    const out = { _format: KIT_FORMAT, _note: "Unit editor kits (GlobalPoint). Import on the dashboard's Unit editor page, or put this file in the custom units folder's changes/." }
+    for (const { id, file } of editorFiles()) {
+        if (want.size && !want.has(id)) continue
+        try { Object.assign(out, JSON.parse(fs.readFileSync(file, "utf8"))) } catch { }
+    }
+    return out
+}
+
+/**
+ * Imports kits (exportKits' format, or any unit change file): each unit's rows become its editor change file,
+ * if the unit exists (CN units only), every row belongs to that unit, and the result passes the editor's checks
+ * (advanced mode: only unreadable rows and contradictions refuse it). Returns { imported: [ids], refused: [{ id, why }] }.
+ */
+async function importKits(data) {
+    const imported = [], refused = []
+    if (!data || typeof data !== "object") return { imported, refused: [{ id: "", why: "not a kit file" }] }
+    const b = await baseTables()
+    for (const [id, kit] of Object.entries(data)) {
+        if (id.startsWith("_")) continue
+        const no = why => refused.push({ id, why })
+        if (!/^\d+$/.test(id) || b.character[id] === undefined) { no("no CN unit with this id"); continue }
+        if (!kit || typeof kit.rows !== "object") { no("no rows"); continue }
+        const skillName = lines(b.character[id])[0][8]
+        const mine = key => key === id || key.startsWith(id + "/") || /^\d+$/.test(key) && key.length === id.length + 1 && key.startsWith(id) || key === `${skillName}/1` || key === `${skillName}/2`
+        const bad = Object.keys(kit.rows).filter(ref => { const at = ref.indexOf("#"); return at < 0 || !Object.values(T).includes(ref.slice(0, at)) || !mine(ref.slice(at + 1)) })
+        if (bad.length) { no(`rows that aren't this unit's or that the editor doesn't handle: ${bad.slice(0, 3).join(", ")}`); continue }
+        const file = editorFile(id), before = fs.existsSync(file) ? fs.readFileSync(file) : null
+        fs.mkdirSync(path.dirname(file), { recursive: true })
+        fs.writeFileSync(file, JSON.stringify({ [id]: { name: kit.name ?? `Unit editor: ${id}`, rows: kit.rows } }, null, 1) + "\n")
+        const unit = await getUnit(id), check = await checkEdit(unit, true)
+        if (!check.ok) {
+            if (before) fs.writeFileSync(file, before); else fs.unlinkSync(file)
+            no("some lines can't be read by the game or contradict themselves")
+            continue
+        }
+        imported.push(id)
+    }
+    return { imported, refused }
+}
+
+module.exports = { exportKits, importKits, CLASSES, ROLES, listUnits, getUnit, checkEdit, checkLine, saveUnit, resetUnit, editorData, unitLines, catalog, leaderToAbility, abilityToLeader, contradictions, _setBase: b => { base = b; catalogCache = null } }

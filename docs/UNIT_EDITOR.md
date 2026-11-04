@@ -18,6 +18,10 @@ No unit ids change, so saves are never at risk.
   Lines can be removed, added, or copied from any other unit. **Reset to game** on an ability gives its own lines back.
 - **Numbers tab**: HP/ATK at Lv 1/10/80/100, the skill gauge (skill and Skill+), and every min → max pair of every
   line (the same values as the Abilities tab).
+- **Details tab**: name, title, description, leader skill name, **class** and **role**. Class (Swordsman, Fighter,
+  Deadeye, Support, Special) also picks the unit's Power Flip attack and counts for abilities that target a class;
+  role (Attacker, Tank, Healer, Supporter, Jammer, Balance) is a label, icon and list filter only. No stat depends on
+  either (client: SpecialityTypeTools, StanceLogic). The story, codex and other screens keep their own text.
 
 **Min → max**: abilities go from their first Mana node to the sixth (the game fills the steps between in a straight
 line; with no nodes the ability is off); leader skills from before to after awakening; the skill gauge from skill
@@ -25,8 +29,17 @@ level 1 to the highest. Numbers are shown in plain units (%, seconds, points, co
 × 100,000, and the editor converts both ways. An effect whose unit isn't known shows its stored number,
 "(game value)".
 
-Not editable here: what a skill does (its damage is in the skill's script, a file), skill and unit text (the game
-writes ability text itself from the rows, so it always matches), Mana Board costs.
+Not editable here: what a skill does (its damage is in the skill's script, a file), skill text (the game writes
+ability text itself from the rows, so it always matches), element and rarity (the server keeps its own copy), Mana
+Board costs.
+
+## Sharing kits
+
+**Edited units and kits** (top of the page) lists every unit the editor changed. **Download** one, the ticked ones,
+or all: one JSON file with their changes. It is itself a unit change file, so it works two ways: **Import a kit file**
+on this page (each unit's changes become its editor file, after the same checks as saving; a kit for a unit that
+doesn't exist, rows of another unit, or a line the game can't read is refused), or drop it into the custom units
+folder's `changes/`. Custom units' changes are in their own files and aren't listed.
 
 ## The guard rails
 

@@ -8,6 +8,7 @@ interface Edit {
     leader?: { key: string, lines: string[][] } | null
     stats?: { level: string, hp: number, atk: number }[]
     skills?: { key: string, gaugeMin: number, gaugeMax: number }[]
+    details?: { name?: string, title?: string, description?: string, class?: string, role?: string, leaderName?: string }
 }
 const UE = require(path.join(__dirname, "..", "..", "..", "scripts", "unit_editor.cjs")) as {
     listUnits: () => Promise<unknown[]>
@@ -17,6 +18,8 @@ const UE = require(path.join(__dirname, "..", "..", "..", "scripts", "unit_edito
     checkEdit: (edit: Edit, advanced: boolean) => Promise<{ ok: boolean }>
     saveUnit: (id: string, edit: Edit, advanced: boolean) => Promise<{ file?: string | null, rows?: number, errors?: unknown }>
     resetUnit: (id: string) => boolean
+    exportKits: (ids: string[]) => object
+    importKits: (data: unknown) => Promise<{ imported: string[], refused: { id: string, why: string }[] }>
 }
 
 const failed = (reply: FastifyReply, e: unknown) =>
@@ -58,6 +61,21 @@ const routes = async (fastify: FastifyInstance) => {
             if (result.errors) return reply.status(400).send({ error: "Bad Request", message: "Some lines can't be saved", check: result.errors })
             rebuildCnUpdate()
             return reply.send({ saved: result.rows ?? 0, file: result.file ?? null })
+        } catch (e) { return failed(reply, e) }
+    })
+    // the editor's changes as one file (all units, or ?ids=1,2): itself a unit change file
+    fastify.get("/kits", async (request: FastifyRequest, reply: FastifyReply) => {
+        const { ids } = request.query as { ids?: string }
+        const list = (ids ?? "").split(",").map(s => s.trim()).filter(Boolean)
+        reply.header("content-disposition", `attachment; filename="unit-kits${list.length === 1 ? "-" + list[0] : ""}.json"`)
+        return reply.type("application/json").send(JSON.stringify(UE.exportKits(list), null, 1))
+    })
+    // a kit file (exportKits' format or any unit change file) back in; rebuilds when anything came in
+    fastify.post("/kits", async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+            const result = await UE.importKits(request.body)
+            if (result.imported.length > 0) rebuildCnUpdate()
+            return reply.send(result)
         } catch (e) { return failed(reply, e) }
     })
     fastify.post("/unit/:id/reset", async (request: FastifyRequest, reply: FastifyReply) => {

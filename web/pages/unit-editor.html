@@ -99,6 +99,19 @@
                 </div>
                 <p id="advanced-note" class="text-sm text-on-surface-variant hidden">Advanced mode offers every trigger, condition and effect the game can read. Anything CN's own units don't use is untested.</p>
                 <p id="load-status" class="text-sm text-on-surface-variant" role="status">Loading the game's tables...</p>
+                <details id="kits" class="text-sm">
+                    <summary class="text-on-surface cursor-pointer">Edited units and kits (download, share, import)</summary>
+                    <div class="flex flex-col gap-2 mt-3">
+                        <p class="text-on-surface-variant">Every unit this page changed. A download is one file with the chosen units' changes: send it to someone, and they import it here (or put it in their custom units folder's <code>changes</code>). Custom units' changes are in their own files and aren't listed.</p>
+                        <ul id="kit-list" class="flex flex-col gap-1"></ul>
+                        <div class="flex flex-wrap gap-2 items-center">
+                            <button type="button" id="kit-download-selected" class="px-3 py-1 rounded-full border border-outline-variant text-on-surface">Download selected</button>
+                            <button type="button" id="kit-download-all" class="px-3 py-1 rounded-full border border-outline-variant text-on-surface">Download all</button>
+                            <label class="px-3 py-1 rounded-full border border-outline-variant text-on-surface cursor-pointer">Import a kit file<input type="file" id="kit-upload" accept=".json,application/json" class="hidden"></label>
+                        </div>
+                        <p id="kit-message" class="text-on-surface-variant" role="status"></p>
+                    </div>
+                </details>
             </section>
 
             <section id="unit-head" class="hidden flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3">
@@ -110,11 +123,13 @@
                 <div class="flex flex-wrap gap-2" role="tablist" aria-label="Editor tabs">
                     <button type="button" role="tab" data-tab="abilities" class="px-4 py-2 rounded-full">Abilities</button>
                     <button type="button" role="tab" data-tab="numbers" class="px-4 py-2 rounded-full">Numbers</button>
+                    <button type="button" role="tab" data-tab="details" class="px-4 py-2 rounded-full">Details</button>
                 </div>
             </section>
 
             <div id="tab-abilities" class="hidden flex-col gap-5 w-full"></div>
             <div id="tab-numbers" class="hidden flex-col gap-5 w-full"></div>
+            <div id="tab-details" class="hidden flex-col gap-5 w-full"></div>
 
             <section id="copy-panel" class="hidden flex-col p-5 border border-primary rounded-3xl w-full gap-3">
                 <div class="flex flex-wrap gap-3 items-center">
@@ -262,9 +277,46 @@
                     const o = el("option"); o.value = `${u.name} — ${u.title} (${u.id})`; $("unit-list").appendChild(o)
                 }
                 $("load-status").textContent = `${units.length} units. Lists come from ${data.lines} ability and leader lines of CN's units.`
+                renderKits()
                 const want = new URLSearchParams(location.search).get("id")
                 if (want) loadUnit(want)
             }).catch((e) => { $("load-status").textContent = "Couldn't load the game's tables: " + e.message })
+
+            // ---- kits: the units this page changed, to download (one file) and import ----
+            function refreshKits() { return api("/units").then((list) => { units = list; renderKits() }) }
+            function renderKits() {
+                const list = $("kit-list"); list.innerHTML = ""
+                const edited = units.filter((u) => u.edited)
+                if (!edited.length) list.appendChild(el("li", "text-on-surface-variant", "No units changed yet."))
+                for (const u of edited) {
+                    const li = el("li", "flex flex-wrap gap-2 items-center")
+                    const box = el("input"); box.type = "checkbox"; box.value = u.id; box.setAttribute("aria-label", `Select ${u.name}`)
+                    const open = el("button", "text-primary underline", `${u.name} — ${u.title} (${u.id})`); open.type = "button"
+                    open.onclick = () => loadUnit(u.id)
+                    const one = el("a", "px-2 rounded-full border border-outline-variant text-on-surface", "Download"); one.href = `/api/unit-editor/kits?ids=${u.id}`
+                    li.append(box, open, one); list.appendChild(li)
+                }
+                $("kit-download-all").disabled = !edited.length
+            }
+            $("kit-download-selected").onclick = () => {
+                const ids = [...document.querySelectorAll("#kit-list input:checked")].map((b) => b.value)
+                if (!ids.length) { $("kit-message").textContent = "Tick the units to download first."; return }
+                $("kit-message").textContent = ""
+                location.href = "/api/unit-editor/kits?ids=" + ids.join(",")
+            }
+            $("kit-download-all").onclick = () => { location.href = "/api/unit-editor/kits" }
+            $("kit-upload").onchange = async () => {
+                const file = $("kit-upload").files[0]; if (!file) return
+                let data
+                try { data = JSON.parse(await file.text()) } catch { $("kit-message").textContent = "That file isn't a kit file (not JSON)."; return }
+                const r = await api("/kits", data).catch((e) => ({ imported: [], refused: [{ id: "", why: e.message }] }))
+                const name = (id) => (units.find((u) => u.id === id)?.name ?? id)
+                $("kit-message").textContent = (r.imported.length ? `Imported: ${r.imported.map(name).join(", ")}. The CN game update is rebuilding. ` : "Nothing imported. ")
+                    + r.refused.map((x) => `${x.id ? name(x.id) + ": " : ""}${x.why}`).join("; ")
+                $("kit-upload").value = ""
+                await refreshKits()
+                if (unit && r.imported.includes(unit.id)) loadUnit(unit.id, true)
+            }
 
             const idFrom = (text) => (text.match(/\((\d+)\)\s*$/) ?? text.match(/^\s*(\d{6})\s*$/) ?? [])[1]
             $("unit-search").addEventListener("change", () => { const id = idFrom($("unit-search").value); if (id) loadUnit(id) })
@@ -277,7 +329,7 @@
                     unit = u
                     edit = { abilities: u.abilities.map((a) => ({ key: a.key, slot: a.slot, lines: a.lines.map((l) => [...l]), game: a.game })),
                         leader: u.leader ? { key: u.leader.key, name: u.leader.name, lines: u.leader.lines.map((l) => [...l]), game: u.leader.game } : null,
-                        stats: u.stats.map((s) => ({ ...s })), skills: u.skills.map((s) => ({ ...s })) }
+                        stats: u.stats.map((s) => ({ ...s })), skills: u.skills.map((s) => ({ ...s })), details: { ...u.details } }
                     saved = JSON.stringify(payload())
                     history.replaceState(null, "", "/unit-editor?id=" + u.id)
                     $("unit-search").value = `${u.name} — ${u.title} (${u.id})`
@@ -285,7 +337,8 @@
                 }).catch((e) => { $("load-status").textContent = e.message })
             }
             const payload = () => ({ abilities: edit.abilities.map((a) => ({ key: a.key, lines: a.lines })), leader: edit.leader ? { key: edit.leader.key, lines: edit.leader.lines } : null,
-                stats: edit.stats.map((s) => ({ level: s.level, hp: s.hp, atk: s.atk })), skills: edit.skills.map((s) => ({ key: s.key, gaugeMin: s.gaugeMin, gaugeMax: s.gaugeMax })) })
+                stats: edit.stats.map((s) => ({ level: s.level, hp: s.hp, atk: s.atk })), skills: edit.skills.map((s) => ({ key: s.key, gaugeMin: s.gaugeMin, gaugeMax: s.gaugeMax })),
+                details: (({ name, title, description, class: cls, role, leaderName }) => ({ name, title, description, class: cls, role, leaderName }))(edit.details) })
             const dirty = () => edit && JSON.stringify(payload()) !== saved
 
             // ---- drawing ----
@@ -307,7 +360,43 @@
                 }
                 $("tab-abilities").className = tab === "abilities" ? "flex flex-col gap-5 w-full" : "hidden"
                 $("tab-numbers").className = tab === "numbers" ? "flex flex-col gap-5 w-full" : "hidden"
-                renderAbilities(); renderNumbers(); renderButtons()
+                $("tab-details").className = tab === "details" ? "flex flex-col gap-5 w-full" : "hidden"
+                renderAbilities(); renderNumbers(); renderDetails(); renderButtons()
+            }
+
+            // ---- details tab: text and class/role columns of the unit's rows ----
+            function renderDetails() {
+                const box = $("tab-details"); box.innerHTML = ""
+                const d = edit.details, g = d.game
+                const sec = el("section", "flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3")
+                sec.appendChild(el("h3", "text-xl text-on-background font-semibold", "Details"))
+                sec.appendChild(el("p", "text-sm text-on-surface-variant", "What the unit page shows. Grey: the game's own. Name, title and description are the unit's own text; the story, the codex and other screens keep their own text."))
+                const field = (label, key, kind, note) => {
+                    const r = el("div", "flex flex-col gap-1")
+                    r.appendChild(el("label", "text-sm text-on-surface", label))
+                    let input
+                    if (kind === "select") {
+                        input = select(note.options, String(d[key]), (v) => { d[key] = v; changed() }, label)
+                    } else {
+                        input = el(kind === "area" ? "textarea" : "input", INPUT + " w-full max-w-[640px]" + (kind === "area" ? " h-[96px] py-2" : ""))
+                        input.value = d[key]; input.setAttribute("aria-label", label)
+                        input.oninput = () => { d[key] = input.value.replace(/[\r\n]+/g, " "); changed() }
+                    }
+                    r.appendChild(input)
+                    const gameText = kind === "select" ? (note.options.find(([v]) => v === String(g[key]))?.[1] ?? g[key]) : g[key]
+                    r.appendChild(el("span", "text-sm text-on-surface-variant", (note?.text ? note.text + " " : "") + `Game: ${gameText || "(empty)"}`))
+                    sec.appendChild(r)
+                }
+                if (d.hasText) {
+                    field("Name", "name", "input")
+                    field("Title", "title", "input")
+                    field("Description", "description", "area")
+                }
+                field("Class", "class", "select", { options: D.classes, text: "Also picks the unit's Power Flip attack, and counts for abilities that target a class." })
+                field("Role", "role", "select", { options: D.roles.map((r) => [r, r]), text: "Label, icon and list filter only." })
+                if (edit.leader) field("Leader skill name", "leaderName", "input")
+                const errs = el("ul", "flex flex-col gap-1 text-sm"); errs.id = "details-msgs"; sec.appendChild(errs)
+                box.appendChild(sec)
             }
             function renderButtons() {
                 $("save").disabled = !dirty() || (lastCheck !== null && !lastCheck.ok)
@@ -591,8 +680,10 @@
                         for (const e of r.errors) ul.appendChild(el("li", "px-3 py-1 rounded-lg bg-error-container text-on-error-container", "Can't save: " + e))
                         for (const w of r.warnings) ul.appendChild(el("li", "px-3 py-1 rounded-lg " + (w.level === "strong" ? "bg-tertiary-container text-on-tertiary-container" : "bg-secondary-container text-on-secondary-container"), w.text))
                     }
+                    const dm = $("details-msgs")
+                    if (dm) { dm.innerHTML = ""; for (const e of res.details ?? []) dm.appendChild(el("li", "px-3 py-1 rounded-lg bg-error-container text-on-error-container", "Can't save: " + e)) }
                     renderButtons()
-                    const bad = [...res.abilities.flat(), ...res.leader].filter((r) => r.errors.length).length
+                    const bad = [...res.abilities.flat(), ...res.leader].filter((r) => r.errors.length).length + (res.details?.length ? 1 : 0)
                     if (bad) $("message").textContent = `${bad} line(s) can't be saved yet: see the red notes.`
                     else if (dirty()) $("message").textContent = "Unsaved changes."
                 }).catch(() => { })
@@ -604,14 +695,14 @@
                 api("/unit/" + unit.id, { edit: payload(), advanced: advanced() }).then((r) => {
                     if (r.check) { lastCheck = r.check; $("message").textContent = "Some lines can't be saved: see the red notes."; return }
                     $("message").textContent = r.saved ? `Saved ${r.saved} changed row(s). The CN game update is rebuilding: close and reopen the game to get it.` : "Nothing differs from the game: the change file was removed."
-                    loadUnit(unit.id, true)
+                    loadUnit(unit.id, true); refreshKits()
                 }).catch((e) => { $("message").textContent = "Couldn't save: " + e.message; renderButtons() })
             }
             $("undo").onclick = () => loadUnit(unit.id, true)
             $("reset").onclick = () => {
                 if (unit.custom) { $("message").textContent = "A custom unit's rows are in its own file: edit it back, or use Undo changes."; return }
                 if (!confirm(`Give ${unit.name} the game's own abilities and numbers back?`)) return
-                api(`/unit/${unit.id}/reset`, {}).then((r) => { $("message").textContent = r.reset ? "Reset: the CN game update is rebuilding with the game's own rows." : "Nothing was saved for this unit."; loadUnit(unit.id, true) })
+                api(`/unit/${unit.id}/reset`, {}).then((r) => { $("message").textContent = r.reset ? "Reset: the CN game update is rebuilding with the game's own rows." : "Nothing was saved for this unit."; loadUnit(unit.id, true); refreshKits() })
             }
             window.addEventListener("beforeunload", (e) => { if (dirty()) { e.preventDefault(); e.returnValue = "" } })
         })()

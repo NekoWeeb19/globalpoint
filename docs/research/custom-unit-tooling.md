@@ -155,6 +155,9 @@ Decided with the user for what's next:
   new unit was for; a new unit only adds a second copy of a unit or its own art (asset swaps).
 - **Dropped: skill editing (skill numbers)**: skills are scripts of many commands, hits and conditions (a hit's
   `{min: 6.11, max: 7}` is its damage multiplier by skill level), too much for an easy editor.
-- Left, in order: a **validator** for custom units and mods; a small **Details tab** (name, title, description,
-  class: plain text/number columns; not element or rarity, which the server also keeps); then the exact in-game
-  wording preview, share (download/upload) buttons, "Save as Balance by Date".
+- **Dropped: validator**: no support is given for community-made units unless GlobalPoint itself broke them.
+- **Dropped: Mana Board editor** (nodes follow the abilities' own min/max; costs stay), **pixel art tools** (frames by hand).
+- **Building**: a **Details tab** (name, title, description, class, leader skill name: plain text/number columns
+  through the same change file; not element or rarity, which the server also keeps); **share kits** (the page lists
+  every unit it edited; download one or all as one file, which is itself a change file; upload one back); then the
+  **exact in-game wording** preview.

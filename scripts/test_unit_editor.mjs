@@ -100,6 +100,31 @@ try {
 
     await UE.saveUnit(ID, e1, false)
     check("reset removes the editor's changes", UE.resetUnit(ID) === true && !fs.existsSync(file) && UE.resetUnit(ID) === false)
+
+    // details: text and character columns, as columns (the rest of the row stays)
+    const e3 = edit(); e3.details = { ...e3.details, name: "Haruhi (Edited)", title: "New Title", class: "4", role: "Healer" }
+    await UE.saveUnit(ID, e3, false)
+    const w3 = JSON.parse(fs.readFileSync(file, "utf8"))[ID].rows
+    check("details are saved as columns of the text and character rows",
+        JSON.stringify(w3[`master/character/character_text.orderedmap#${ID}`]) === JSON.stringify({ cols: { 0: "Haruhi (Edited)", 3: "New Title" } })
+        && JSON.stringify(w3[`master/character/character.orderedmap#${ID}`]) === JSON.stringify({ cols: { 6: "4", 26: "Healer" } }), w3)
+    const shown = (await UE.getUnit(ID)).details
+    check("... and read back", shown.name === "Haruhi (Edited)" && shown.class === "4" && shown.game.class !== "4", shown)
+    const badDetails = edit(); badDetails.details = { ...badDetails.details, name: " ", class: "9" }
+    check("an empty name or an unknown class is refused", (await UE.checkEdit(badDetails, true)).details.length === 2)
+
+    // kits: export as one file (itself a change file), import back
+    const kit = UE.exportKits([ID])
+    check("a kit download holds the unit's changes", kit._format === "globalpoint-unit-kits" && kit[ID]?.rows && Object.keys(kit[ID].rows).length === 2, kit)
+    UE.resetUnit(ID)
+    const back = await UE.importKits(kit)
+    check("importing it gives the same changes back", back.imported[0] === ID && JSON.stringify(JSON.parse(fs.readFileSync(file, "utf8"))[ID].rows) === JSON.stringify(kit[ID].rows), back)
+    const foreign = await UE.importKits({ [ID]: { rows: { "master/ability/ability.orderedmap#1110691": "x" } }, "999998": { rows: {} } })
+    check("a kit with another unit's rows, or for a unit that doesn't exist, is refused", foreign.imported.length === 0 && foreign.refused.length === 2, foreign)
+    const broken = { [ID]: { rows: { [`master/ability/ability.orderedmap#${ID}1`]: unit.abilities[0].lines.map(l => { const c = [...l]; c[47] = "99999"; return c.join(",") }).join("\n") } } }
+    const rb = await UE.importKits(broken)
+    check("a kit with a line the game can't read is refused, and the saved changes stay", rb.imported.length === 0 && JSON.stringify(JSON.parse(fs.readFileSync(file, "utf8"))[ID].rows) === JSON.stringify(kit[ID].rows), rb)
+    UE.resetUnit(ID)
 } finally {
     fs.rmSync(dir, { recursive: true, force: true })
 }
