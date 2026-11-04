@@ -120,6 +120,19 @@ The tool would have done this as: open Amelia's current abilities, remove the li
 the old ones from the effect library (or type their numbers), save as a change. The `kit_dates.json` stage
 format stays the output when a date is wanted (Balance by Date).
 
+**Decided with the user (2026-11-03):**
+- Edited in a form (mockup: pick from plain-word lists, never codes). Each line: up to 3 conditions ("only if"),
+  kind (when = the moment it happens / while = as long as it's true), the trigger, then only the fields that
+  trigger uses (number, who), then the effect ("do") with its target and min → max numbers. Fields a choice
+  doesn't use are hidden (e.g. no element box for "no condition"; no "who" for "Fever starts").
+- **Default mode allows only combinations CN's own units use** (built from every CN unit: 2,875 abilities, 3,974
+  lines, plus 496 leader skills). Every effect can be picked; for a chosen effect, only the triggers, "who" and
+  targets CN uses with it are offered (CN: 408 trigger + effect, 76 when + who, 69 while + who, 238 effect +
+  target pairs). Clear contradictions (not in Fever + while in Fever, leader is two elements) are refused.
+- **Advanced mode** allows anything the game can read, labelled "not used in the game, untested". Rows the game
+  can't read (bad code, missing value) are refused in both modes (the validator's check).
+- No guessing whether a line is "useful"; dropped.
+
 Every trigger, condition and effect code now has its client name: [ability-triggers.md](ability-triggers.md)
 (262 "when" events, 230 "while" states, 209 conditions, 687 + 422 effects; CN uses 52, 49, 20, 142 + 35),
 tables in [data/ability_codes.json](data/ability_codes.json). What's left is which columns each kind reads. An effect library can label every
