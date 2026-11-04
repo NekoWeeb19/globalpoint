@@ -12,7 +12,8 @@ a fully unlocked **Mana Board 2** work too.
 
 The test unit is a clone of Haruhi Suzumiya (111069) under a new id and string id, so every one of its files is a
 *new* file. That makes it the same path a hand-made unit would take. What a hand-made unit would still need is new
-content: art, a kit, a skill script. See [What a "new unit" tool needs](#what-a-new-unit-tool-needs).
+content: art, a kit, a skill script. The full list of what a unit needs is the
+[Checklist](#checklist-everything-a-custom-unit-needs); tooling ideas are in [What a "new unit" tool needs](#what-a-new-unit-tool-needs).
 
 | | |
 |---|---|
@@ -145,6 +146,89 @@ Test run (emulator 5556, companion server, game at schedule build 1.4.805):
    there's no error.
 
 Not tested yet: multiplayer with another device, a real phone, a schedule rebuild (known to drop the rows).
+
+## Checklist: everything a custom unit needs
+
+Everything below was required for, or verified on, the test unit. "Optional" means the unit works without it.
+Sizes and formats are Haruhi's own files, measured.
+
+### 1. Ids (pick first; everything else derives from them)
+
+| Id | Rule | Test unit |
+|---|---|---|
+| Unit id | 6 digits; digit 1 = rarity (1 = 5★ … 5 = 1★), digit 2 = element (1 fire, 2 water, 3 thunder, 4 wind, 5 light, 6 dark); never used by CN | 111907 |
+| String id | lowercase folder name for every file; unique | `gp_test_haruhi` |
+| Skill name | character column 8, key of the skill rows (usually = string id) | `gp_test_haruhi` |
+| Ability ids | unit id × 10 + 1..6 | 1119071-1119076 |
+| Leader id | = unit id | 111907 |
+| Encyclopedia key / entry id | `1` + unit id / `1` + unit id + `01` | 1111907 / 111190701 |
+| Mana Board node ids | unit id × 2000 + board × 200 + index (board 1-2, index 1-199); the game derives board and row from the id | 223814201… |
+
+### 2. Table rows (19 tables, shipped in a game update)
+
+All copied from a template unit and edited. Text fields are what players read (English in GlobalPoint's tables).
+
+- **Required for the unit to exist:** character, character_text (name, title, skill and ability text),
+  character_status (HP/ATK at Lv 1/10/80/100), ability ×6, leader_ability, action_skill (2 rows: skill and skill+),
+  mana_node + generated/mana_board (both boards), mana_board2_open_condition (board 2 open date).
+- **Required by screens:** character_speech (home lines, voice names), story_character (name, expressions),
+  stance_detail, skill_preview_character, upskill, full_shot_image_attribute, character_image and
+  trimmed_image (picture crops), encyclopedia, the battle sound-effect table (`ac/b038…`).
+- **Optional:** degree + degree_mission + degree_mission_reward (Lv 100 / board titles), gacha_odds (Rates list),
+  gacha / feature banner rows, character episodes, event stories.
+
+### 3. Files (76; most players never see the folder names)
+
+Names are hashed (`scripts/cdn_hash.cjs`); each file keeps its folder kind (`upload`, `medium_upload`,
+`android_upload`). Pictures are PNG with the signature written in lower case (`\x89png`, as all of the game's own);
+AMF3 files are raw-deflated except where noted.
+
+| Files | Folder | Format / size | Notes |
+|---|---|---|---|
+| `pixelart/sprite_sheet.png` + `.atlas.amf3.deflate` | upload | PNG ~250×255; atlas of frames | frames are 256×256 cells at scale 6, named `character/<id>/pixelart/pixelart0001`… |
+| `pixelart/pixelart.frame` + `.timeline` `.amf3.deflate` | upload | AMF3 | frame names its own path; timeline sequences: `neutral`, `walk_back`, `walk_front`, `skill_ready`, `kachidoki`, `into_coffin`, `ghost_raise`, `ghost_neutral`, `revive` |
+| `pixelart/special_sprite_sheet.png` + `.atlas`, `special.frame` + `.timeline` | upload | PNG 128×512 | skill pose: sequences `special_land`, `special_pose` |
+| `ui/full_shot_1440_1920_0/1.png` | medium | ~1400×1700 / ~1560×1500 | portrait, `_1` = awakened |
+| `ui/skill_cutin_0/1.png` | medium | 1024×512 | |
+| `ui/skill_cutin_0/1.atf.deflate` | **android** | ATF texture (`ATF` header), zlib | battle cut-in; needs an ATF encoder (Adobe AIR SDK `png2atf`) for new art |
+| `ui/square_0/1`, `square_132_132_*`, `square_round_136_136_*`, `square_round_95_95_*` | medium | 212², 132², 136², 95² | icons |
+| `ui/thumb_party_main_*`, `thumb_party_unison_*`, `thumb_level_up_*` | medium | 186×392, 144×188, 252×329 | |
+| `ui/battle_control_board_*`, `battle_member_status_*`, `cutin_skill_chain_*` | medium | 104×268, 58×58, 276×319 | battle HUD |
+| `ui/episode_banner_0` | medium | 430×215 | |
+| `ui/illustration_setting_sprite_sheet.png` + `.atlas` | medium + upload | 362×792 | two crops `full_shot_illustration_setting_0/1` |
+| `ui/story/base_0/1` + one per expression in story_character | medium | 570×~600; expressions ~200×290 | |
+| `battle/character_detail_skill_preview` / `character_info_skill_preview` `.battle.amf3.deflate` | upload | AMF3, zlib | recorded skill-preview input; can be copied from any unit |
+| `battle/action/skill/action/rare5/<skill>$<skill>_1/_2.action.dsl.amf3.deflate` | upload | AMF3 skill script | names effect files under `battle/effect/skill_unique/…` (reuse any unit's, or add new) |
+| `voice/battle/` battle_start_0/1, skill_0/1, skill_ready, outhole_0/1, power_flip_0/1, win_0/1 (normal_attack_* for some units) | upload | MP3 (ID3-tagged; frame sync 0xFF stored as 0x7F) | |
+| `voice/login/login_0..2`, `voice/home/*`, `voice/ally/join`, `voice/ally/evolution` | upload | MP3 | names come from character_speech |
+
+A missing file shows as "Insufficient data. Returning to the title screen" (or error 8100); the exact path is in the
+companion's `files/server/logs/cn_requests.log` (`/cn/crash`, `未找到素材 <path>`).
+
+### 4. Server data
+
+- `assets/character.json`: `"<id>": { "name": "", "rarity": 5, "element": 0, "skill_count": 6, "cn": true }`
+  (element here is 0 fire … 5 dark). Needed to give, level, uncap and stack the unit.
+- `assets/mana_node_cn.json`: both boards, node id → items, mana cost (needed to unlock nodes).
+- Optional: `assets/gacha.json` pools (first in the tier's list, or rescale weights; see Summoning).
+
+### 5. Shipping
+
+- One game update (`scripts/build_cn_patch.cjs`) with the tables and files, numbered far above schedule builds
+  (art patches 1.4.9xx; never on a number a phone's own schedule build could take).
+- The tables the schedule rebuilds (character, character_status, ability, leader_ability, action_skill,
+  encyclopedia, mana_board2_open_condition) must get the unit's rows from the schedule build itself, or they're
+  lost at the next rebuild and a save holding the unit stops loading (C8601). Being built in the follow-up
+  session "Custom units in the CN schedule build".
+- Phones get it like any update (Wi-Fi copy with game updates ticked).
+
+### 6. Error codes met on the way
+
+| Code | Meaning | Cause here |
+|---|---|---|
+| 8100 / asset recovery screen | a file the game read isn't there | a file left out (path in the log) |
+| C8003 `…的影像短片尚未加载` | animation not loaded | a `.frame`/`.atlas` still naming the template unit's path |
+| C8601 `指定的Key不存在` | table row missing (and the game deletes that table) | wrong Mana Board node ids; or rows dropped by a rebuild |
 
 ## What a "new unit" tool needs
 
