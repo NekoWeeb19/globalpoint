@@ -173,6 +173,15 @@ function checkCnScheduleMatches() {
     // whatever this install built or had on its list may be on the game: later builds go above it
     raiseSeenCnVersion(record?.version)
     raiseSeenCnVersion(patches.length > 0 ? patches[patches.length - 1].version : undefined)
+    // a custom unit left out because its files weren't there (docs/CUSTOM_UNITS.md) gets in once a newer update
+    // is listed (its art update, built on this PC or copied from one)
+    const waiting = (record as { customWaitingForFiles?: string[] } | null)?.customWaitingForFiles ?? []
+    const newest = patches.length > 0 ? patches[patches.length - 1].version : undefined
+    if (waiting.length > 0 && listed && newest !== undefined && record?.version !== undefined && compareVersions(newest, record.version) > 0) {
+        console.log(`[cn] custom unit(s) ${waiting.join(", ")} waited for their files and a newer game update is listed; rebuilding the CN schedule update`)
+        rebuildCnSchedule()
+        return
+    }
     // an update built before the dashboard showed CN's dates has no cn_event_windows.json yet
     if (now === built && listed && existsSync(path.join(dir, "cn_event_windows.json"))) return
     console.log("[cn] the saved schedules differ from the ones the game update was built from; rebuilding the CN schedule update")

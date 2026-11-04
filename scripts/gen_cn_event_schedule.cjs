@@ -517,7 +517,7 @@ async function main() {
         return fs.existsSync(translated) ? fs.readFileSync(translated) : await cn.get(file)?.buffer()
     }
     // the custom units this update carries: not a CN unit's id or string id, and their files are there
-    const customUnits = []
+    const customUnits = [], customWaiting = []
     if (custom.units.length > 0) {
         const charBuf = await tableBuffer(CU.CHARACTER_TABLE)
         const cnChars = charBuf ? R.decodeFile(charBuf).entries : []
@@ -527,7 +527,10 @@ async function main() {
             const missing = (unit.art?.files ?? []).filter(f => !cnNames.has(f.replace(/^production\/[a-z_]+\//, "")))
             if (cnIds.has(unit.id)) console.log(`Custom unit ${unit.id} skipped: the CN game has a unit with that id`)
             else if (cnDevs.has(unit.dev)) console.log(`Custom unit ${unit.id} skipped: the CN game has a unit with string id ${unit.dev}`)
-            else if (missing.length > 0) console.log(`Custom unit ${unit.id} skipped: ${missing.length} of its files aren't in the game files yet (build its art update first${unit.art?.patch ? `, ${unit.art.patch}` : ""})`)
+            else if (missing.length > 0) {
+                customWaiting.push(unit.id)
+                console.log(`Custom unit ${unit.id} skipped: ${missing.length} of its files aren't in the game files yet (build its art update first${unit.art?.patch ? `, ${unit.art.patch}` : ""})`)
+            }
             else {
                 if (!unit.art?.files?.length) console.log(`Custom unit ${unit.id}: no files listed (art.files), shipped anyway`)
                 customUnits.push(unit)
@@ -790,7 +793,9 @@ async function main() {
         list.push({ path: file, from: out })
     }
     await build(version, last, list)
-    fs.writeFileSync(path.join(dataDir(), "cn_schedule_built.json"), JSON.stringify({ fingerprint, version, freePullCopyIds: builtFreePullCopyIds.sort((a, b) => a - b), kitState, customUnits: customUnits.map(u => u.id) }))
+    fs.writeFileSync(path.join(dataDir(), "cn_schedule_built.json"), JSON.stringify({ fingerprint, version, freePullCopyIds: builtFreePullCopyIds.sort((a, b) => a - b), kitState, customUnits: customUnits.map(u => u.id),
+        // units left out only because their files weren't there yet: the server rebuilds once a newer update is listed
+        customWaitingForFiles: customWaiting }))
     console.log(`CN schedule ${version}: ${events} event(s), ${moved} rows moved, ${campaignsMade}, ${list.length} files`)
     if (custom.units.length > 0) console.log(`Custom units: ${customUnits.map(u => `${u.id} ${u.name ?? u.dev}`).join(", ") || "none"} (${customUnits.length} of ${custom.units.length}, rows in ${customTables.length} tables)`)
     // the server's copy of the CN missions follows the new dates

@@ -12,9 +12,11 @@
 //   GET /companion/file?path=<path from the manifest>            -> the file
 // Paths are where the files go in the companion's data folder (.database/..., .cdn/...), or, under
 // game/, in /sdcard/StarPoint/game/ (game/info.json, the version record, is written last).
+// Custom units (docs/CUSTOM_UNITS.md) always come along: the PC's unit files go to .cdn/custom_units/ (the
+// phone's CUSTOM_UNITS_DIR), with _units.json naming them all, so the phone removes units the PC no longer has.
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
-import { closeSync, createReadStream, existsSync, openSync, readdirSync, readFileSync, readSync, rmSync, statSync } from "fs"
+import { closeSync, createReadStream, existsSync, openSync, readdirSync, readFileSync, readSync, rmSync, statSync, writeFileSync } from "fs"
 import { tmpdir } from "os"
 import path from "path"
 import { createInflateRaw } from "zlib"
@@ -25,6 +27,9 @@ interface Options { save: boolean, patches: boolean, images: boolean, comics: bo
 interface Entry { path: string, file: string, size: number }
 
 const SAVE_SNAPSHOT = path.join(tmpdir(), "starpoint-companion-save.db")
+const CUSTOM_UNITS_INDEX = path.join(tmpdir(), "starpoint-companion-custom-units.json")
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { customUnitsDir } = require(path.join(__dirname, "..", "..", "scripts", "custom_units.cjs")) as { customUnitsDir: () => string }
 const serverRoot = path.join(__dirname, "..", "..")
 /** The slim CN folder (tables/ + names.txt): CN_CDN_DIR itself if it's slim, else CN_SLIM_DIR, else <CDN_DIR>/cn_slim. */
 function slimDir(): string | null {
@@ -66,6 +71,12 @@ function entries(options: Options, snapshot: boolean, notes: string[] = []): Ent
     for (const name of ["news.json", "event_schedule.json", "campaign_schedule.json", "cn_copy_window.json", "banner_rotation.json"]) {
         add(list, `.database/${name}`, path.join(databaseDir(), name))
     }
+    // custom units, always (small): every unit file, then the index of them
+    const unitDir = customUnitsDir()
+    const units = existsSync(unitDir) ? readdirSync(unitDir).filter(f => f.endsWith(".json") && !f.startsWith("_")).sort() : []
+    for (const name of units) add(list, `.cdn/custom_units/${name}`, path.join(unitDir, name))
+    writeFileSync(CUSTOM_UNITS_INDEX, JSON.stringify({ units }))
+    add(list, ".cdn/custom_units/_units.json", CUSTOM_UNITS_INDEX)
     if (options.save) {
         if (snapshot) {
             rmSync(SAVE_SNAPSHOT, { force: true })

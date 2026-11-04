@@ -45,8 +45,21 @@ holding it hit C8601.
 5. **Restart the server** so it reads the unit (log: `[custom units] 111907 Haruhi (GP Test)`). Then Give
    works from the dashboard, Mana Board unlocks are accepted, and the listed banners can drop it.
 
-Phones: the companion runs the same server and schedule build. Copy the unit file into its server assets and the
-art update into its game updates (a Wi-Fi copy with "Game updates" ticked), then rebuild there.
+### On a phone (companion app)
+
+Custom units are never put in the APK, data packs or OBBs. Add them on your PC (steps above), then on the
+phone use **Download from PC** with **Game updates** ticked:
+
+- The unit files always come along (whatever is ticked) into `files/data/.cdn/custom_units/`, the phone
+  server's `CUSTOM_UNITS_DIR`. That folder survives companion updates and save imports.
+- **Game updates** brings the unit's art update (an ordinary game update).
+- When the server starts again it sees the new units and rebuilds its own schedule with them; the game
+  downloads that update at its next start.
+- **Removing a unit**: delete its file on the PC, then copy again: the phone deletes unit files the PC no
+  longer has. (Mind the warning below about saves that hold it.)
+
+If the unit files arrive before the art (Game updates not ticked), the phone's build leaves the unit out
+and rebuilds by itself once a newer game update is on its list.
 
 ## The unit file
 
@@ -90,7 +103,9 @@ The schedule build leaves a unit out (and says why in its log) when:
   "Insufficient data" when it reads one). Build the art update first, then rebuild;
 - the file has a problem (bad JSON, bad id, Mana Board ids off the rule).
 
-The units it shipped are listed in `.database/cn_schedule_built.json` (`customUnits`).
+The units it shipped are listed in `.database/cn_schedule_built.json` (`customUnits`); the ones still waiting
+for their files are in `customWaitingForFiles`, and the server rebuilds on start once a newer game update is
+listed (e.g. their art update was built or copied in).
 
 Things to know:
 
@@ -123,3 +138,6 @@ test), a real phone.
 - `src/lib/assets.ts`: merges the units into the character, Mana Board and summon data at start.
 - `scripts/test_custom_units.mjs` (`npm test`): offline test.
 - `CUSTOM_UNITS_DIR` (relative to the repo folder) points at another folder of unit files, e.g. for tests.
+  The phone companion sets it to `files/data/.cdn/custom_units` (`companion/server/companion-main.js`).
+- `src/routes/companion.ts` sends the PC's unit files with every Wi-Fi copy; the phone app
+  (`DataTransfer.java`) always fetches them and removes the ones the PC dropped.

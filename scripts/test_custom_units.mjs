@@ -73,6 +73,22 @@ const sum = list => list.reduce((s, item) => s + item.rarity, 0)
 check("the summon pool has the unit", tier.some(item => item.id === 111907))
 check("the pool's weights still sum the same", Math.abs(sum(tier) - sum(gachas["1613"].pool["1"])) < 1e-6, [sum(tier), sum(gachas["1613"].pool["1"])])
 check("other banners are untouched", assets.getGachaSync(1).pool["1"]?.some(item => item.id === 111907) !== true)
+
+// "Download from PC" (src/routes/companion.ts): the unit files and their index always come along
+const { default: Fastify } = await import("fastify")
+const app = Fastify()
+await app.register((await import("../out/routes/companion.js")).default, { prefix: "/companion" })
+const manifest = JSON.parse((await app.inject({ url: "/companion/manifest?save=0&patches=0&images=0&comics=0&schedule=0&game=0" })).body)
+const unitPaths = manifest.files.map(f => f.path).filter(p => p.startsWith(".cdn/custom_units/"))
+check("the Wi-Fi copy lists the unit file and the index", JSON.stringify(unitPaths) === JSON.stringify([".cdn/custom_units/111907.json", ".cdn/custom_units/_units.json"]), unitPaths)
+const index = JSON.parse((await app.inject({ url: "/companion/file?path=.cdn/custom_units/_units.json" })).body)
+check("the index names every unit file", JSON.stringify(index.units) === JSON.stringify(["111907.json"]), index)
+const sentUnit = (await app.inject({ url: "/companion/file?path=.cdn/custom_units/111907.json" })).body
+check("the unit file is sent as it is", sentUnit === fs.readFileSync(path.join(dir, "111907.json"), "utf8"))
+fs.rmSync(path.join(dir, "111907.json"))
+const emptied = JSON.parse((await app.inject({ url: "/companion/manifest?save=0" })).body).files.map(f => f.path).filter(p => p.startsWith(".cdn/custom_units/"))
+check("with no units only the index goes (the phone then removes its copies)", JSON.stringify(emptied) === JSON.stringify([".cdn/custom_units/_units.json"]), emptied)
+await app.close()
 fs.rmSync(dir, { recursive: true, force: true })
 
 console.log(failures === 0 ? "\nAll custom unit tests passed." : `\n${failures} custom unit test(s) failed.`)

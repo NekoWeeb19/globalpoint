@@ -51,6 +51,9 @@ const defaults = {
     CN_CDN_DIR: path.join(dataDir, ".cdn", "cn"),
     CN_TRANSLATED_DIR: path.join(dataDir, ".cdn", "cn_text"),
     CN_GENERATED_DIR: generated,
+    // custom units (docs/CUSTOM_UNITS.md): in the data folder, so they survive app updates and save imports;
+    // "Download from PC" brings the PC's unit files here
+    CUSTOM_UNITS_DIR: path.join(dataDir, ".cdn", "custom_units"),
     SERVER_START_DATE: "2019-12-01T05:00:00Z", // just before the CN game's first regular banners and events
     LISTEN_HOST: "127.0.0.1",
     LISTEN_PORT: "8000",
