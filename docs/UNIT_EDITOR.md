@@ -62,3 +62,12 @@ works (the battle code is separate from the description code).
   the research is [research/ability-triggers.md](research/ability-triggers.md)).
 - `assets/unit_editor/words.json`: plain words, and which effects are percentages or on the base scale.
 - `scripts/test_unit_editor.mjs` (`npm test`): offline test.
+
+## Tested (2026-11-03, StarPointTest emulator, companion 0.6.24 server)
+
+Amelia (221003) ability 1 edited in the editor to "if this unit is Water: every 6 → 1 s → combo +50 → 100" (a
+combination no CN unit has: the "not seen before" notice) and Lv 80 HP 3000. The change file went into the companion's
+`custom_units/changes/`; the server rebuilt by itself (update 1.4.960, both rows in it); the game took the 7 MB
+update. Her unit page showed the line in the game's own words ("When this unit is a/the ⟨Water⟩ unit → 6 seconds have
+passed → +50 Combo", locked until her Mana node), and in a quest battle with the node learned the combo jumped by 50
+every few seconds (108 combo 11 s in). Not tested yet: a custom unit's edit, a phone getting it by Download from PC.
