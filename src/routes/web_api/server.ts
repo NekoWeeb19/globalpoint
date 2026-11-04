@@ -3,7 +3,7 @@ import { removeCharacterFromSaveSync } from "../../nya/removeCharacter"
 import { getServerDate, getServerTimeMode, isServerTimeTicking, setServerTime } from "../../utils";
 import { SendMail, MAIL_TYPE } from "../../nya/mail";
 import { getBannerRotationStatus, goToBannerRotation, resumeBannerRotation, skipBannerRotation } from "../../lib/bannerRotation";
-import { getAccountFromPlayerIdSync, getAllPlayersSync, getPlayerFromAccountIdSync, getPlayerSync } from "../../data/wdfpData";
+import { getAccountFromPlayerIdSync, getAccountPlayersSync, getAllPlayersSync, getPlayerFromAccountIdSync, getPlayerSync } from "../../data/wdfpData";
 import { chosenAccount, setChosenAccount } from "../../nya/activeAccounts";
 import { cnLinkedAccountId } from "../../lib/cnClient";
 import { clearAccountClaim, getAccountClaim, setAccountClaim } from "../../nya/accountClaim";
@@ -20,6 +20,7 @@ import { DROP_MULTIPLIER_MAX, DROP_MULTIPLIER_MIN, getDropMultiplier, setDropMul
 import { DEFAULT_GACHA_RATES, getGachaRates, resetGachaRates, setGachaRates } from "../../nya/gachaRates";
 import { lanAddresses } from "../../nya/coop";
 import { getServerSettings, setServerSettings } from "../../nya/serverSettings";
+import { DEFAULT_MESSAGE, deleteMailSchedule, MAIL_DAYS, mailScheduleStatus, saveMailSchedule } from "../../nya/mailSchedule";
 
 interface TimeQuery {
     time: string | undefined
@@ -238,6 +239,39 @@ const routes = async (fastify: FastifyInstance) => {
         return reply.send({ posts: listNews(), categories: NEWS_CATEGORIES })
     })
 
+    // ---- Scheduled mail (the dashboard's Mail tab, src/nya/mailSchedule.ts) ----
+
+    const mailOverview = () => {
+        const account = cnLinkedAccountId()
+        let playerId: number | null = null
+        try { if (account !== null) playerId = getAccountPlayersSync(account)[0] ?? null } catch { }
+        return {
+            schedules: mailScheduleStatus(playerId),
+            serverTime: getServerDate().toISOString(),
+            activeAccount: account,
+            activePlayer: playerId,
+            days: MAIL_DAYS,
+            defaultMessage: DEFAULT_MESSAGE,
+        }
+    }
+
+    fastify.get("/mail", async (_: FastifyRequest, reply: FastifyReply) => reply.send(mailOverview()))
+
+    // adds a scheduled mail or changes one (with its id)
+    fastify.post("/mail", async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+            saveMailSchedule((request.body ?? {}) as Record<string, unknown>)
+        } catch (error) {
+            return reply.status(400).send({ "error": "Bad Request", "message": (error as Error).message })
+        }
+        return reply.send(mailOverview())
+    })
+
+    fastify.post("/mail/delete", async (request: FastifyRequest, reply: FastifyReply) => {
+        deleteMailSchedule(Number(((request.body ?? {}) as { id?: unknown }).id))
+        return reply.send(mailOverview())
+    })
+
     // puts an event back on its original dates: { key }
     fastify.post("/events/unschedule", async (request: FastifyRequest, reply: FastifyReply) => {
         const key = String(((request.body ?? {}) as { key?: unknown }).key ?? "")
@@ -383,7 +417,10 @@ const routes = async (fastify: FastifyInstance) => {
     })
 
     fastify.get("/give", async (request: FastifyRequest, reply: FastifyReply) => {
-        const q = request.query as { playerId: string, type: string, typeId?: string, number?: string };
+        const q = request.query as { playerId: string, type: string, typeId?: string, number?: string, subject?: string, message?: string };
+        // an optional title and message of your own (else the defaults below)
+        const subject = (q.subject ?? "").trim().slice(0, 60), message = (q.message ?? "").trim().slice(0, 300);
+        const text = (fallback: string) => ({ subject: subject || fallback, description: message || "From Web API" });
         // beads are currency, not an item: no id, just an amount
         const isBeads = q.type === "beads_paid" || q.type === "beads_free";
         if (!q.playerId || !q.type || (!q.typeId && !isBeads)) return reply.status(400).send({
@@ -400,39 +437,20 @@ const routes = async (fastify: FastifyInstance) => {
         
         switch (q.type) {
             case "chara":
-                SendMail(playerId, {
-                    subject: "Give Character",
-                    description: "From Web API",
-                    type: MAIL_TYPE.CHARACTER,
-                    type_id: typeId,
-                    number: number
-                })
+                SendMail(playerId, { ...text("Give Character"), type: MAIL_TYPE.CHARACTER, type_id: typeId, number })
                 break;
             case "equip":
-                SendMail(playerId, {
-                    subject: "Give Equipment",
-                    description: "From Web API",
-                    type: MAIL_TYPE.EQUIPMENT,
-                    type_id: typeId,
-                    number: number
-                })
+                SendMail(playerId, { ...text("Give Equipment"), type: MAIL_TYPE.EQUIPMENT, type_id: typeId, number })
                 break;
             case "item":
-                SendMail(playerId, {
-                    subject: "Give Item",
-                    description: "From Web API",
-                    type: MAIL_TYPE.ITEM,
-                    type_id: typeId,
-                    number: number
-                })
+                SendMail(playerId, { ...text("Give Item"), type: MAIL_TYPE.ITEM, type_id: typeId, number })
                 break;
             case "beads_paid":
             case "beads_free":
                 SendMail(playerId, {
-                    subject: `${q.type === "beads_paid" ? "Paid" : "Free"} beads * ${number}`,
-                    description: "From Web API",
+                    ...text(`${q.type === "beads_paid" ? "Paid" : "Free"} beads * ${number}`),
                     type: q.type === "beads_paid" ? MAIL_TYPE.PAID_VIRTUAL_MONEY : MAIL_TYPE.FREE_VIRTUAL_MONEY,
-                    number: number
+                    number
                 })
                 break;
             default:

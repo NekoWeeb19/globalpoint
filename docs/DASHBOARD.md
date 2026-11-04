@@ -78,8 +78,33 @@ free pull campaigns runs then.
 mailbox. The IDs are the game's own (the files in `assets/` list them).
 
 Beads aren't an item, so they have no ID: choose **Paid beads** or **Free beads**, type the amount (the ID box goes
-away) and send. Like every Give mail, it waits only while the server keeps running: claim it before you restart the
-server.
+away) and send. **Title** and **Message** are optional: left empty, the mail says "Give Item" (or what it is) and
+"From Web API". Like every Give mail, it waits only while the server keeps running: claim it before you restart the
+server. For mail that's saved and can arrive later or again and again, use the **Mail** tab (next section).
+
+### Schedule mail (once, or again and again)
+
+**Mail** tab: gifts that arrive in the in-game mailbox at a set time, like the game's own maintenance and event gifts.
+1. **Send**: paid beads, free beads, mana, EXP, or an item, unit or armament (those need their **ID**), and the
+   **Amount**. **Title** and **Message** are optional (else e.g. "Paid beads * 300" and "A gift from the server.").
+2. **First send**: a date and time in server time (UTC). **Now** fills in the server's current time.
+3. **Repeat**: **Once**, or **Every** N days, weeks, months or years, at the same time of day, either a number of
+   **Times in all** or **Forever**. Monthly and yearly keep the day of the month (the 31st falls on the 30th or 28th in
+   shorter months).
+4. **Schedule**. The list shows the next send, how many were delivered, and how many wait to be claimed. **Edit**
+   changes one; **Delete** stops it (mails already in the mailbox stay).
+
+How it behaves:
+- It follows the **server time**, so moving the server's date on the Dashboard tab makes due mails arrive. Send times
+  from before a mail was scheduled (or last edited) are skipped, so nothing pours out at once.
+- Each mail can be claimed for **30 days** after it arrives, then it's gone. After a long jump forward in server time,
+  only the sends from the last 30 days arrive (the older ones would have expired).
+- Only the **active save** gets it: the CN account picked on the Players tab (or `CN_ACCOUNT_ID`). With none picked,
+  any save that opens its mailbox does.
+- It's saved (`.database/mail_schedule.json` and `mail_delivered.json`), so mails survive restarts, and the companion's
+  **Download from PC** brings them along with **My save**.
+- The game refuses a mail it has no room for ("cannot be opened due to storage limits"), e.g. beads on a save that
+  already has a huge number of them.
 
 For daily beads and other basics, see [Paid beads, free mails and drops](#paid-beads-free-mails-and-drops)
 below.

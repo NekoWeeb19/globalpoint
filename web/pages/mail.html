@@ -1,0 +1,361 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/public/tailwind.css">
+    <title>Starpoint</title>
+</head>
+
+<body
+    class="bg-background text-on-surface relative mt-16 m-auto max-w-screen-2xl min-h-screen box-border flex flex-col items-start px-3 pb-3">
+    <header class="flex gap-3 items-center md:justify-start justify-center mb-3 w-full">
+        <img src="/public/img/logo.png" class="w-9 h-9">
+        <h1 class="text-4xl mt-4 font-black mb-4 text-on-background">Starpoint</h1>
+    </header>
+    <div class="md:grid md:grid-cols-sidebar flex flex-col gap-5 w-full h-fit">
+        <nav class="px-3 py-5 gap-3 flex flex-col bg-surface-container-low rounded-3xl h-fit w-full">
+            <a href="/"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M520-600v-240h320v240H520ZM120-440v-400h320v400H120Zm400 320v-400h320v400H520Zm-400 0v-240h320v240H120Zm80-400h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z" />
+                </svg>
+                Dashboard
+            </a>
+            <a href="/events" data-nav="events"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z" />
+                </svg>
+                Events
+            </a>
+            <a href="/summons" data-nav="summons"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M480-80 371-371 80-480l291-109 109-291 109 291 291 109-291 109L480-80Z" />
+                </svg>
+                Summons
+            </a>
+            <a href="/campaigns" data-nav="campaigns"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-280v80h640v-80H160Zm0-440h88q-5-9-6.5-19t-1.5-21q0-50 35-85t85-35q30 0 55.5 15.5T460-826l20 26 20-26q18-24 44-39t56-15q50 0 85 35t35 85q0 11-1.5 21t-6.5 19h88q33 0 56.5 23.5T880-640v440q0 33-23.5 56.5T800-120H160q-33 0-56.5-23.5T80-200v-440q0-33 23.5-56.5T160-720Zm0 320h640v-240H596l84 114-64 46-136-184-136 184-64-46 82-114H160v240Zm200-320q17 0 28.5-11.5T400-760q0-17-11.5-28.5T360-800q-17 0-28.5 11.5T320-760q0 17 11.5 28.5T360-720Zm240 0q17 0 28.5-11.5T640-760q0-17-11.5-28.5T600-800q-17 0-28.5 11.5T560-760q0 17 11.5 28.5T600-720Z" />
+                </svg>
+                Campaigns
+            </a>
+            <a href="/news" data-nav="news"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120H160Zm0-80h640v-560H160v560Zm80-80h480v-80H240v80Zm0-160h160v-240H240v240Zm240 0h240v-80H480v80Zm0-160h240v-80H480v80ZM160-200v-560 560Z" />
+                </svg>
+                News
+            </a>
+            <a href="/mail" data-nav="mail"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z" />
+                </svg>
+                Mail
+            </a>
+            <a href="/player"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M40-160v-112q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0 130 15.5T616-378q29 15 46.5 43.5T680-272v112H40Zm720 0v-120q0-44-24.5-84.5T666-434q51 6 96 20.5t84 35.5q36 20 55 44.5t19 53.5v120H760ZM360-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm400-160q0 66-47 113t-113 47q-11 0-28-2.5t-28-5.5q27-32 41.5-71t14.5-81q0-42-14.5-81T544-792q14-5 28-6.5t28-1.5q66 0 113 47t47 113ZM120-240h480v-32q0-11-5.5-20T580-306q-54-27-109-40.5T360-360q-56 0-111 13.5T140-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T440-640q0-33-23.5-56.5T360-720q-33 0-56.5 23.5T280-640q0 33 23.5 56.5T360-560Zm0 320Zm0-400Z" />
+                </svg>
+                Players
+            </a>
+            <a href="/unit-editor" data-nav="unit-editor"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
+                </svg>
+                Unit editor
+            </a>
+            <a href="https://github.com/NekoWeeb19/globalpoint"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M320-240 80-480l240-240 57 57-184 184 183 183-56 56Zm320 0-57-57 184-184-183-183 56-56 240 240-240 240Z" />
+                </svg>
+                Source Code
+            </a>
+            <a href="https://github.com/Duosion/starpoint"
+                class="px-5 text-sm text-on-surface-variant hover:underline">Based on StarPoint</a>
+        </nav>
+        <article class="w-full flex flex-col gap-5 min-w-0">
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3">
+                <h2 class="text-2xl text-on-background font-semibold">Mail</h2>
+                <p class="text-on-surface-variant">Gifts that arrive in the in-game mailbox at a set time, once or again and again, like the game's own maintenance and event gifts. Times are the server's (UTC), so moving the server time moves them too. Each mail can be claimed for <span id="days">30</span> days after it arrives, then it's gone.</p>
+                <p id="active" class="text-on-surface-variant"></p>
+                <p class="text-sm text-on-surface-variant">The never-ending mails (Bread, Mana, EXP) are on the Dashboard tab. Players &gt; Give sends a one-off mail right away.</p>
+            </section>
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <h3 id="form-title" class="text-xl text-on-background font-semibold">New scheduled mail</h3>
+                <form id="form" class="flex flex-col gap-4">
+                    <div class="flex flex-wrap gap-3 items-end">
+                        <label class="flex flex-col gap-1">
+                            <span class="text-on-surface">Send</span>
+                            <select id="kind" class="rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3">
+                                <option value="beads_paid">Paid beads</option>
+                                <option value="beads_free">Free beads</option>
+                                <option value="mana">Mana</option>
+                                <option value="exp">EXP</option>
+                                <option value="item">Item</option>
+                                <option value="chara">Unit</option>
+                                <option value="equip">Armament</option>
+                            </select>
+                        </label>
+                        <label id="type-id-box" class="flex flex-col gap-1">
+                            <span class="text-on-surface">ID</span>
+                            <input id="type-id" type="number" min="1" class="w-32 rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3">
+                        </label>
+                        <label class="flex flex-col gap-1">
+                            <span class="text-on-surface">Amount</span>
+                            <input id="amount" type="number" min="1" value="1500" required class="w-36 rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3">
+                        </label>
+                    </div>
+                    <label class="flex flex-col gap-1">
+                        <span class="text-on-surface">Title <span class="text-sm text-on-surface-variant">(optional)</span></span>
+                        <input id="title" type="text" maxlength="60" class="w-full rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3">
+                    </label>
+                    <label class="flex flex-col gap-1">
+                        <span class="text-on-surface">Message <span class="text-sm text-on-surface-variant">(optional)</span></span>
+                        <textarea id="message-text" rows="2" maxlength="300" class="w-full rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3"></textarea>
+                    </label>
+                    <div class="flex flex-wrap gap-3 items-end">
+                        <label class="flex flex-col gap-1">
+                            <span class="text-on-surface">First send (server time, UTC)</span>
+                            <input id="start" type="datetime-local" required class="rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3">
+                        </label>
+                        <button type="button" id="now"
+                            class="text-sm border border-outline-variant text-on-surface h-[40px] px-[16px] rounded-full hover:bg-surface-container-high">Now</button>
+                    </div>
+                    <div class="flex flex-wrap gap-3 items-end">
+                        <label class="flex flex-col gap-1">
+                            <span class="text-on-surface">Repeat</span>
+                            <select id="repeat" class="rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3">
+                                <option value="once">Once</option>
+                                <option value="repeat">Every…</option>
+                            </select>
+                        </label>
+                        <div id="repeat-box" class="flex flex-wrap gap-3 items-end">
+                            <label class="flex flex-col gap-1">
+                                <span class="text-on-surface">Every</span>
+                                <input id="every" type="number" min="1" max="999" value="1" class="w-24 rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3">
+                            </label>
+                            <select id="unit" class="rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3">
+                                <option value="day">days</option>
+                                <option value="week">weeks</option>
+                                <option value="month">months</option>
+                                <option value="year">years</option>
+                            </select>
+                            <label class="flex flex-col gap-1">
+                                <span class="text-on-surface">Times in all</span>
+                                <input id="times" type="number" min="1" max="9999" value="4" class="w-24 rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3">
+                            </label>
+                            <label class="flex gap-2 items-center text-on-surface h-[48px]"><input type="checkbox" id="forever" class="w-5 h-5"> Forever</label>
+                        </div>
+                    </div>
+                    <p id="preview" class="text-sm text-on-surface-variant"></p>
+                    <div class="flex flex-wrap gap-3">
+                        <button type="submit" id="save"
+                            class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center disabled:opacity-40 disabled:pointer-events-none">Schedule</button>
+                        <button type="button" id="cancel" hidden
+                            class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center">Cancel editing</button>
+                    </div>
+                    <p id="message" class="text-sm text-on-surface-variant" role="status"></p>
+                </form>
+            </section>
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <h3 class="text-xl text-on-background font-semibold">Scheduled</h3>
+                <ul id="list" class="flex flex-col gap-2"></ul>
+            </section>
+        </article>
+    </div>
+    <script>
+        (function () {
+            const $ = (id) => document.getElementById(id)
+            for (const link of document.querySelectorAll("[data-nav]")) {
+                if (link.dataset.nav !== "mail") continue
+                link.className = "px-5 py-3 flex gap-3 items-center bg-primary rounded-full w-full font-bold text-on-primary text-lg"
+                link.querySelector("svg").setAttribute("class", "fill-on-primary")
+            }
+            const KIND = { beads_paid: "Paid beads", beads_free: "Free beads", mana: "Mana", exp: "EXP", item: "Item", chara: "Unit", equip: "Armament" }
+            const UNIT = { day: ["day", "days"], week: ["week", "weeks"], month: ["month", "months"], year: ["year", "years"] }
+            const show = (el, on) => { el.style.display = on ? "" : "none" }
+            const needsId = (kind) => kind === "item" || kind === "chara" || kind === "equip"
+            let data = { schedules: [], serverTime: new Date().toISOString(), days: 30 }, editing = null, busy = false
+
+            const fmt = (iso) => iso.slice(0, 16).replace("T", " ")
+            const defaultTitle = (kind, id, amount) => KIND[kind] + (needsId(kind) && id ? " " + id : "") + " * " + amount
+            function whenText(s) {
+                if (s.every === 0) return "once, " + fmt(s.start) + " UTC"
+                const unit = UNIT[s.unit][s.every === 1 ? 0 : 1]
+                return "from " + fmt(s.start) + " UTC, every " + (s.every === 1 ? "" : s.every + " ") + unit + ", " + (s.times === null ? "forever" : s.times + " times in all")
+            }
+
+            function syncForm() {
+                const kind = $("kind").value
+                show($("type-id-box"), needsId(kind))
+                $("type-id").required = needsId(kind)
+                const repeating = $("repeat").value === "repeat"
+                show($("repeat-box"), repeating)
+                $("times").disabled = $("forever").checked
+                $("title").placeholder = defaultTitle(kind, $("type-id").value, $("amount").value || "?")
+                $("message-text").placeholder = data.defaultMessage || ""
+                const s = formValue()
+                $("preview").textContent = s.start ? "Sends " + whenText({ ...s, start: s.start }) + "." : ""
+            }
+            function formValue() {
+                const repeating = $("repeat").value === "repeat"
+                return {
+                    id: editing ?? undefined,
+                    kind: $("kind").value,
+                    typeId: needsId($("kind").value) ? Number($("type-id").value) : null,
+                    amount: Number($("amount").value),
+                    title: $("title").value,
+                    message: $("message-text").value,
+                    start: $("start").value ? $("start").value + ":00Z" : "",
+                    every: repeating ? Number($("every").value) : 0,
+                    unit: $("unit").value,
+                    times: repeating ? ($("forever").checked ? null : Number($("times").value)) : 1,
+                }
+            }
+            const nowValue = () => fmt(data.serverTime).replace(" ", "T")
+
+            function button(text, onClick) {
+                const b = document.createElement("button")
+                b.type = "button"
+                b.className = "text-sm border border-outline-variant text-on-surface h-[32px] px-[16px] rounded-full hover:bg-surface-container-high"
+                b.textContent = text
+                b.addEventListener("click", onClick)
+                return b
+            }
+            function render() {
+                $("days").textContent = data.days
+                $("active").textContent = data.activeAccount === null
+                    ? "Goes to: any save that opens its mailbox (no CN account is picked on the Players tab)."
+                    : "Goes to: the active save (account " + data.activeAccount + (data.activePlayer ? ", player " + data.activePlayer : "") + ", picked on the Players tab). Other saves don't get it."
+                const list = $("list")
+                list.replaceChildren()
+                if (data.schedules.length === 0) {
+                    const empty = document.createElement("li")
+                    empty.className = "text-on-surface-variant"
+                    empty.textContent = "Nothing scheduled."
+                    list.appendChild(empty)
+                }
+                for (const s of data.schedules) {
+                    const item = document.createElement("li")
+                    item.className = "flex flex-col gap-1 p-4 rounded-2xl bg-surface-container-low"
+                    const title = document.createElement("span")
+                    title.className = "text-on-surface font-semibold"
+                    title.textContent = s.title || defaultTitle(s.kind, s.typeId, s.amount)
+                    const what = document.createElement("span")
+                    what.className = "text-sm text-on-surface-variant"
+                    what.textContent = KIND[s.kind] + (s.typeId ? " " + s.typeId : "") + " × " + s.amount + " — " + whenText(s)
+                    const status = document.createElement("span")
+                    status.className = "text-sm text-on-surface-variant"
+                    status.textContent = (s.next ? "Next: " + fmt(s.next) + " UTC" : "Done: nothing left to send") +
+                        (data.activePlayer !== null || data.activeAccount === null ? " · delivered " + s.delivered + ", waiting to be claimed " + s.waiting : "")
+                    const message = document.createElement("span")
+                    message.className = "text-sm text-on-surface-variant italic"
+                    message.textContent = "“" + (s.message || data.defaultMessage) + "”"
+                    const actions = document.createElement("div")
+                    actions.className = "flex gap-2 mt-1"
+                    actions.append(button("Edit", () => edit(s)), button("Delete", () => remove(s)))
+                    item.append(title, what, message, status, actions)
+                    list.appendChild(item)
+                }
+            }
+
+            function edit(s) {
+                editing = s.id
+                $("form-title").textContent = "Edit scheduled mail"
+                $("save").textContent = "Save changes"
+                show($("cancel"), true)
+                $("kind").value = s.kind
+                $("type-id").value = s.typeId ?? ""
+                $("amount").value = s.amount
+                $("title").value = s.title
+                $("message-text").value = s.message
+                $("start").value = fmt(s.start).replace(" ", "T")
+                $("repeat").value = s.every === 0 ? "once" : "repeat"
+                $("every").value = s.every || 1
+                $("unit").value = s.unit
+                $("forever").checked = s.times === null
+                $("times").value = s.times ?? 4
+                $("message").textContent = "Saving starts it again from its next send time; nothing already past is sent twice."
+                syncForm()
+                $("form").scrollIntoView({ block: "start" })
+            }
+            function reset() {
+                editing = null
+                $("form").reset()
+                $("start").value = nowValue()
+                $("form-title").textContent = "New scheduled mail"
+                $("save").textContent = "Schedule"
+                show($("cancel"), false)
+                syncForm()
+            }
+            async function send(path, body) {
+                const response = await fetch(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
+                const reply = await response.json().catch(() => ({}))
+                if (!response.ok) throw new Error(reply.message || response.statusText)
+                data = reply
+                render()
+            }
+            async function remove(s) {
+                if (busy || !confirm("Delete \"" + (s.title || defaultTitle(s.kind, s.typeId, s.amount)) + "\"? Nothing more is sent; mails already in the mailbox stay until claimed or expired.")) return
+                busy = true
+                try {
+                    await send("/api/server/mail/delete", { id: s.id })
+                    if (editing === s.id) reset()
+                    $("message").textContent = "Deleted."
+                } catch (error) {
+                    $("message").textContent = "Error: " + error.message
+                } finally { busy = false }
+            }
+
+            for (const id of ["kind", "type-id", "amount", "start", "repeat", "every", "unit", "times", "forever"]) {
+                $(id).addEventListener("input", syncForm)
+                $(id).addEventListener("change", syncForm)
+            }
+            $("now").addEventListener("click", () => { $("start").value = nowValue(); syncForm() })
+            $("cancel").addEventListener("click", () => { reset(); $("message").textContent = "" })
+            $("form").addEventListener("submit", async (event) => {
+                event.preventDefault()
+                if (busy) return
+                busy = true
+                $("save").disabled = true
+                try {
+                    const wasEditing = editing !== null
+                    await send("/api/server/mail", formValue())
+                    reset()
+                    $("message").textContent = wasEditing ? "Saved." : "Scheduled."
+                } catch (error) {
+                    $("message").textContent = "Error: " + error.message
+                } finally {
+                    busy = false
+                    $("save").disabled = false
+                }
+            })
+
+            fetch("/api/server/mail").then(r => r.json()).then(reply => { data = reply; reset(); render() })
+                .catch(error => { $("message").textContent = "Could not load: " + error.message })
+        })()
+    </script>
+</body>
+
+</html>

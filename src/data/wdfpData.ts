@@ -97,7 +97,7 @@ export function getAccount(
  * @param accountId The account's id.
  * @returns A list of player ids.
  */
-function getAccountPlayersSync(
+export function getAccountPlayersSync(
     accountId: number
 ): number[] {
     const raw = db.prepare(`

@@ -5,6 +5,7 @@ import { epochOf, getServerDate } from "../utils"
 import { ClientError } from "./utils"
 import { recordReceivedSync } from "./receiveHistory"
 import { InfiniteMail, infiniteMailOn } from "./serverSettings"
+import { isScheduledMailId, removeScheduledMail, ScheduledMail, scheduledMailsFor } from "./mailSchedule"
 
 export interface Mail_ {
     "id": number,
@@ -140,8 +141,13 @@ export const SendMail = (player_id: number, mail: Mail) => {
 // 2020 date showed as "2194 days ago")
 export const GetMails = (player_id: number) => {
     const now = new Date(getServerDate().getTime() - 60_000)
-    return activeSpecialMails().map(mail => ({ ...mail, "create_time": date2str(now) })).concat(CachedMails[player_id] || [])
+    return (activeSpecialMails().map(mail => ({ ...mail, "create_time": date2str(now) })) as Mail_[])
+        .concat(scheduledMailsFor(player_id).map(toMail_))
+        .concat(CachedMails[player_id] || [])
 }
+
+/** A scheduled mail (src/nya/mailSchedule.ts) without its bookkeeping fields, as the game gets it. */
+const toMail_ = ({ scheduleId: _s, at: _a, expires: _e, ...mail }: ScheduledMail): Mail_ => mail
 
 interface MailResult {
     user_info?: { [key: string]: number },
@@ -150,7 +156,7 @@ interface MailResult {
     equipment_list?: Object[],
 }
 
-const mailTotalCount = (player_id: number) => activeSpecialMails().length + (CachedMails[player_id]?.length ?? 0)
+const mailTotalCount = (player_id: number) => activeSpecialMails().length + scheduledMailsFor(player_id).length + (CachedMails[player_id]?.length ?? 0)
 
 const process_mail = (player_id: number, mail: Mail): MailResult => {
     const result = give_mail(player_id, mail)
@@ -249,6 +255,12 @@ export const ProcessMail = (player_id: number, mail_id: number) => {
         const mail = activeSpecialMails().find(mail => mail.id === mail_id)
         if (!mail) throw new ClientError(`Mail not found: ${mail_id}`)
         data = process_mail(player_id, mail)
+    } else if (isScheduledMailId(mail_id)) {
+        // gone once expired (30 days) or already claimed
+        const mail = scheduledMailsFor(player_id).find(mail => mail.id === mail_id)
+        if (!mail) throw new ClientError(`Mail not found or expired: ${mail_id}`)
+        data = process_mail(player_id, mail)
+        removeScheduledMail(player_id, mail_id)
     } else {
         const mail = CachedMails[player_id]?.find(mail => mail.id === mail_id)
         if (!mail) throw new ClientError(`Mail not found: ${mail_id}`)
@@ -274,7 +286,8 @@ export const ProcessMail = (player_id: number, mail_id: number) => {
  */
 export const ProcessAllMails = (player_id: number, mail_ids?: number[]) => {
     const requested = mail_ids ? new Set(mail_ids) : null
-    const pending = (CachedMails[player_id] ?? []).filter(mail => requested === null || requested.has(mail.id))
+    const pending = ([] as Mail_[]).concat(scheduledMailsFor(player_id).map(toMail_), CachedMails[player_id] ?? [])
+        .filter(mail => requested === null || requested.has(mail.id))
 
     const user_info: { [key: string]: number } = {};
     const character_list: Map<number, Object> = new Map();
@@ -291,6 +304,7 @@ export const ProcessAllMails = (player_id: number, mail_ids?: number[]) => {
             continue
         }
         claimed.add(mail.id)
+        if (isScheduledMailId(mail.id)) removeScheduledMail(player_id, mail.id)
         Object.assign(user_info, result.user_info)
         Object.assign(item_list, result.item_list)
         for (const character of result.character_list ?? []) {

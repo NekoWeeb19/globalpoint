@@ -57,6 +57,14 @@
                 </svg>
                 News
             </a>
+            <a href="/mail" data-nav="mail"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z" />
+                </svg>
+                Mail
+            </a>
             <a href="/player"
                 class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
@@ -126,6 +134,10 @@
                         <input class="my-input" id="typeId" name="typeId" type="number" placeholder="id" required />
                         <span>x</span>
                         <input class="my-input" id="number" name="number" type="number" value="1" required />
+                </div>
+                <div class="flex flex-col gap-2 w-full max-w-md">
+                    <input class="my-input w-full" name="subject" maxlength="60" placeholder="Title (optional)" />
+                    <input class="my-input w-full" name="message" maxlength="300" placeholder="Message (optional; else &quot;From Web API&quot;)" />
                 </div>
                 <button type="submit"
                     class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity">
