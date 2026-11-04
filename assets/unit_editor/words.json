@@ -256,7 +256,7 @@
   "power_flip_limit": "Power Flips (max)",
   "end_power_flip_limit": "ends after Power Flips",
   "cancelable": "cancelable",
-  "by_each_trigger_puller": "once per unit",
+  "by_each_trigger_puller": "separately for each unit that meets it",
   "initial_multiply": "starting multiplier",
   "multiply_trigger": "multiplier trigger",
   "unique_condition_id": "unit-specific id",

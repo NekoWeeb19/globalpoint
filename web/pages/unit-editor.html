@@ -531,6 +531,14 @@
                     r.appendChild(addc); box.appendChild(r)
                 }
 
+                // a leader line's awakening tag (leader column 1): shown always, only before awakening, or only after
+                if (where[0] === "leader") {
+                    const r = row("Shown")
+                    const tag = ["0", "1", "2"].includes(c[3]) ? c[3] : "0"
+                    r.appendChild(select([["0", "always"], ["1", "before awakening only"], ["2", "after awakening only"]], tag, (v) => { c[3] = v; changed() }, "Shown"))
+                    box.appendChild(r)
+                }
+
                 // kind + trigger
                 const kr = row("Kind")
                 const kinds = [["0", "when (the moment it happens)"], ["1", "while (as long as it's true)"]]

@@ -119,7 +119,8 @@ function pullerText(strings, code, group) {
         case "1": return piece(strings, "target_leader")
         case "5": return g ? piece(strings, "target_one_of_ally_constraint", { constraint: unitWord(g) }) : piece(strings, "target_one_of_ally_all")
         case "7": return g ? piece(strings, "target_total_of_ally_constraint_instant", { constraint: unitWord(g) }) : piece(strings, "target_total_of_ally_all_instant")
-        case "9": return g ? piece(strings, "target_sum_of_ally_constraint_during", { constraint: unitWord(g) }) : "party"
+        // the party added up: "all units in the party" (with " total" after HP: the trigger piece's ::sum::)
+        case "9": return g ? piece(strings, "target_sum_of_ally_constraint_during", { constraint: unitWord(g) }) : piece(strings, "target_sum_of_ally_all_during")
         default: return null
     }
 }
@@ -195,6 +196,8 @@ function effectText(strings, codes, c, level) {
         : sep ? { PowerFlipDamage: "powerflip_lv", DirectDamage: "direct_damage", SkillDamage: "skill_damage", AbilityDamage: "ability_damage" }[sep[1]]
         : ctx.multihitDamage ? "direct_damage" : null
     if (body !== null && category) body += piece(strings, "separated_term_" + category) ?? ""
+    // "(Separate effect for each character that satisfies these conditions)": every unit that meets them gets its own
+    if (body !== null && f.by_each_trigger_puller && c[f.by_each_trigger_puller.cols[0]] === "true") body += piece(strings, "condition_by_each_trigger_puller") ?? ""
     // a piece that names its target unconditionally, for an effect without one: drop the dangling "for"
     if (body !== null && !target && key === "common_content_condition_extend") body = piece(strings, key, { ...ctx, target: piece(strings, "target_party"), withoutTarget: false })
     else if (body !== null && !target) body = body.replace(/\s+for\s*$/, "").replace(/\s+for\s+\)/, ")")
@@ -292,7 +295,7 @@ function whileText(strings, codes, c, level) {
     const name = def.name, f = def.fields
     const puller = f.trigger_puller ? pullerText(strings, c[98], c[99]) : null
     const partyCount = !f.trigger_puller && /^ConditionCount/.test(name)
-    const ctx = { omittable: partyCount ? false : !puller, triggerPuller: partyCount ? piece(strings, "target_party") : puller, includesThreshold: true, isBeforeInstantTrigger: false, hasAccumulationTrigger: false, isPrecondition: false }
+    const ctx = { sum: c[98] === "9" ? piece(strings, "target_sum_of_additional") : "", omittable: partyCount ? false : !puller, triggerPuller: partyCount ? piece(strings, "target_party") : puller, includesThreshold: true, isBeforeInstantTrigger: false, hasAccumulationTrigger: false, isPrecondition: false }
     const thr = f.threshold ? at(c, f.threshold.cols, level) : 0
     let m
     if (name === "HpHigh" || name === "HpLow") return piece(strings, "during_trigger_kind_" + snake(name), { ...ctx, percent: piece(strings, "percent", { percent: num(thr / 1000) }) })
@@ -359,6 +362,8 @@ function lineParts(c, level, strings, codes) {
         condHead = conds.length ? conds.join(" → ") + " → " : ""
         head += trig + (/,\s*$/.test(trig) ? "" : " → ")
         const limit = Number(c[34])
+        // "the first time: heal 7.5 %..." / "the first 2 time(s): ..." for a one-off effect with a limit
+        if (oneOff && limit === 1) effect = piece(strings, "instant_trigger_limit_once") + effect
         if (def?.fields?.strength && limit > 1) {
             if (oneOff) effect = piece(strings, "instant_trigger_limit_n_times", { count: limit }) + effect
             else if (!timed) effect += piece(strings, "instant_max_strength", { max_strength: percentUpDown(strings, at(c, def.fields.strength.cols, level) / 1000 * limit) })
@@ -370,13 +375,30 @@ function lineParts(c, level, strings, codes) {
         if (trig === null) return null
         head = (conds.length ? conds.join(" → ") + " → " : "") + trig
         const limit = Number(c[102])
-        if (def?.fields?.strength && limit > 1) effect += piece(strings, "instant_max_strength", { max_strength: percentUpDown(strings, at(c, def.fields.strength.cols, level) / 1000 * limit) })
+        const maxText = def?.fields?.strength && limit > 1 ? piece(strings, "instant_max_strength", { max_strength: percentUpDown(strings, at(c, def.fields.strength.cols, level) / 1000 * limit) }) : ""
+        // HP-scaling lines ("the higher ... remaining HP") use the effect's summary: "increase ⟨Water⟩ unit's attack(Max + 150 %)";
+        // a second effect for the same target drops it: "&increase Skill Damage(Max + 150 %)"
+        if (/^(HpIncrease|HpDecrease|SumOfPartyHp(Increase|Decrease))$/.test(codes.whileTrigger[c[97]]?.name ?? "") && def?.fields?.strength) {
+            const sum = summaryText(strings, def.name, c, level)
+            if (sum) return { kind, head, condHead, battleStart, effect: sum.withTarget + maxText, effectNoTarget: sum.noTarget + maxText, targetText: sum.target, summary: true, timed: false, oneOff: false, hasTarget: false, mark: c[1] === "false" ? "Ⓜ " : "" }
+        }
+        effect += maxText
     } else return null
     return { kind, head, condHead, battleStart, effect, timed, oneOff, hasTarget: Boolean(def?.fields?.target), mark: c[1] === "false" ? "Ⓜ " : "" }
 }
 
+/** "increase ⟨Water⟩ unit's attack": an effect's summary piece, with and without its target. */
+function summaryText(strings, name, c, level) {
+    const key = "common_content_" + (EFFECT_PIECE[name] ?? snake(name)) + "_summary"
+    if (strings["ability_description_" + key] === undefined) return null
+    const target = targetText(strings, c[110], c[111])
+    const strength = at(c, [113, 114], level)
+    return { target, withTarget: piece(strings, key, { strength, target, withoutTarget: !target }), noTarget: piece(strings, key, { strength, withoutTarget: true }) }
+}
+
 // tidy spaces; capital first letter, except after the Ⓜ mark (the game writes "Ⓜ while Pierce...", "Ⓜ a skill...")
-const finish = (s, mark) => { s = s.replace(/ {2,}/g, " ").replace(/ ,/g, ",").trim(); return mark ? mark + s : s.charAt(0).toUpperCase() + s.slice(1) }
+// (an element icon always has a space before it on the page: "increase ⟨Water⟩ unit's", even where the piece has none)
+const finish = (s, mark) => { s = s.replace(/([A-Za-z])⟨/g, "$1 ⟨").replace(/ {2,}/g, " ").replace(/ ,/g, ",").trim(); return mark ? mark + s : s.charAt(0).toUpperCase() + s.slice(1) }
 
 /**
  * A whole ability (its lines) in the game's words at its lowest or highest level (abilities: first / sixth Mana node;
@@ -401,7 +423,12 @@ function abilityText(lines, level, strings, codes) {
         const p = group[0]
         let body = group[0].effect
         // the game writes " & " before a number ("& + 4 % to attack") and "&" before words ("&Power Flip damage", "&for 3 second(s)")
-        for (let k = 1; k < group.length; k++) body += (group[k].hasTarget && !group[k].timed ? " & " : "&") + group[k].effect
+        for (let k = 1; k < group.length; k++) {
+            const g = group[k], prev = group[k - 1]
+            const text = g.summary && prev.summary && g.targetText === prev.targetText ? g.effectNoTarget : g.effect
+            // " & " before a number or an effect with a target, "&" before other words and timed effects
+            body += ((g.hasTarget || /^[+\-]/.test(text)) && !g.timed ? " & " : "&") + text
+        }
         // "when a battle starts," is only written for one-off effects ("When a battle starts, + 50 % to Skill Gauge...")
         const head = p.battleStart && !group.some(g => g.oneOff) ? p.condHead : p.head
         return finish(head + body, p.mark)

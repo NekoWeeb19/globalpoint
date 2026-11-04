@@ -413,7 +413,11 @@ async function checkEdit(edit, advanced = false) {
     if (edit.leader) out.leader = edit.leader.lines.map(withText)
     // each whole ability in the game's words (lines with the same trigger joined with "&", as the unit page shows them)
     const whole = ls => { try { return { low: TEXT.abilityText(ls.map(pad), "low", cat.strings, CODES), high: TEXT.abilityText(ls.map(pad), "high", cat.strings, CODES) } } catch { return null } }
-    out.texts = { abilities: (edit.abilities ?? []).map(a => whole(a.lines)), leader: edit.leader ? whole(edit.leader.lines) : null }
+    // a leader line's awakening tag (leader column 1, here column 3): 0 always, 1 only before awakening, 2 only after
+    const wholeLeader = ls => { try { return {
+        low: TEXT.abilityText(ls.map(pad).filter(c => c[3] !== "2"), "low", cat.strings, CODES),
+        high: TEXT.abilityText(ls.map(pad).filter(c => c[3] !== "1"), "high", cat.strings, CODES) } } catch { return null } }
+    out.texts = { abilities: (edit.abilities ?? []).map(a => whole(a.lines)), leader: edit.leader ? wholeLeader(edit.leader.lines) : null }
     for (const s of edit.stats ?? []) out.stats.push(Number.isInteger(s.hp) && Number.isInteger(s.atk) && s.hp >= 0 && s.atk >= 0 ? [] : ["HP and ATK must be whole numbers, 0 or more"])
     if (edit.details) {
         const d = edit.details, e = []

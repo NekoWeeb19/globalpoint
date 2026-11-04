@@ -15,6 +15,9 @@ No unit ids change, so saves are never at risk.
     seconds, HP %, who, times (max), cooldown);
   - **Do**: the effect, its target and its numbers (value, duration, max stacks...).
 
+  Leader skill lines also have **Shown**: always, before awakening only, or after awakening only (the game keeps a
+  separate line for each where the numbers change at awakening, e.g. Barrek's "+ 55 %" before and "+ 70 %" after).
+
   Lines can be removed, added, or copied from any other unit. **Reset to game** on an ability gives its own lines back.
 
   Under each ability, **In game** shows it in the unit page's own words, at both ends of its range (first Mana node
