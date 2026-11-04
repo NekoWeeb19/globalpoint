@@ -213,15 +213,17 @@ companion's `files/server/logs/cn_requests.log` (`/cn/crash`, `未找到素材 <
   (element here is 0 fire … 5 dark). Needed to give, level, uncap and stack the unit.
 - `assets/mana_node_cn.json`: both boards, node id → items, mana cost (needed to unlock nodes).
 - Optional: `assets/gacha.json` pools (first in the tier's list, or rescale weights; see Summoning).
+- For a kept unit, all three go in its custom unit file instead (`character`, `manaNodes`, `banners`, with the
+  weights rescaled at start; [../CUSTOM_UNITS.md](../CUSTOM_UNITS.md)): the bundled assets stay as they are.
 
 ### 5. Shipping
 
-- One game update (`scripts/build_cn_patch.cjs`) with the tables and files, numbered far above schedule builds
-  (art patches 1.4.9xx; never on a number a phone's own schedule build could take).
-- The tables the schedule rebuilds (character, character_status, ability, leader_ability, action_skill,
-  encyclopedia, mana_board2_open_condition) must get the unit's rows from the schedule build itself, or they're
-  lost at the next rebuild and a save holding the unit stops loading (C8601). Being built in the follow-up
-  session "Custom units in the CN schedule build".
+- One game update (`scripts/build_cn_patch.cjs`) with the unit's files, numbered far above schedule builds
+  (art patches 1.4.9xx; never on a number a phone's own schedule build could take). The research test patches
+  also carried the tables; a kept unit's update carries files only (`clone_cn_unit.cjs` → `art_files.json`).
+- The table rows go in `assets/custom_units/<id>.json`: every schedule build adds them to all 19 tables it then
+  ships, so a rebuild never drops them (before, the 7 tables the schedule rebuilds lost them and a save holding
+  the unit stopped loading, C8601). See [../CUSTOM_UNITS.md](../CUSTOM_UNITS.md).
 - Phones get it like any update (Wi-Fi copy with game updates ticked).
 
 ### 6. Error codes met on the way
