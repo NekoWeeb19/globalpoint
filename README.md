@@ -328,8 +328,8 @@ The server's date decides how units play, the way they did on that date.
   others) are mostly left as they are for that reason; Deep-Sea Princess Amelia is the exception,
   with her old abilities, leader skill, class and stats but today's skill.
 
-The units and their dates are in `assets/kit_dates.json`. The same file can change a unit for good (a stage
-that never ends): see [Changing an existing unit](docs/CUSTOM_UNITS.md#changing-an-existing-unit).
+The units and their dates are in `assets/kit_dates.json`. To change a unit for good, see
+[Changing an existing unit](docs/CUSTOM_UNITS.md#changing-an-existing-unit).
 
 ## What works
 

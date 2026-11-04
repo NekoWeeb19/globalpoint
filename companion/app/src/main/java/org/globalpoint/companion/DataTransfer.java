@@ -515,7 +515,7 @@ final class DataTransfer {
 
     private static final int THREADS = 6;
 
-    /** Custom units (docs/CUSTOM_UNITS.md): the phone's server reads them from here (companion-main.js). */
+    /** Custom units and changes to existing units (docs/CUSTOM_UNITS.md): the phone's server reads them from here (companion-main.js). */
     private static final String CUSTOM_UNITS = ".cdn/custom_units";
 
     /**
@@ -526,9 +526,12 @@ final class DataTransfer {
         java.util.Set<String> sent = new java.util.HashSet<>();
         for (String[] f : files) if (f[0].startsWith(CUSTOM_UNITS + "/")) sent.add(f[0]);
         if (!sent.contains(CUSTOM_UNITS + "/_units.json")) return;
-        File[] here = new File(data, CUSTOM_UNITS).listFiles();
-        if (here != null) for (File f : here) {
-            if (f.isFile() && f.getName().endsWith(".json") && !sent.contains(CUSTOM_UNITS + "/" + f.getName())) f.delete();
+        // the unit files, and the changes to existing units (changes/)
+        for (String folder : new String[]{CUSTOM_UNITS, CUSTOM_UNITS + "/changes"}) {
+            File[] here = new File(data, folder).listFiles();
+            if (here != null) for (File f : here) {
+                if (f.isFile() && f.getName().endsWith(".json") && !sent.contains(folder + "/" + f.getName())) f.delete();
+            }
         }
     }
 

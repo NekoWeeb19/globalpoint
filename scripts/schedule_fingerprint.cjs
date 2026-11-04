@@ -25,7 +25,8 @@ function scheduleFingerprint(dataDir) {
         .map(key => [key, Array.isArray(campaigns[key]) ? [...campaigns[key]].map(String).sort() : []])
     // custom units (assets/custom_units, scripts/custom_units.cjs): a unit added or changed needs its rows shipped
     // (only counted when there are any, so installs without custom units keep their fingerprint)
-    const custom = require("./custom_units.cjs").readCustomUnits().fingerprint
+    const CU = require("./custom_units.cjs")
+    const custom = [CU.readCustomUnits().fingerprint, CU.readUnitChanges().fingerprint].filter(Boolean).join(",")
     // and the kit rows (assets/kit_dates.json): an edited row ships at the next start, not only when a date passes
     let kits = ""
     try { kits = crypto.createHash("sha1").update(fs.readFileSync(path.join(__dirname, "..", "assets", "kit_dates.json"))).digest("hex") } catch { }

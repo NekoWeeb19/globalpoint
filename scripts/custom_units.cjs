@@ -17,6 +17,12 @@
 // name ("master/character/character.orderedmap"). Rows nest like the table: a string is a row's text, an
 // object a map of rows (e.g. character_status "<id>": { "1": ..., "10": ... }). JSON puts number-like keys
 // in ascending order; the game looks rows up by key, so order doesn't matter.
+//
+// Changes to units the game already has go in <folder>/changes/*.json (readUnitChanges), always applied on top
+// of the game's rows (and of any balance-by-date stage, assets/kit_dates.json):
+//   { "111069": { "name": "Haruhi: my changes", "rows": {
+//       "upload/5c/6a4f0e2ceb1dbcf60f9b306b0f7bfd0eca55c9#111069/80": { "cols": { "0": 3000 } },   // some columns
+//       "master/ability/ability.orderedmap#1110691": "<the whole row>" } } }                      // a whole row
 const fs = require("fs")
 const path = require("path")
 const crypto = require("crypto")
@@ -98,6 +104,39 @@ function readCustomUnits(dir = customUnitsDir()) {
     return { units, problems, fingerprint: units.length || problems.length ? hash.digest("hex") : "" }
 }
 
+/**
+ * The changes to existing units (<folder>/changes/*.json, sorted by name; a later file wins for the same row):
+ * stored table path -> row key ("/"-joined for nested tables) -> whole row text or { cols: { <index>: value } }.
+ */
+function readUnitChanges(dir = customUnitsDir()) {
+    const folder = path.join(dir, "changes")
+    const rows = new Map(), problems = [], units = []
+    if (!fs.existsSync(folder)) return { rows, problems, units, fingerprint: "" }
+    const hash = crypto.createHash("sha1")
+    for (const name of fs.readdirSync(folder).filter(f => f.endsWith(".json") && !f.startsWith("_")).sort()) {
+        let data
+        try {
+            const text = fs.readFileSync(path.join(folder, name), "utf8")
+            hash.update(name + "\0" + text + "\0")
+            data = JSON.parse(text)
+        } catch (e) { problems.push(`changes/${name}: ${e.message}`); continue }
+        for (const [unit, entry] of Object.entries(data ?? {})) {
+            if (unit.startsWith("_")) continue
+            if (!entry || typeof entry.rows !== "object") { problems.push(`changes/${name}: ${unit} has no rows`); continue }
+            units.push(`${unit}${entry.name ? ` ${entry.name}` : ""}`)
+            for (const [ref, value] of Object.entries(entry.rows)) {
+                const at = ref.indexOf("#")
+                const ok = at > 0 && (typeof value === "string" || (value && typeof value.cols === "object"))
+                if (!ok) { problems.push(`changes/${name}: ${unit}: "${ref}" isn't "<table>#<row key>" with a row or { cols }`); continue }
+                const file = tableFile(ref.slice(0, at))
+                if (!rows.has(file)) rows.set(file, new Map())
+                rows.get(file).set(ref.slice(at + 1), value)
+            }
+        }
+    }
+    return { rows, problems, units, fingerprint: rows.size || problems.length ? hash.digest("hex") : "" }
+}
+
 /** The stored paths of the tables a list of units adds rows to. */
 function unitTables(units) {
     return [...new Set(units.flatMap(u => Object.keys(u.rows).map(tableFile)))].sort()
@@ -144,4 +183,4 @@ function addToGachaPools(gachas, units) {
     return out
 }
 
-module.exports = { customUnitsDir, tableFile, manaNodeId, unitProblems, readCustomUnits, unitTables, toNode, fromNode, addRows, addToGachaPools, MANA_NODE_TABLE, CHARACTER_TABLE }
+module.exports = { customUnitsDir, tableFile, manaNodeId, unitProblems, readCustomUnits, readUnitChanges, unitTables, toNode, fromNode, addRows, addToGachaPools, MANA_NODE_TABLE, CHARACTER_TABLE }

@@ -58,6 +58,21 @@ check("a folder: good units read, broken files listed", read.units.length === 1 
 check("tables a unit touches", CU.unitTables(read.units).length === 19)
 check("no folder: no units, no fingerprint", CU.readCustomUnits(path.join(dir, "none")).fingerprint === "")
 
+// changes to existing units (changes/*.json)
+const STATUS = "upload/5c/6a4f0e2ceb1dbcf60f9b306b0f7bfd0eca55c9"
+fs.mkdirSync(path.join(dir, "changes"))
+fs.writeFileSync(path.join(dir, "changes", "haruhi.json"), JSON.stringify({ "111069": { name: "Haruhi: test", rows: {
+    [`${STATUS}#111069/80`]: { cols: { 0: 3000 } },
+    "master/ability/ability.orderedmap#1110691": "a,whole,row",
+    "no hash here": "x",
+} } }))
+const changes = CU.readUnitChanges(dir)
+check("changes: rows by stored path and by logical name", changes.rows.get(CU.tableFile(STATUS))?.get("111069/80")?.cols?.[0] === 3000
+    && changes.rows.get(CU.tableFile("master/ability/ability.orderedmap"))?.get("1110691") === "a,whole,row", [...changes.rows.keys()])
+check("changes: a bad row name is listed, not thrown", changes.problems.length === 1 && changes.fingerprint !== "", changes.problems)
+check("changes: none, no fingerprint", CU.readUnitChanges(path.join(dir, "none")).fingerprint === "")
+check("changes files aren't read as units", CU.readCustomUnits(dir).units.length === 1)
+
 // the server merges the unit (read at start, so the folder is set before loading)
 fs.rmSync(path.join(dir, "broken.json"))
 process.env.CUSTOM_UNITS_DIR = dir
@@ -80,9 +95,11 @@ const app = Fastify()
 await app.register((await import("../out/routes/companion.js")).default, { prefix: "/companion" })
 const manifest = JSON.parse((await app.inject({ url: "/companion/manifest?save=0&patches=0&images=0&comics=0&schedule=0&game=0" })).body)
 const unitPaths = manifest.files.map(f => f.path).filter(p => p.startsWith(".cdn/custom_units/"))
-check("the Wi-Fi copy lists the unit file and the index", JSON.stringify(unitPaths) === JSON.stringify([".cdn/custom_units/111907.json", ".cdn/custom_units/_units.json"]), unitPaths)
+check("the Wi-Fi copy lists the unit file, the change file and the index", JSON.stringify(unitPaths) === JSON.stringify([".cdn/custom_units/111907.json", ".cdn/custom_units/changes/haruhi.json", ".cdn/custom_units/_units.json"]), unitPaths)
 const index = JSON.parse((await app.inject({ url: "/companion/file?path=.cdn/custom_units/_units.json" })).body)
-check("the index names every unit file", JSON.stringify(index.units) === JSON.stringify(["111907.json"]), index)
+check("the index names every unit and change file", JSON.stringify(index) === JSON.stringify({ units: ["111907.json"], changes: ["haruhi.json"] }), index)
+check("the change file is sent", (await app.inject({ url: "/companion/file?path=.cdn/custom_units/changes/haruhi.json" })).statusCode === 200)
+fs.rmSync(path.join(dir, "changes"), { recursive: true })
 const sentUnit = (await app.inject({ url: "/companion/file?path=.cdn/custom_units/111907.json" })).body
 check("the unit file is sent as it is", sentUnit === fs.readFileSync(path.join(dir, "111907.json"), "utf8"))
 fs.rmSync(path.join(dir, "111907.json"))

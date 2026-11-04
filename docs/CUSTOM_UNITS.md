@@ -125,23 +125,20 @@ again: the phone deletes unit files the PC no longer has. The art update can sta
 Custom unit files are only for new units: a file that uses a CN unit's id or string id is refused. To change a
 unit the game already has, use one of these two. Both last through every schedule rebuild.
 
-### Its numbers and text (table rows): `assets/kit_dates.json`
+### Its numbers and text (table rows): a change file
 
-This is the file behind [Balance by Date](../README.md#balance-by-date). A stage whose `until` date is far ahead
-(2199) never ends, so its rows always replace the game's own:
+Put a file in `assets/custom_units/changes/` (any name ending in `.json`, e.g. `haruhi.json`):
 
 ```json
-"111069": {
-  "name": "Haruhi: my changes",
-  "stages": [{
-    "until": "2199-12-31 00:00:00",
-    "source": "my edit",
+{
+  "111069": {
+    "name": "Haruhi: my changes",
     "rows": {
       "upload/5c/6a4f0e2ceb1dbcf60f9b306b0f7bfd0eca55c9#111069/80": { "cols": { "0": 3000 } },
       "upload/5c/6a4f0e2ceb1dbcf60f9b306b0f7bfd0eca55c9#111069/100": "3300,850",
       "master/ability/ability.orderedmap#1110691": "<the whole row>"
     }
-  }]
+  }
 }
 ```
 
@@ -153,12 +150,15 @@ This is the file behind [Balance by Date](../README.md#balance-by-date). A stage
   column.
 - **Values** are the whole row's text, or `{ "cols": { "<column>": value } }` to change only some columns of
   the row's first line (the example sets Lv 80 HP to 3000 and keeps ATK).
-- **A unit that already has balance stages** (e.g. Vagner, 111001) uses the earliest stage whose date is still
-  ahead, and only that stage's rows. Add your rows to each of its stages too, or they don't apply until its
-  old stages' dates have passed.
-- **Then restart the server**: an edited `kit_dates.json` makes it rebuild the game update (on a phone, copy
-  from the PC first; the file comes with the companion app's server, so it needs an app built from the edited
-  repository). The build log says `Unit kits before a balance change: N row(s) in <table>`.
+- Changes always apply, on top of the game's rows and of [Balance by Date](../README.md#balance-by-date)'s old
+  kits. Several files can change the same unit; for the same row, the file whose name sorts last wins.
+- **Then restart the server**: it rebuilds the game update with them. The build log says
+  `Unit changes: 2 of 2 row(s) in <table>` (fewer found than listed means a row name doesn't exist).
+- **Phones** get them with **Download from PC**, like custom units (always, whatever is ticked). A change file
+  deleted on the PC is deleted on the phone at the next copy, and the phone's game goes back to the game's own
+  rows after its rebuild.
+- (`assets/kit_dates.json`, the file behind Balance by Date, takes the same row names, with dates. It's part of
+  GlobalPoint itself, so a phone only gets edits to it through a companion app built from the edited copy.)
 - What the game can do is fixed, as for new units: new numbers and combinations of existing ability kinds and
   skill commands, no new mechanics. The server keeps its own copy of a few things (rarity and element in
   `assets/character.json`, Mana Board costs in `assets/mana_node.json`): change those to match if you change

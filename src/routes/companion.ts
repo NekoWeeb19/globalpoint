@@ -13,7 +13,8 @@
 // Paths are where the files go in the companion's data folder (.database/..., .cdn/...), or, under
 // game/, in /sdcard/StarPoint/game/ (game/info.json, the version record, is written last).
 // Custom units (docs/CUSTOM_UNITS.md) always come along: the PC's unit files go to .cdn/custom_units/ (the
-// phone's CUSTOM_UNITS_DIR), with _units.json naming them all, so the phone removes units the PC no longer has.
+// phone's CUSTOM_UNITS_DIR), and changes to existing units to .cdn/custom_units/changes/, with _units.json naming
+// them all, so the phone removes the ones the PC no longer has.
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import { closeSync, createReadStream, existsSync, openSync, readdirSync, readFileSync, readSync, rmSync, statSync, writeFileSync } from "fs"
@@ -75,7 +76,10 @@ function entries(options: Options, snapshot: boolean, notes: string[] = []): Ent
     const unitDir = customUnitsDir()
     const units = existsSync(unitDir) ? readdirSync(unitDir).filter(f => f.endsWith(".json") && !f.startsWith("_")).sort() : []
     for (const name of units) add(list, `.cdn/custom_units/${name}`, path.join(unitDir, name))
-    writeFileSync(CUSTOM_UNITS_INDEX, JSON.stringify({ units }))
+    const changeDir = path.join(unitDir, "changes")
+    const changes = existsSync(changeDir) ? readdirSync(changeDir).filter(f => f.endsWith(".json") && !f.startsWith("_")).sort() : []
+    for (const name of changes) add(list, `.cdn/custom_units/changes/${name}`, path.join(changeDir, name))
+    writeFileSync(CUSTOM_UNITS_INDEX, JSON.stringify({ units, changes }))
     add(list, ".cdn/custom_units/_units.json", CUSTOM_UNITS_INDEX)
     if (options.save) {
         if (snapshot) {
