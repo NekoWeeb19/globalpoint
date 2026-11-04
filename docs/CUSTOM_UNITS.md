@@ -122,20 +122,46 @@ again: the phone deletes unit files the PC no longer has. The art update can sta
 
 ## Adding a unit (details)
 
-1. **Make the unit.** Today the only maker is the clone script (a copy of an existing unit under a new id and
-   string id; edit `SRC`/`NEW` at its top):
+1. **Make the unit**: a unit file (format in [The unit file](#the-unit-file)) plus its files. Nothing after this
+   step cares how they were made. Two ways:
+
+   **a. Copy an existing CN unit** under a new id and string id with the clone script. Set `SRC` (the unit to
+   copy: any CN unit, Haruhi 111069 is only the default) and `NEW` at the top of
+   `scripts/research/clone_cn_unit.cjs`:
 
    ```bash
-   node scripts/research/unit_files.cjs 111069 > files.txt
+   node scripts/research/unit_files.cjs <SRC id> > files.txt
    ```
    ```bash
    node scripts/research/clone_cn_unit.cjs out --files files.txt
    ```
 
-   It writes `out/custom_unit.json` (the unit file) and `out/art_files.json` (its files, no tables).
+   It writes `out/custom_unit.json` (the unit file), `out/art_files.json` (its files, no tables) and the files.
    (`out/files.json` is the old one-off test patch with the tables in it; don't ship that for a kept unit.)
-2. **Build its art update**, numbered well above the schedule builds (memory rule: art patches are
-   1.4.500, 600, 700, 800 so far; custom units use 1.4.9xx, and a phone builds its own schedule numbers):
+   A copy is also a good starting point for a new unit: change its rows and replace its files.
+
+   **b. Make one by hand (or with your own tool).** You need:
+   - **The unit file** with its rows in the 19 tables. The tables, and every column with the client's names,
+     are in the research doc's [checklist](research/new-units.md#checklist-everything-a-custom-unit-needs) and
+     [column appendix](research/new-units.md#appendix-the-19-tables-column-by-column). Every row must
+     use the new id and string id. The Mana Board node ids follow the rule below, in both `manaNodes` and the
+     `mana_node` rows, and `character` must match the character row's rarity.
+   - **The files**, under `character/<string id>/...` with the names and formats the research doc lists
+     ([checklist, part 3](research/new-units.md#3-files-76-most-players-never-see-the-folder-names): pictures at their fixed sizes, AMF3 `.atlas`/`.frame`/`.timeline` that name the new folder inside, MP3
+     voices, the skill script and preview `.battle` files). Each is stored under its hashed name
+     (`scripts/cdn_hash.cjs` `uploadPath(<logical path>, <folder>)`), in the folder the game reads it from
+     (`upload`, `medium_upload` or `android_upload`; the doc says which).
+   - **`art_files.json`** for the art update: `[{ "path": "production/<folder>/ab/cdef…", "from": "<file on this PC>" }, …]`,
+     and the same paths in the unit file's `art.files`.
+
+   What the game can do is fixed: abilities, leader talents and skills must be built from kinds and commands
+   the game already has (new numbers and combinations are fine; new mechanics are not). Mistakes show up
+   clearly: the build and the server name a bad id or node id, a missing file shows as the asset recovery
+   screen with its path in `logs/cn_requests.log`, and a bad row as C8601 (see
+   [Troubleshooting](#troubleshooting)). Every unit tested so far is a copy of Haruhi; a hand-made one hasn't
+   been tried yet.
+2. **Build its art update**, numbered well above the schedule builds (StarPoint's art updates are 1.4.500,
+   600, 700 and 800 so far; custom units use 1.4.9xx, and a phone builds its own schedule numbers):
 
    ```bash
    node scripts/build_cn_patch.cjs 1.4.900 <last version in .cdn/cn_patches/patches.json> out/art_files.json
