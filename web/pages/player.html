@@ -120,8 +120,10 @@
                             <option value="chara">Character</option>
                             <option value="item">Item</option>
                             <option value="equip">Equipment</option>
+                            <option value="beads_paid">Paid beads</option>
+                            <option value="beads_free">Free beads</option>
                         </select>
-                        <input class="my-input" id="typeId" name="typeId" type="number" required />
+                        <input class="my-input" id="typeId" name="typeId" type="number" placeholder="id" required />
                         <span>x</span>
                         <input class="my-input" id="number" name="number" type="number" value="1" required />
                 </div>
@@ -130,6 +132,15 @@
                     Send Mail (in session)
                 </button>
             </form>
+            <script>
+                // beads are currency, not an item: no id, just an amount
+                (function () {
+                    const type = document.getElementById("type"), id = document.getElementById("typeId")
+                    const sync = () => { const beads = type.value.startsWith("beads"); id.hidden = beads; id.required = !beads; id.disabled = beads }
+                    type.addEventListener("change", sync)
+                    sync()
+                })()
+            </script>
             <form
                 class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5"
                 method="get" action="/api/server/removeCharacter"

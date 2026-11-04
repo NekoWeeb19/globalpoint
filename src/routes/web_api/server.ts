@@ -383,15 +383,17 @@ const routes = async (fastify: FastifyInstance) => {
     })
 
     fastify.get("/give", async (request: FastifyRequest, reply: FastifyReply) => {
-        const q = request.query as { playerId: string, type: string, typeId: string, number?: string };
-        if (!q.playerId || !q.type || !q.typeId) return reply.status(400).send({
+        const q = request.query as { playerId: string, type: string, typeId?: string, number?: string };
+        // beads are currency, not an item: no id, just an amount
+        const isBeads = q.type === "beads_paid" || q.type === "beads_free";
+        if (!q.playerId || !q.type || (!q.typeId && !isBeads)) return reply.status(400).send({
             "error": "Bad Request",
             "message": "Invalid query parameters."
         });
         const playerId = parseInt(q.playerId);
-        const typeId = parseInt(q.typeId);
+        const typeId = isBeads ? 0 : parseInt(q.typeId!);
         const number = q.number ? parseInt(q.number) : 1;
-        if (isNaN(playerId) || isNaN(typeId) || isNaN(number)) return reply.status(400).send({
+        if (isNaN(playerId) || isNaN(typeId) || isNaN(number) || (isBeads && number < 1)) return reply.status(400).send({
             "error": "Bad Request",
             "message": "Invalid query parameters."
         });
@@ -421,6 +423,15 @@ const routes = async (fastify: FastifyInstance) => {
                     description: "From Web API",
                     type: MAIL_TYPE.ITEM,
                     type_id: typeId,
+                    number: number
+                })
+                break;
+            case "beads_paid":
+            case "beads_free":
+                SendMail(playerId, {
+                    subject: `${q.type === "beads_paid" ? "Paid" : "Free"} beads * ${number}`,
+                    description: "From Web API",
+                    type: q.type === "beads_paid" ? MAIL_TYPE.PAID_VIRTUAL_MONEY : MAIL_TYPE.FREE_VIRTUAL_MONEY,
                     number: number
                 })
                 break;

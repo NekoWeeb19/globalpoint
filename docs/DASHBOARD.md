@@ -69,7 +69,7 @@ Where two picked campaigns would run at the same time, the longer one runs that 
 works on any regular unit banner open at the time, and skips a year where one of the game's own
 free pull campaigns runs then.
 
-### Give a unit, an item or an armament
+### Give a unit, an item, an armament or beads
 
 ![A player's page: save download and upload, Give](images/dashboard-player.png)
 
@@ -77,7 +77,11 @@ free pull campaigns runs then.
 (armament), type its ID number and the amount, and press **Send Mail (in session)**. It arrives in the player's in-game
 mailbox. The IDs are the game's own (the files in `assets/` list them).
 
-For beads and other basics, see [Paid beads, free mails and drops](#paid-beads-free-mails-and-drops)
+Beads aren't an item, so they have no ID: choose **Paid beads** or **Free beads**, type the amount (the ID box goes
+away) and send. Like every Give mail, it waits only while the server keeps running: claim it before you restart the
+server.
+
+For daily beads and other basics, see [Paid beads, free mails and drops](#paid-beads-free-mails-and-drops)
 below.
 
 The player page also has:
