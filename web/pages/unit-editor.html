@@ -388,7 +388,7 @@
                     if (["trigger_limit", "cooltime", "max_accumulation", "flip_limit", "power_flip_limit"].includes(f) && d.cols.length === 1) {
                         const r = row(label); const i = el("input", INPUT + " w-[96px]"); i.value = c[d.cols[0]]; i.setAttribute("aria-label", label)
                         i.onchange = () => { c[d.cols[0]] = i.value.trim(); refreshSentence(); changed() }
-                        r.appendChild(i); r.appendChild(el("span", "text-sm text-on-surface-variant", "(empty = no limit)")); box.appendChild(r); continue
+                        r.appendChild(i); r.appendChild(el("span", "text-sm text-on-surface-variant", "(empty or (None) = no limit)")); box.appendChild(r); continue
                     }
                     more.push([f, d, label])
                 }

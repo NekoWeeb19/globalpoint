@@ -125,6 +125,9 @@ again: the phone deletes unit files the PC no longer has. The art update can sta
 Custom unit files are only for new units: a file that uses a CN unit's id or string id is refused. To change a
 unit the game already has, use one of these two. Both last through every schedule rebuild.
 
+**Easiest:** the dashboard's **Unit editor** ([UNIT_EDITOR.md](UNIT_EDITOR.md)) edits abilities, leader skills, stats and the
+skill gauge in a form and writes the change file below for you.
+
 ### Its numbers and text (table rows): a change file
 
 Put a file in `assets/custom_units/changes/` (any name ending in `.json`, e.g. `haruhi.json`):
