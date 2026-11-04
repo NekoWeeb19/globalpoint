@@ -502,7 +502,9 @@ For working on GlobalPoint rather than playing it:
 - `scripts/build_kit_*.cjs`, `scripts/kit_dates.cjs`: build and read `assets/kit_dates.json`, the
   old unit kits for [Balance by date](#balance-by-date).
 - `scripts/custom_units.cjs`, `assets/custom_units/`: new units for the CN app from data and files only,
-  kept through every schedule rebuild. See [docs/CUSTOM_UNITS.md](docs/CUSTOM_UNITS.md).
+  kept through every schedule rebuild. See [docs/CUSTOM_UNITS.md](docs/CUSTOM_UNITS.md), and
+  [Getting a custom unit onto your device](docs/CUSTOM_UNITS.md#getting-a-custom-unit-onto-your-device-or-emulator)
+  for each setup.
 - `scripts/client_mod/README.txt`: the game app patches, in order, and how to build the app.
 - `companion/README.md`: the StarPoint Companion app (Node.js on Android), and how to build it.
 
