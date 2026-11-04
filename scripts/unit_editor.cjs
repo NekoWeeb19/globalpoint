@@ -63,6 +63,10 @@ const lines = text => R.splitCsvLines(String(text ?? "").replace(/\n$/, "")).map
 const join = cols => cols.map(R.csvField).join(",")
 const rowText = lineCols => lineCols.map(join).join("\n")
 const leaderToAbility = c => [c[0], "", "", ...c.slice(1)]
+// an armament line (ability_soul: slot, learn level, kind, ...) in the ability layout: slot in column 0, learn level in
+// column 2 (columns the checks and the wording don't read), "true" in column 1 (no Ⓜ), the rest 3 to the right
+const soulToAbility = c => [c[0] ?? "", "true", c[1] ?? "", "0", "", ...c.slice(2)]
+const abilityToSoul = c => [c[0], c[2], ...c.slice(5)]
 const abilityToLeader = c => [c[0], ...c.slice(3)]
 const pad = c => { const out = [...c]; while (out.length < ABILITY_COLUMNS) out.push(""); return out.slice(0, ABILITY_COLUMNS) }
 
@@ -80,9 +84,12 @@ async function catalog() {
     const pairs = { whenWho: new Set(), whileWho: new Set(), trigEffect: new Set(), effectTarget: new Set(), condTrig: new Set() }
     const counts = {} // part:code -> Map(block text -> n)
     const groups = new Set()
+    // armament lines (master/ability/ability_soul) count too: same codes, layout 3 columns to the left
+    const souls = b.soul ?? await gameTable("master/ability/ability_soul.orderedmap").catch(() => ({}))
     const all = [
         ...Object.values(b.ability).flatMap(t => lines(t).map(pad)),
         ...Object.values(b.leader).flatMap(t => lines(t).map(c => pad(leaderToAbility(c)))),
+        ...Object.values(souls).flatMap(t => lines(t).map(c => pad(soulToAbility(c)))),
     ]
     const count = (part, code, cols) => {
         const m = (counts[`${part}:${code}`] ??= new Map()), key = JSON.stringify(cols)
@@ -595,4 +602,7 @@ async function importKits(data) {
     return { imported, refused }
 }
 
-module.exports = { exportKits, importKits, CLASSES, ROLES, MAX_LINES, listUnits, getUnit, checkEdit, checkLine, saveUnit, resetUnit, editorData, unitLines, catalog, leaderToAbility, abilityToLeader, contradictions, _setBase: b => { base = b; catalogCache = null } }
+// shared with the armament editor (scripts/armament_editor.cjs)
+const _internal = { gameTable, lines, rowText, pad, uniqueIds, uniqueName, soulToAbility, abilityToSoul, ABILITY_COLUMNS }
+
+module.exports = { _internal, exportKits, importKits, CLASSES, ROLES, MAX_LINES, listUnits, getUnit, checkEdit, checkLine, saveUnit, resetUnit, editorData, unitLines, catalog, leaderToAbility, abilityToLeader, contradictions, _setBase: b => { base = b; catalogCache = null } }
