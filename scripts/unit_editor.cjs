@@ -74,7 +74,7 @@ async function catalog() {
     if (catalogCache) return catalogCache
     const b = await baseTables()
     const used = { condition: new Set(), whenTrigger: new Set(), whileTrigger: new Set(), whenEffect: new Set(), whileEffect: new Set() }
-    const pairs = { whenWho: new Set(), whileWho: new Set(), trigEffect: new Set(), effectTarget: new Set() }
+    const pairs = { whenWho: new Set(), whileWho: new Set(), trigEffect: new Set(), effectTarget: new Set(), condTrig: new Set() }
     const counts = {} // part:code -> Map(block text -> n)
     const groups = new Set()
     const all = [
@@ -86,7 +86,10 @@ async function catalog() {
         m.set(key, (m.get(key) ?? 0) + 1)
     }
     for (const c of all) {
-        for (const at of CODES.blocks.condition) if (c[at] !== "" && c[at] !== "0") { used.condition.add(c[at]); count("condition", c[at], c.slice(at, at + 7)) }
+        for (const at of CODES.blocks.condition) if (c[at] !== "" && c[at] !== "0") {
+            used.condition.add(c[at]); count("condition", c[at], c.slice(at, at + 7))
+            pairs.condTrig.add(`${c[5]}|${c[5] === "1" ? c[97] : c[5] === "0" ? c[27] : ""}|${c[at]}`)
+        }
         for (const at of [11, 18, 25, 29, 36, 49, 99, 103, 111]) if (c[at] && c[at] !== "(None)") for (const g of c[at].split(",")) groups.add(g)
         if (c[5] === "0") {
             used.whenTrigger.add(c[27]); used.whenEffect.add(c[47])
@@ -235,6 +238,16 @@ function checkLine(c, cat, advanced) {
     for (const x of conds) {
         if (!CODES.condition[x.code]) errors.push(`condition code ${x.code} isn't one the game knows`)
         else if (!cat.used.condition.includes(x.code)) (advanced ? warnings.push({ level: "strong", text: `Untested: the condition "${name("condition", x.code)}" isn't used in the game. May lead to crashes.` }) : errors.push(`the condition "${name("condition", x.code)}" isn't used in the game (advanced mode only)`))
+        else {
+            // the condition with this trigger: CN's units use only some pairs
+            const trig = kind === "1" ? c[97] : kind === "0" ? c[27] : ""
+            const part = kind === "1" ? "whileTrigger" : "whenTrigger"
+            if (!cat.pairs.condTrig.includes(`${kind}|${trig}|${x.code}`)) {
+                const what = `the condition "${name("condition", x.code)}" with "${kind === "2" ? "at battle start" : name(part, trig)}"`
+                if (advanced) warnings.push({ level: "strong", text: `Untested: ${what} isn't used in the game. May lead to crashes.` })
+                else errors.push(`${what} isn't used together in the game (advanced mode only)`)
+            }
+        }
     }
     const trigPart = kind === "1" ? "whileTrigger" : "whenTrigger", effPart = kind === "1" ? "whileEffect" : "whenEffect"
     const trigAt = kind === "1" ? 97 : 27, whoAt = kind === "1" ? 98 : 28, effAt = kind === "1" ? 109 : 47
@@ -275,7 +288,8 @@ function contradictions(c, conds) {
     const pct = (at) => Number(c[at]) / 1000
     if (has("12") && has("186")) out.push(`"in Fever" and "not in Fever" can't both be true`)
     if (c[5] === "1" && c[97] === "4" && has("186")) out.push(`"while in Fever" and the condition "not in Fever" can't both be true`)
-    if (c[5] === "0" && c[27] === "8" && has("12")) { /* "when Fever starts" while in Fever: true at that moment, allowed */ }
+    // "when Fever starts" + "in Fever": no CN unit has it; whether the game already counts as "in Fever" at that moment isn't
+    // known, so it's either always true (redundant) or never (the line never fires). The pair check above flags it.
     if (has("42") && has("46")) out.push(`"this unit is the leader" and "this unit isn't the leader" can't both be true`)
     if (has("202") && has("203")) out.push(`"this unit is a main unit" and "this unit is a unison unit" can't both be true`)
     for (const code of ["43", "3"]) { const g = new Set(group(code)); if (g.size > 1) out.push(`${code === "43" ? "the leader" : "this unit"} can't be ${[...g].join(" and ")} at once`) }
