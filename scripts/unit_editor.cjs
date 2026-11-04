@@ -237,14 +237,14 @@ function checkLine(c, cat, advanced) {
     const conds = CODES.blocks.condition.map(at => ({ at, code: c[at] })).filter(x => x.code !== "" && x.code !== "0")
     for (const x of conds) {
         if (!CODES.condition[x.code]) errors.push(`condition code ${x.code} isn't one the game knows`)
-        else if (!cat.used.condition.includes(x.code)) (advanced ? warnings.push({ level: "strong", text: `Untested: the condition "${name("condition", x.code)}" isn't used in the game. May lead to crashes.` }) : errors.push(`the condition "${name("condition", x.code)}" isn't used in the game (advanced mode only)`))
+        else if (!cat.used.condition.includes(x.code)) (advanced ? warnings.push({ level: "strong", text: `Unused condition "${name("condition", x.code)}": may not work or crash the game.` }) : errors.push(`the condition "${name("condition", x.code)}" isn't used in the game (advanced mode only)`))
         else {
             // the condition with this trigger: CN's units use only some pairs
             const trig = kind === "1" ? c[97] : kind === "0" ? c[27] : ""
             const part = kind === "1" ? "whileTrigger" : "whenTrigger"
             if (!cat.pairs.condTrig.includes(`${kind}|${trig}|${x.code}`)) {
                 const what = `the condition "${name("condition", x.code)}" with "${kind === "2" ? "at battle start" : name(part, trig)}"`
-                if (advanced) warnings.push({ level: "strong", text: `Untested: ${what} isn't used in the game. May lead to crashes.` })
+                if (advanced) warnings.push({ level: "strong", text: `Unused trigger: ${what} isn't used in the game. May not work or crash the game.` })
                 else errors.push(`${what} isn't used together in the game (advanced mode only)`)
             }
         }
@@ -260,7 +260,7 @@ function checkLine(c, cat, advanced) {
             const whoSeen = !fields.trigger_puller || cat.pairs[kind === "1" ? "whileWho" : "whenWho"].includes(`${trig}|${c[whoAt]}`)
             if (!usedTrig || !whoSeen) {
                 const what = !usedTrig ? `the trigger "${name(trigPart, trig)}"` : `"${name(trigPart, trig)}" with who "${name(kind === "1" ? "whileWho" : "whenWho", c[whoAt])}"`
-                if (advanced) warnings.push({ level: "strong", text: `Untested: ${what} isn't used in the game. May lead to crashes.` })
+                if (advanced) warnings.push({ level: "strong", text: `Unused trigger: ${what} isn't used in the game. May not work or crash the game.` })
                 else errors.push(`${what} isn't used in the game (advanced mode only)`)
             }
             if (fields.trigger_puller && !CODES[kind === "1" ? "whileWho" : "whenWho"][c[whoAt]]) errors.push(`"who" code ${c[whoAt]} isn't one the game knows`)
@@ -270,10 +270,12 @@ function checkLine(c, cat, advanced) {
         else {
             const fields = fieldsOf(effPart, eff)
             if (!cat.used[effPart].includes(eff) && !advanced) errors.push(`the effect "${name(effPart, eff)}" isn't used in the game (advanced mode only)`)
-            else if (!cat.used[effPart].includes(eff)) warnings.push({ level: "strong", text: `Untested: the effect "${name(effPart, eff)}" isn't used in the game. May lead to crashes.` })
-            else if (!cat.pairs.trigEffect.includes(`${kind}|${c[trigAt]}|${eff}`)) warnings.push({ level: "notice", text: "The game has not seen this combination before. It may or may not work." })
+            else if (!cat.used[effPart].includes(eff)) warnings.push({ level: "strong", text: `Unused effect "${name(effPart, eff)}": may not work or crash the game.` })
             for (const [f, d] of Object.entries(fields)) if (d.pair && !d.cols.every(i => isNum(c[i]))) errors.push(`${label(f)} must be a number`)
             if (fields.target && !CODES.target[c[fields.target.cols[0]]]) errors.push(`target code ${c[fields.target.cols[0]]} isn't one the game knows`)
+            // "for the unit that triggered it" needs a trigger with a "who" (every CN line with it has one)
+            if (fields.target && c[fields.target.cols[0]] === "7" && !fieldsOf(trigPart, c[trigAt]).trigger_puller)
+                errors.push(`"for the unit that triggered it" needs a trigger with a "who"; "${name(trigPart, c[trigAt])}" has none`)
         }
     }
     errors.push(...contradictions(c, conds))

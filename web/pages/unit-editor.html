@@ -472,8 +472,9 @@
                 const ef = D.parts[p.eff][c[p.effAt]]?.fields ?? {}
                 if (ef.target) {
                     const r = row("For"), tAt = ef.target.cols[0]
-                    const seen = new Set(D.pairs.effectTarget.filter((x) => x.startsWith(`${c[5]}|${c[p.effAt]}|`)).map((x) => x.split("|")[2]))
-                    r.appendChild(select(Object.keys(D.parts.target).map((k) => [k, codeName("target", k) + (seen.has(k) ? "" : " (not seen with this effect)")]), c[tAt], (v) => { c[tAt] = v; refreshSentence(); changed() }, "Target"))
+                    // "the unit that triggered it" only with a trigger that has a "who"
+                    const hasWho = c[5] !== "2" && Boolean(D.parts[p.trig][c[p.trigAt]]?.fields?.trigger_puller)
+                    r.appendChild(select(Object.keys(D.parts.target).filter((k) => k !== "7" || hasWho || k === c[tAt]).map((k) => [k, codeName("target", k)]), c[tAt], (v) => { c[tAt] = v; refreshSentence(); changed() }, "Target"))
                     const tf2 = D.parts.target[c[tAt]]?.fields ?? {}
                     if (tf2.character_groups) r.appendChild(select(groupOptions(), c[tf2.character_groups.cols[0]], (v) => { c[tf2.character_groups.cols[0]] = v; refreshSentence(); changed() }, "Target group"))
                     box.appendChild(r)

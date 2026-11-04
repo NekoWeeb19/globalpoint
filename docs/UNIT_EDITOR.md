@@ -30,14 +30,16 @@ writes ability text itself from the rows, so it always matches), Mana Board cost
 
 ## The guard rails
 
-- **Default mode** offers only what CN's own units use (every CN unit's 4,928 ability and leader lines): their
-  triggers, conditions, condition + trigger pairs and "who" choices. Any effect goes with any trigger; when CN never
-  pairs them, the line shows "The game has not seen this combination before. It may or may not work."
-- **Advanced mode** (tick box) offers every kind the game can read. Anything CN doesn't use shows
-  "Untested: … May lead to crashes."
+- **Default mode** offers only the triggers CN's own units use (every CN unit's 4,928 ability and leader lines):
+  their triggers, conditions, condition + trigger pairs and "who" choices. **Any effect goes with any of these
+  triggers, with no warning**: the game fires the trigger, then applies the effect the same way whatever fired it
+  (tested: "every X seconds" + "combo +", a pair no CN unit has, worked in battle).
+- **Advanced mode** (tick box) offers every kind the game can read. A trigger, condition or effect CN doesn't use shows
+  "Unused trigger / condition / effect: may not work or crash the game." Triggers are what decides whether a line works.
 - **Always refused**: contradictions (a condition that rules out the line's own trigger, e.g. "not in Fever" +
-  "while in Fever"; the leader being two elements; HP above X and below a lower Y), and anything the game can't read
-  (an unknown code, a word where a number belongs). Save stays greyed out until they're fixed.
+  "while in Fever"; the leader being two elements; HP above X and below a lower Y), "for the unit that triggered it" with
+  a trigger that has no "who" (e.g. "every X seconds": nobody triggered it; that target isn't offered then), and
+  anything the game can't read (an unknown code, a word where a number belongs). Save stays greyed out until they're fixed.
 
 If the unit page shows your text, the game read the row. For a new combination, a quick battle shows whether it
 works (the battle code is separate from the description code).

@@ -56,12 +56,16 @@ try {
     const otherEffect = cat.used.whenEffect.find(e => !cat.pairs.trigEffect.includes(`0|${whenLine[27]}|${e}`))
     const notice = [...whenLine]; notice[47] = otherEffect
     const rn = UE.checkLine(notice, cat, false)
-    check("an effect never paired with the trigger: allowed with the 'not seen before' notice", otherEffect !== undefined && rn.errors.length === 0 && rn.warnings.some(w => w.level === "notice"), rn)
+    check("any effect goes with a trigger CN uses, with no warning", otherEffect !== undefined && rn.errors.length === 0 && rn.warnings.length === 0, rn)
+
+    const noWho = [...whenLine]; noWho[27] = "0"; noWho[48] = "7"
+    const rw = UE.checkLine(noWho, cat, true)
+    check("'for the unit that triggered it' with a trigger that has no 'who' is refused, in advanced mode too", rw.errors.some(e => e.includes("unit that triggered it")), rw)
 
     const unusedTrigger = Object.keys(require("../assets/unit_editor/ability_codes.json").whenTrigger).find(k => !cat.used.whenTrigger.includes(k))
     const strong = [...whenLine]; strong[27] = unusedTrigger
     check("a trigger the game never uses: refused by default", UE.checkLine(strong, cat, false).errors.length > 0)
-    check("... and allowed in advanced mode with the strong warning", UE.checkLine(strong, cat, true).warnings.some(w => w.level === "strong"))
+    check("... and allowed in advanced mode with 'Unused trigger ... may not work or crash the game'", UE.checkLine(strong, cat, true).warnings.some(w => w.level === "strong" && w.text.startsWith("Unused trigger")))
 
     const pair = [...whenLine]; pair[13] = "12"
     const rp = UE.checkLine(pair, cat, false)
