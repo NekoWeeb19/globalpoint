@@ -358,5 +358,13 @@
    "43",
    "154"
   ]
+ },
+ "scaledEffects": {
+  "_note": "effects whose value is on the game's base scale (100000 = 1), with the unit to show. Checked against the wiki text of Amelia's leader skill (Fever gauge +1000, combo +5).",
+  "whenEffect": {
+   "213": " Fever gauge points",
+   "226": " combo",
+   "489": " combo"
+  }
  }
 }

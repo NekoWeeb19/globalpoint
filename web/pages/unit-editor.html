@@ -165,7 +165,8 @@
             const HP_CODES = { condition: ["8", "9", "205"], whileTrigger: ["0", "1", "227"], whenTrigger: ["25"] }
             function unitOf(field, part, code) {
                 if (field === "strength" || field === "strength2")
-                    return (D.words.percentEffects[part] ?? []).includes(code) ? { div: 1000, suffix: "%" } : { div: 1, suffix: " (game value)" }
+                    return (D.words.percentEffects[part] ?? []).includes(code) ? { div: 1000, suffix: "%" }
+                        : D.words.scaledEffects[part]?.[code] ? { div: 100000, suffix: D.words.scaledEffects[part][code] } : { div: 1, suffix: " (game value)" }
                 if (field === "frame") return { div: 6000000, suffix: "s" }
                 if (field === "threshold" || field === "start_threshold" || field === "threshold2")
                     return (HP_CODES[part] ?? []).includes(code) ? { div: 1000, suffix: "% HP" } : { div: 100000, suffix: "" }
@@ -193,7 +194,10 @@
                         const g = groupName(c[f.character_groups.cols[0]])
                         s = /\bX\b/.test(s) && !f.threshold ? s.replace(/(element )?\bX\b/, g) : s.replace(/\ban element\b/, g) === s ? `${s} (${g})` : s.replace(/\ban element\b/, g)
                     }
-                    if (f.threshold) { const u = unitOf("threshold", "condition", code); s += ` [${show(c[f.threshold.cols[0]], u)}${u.suffix}]` }
+                    if (code === "2" && f.threshold && f.character_groups) {
+                        const g = groupName(c[f.character_groups.cols[0]]), n = show(c[f.threshold.cols[0]], unitOf("threshold", "condition", code))
+                        s = `${n}+ ${g} units in the party (${g} resonates)`
+                    } else if (f.threshold) { const u = unitOf("threshold", "condition", code); s += ` [${show(c[f.threshold.cols[0]], u)}${u.suffix}]` }
                     bits.push("if " + s)
                 }
                 let s = bits.length ? bits.join(", ") + ": " : ""
@@ -208,7 +212,13 @@
                         tn = /\bX\b/.test(tn) ? tn.replace(/(element )?\bX\b/, g) : `${tn} (${g})`
                     }
                     s += tn
-                    if (tf.threshold && c[tf.threshold.cols[0]] !== "") { const u = unitOf("threshold", p.trig, c[p.trigAt]); s += ` [${pairText(c, tf.threshold.cols, u)}]` }
+                    if (tf.threshold && c[tf.threshold.cols[0]] !== "") {
+                        const u = unitOf("threshold", p.trig, c[p.trigAt])
+                        const n = pairText(c, tf.threshold.cols, u)
+                        if (u.suffix) s += ` [${n}]`
+                        else if (c[5] === "1") s += ` (N = ${n})`
+                        else if (n !== "1") s += ` (every ${n})`
+                    }
                 }
                 const ef = D.parts[p.eff][c[p.effAt]]?.fields ?? {}
                 s += " → " + codeName(p.eff, c[p.effAt])
@@ -360,7 +370,8 @@
                 const more = []
                 for (const [f, d] of Object.entries(fields)) {
                     if (skip.includes(f)) continue
-                    const label = D.words.fields[f] ?? f.replace(/_/g, " ")
+                    let label = D.words.fields[f] ?? f.replace(/_/g, " ")
+                    if (f === "threshold" && (part === "whenTrigger" || part === "whileTrigger")) label = unitOf(f, part, code).suffix ? "HP" : part === "whileTrigger" ? "N" : "every N times"
                     if (d.pair) { const r = row(label); pairInputs(r, c, d.cols, unitOf(f, part, code), label); box.appendChild(r); continue }
                     if (f === "character_groups" && d.cols.length === 1) {
                         const r = row(label); r.appendChild(select(groupOptions(), c[d.cols[0]], (v) => { c[d.cols[0]] = v; refreshSentence(); changed() }, label)); box.appendChild(r); continue
