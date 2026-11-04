@@ -105,6 +105,11 @@ function rebuildCnSchedule() {
         if (cnAgain) { cnAgain = false; rebuildCnSchedule() }
     })
 }
+/** Rebuilds the CN game update now (e.g. after the unit editor saved a change), queued behind a running build. */
+export function rebuildCnUpdate() {
+    rebuildCnSchedule()
+}
+
 /**
  * Keeps the highest CN update version this install has seen (a game's report, an update it built or had
  * on its list) in .database/cn_client_version.json; the next build is numbered above it.

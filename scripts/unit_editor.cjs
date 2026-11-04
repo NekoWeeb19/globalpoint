@@ -1,0 +1,407 @@
+// Unit editor (dashboard page /unit-editor, docs/UNIT_EDITOR.md): reads a unit's ability, leader skill, stats and
+// skill gauge rows, checks edited ability lines against what the CN client can read and what CN's own units use,
+// and saves the edits as a unit change file (<custom units folder>/changes/unit-editor-<id>.json,
+// scripts/custom_units.cjs) or, for a custom unit, into its own file. The CN schedule build then ships them.
+//
+// Ability lines are passed around as arrays of columns in the ability table's layout. Leader lines use the same
+// layout (leaderToAbility/abilityToLeader), so one set of rules covers both. What each column means comes from
+// the client's own parser: assets/unit_editor/ability_codes.json (scripts/research/ability_codes_from_pcode.cjs).
+const fs = require("fs")
+const path = require("path")
+const R = require("./cdn_rows.cjs")
+const CU = require("./custom_units.cjs")
+const { uploadPath } = require("./cdn_hash.cjs")
+
+const CODES = require(path.join(__dirname, "..", "assets", "unit_editor", "ability_codes.json"))
+const WORDS = require(path.join(__dirname, "..", "assets", "unit_editor", "words.json"))
+
+const T = {
+    ability: "master/ability/ability.orderedmap",
+    leader: "master/ability/leader_ability.orderedmap",
+    status: "master/character/character_status.orderedmap",
+    skill: "master/skill/action_skill.orderedmap",
+    character: "master/character/character.orderedmap",
+    text: "master/character/character_text.orderedmap",
+}
+const FILE = Object.fromEntries(Object.entries(T).map(([k, v]) => [k, uploadPath(v)]))
+const STATUS_LEVELS = ["1", "10", "80", "100"]
+const ABILITY_COLUMNS = 126
+const PREFIX = "unit-editor-"
+
+// ---- reading the game's tables ----------------------------------------------------------------------------
+
+/** The game's own copy of a table: the translated (English) one when there is one, else CN's, as the schedule build. */
+async function gameTable(logical) {
+    const file = uploadPath(logical)
+    const dir = require("./cn_archives.cjs").cnTextDir()
+    const list = path.join(dir, "files.json")
+    let from = null
+    try { from = new Map(JSON.parse(fs.readFileSync(list, "utf8")).map(f => [f.path, f.from])).get(file) } catch { }
+    const translated = from && fs.existsSync(from) ? from : path.join(dir, file)
+    let buf = fs.existsSync(translated) ? fs.readFileSync(translated) : null
+    if (!buf) buf = await require("./cn_read.cjs").readCn(logical)
+    if (!buf) throw new Error(`no game table ${logical}`)
+    const out = {}
+    for (const { path: keys, leaf } of R.leaves(R.decodeFile(buf))) out[keys.join("/")] = leaf.text.replace(/\n$/, "")
+    return out
+}
+
+let base = null
+/** The six tables the editor reads, from the game (cached: they only change with a game or translation update). */
+async function baseTables() {
+    if (base) return base
+    const out = {}
+    for (const [k, logical] of Object.entries(T)) out[k] = await gameTable(logical)
+    base = out
+    return base
+}
+
+const lines = text => R.splitCsvLines(String(text ?? "").replace(/\n$/, "")).map(l => R.splitCsv(l))
+const join = cols => cols.map(R.csvField).join(",")
+const rowText = lineCols => lineCols.map(join).join("\n")
+const leaderToAbility = c => [c[0], "", "", ...c.slice(1)]
+const abilityToLeader = c => [c[0], ...c.slice(3)]
+const pad = c => { const out = [...c]; while (out.length < ABILITY_COLUMNS) out.push(""); return out.slice(0, ABILITY_COLUMNS) }
+
+// ---- what CN's own units use (the guard rails) -----------------------------------------------------------
+
+let catalogCache = null
+/**
+ * From every CN ability and leader line: which codes and combinations the game uses, a template line for each
+ * trigger and effect code (its most common column values), and the values seen in "group" columns.
+ */
+async function catalog() {
+    if (catalogCache) return catalogCache
+    const b = await baseTables()
+    const used = { condition: new Set(), whenTrigger: new Set(), whileTrigger: new Set(), whenEffect: new Set(), whileEffect: new Set() }
+    const pairs = { whenWho: new Set(), whileWho: new Set(), trigEffect: new Set(), effectTarget: new Set() }
+    const counts = {} // part:code -> Map(block text -> n)
+    const groups = new Set()
+    const all = [
+        ...Object.values(b.ability).flatMap(t => lines(t).map(pad)),
+        ...Object.values(b.leader).flatMap(t => lines(t).map(c => pad(leaderToAbility(c)))),
+    ]
+    const count = (part, code, cols) => {
+        const m = (counts[`${part}:${code}`] ??= new Map()), key = JSON.stringify(cols)
+        m.set(key, (m.get(key) ?? 0) + 1)
+    }
+    for (const c of all) {
+        for (const at of CODES.blocks.condition) if (c[at] !== "" && c[at] !== "0") { used.condition.add(c[at]); count("condition", c[at], c.slice(at, at + 7)) }
+        for (const at of [11, 18, 25, 29, 36, 49, 99, 103, 111]) if (c[at] && c[at] !== "(None)") for (const g of c[at].split(",")) groups.add(g)
+        if (c[5] === "0") {
+            used.whenTrigger.add(c[27]); used.whenEffect.add(c[47])
+            pairs.whenWho.add(`${c[27]}|${c[28]}`); pairs.trigEffect.add(`0|${c[27]}|${c[47]}`); pairs.effectTarget.add(`0|${c[47]}|${c[48]}`)
+            count("whenTrigger", c[27], c.slice(27, 47)); count("whenEffect", c[47], c.slice(47, 85))
+        } else if (c[5] === "1") {
+            used.whileTrigger.add(c[97]); used.whileEffect.add(c[109])
+            pairs.whileWho.add(`${c[97]}|${c[98]}`); pairs.trigEffect.add(`1|${c[97]}|${c[109]}`); pairs.effectTarget.add(`1|${c[109]}|${c[110]}`)
+            count("whileTrigger", c[97], c.slice(85, 109)); count("whileEffect", c[109], c.slice(109, ABILITY_COLUMNS))
+        }
+    }
+    const templates = {}
+    for (const [k, m] of Object.entries(counts)) templates[k] = JSON.parse([...m.entries()].sort((x, y) => y[1] - x[1])[0][0])
+    catalogCache = {
+        used: Object.fromEntries(Object.entries(used).map(([k, v]) => [k, [...v].sort((a, b) => a - b)])),
+        pairs: Object.fromEntries(Object.entries(pairs).map(([k, v]) => [k, [...v]])),
+        templates, groups: [...groups].sort(), lines: all.length,
+    }
+    return catalogCache
+}
+
+// ---- units -------------------------------------------------------------------------------------------------
+
+const ELEMENTS = ["Fire", "Water", "Thunder", "Wind", "Light", "Dark"]
+
+/** Every unit: CN's and the custom units. */
+async function listUnits() {
+    const b = await baseTables()
+    const edited = new Set(editorFiles().map(f => f.id))
+    const out = []
+    for (const [id, text] of Object.entries(b.character)) {
+        if (id.includes("/")) continue
+        const c = lines(text)[0], t = lines(b.text[id] ?? "")[0] ?? []
+        if (!b.ability[`${id}1`] && !b.leader[id]) continue
+        out.push({ id, name: t[0] || c[0], title: t[3] ?? "", rarity: Number(c[2]), element: ELEMENTS[Number(c[3])] ?? "", custom: false, edited: edited.has(id) })
+    }
+    for (const unit of CU.readCustomUnits().units) out.push({ id: unit.id, name: unit.name, title: "custom unit", rarity: unit.character?.rarity, element: ELEMENTS[unit.character?.element] ?? "", custom: true, edited: false })
+    return out.sort((a, b) => a.name.localeCompare(b.name))
+}
+
+function editorFiles() {
+    const dir = path.join(CU.customUnitsDir(), "changes")
+    if (!fs.existsSync(dir)) return []
+    return fs.readdirSync(dir).filter(f => f.startsWith(PREFIX) && f.endsWith(".json")).map(f => ({ id: f.slice(PREFIX.length, -5), file: path.join(dir, f) }))
+}
+const editorFile = id => path.join(CU.customUnitsDir(), "changes", `${PREFIX}${id}.json`)
+
+/** A custom unit's rows of one table (its rows are keyed by logical name or stored path). */
+function customRows(unit, file) {
+    for (const [ref, rows] of Object.entries(unit.rows ?? {})) if (CU.tableFile(ref) === file) return { ref, rows }
+    return { ref: null, rows: {} }
+}
+const flat = (rows, prefix = "") => Object.entries(rows ?? {}).flatMap(([k, v]) => typeof v === "string" ? [[prefix + k, v]] : flat(v, prefix + k + "/"))
+
+/**
+ * A unit's rows as the game will have them: the game's own (or the custom unit file's), with every change file
+ * on top (the editor's own included, so the page shows what's saved). Also the game's own rows, for Reset and
+ * to save only what differs.
+ */
+async function unitRows(id) {
+    const b = await baseTables()
+    const custom = CU.readCustomUnits().units.find(u => u.id === String(id))
+    const own = {}
+    const pick = (k, keys) => {
+        const out = {}
+        if (custom) {
+            const rows = Object.fromEntries(flat(customRows(custom, FILE[k]).rows))
+            for (const key of keys) if (rows[key] !== undefined) out[key] = rows[key]
+        } else for (const key of keys) if (b[k][key] !== undefined) out[key] = b[k][key]
+        return out
+    }
+    const charRow = custom ? Object.fromEntries(flat(customRows(custom, FILE.character).rows))[id] : b.character[id]
+    if (charRow === undefined) return null
+    const skillName = lines(charRow)[0][8]
+    own.ability = pick("ability", [1, 2, 3, 4, 5, 6].map(n => `${id}${n}`))
+    own.leader = pick("leader", [String(id)])
+    own.status = pick("status", STATUS_LEVELS.map(l => `${id}/${l}`))
+    own.skill = pick("skill", [`${skillName}/1`, `${skillName}/2`])
+    const textRow = custom ? Object.fromEntries(flat(customRows(custom, FILE.text).rows))[id] : b.text[id]
+    // change files (all of them, sorted, a later file wins), as the schedule build applies them
+    const current = JSON.parse(JSON.stringify(own))
+    const changes = CU.readUnitChanges()
+    const others = []
+    for (const [k, file] of Object.entries(FILE)) {
+        const rows = changes.rows.get(file)
+        if (!rows || !current[k]) continue
+        for (const [key, value] of rows) {
+            if (current[k][key] === undefined) continue
+            if (typeof value === "string") current[k][key] = value.replace(/\n$/, "")
+            else { const ls = lines(current[k][key]); for (const [i, v] of Object.entries(value.cols ?? {})) ls[0][+i] = String(v); current[k][key] = rowText(ls) }
+        }
+    }
+    const dir = path.join(CU.customUnitsDir(), "changes")
+    if (fs.existsSync(dir)) for (const f of fs.readdirSync(dir).filter(f => f.endsWith(".json") && !f.startsWith(PREFIX) && !f.startsWith("_"))) {
+        try { if (JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"))[id]) others.push(f) } catch { }
+    }
+    let kit = false
+    try { kit = Boolean(JSON.parse(fs.readFileSync(path.join(__dirname, "..", "assets", "kit_dates.json"), "utf8"))[id]) } catch { }
+    return { custom, charRow, textRow, skillName, own, current, others, kit }
+}
+
+/** The page's view of a unit. */
+async function getUnit(id) {
+    id = String(id)
+    const r = await unitRows(id)
+    if (!r) return null
+    const t = lines(r.textRow ?? "")[0] ?? [], c = lines(r.charRow)[0]
+    const abilities = [1, 2, 3, 4, 5, 6].map(n => `${id}${n}`).filter(k => r.current.ability[k] !== undefined)
+        .map((key, i) => ({ key, slot: i + 1, lines: lines(r.current.ability[key]).map(pad), game: lines(r.own.ability[key]).map(pad) }))
+    const leaderKey = id
+    const leader = r.current.leader[leaderKey] === undefined ? null
+        : { key: leaderKey, name: c[18] ?? "", lines: lines(r.current.leader[leaderKey]).map(l => pad(leaderToAbility(l))), game: lines(r.own.leader[leaderKey]).map(l => pad(leaderToAbility(l))) }
+    const stats = STATUS_LEVELS.filter(l => r.current.status[`${id}/${l}`] !== undefined).map(l => {
+        const [hp, atk] = lines(r.current.status[`${id}/${l}`])[0], [ghp, gatk] = lines(r.own.status[`${id}/${l}`])[0]
+        return { level: l, hp: Number(hp), atk: Number(atk), game: { hp: Number(ghp), atk: Number(gatk) } }
+    })
+    const skills = ["1", "2"].filter(n => r.current.skill[`${r.skillName}/${n}`] !== undefined).map(n => {
+        const key = `${r.skillName}/${n}`, s = lines(r.current.skill[key])[0], g = lines(r.own.skill[key])[0]
+        return { key, name: s[0], plus: n === "2", gaugeMin: Number(s[4]), gaugeMax: Number(s[5]), game: { gaugeMin: Number(g[4]), gaugeMax: Number(g[5]) } }
+    })
+    return {
+        id, name: t[0] || c[0], title: t[3] ?? "", element: ELEMENTS[Number(c[3])] ?? "", rarity: Number(c[2]),
+        custom: Boolean(r.custom), saved: fs.existsSync(editorFile(id)), others: r.others, kit: r.kit,
+        abilities, leader, stats, skills,
+    }
+}
+
+// ---- checking -----------------------------------------------------------------------------------------------
+
+const PAIR_FIELDS = ["threshold", "threshold2", "start_threshold", "strength", "strength2", "frame", "number"]
+const isNum = v => v === "" || /^-?\d+(\.\d+)?(E\d+)?$/i.test(String(v)) // 9.999999E11 = "forever" (CN uses it)
+
+/** The fields a code reads, from the client's parser ({} for an unknown code). */
+const fieldsOf = (part, code) => CODES[part]?.[code]?.fields ?? {}
+
+/**
+ * Problems with one line (ability layout). errors: the line is refused (the game can't read it, or it can never
+ * work). warnings: "strong" (a trigger or condition the game never uses; advanced mode only) or "notice" (an
+ * effect CN never pairs with this trigger).
+ */
+function checkLine(c, cat, advanced) {
+    const errors = [], warnings = []
+    const kind = c[5]
+    if (!["0", "1", "2"].includes(kind)) { errors.push(`unknown line kind "${kind}"`); return { errors, warnings } }
+    const conds = CODES.blocks.condition.map(at => ({ at, code: c[at] })).filter(x => x.code !== "" && x.code !== "0")
+    for (const x of conds) {
+        if (!CODES.condition[x.code]) errors.push(`condition code ${x.code} isn't one the game knows`)
+        else if (!cat.used.condition.includes(x.code)) (advanced ? warnings.push({ level: "strong", text: `Untested: the condition "${name("condition", x.code)}" isn't used in the game. May lead to crashes.` }) : errors.push(`the condition "${name("condition", x.code)}" isn't used in the game (advanced mode only)`))
+    }
+    const trigPart = kind === "1" ? "whileTrigger" : "whenTrigger", effPart = kind === "1" ? "whileEffect" : "whenEffect"
+    const trigAt = kind === "1" ? 97 : 27, whoAt = kind === "1" ? 98 : 28, effAt = kind === "1" ? 109 : 47
+    if (kind !== "2") {
+        const trig = c[trigAt], eff = c[effAt]
+        if (!CODES[trigPart][trig]) errors.push(`trigger code ${trig} isn't one the game knows`)
+        else {
+            const fields = fieldsOf(trigPart, trig)
+            const usedTrig = cat.used[trigPart].includes(trig)
+            const whoSeen = !fields.trigger_puller || cat.pairs[kind === "1" ? "whileWho" : "whenWho"].includes(`${trig}|${c[whoAt]}`)
+            if (!usedTrig || !whoSeen) {
+                const what = !usedTrig ? `the trigger "${name(trigPart, trig)}"` : `"${name(trigPart, trig)}" with who "${name(kind === "1" ? "whileWho" : "whenWho", c[whoAt])}"`
+                if (advanced) warnings.push({ level: "strong", text: `Untested: ${what} isn't used in the game. May lead to crashes.` })
+                else errors.push(`${what} isn't used in the game (advanced mode only)`)
+            }
+            if (fields.trigger_puller && !CODES[kind === "1" ? "whileWho" : "whenWho"][c[whoAt]]) errors.push(`"who" code ${c[whoAt]} isn't one the game knows`)
+            for (const [f, d] of Object.entries(fields)) if (d.pair && !d.cols.every(i => isNum(c[i]))) errors.push(`${label(f)} must be a number`)
+        }
+        if (!CODES[effPart][eff]) errors.push(`effect code ${eff} isn't one the game knows`)
+        else {
+            const fields = fieldsOf(effPart, eff)
+            if (!cat.used[effPart].includes(eff) && !advanced) errors.push(`the effect "${name(effPart, eff)}" isn't used in the game (advanced mode only)`)
+            else if (!cat.used[effPart].includes(eff)) warnings.push({ level: "strong", text: `Untested: the effect "${name(effPart, eff)}" isn't used in the game. May lead to crashes.` })
+            else if (!cat.pairs.trigEffect.includes(`${kind}|${c[trigAt]}|${eff}`)) warnings.push({ level: "notice", text: "The game has not seen this combination before. It may or may not work." })
+            for (const [f, d] of Object.entries(fields)) if (d.pair && !d.cols.every(i => isNum(c[i]))) errors.push(`${label(f)} must be a number`)
+            if (fields.target && !CODES.target[c[fields.target.cols[0]]]) errors.push(`target code ${c[fields.target.cols[0]]} isn't one the game knows`)
+        }
+    }
+    errors.push(...contradictions(c, conds))
+    return { errors, warnings }
+}
+
+/** Conditions that rule each other or the line's own trigger out: such a line could never do anything. */
+function contradictions(c, conds) {
+    const out = []
+    const has = code => conds.some(x => x.code === code)
+    const group = code => conds.filter(x => x.code === code).map(x => c[x.at + 5])
+    const pct = (at) => Number(c[at]) / 1000
+    if (has("12") && has("186")) out.push(`"in Fever" and "not in Fever" can't both be true`)
+    if (c[5] === "1" && c[97] === "4" && has("186")) out.push(`"while in Fever" and the condition "not in Fever" can't both be true`)
+    if (c[5] === "0" && c[27] === "8" && has("12")) { /* "when Fever starts" while in Fever: true at that moment, allowed */ }
+    if (has("42") && has("46")) out.push(`"this unit is the leader" and "this unit isn't the leader" can't both be true`)
+    if (has("202") && has("203")) out.push(`"this unit is a main unit" and "this unit is a unison unit" can't both be true`)
+    for (const code of ["43", "3"]) { const g = new Set(group(code)); if (g.size > 1) out.push(`${code === "43" ? "the leader" : "this unit"} can't be ${[...g].join(" and ")} at once`) }
+    // HP: at or above X and at or below / below Y with Y < X
+    const highs = conds.filter(x => x.code === "8").map(x => pct(x.at + 3))
+    const lows = conds.filter(x => x.code === "9" || x.code === "205").map(x => pct(x.at + 3))
+    if (c[5] === "1" && c[97] === "0") highs.push(pct(100))
+    if (c[5] === "1" && (c[97] === "1" || c[97] === "227")) lows.push(pct(100))
+    if (highs.length && lows.length && Math.max(...highs) > Math.min(...lows)) out.push(`HP can't be at or above ${Math.max(...highs)}% and below ${Math.min(...lows)}% at once`)
+    return out
+}
+
+const name = (part, code) => {
+    if (WORDS[part]?.[code]) return WORDS[part][code]
+    const client = CODES[part]?.[code]?.name ?? String(code)
+    // "when" effects 0-31 (ConditionAttackPoint, ...) are the timed versions of the plain ones
+    if (part === "whenEffect" && /^Condition[A-Z]/.test(client) && Number(code) < 32) return humanize(client.slice(9)) + " (timed)"
+    return humanize(client)
+}
+const label = f => WORDS.fields?.[f] ?? f.replace(/_/g, " ")
+const humanize = s => String(s).replace(/([a-z0-9])([A-Z])/g, "$1 $2").toLowerCase()
+
+/** Checks a whole edit (the page sends it on every change and before saving). */
+async function checkEdit(edit, advanced = false) {
+    const cat = await catalog()
+    const out = { abilities: [], leader: [], stats: [], skills: [], ok: true }
+    for (const a of edit.abilities ?? []) out.abilities.push(a.lines.map(l => checkLine(pad(l), cat, advanced)))
+    if (edit.leader) out.leader = edit.leader.lines.map(l => checkLine(pad(l), cat, advanced))
+    for (const s of edit.stats ?? []) out.stats.push(Number.isInteger(s.hp) && Number.isInteger(s.atk) && s.hp >= 0 && s.atk >= 0 ? [] : ["HP and ATK must be whole numbers, 0 or more"])
+    for (const s of edit.skills ?? []) out.skills.push(Number.isInteger(s.gaugeMin) && Number.isInteger(s.gaugeMax) && s.gaugeMin > 0 && s.gaugeMax > 0 ? [] : ["the skill gauge must be whole numbers above 0"])
+    const lineErrors = [...out.abilities.flat(), ...out.leader].some(r => r.errors.length > 0)
+    out.ok = !lineErrors && [...out.stats, ...out.skills].every(e => e.length === 0)
+    return out
+}
+
+// ---- saving -------------------------------------------------------------------------------------------------
+
+/**
+ * Saves an edit. Only rows that differ from the game's own are written. CN unit: changes/unit-editor-<id>.json
+ * (whole rows for abilities and the leader skill, changed columns for stats and the skill gauge); custom unit:
+ * its own file. Returns { file, rows } or { errors }.
+ */
+async function saveUnit(id, edit, advanced = false) {
+    id = String(id)
+    const check = await checkEdit(edit, advanced)
+    if (!check.ok) return { errors: check }
+    const r = await unitRows(id)
+    if (!r) return { errors: { message: `no unit ${id}` } }
+    const rows = {} // "<logical table>#<key>" -> row text | { cols }
+    for (const a of edit.abilities ?? []) {
+        if (r.own.ability[a.key] === undefined) continue
+        const text = rowText(a.lines.map(l => trimRow(pad(l), lines(r.own.ability[a.key])[0].length)))
+        if (text !== r.own.ability[a.key]) rows[`${T.ability}#${a.key}`] = text
+    }
+    if (edit.leader && r.own.leader[edit.leader.key] !== undefined) {
+        const width = lines(r.own.leader[edit.leader.key])[0].length
+        const text = rowText(edit.leader.lines.map(l => abilityToLeader(pad(l)).slice(0, width)))
+        if (text !== r.own.leader[edit.leader.key]) rows[`${T.leader}#${edit.leader.key}`] = text
+    }
+    for (const s of edit.stats ?? []) {
+        const key = `${id}/${s.level}`
+        if (r.own.status[key] === undefined) continue
+        const text = `${s.hp},${s.atk}`
+        if (text !== r.own.status[key]) rows[`${T.status}#${key}`] = text
+    }
+    for (const s of edit.skills ?? []) {
+        if (r.own.skill[s.key] === undefined) continue
+        const g = lines(r.own.skill[s.key])[0]
+        const cols = {}
+        if (String(s.gaugeMin) !== g[4]) cols[4] = String(s.gaugeMin)
+        if (String(s.gaugeMax) !== g[5]) cols[5] = String(s.gaugeMax)
+        if (Object.keys(cols).length) rows[`${T.skill}#${s.key}`] = { cols }
+    }
+    if (r.custom) return saveCustom(r.custom, rows, edit)
+    const file = editorFile(id)
+    if (Object.keys(rows).length === 0) { if (fs.existsSync(file)) fs.unlinkSync(file); return { file: null, rows: 0 } }
+    const unitName = (await getUnit(id))?.name ?? id
+    fs.mkdirSync(path.dirname(file), { recursive: true })
+    fs.writeFileSync(file, JSON.stringify({ [id]: { name: `Unit editor: ${unitName}`, rows } }, null, 1) + "\n")
+    return { file, rows: Object.keys(rows).length }
+}
+const trimRow = (c, width) => c.slice(0, width)
+
+/** A custom unit's edit goes into its own file (rows replaced in place). */
+function saveCustom(unit, rows, edit) {
+    const data = JSON.parse(fs.readFileSync(unit.file, "utf8"))
+    let n = 0
+    for (const [ref, value] of Object.entries(rows)) {
+        const [logical, key] = ref.split("#")
+        const { ref: tableRef } = customRows(data, uploadPath(logical))
+        if (!tableRef) continue
+        const parts = key.split("/")
+        let node = data.rows[tableRef]
+        for (const p of parts.slice(0, -1)) node = node?.[p]
+        if (!node || node[parts.at(-1)] === undefined) continue
+        if (typeof value === "string") node[parts.at(-1)] = value
+        else { const ls = lines(node[parts.at(-1)]); for (const [i, v] of Object.entries(value.cols)) ls[0][+i] = v; node[parts.at(-1)] = rowText(ls) }
+        n++
+    }
+    fs.writeFileSync(unit.file, JSON.stringify(data, null, 1))
+    return { file: unit.file, rows: n }
+}
+
+/** Takes the editor's changes to a CN unit away (its change file). */
+function resetUnit(id) {
+    const file = editorFile(String(id))
+    if (!fs.existsSync(file)) return false
+    fs.unlinkSync(file)
+    return true
+}
+
+/** Everything the page needs to draw lists and fields: codes with plain words, fields, templates, what CN uses. */
+async function editorData() {
+    const cat = await catalog()
+    const parts = {}
+    for (const part of ["condition", "conditionWho", "whenTrigger", "whenWho", "whileTrigger", "whileWho", "whenEffect", "whileEffect", "target"]) {
+        parts[part] = Object.fromEntries(Object.entries(CODES[part]).map(([code, v]) => [code, { name: name(part, code), client: v.name, fields: v.fields }]))
+    }
+    return { parts, blocks: CODES.blocks, words: WORDS, used: cat.used, pairs: cat.pairs, templates: cat.templates, groups: cat.groups, lines: cat.lines }
+}
+
+/** Another unit's ability lines, to copy one. */
+async function unitLines(id) {
+    const u = await getUnit(id)
+    if (!u) return null
+    return { id: u.id, name: u.name, abilities: u.abilities.map(a => ({ slot: a.slot, lines: a.lines })), leader: u.leader ? u.leader.lines : [] }
+}
+
+module.exports = { listUnits, getUnit, checkEdit, checkLine, saveUnit, resetUnit, editorData, unitLines, catalog, leaderToAbility, abilityToLeader, contradictions, _setBase: b => { base = b; catalogCache = null } }

@@ -30,7 +30,7 @@ X = wind), when 2 (Power Flips), who 5 (any party unit), threshold 10.
 
 Then the line's **effect** (when: col 47, while: col 109) and its **target** (48 / 110). The client has
 687 effect kinds for "when" lines and 422 for "while" lines; CN uses 142 and 35.
-Their codes are in [data/ability_codes.json](data/ability_codes.json) (`instantContent`, `duringContent`),
+Their codes are in [assets/unit_editor/ability_codes.json](../../assets/unit_editor/ability_codes.json) (`instantContent`, `duringContent`),
 not listed here.
 
 **Leader skills use the same codes** for every part (same tables in the client), two columns to the left.
