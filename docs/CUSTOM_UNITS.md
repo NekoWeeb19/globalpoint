@@ -84,13 +84,21 @@ art survive companion updates and save imports).
 ### Removing a unit safely
 
 A save that holds a unit the server or game no longer knows fails with **C8601**. So **first take the unit out
-of every save that has it.** There's no dashboard button for that yet. The ways are:
-- keep the unit (simplest: it does no harm), or
-- go back to a save backup from before you got it (dashboard **Players** > a player > **Download Save**/**Upload Save**; companion
-  **Export save**/**Import save**).
+of every save that has it**, on the server that keeps that save (a phone's own save is on the phone: open the
+dashboard from the companion app):
+
+1. Close the game.
+2. In the dashboard, open **Players** > the player, and under **Remove a unit** type the unit's id and press
+   **Remove from save** (it asks to confirm). Download the save first if you want a copy.
+   It removes the unit with its level, Mana Boards and amity. It also takes it out of your parties (a party
+   left empty gets the hero), the home screen, Favorite Units, Rush and Score Attack records, the item log
+   and unclaimed mail. Armaments and ability souls stay.
+3. Do this for every player that has it.
 
 Then delete `assets/custom_units/<id>.json` on the PC and restart the server. On a phone, copy from the PC
 again: the phone deletes unit files the PC no longer has. The art update can stay.
+
+(Keeping the unit is also fine: it does no harm.)
 
 ### Troubleshooting
 

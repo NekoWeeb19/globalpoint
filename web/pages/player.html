@@ -122,6 +122,21 @@
             </form>
             <form
                 class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5"
+                method="get" action="/api/server/removeCharacter"
+                onsubmit="return confirm('Remove unit ' + this.characterId.value + ' from this save? Its level, Mana Boards and party places go with it. This can't be undone (download the save first to keep a copy).')">
+                <h3 class="text-xl text-on-background font-semibold mt-2">Remove a unit</h3>
+                <p class="text-on-surface-variant text-center">Takes a unit out of this save, e.g. before deleting a custom unit. Close the game first, then reopen it.</p>
+                <div class="flex flex-row items-center justify-center">
+                    <input name="playerId" value="{{playerId}}" type="hidden" />
+                    <input class="my-input" id="removeCharacterId" name="characterId" type="number" placeholder="unit id" required />
+                </div>
+                <button type="submit"
+                    class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity">
+                    Remove from save
+                </button>
+            </form>
+            <form
+                class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5"
                 method="get" action="/api/server/activeMission">
                 <h3 class="text-xl text-on-background font-semibold mt-2">Active missions (testing)</h3>
                 <p class="text-on-surface-variant text-center">Unlock a mission's reward, then restart the game and claim it from the missions screen.</p>
