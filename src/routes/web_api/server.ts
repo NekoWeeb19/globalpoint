@@ -18,6 +18,7 @@ import { withRealTimeOfDay } from "../../lib/serverClock";
 import { deleteNews, listNews, NEWS_CATEGORIES, saveNews } from "../../nya/news";
 import { DROP_MULTIPLIER_MAX, DROP_MULTIPLIER_MIN, getDropMultiplier, setDropMultiplier } from "../../nya/dropSettings";
 import { DEFAULT_GACHA_RATES, getGachaRates, resetGachaRates, setGachaRates } from "../../nya/gachaRates";
+import { ENEMY_MULTIPLIER_MAX, ENEMY_MULTIPLIER_MIN, getEnemyScaling, setEnemyScaling } from "../../nya/enemySettings";
 import { lanAddresses } from "../../nya/coop";
 import { getServerSettings, setServerSettings } from "../../nya/serverSettings";
 import { DEFAULT_MESSAGE, deleteMailSchedule, MAIL_DAYS, mailScheduleStatus, saveMailSchedule } from "../../nya/mailSchedule";
@@ -110,6 +111,20 @@ const routes = async (fastify: FastifyInstance) => {
             return reply.status(400).send({ error: "Bad Request", message: (error as Error).message })
         }
         return reply.send(dropsReply())
+    })
+
+    // ---- enemy strength (src/nya/enemySettings.ts): HP and attack multipliers in the CN update ----
+
+    const enemiesReply = (extra = {}) => ({ ...getEnemyScaling(), min: ENEMY_MULTIPLIER_MIN, max: ENEMY_MULTIPLIER_MAX, ...extra })
+    fastify.get("/enemies", async (_: FastifyRequest, reply: FastifyReply) => reply.send(enemiesReply()))
+    fastify.post("/enemies", async (request: FastifyRequest, reply: FastifyReply) => {
+        const body = request.body as { hp?: unknown, atk?: unknown } | undefined
+        try {
+            const saved = setEnemyScaling(Number(body?.hp), Number(body?.atk))
+            return reply.send(enemiesReply({ rebuilding: saved.rebuilding }))
+        } catch (error) {
+            return reply.status(400).send({ error: "Bad Request", message: (error as Error).message })
+        }
     })
 
     // ---- summon rates by rarity (src/nya/gachaRates.ts) ----

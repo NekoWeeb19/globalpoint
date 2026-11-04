@@ -142,6 +142,15 @@ First tab (**Dashboard**):
 - **Quest drop amount:** 1x (the default) is the base game's own amounts. Original StarPoint gave
   10x. Pick a preset or type any value from 1x to 100x, then **Save**. It applies from the next
   quest you finish.
+- **Enemy strength:** multiplies every enemy's HP and attack (regular enemies, bosses and what bosses
+  summon; breakable blocks stay as they are) in every quest, main story included. 1x is the base game;
+  0.1x to 10x, separately for HP and attack. Saving rebuilds the CN game update: close and reopen the
+  game to get it (phones and Wi-Fi copies rebuild at their next start). How it works: each enemy's row
+  in `boss_level`, `zako_level` and `funnel_level` has an HP and an attack correction that the client
+  multiplies into its numbers (`scripts/enemy_scaling.cjs`). Tested on the emulator (2026-11-04):
+  Scorched Grizzly Inter. with a weak auto-play party cleared in 1:58 (SS) at HP 0.1x and 4:32 (A) at 1x
+  (boss fights have scripted phases, so clear time doesn't shrink by the full factor); at HP and attack
+  10x the whole party was down in 40 seconds with the boss bar still full (at 1x they had 79-93% HP then).
 - **Paid beads with each daily login bonus:** added once a day on top of the login bonus's own
   rewards (150 by default; 0 turns it off).
 - **Never-ending mails:** Bread x1500, Mana x1500 and EXP x1500 sit in the mailbox and can be

@@ -303,6 +303,8 @@ gotchas are in the [dashboard guide](docs/DASHBOARD.md).
   - **Quest drop amount:** multiplies quest drops (items, materials, mana, EXP) and event drops, from
     1x up to 100x. The default, 1x, is the base game's own amounts.
     Original StarPoint always gave 10x; set 10 to match it, or go higher for less grind.
+  - **Enemy strength:** multiplies every enemy's HP and attack (0.1x to 10x each) for a harder or easier
+    game; the game gets a small update the next time it reaches the title screen.
   - **Play on a phone over Wi-Fi:** downloads the `server.txt` connection file for setup D (shown
     when the server listens on the network).
   - **Daily paid beads and free mails:** the paid beads added to each daily login bonus (150 by
