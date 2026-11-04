@@ -72,7 +72,7 @@ function entries(options: Options, snapshot: boolean, notes: string[] = []): Ent
             getDatabase(Database.WDFP_DATA).exec(`VACUUM INTO '${SAVE_SNAPSHOT.replace(/'/g, "''")}'`)
         }
         add(list, ".database/wdfp_data.db", SAVE_SNAPSHOT)
-        for (const name of ["wdfp_data.db.version", "active_accounts.json", "account_claim.json", "server_time.json", "drop_settings.json", "server_settings.json"]) {
+        for (const name of ["wdfp_data.db.version", "active_accounts.json", "account_claim.json", "server_time.json", "drop_settings.json", "server_settings.json", "gacha_rates.json"]) {
             add(list, `.database/${name}`, path.join(databaseDir(), name))
         }
     }

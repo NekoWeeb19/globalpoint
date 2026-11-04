@@ -10,42 +10,10 @@ import { PlayerBoxGachaDrawnReward } from "../data/types";
 import { givePlayerCharacterSync } from "./character";
 import { givePlayerEquipmentSync } from "./equipment";
 import { givePlayerRewardsSync } from "./quest";
+import { rankRatesFor } from "../nya/gachaRates";
 import { BoxGachaBox, BoxGachaDrawResult, BoxGachaIdReward, BoxGachaRewardTier, BoxGachaRewardType, CharacterGacha, CharacterReward, CurrencyReward, EquipmentItemReward, Gacha, GachaCharacterDraw, GachaDrawResult, GachaDraws, GachaMovieSeeds, GachaMovieType, GachaType, PlayerRewardResult, Reward, RewardPlayerGachaDrawResult, RewardType } from "./types";
 
-const characterGachaRankRates = {
-    normal: [
-        75, // 5*
-        250,  // 4*
-        675 // 3*
-    ],
-    multiGuarantee: [
-        75, // 5*
-        925 // 4*
-    ]
-}
-const rateUpCharacterGachaRates = {
-    normal: [
-        50, // 5*
-        250, // 4*,
-        700, // 3*
-    ],
-    multiGuarantee: [
-        50, // 5*
-        950 // 4*
-    ],
-}
-
-const equipmentGachaRankRates = {
-    normal: [
-        50,  // 5*
-        250, // 4*
-        700  // 3*
-    ],
-    multiGuarantee: [
-        50, // 5*
-        950 // 4*
-    ]
-}
+// summon rates by rarity: the dashboard's setting (src/nya/gachaRates.ts), the base game's by default
 
 const rankMovieRates = [
     [ // 5*
@@ -105,14 +73,15 @@ export function drawGachaSync(
 ): GachaDrawResult {
     const isCharacterGacha = gacha.type === GachaType.CHARACTER
     const isRateUp = isCharacterGacha ? (gacha as CharacterGacha).movieName !== "normal" : false
-    const rankRates = isCharacterGacha ? (isRateUp ? rateUpCharacterGachaRates : characterGachaRankRates) : equipmentGachaRankRates
+    const rankRates = rankRatesFor(isCharacterGacha ? (isRateUp ? "featured" : "standard") : "armament")
 
     const pulls: Map<number, number> = new Map()
 
     for (let drawNumber = 0; drawNumber < drawAmount; drawNumber++) {
         const drawRankRates = (drawNumber !== 0) && ((drawNumber % 9) === 0) ? rankRates.multiGuarantee : rankRates.normal
         
-        const ratePool = gacha.pool[(randomPoolItem(0, 1001, drawRankRates) ?? 0) + 1]
+        // rarity: a roll of 1-1000 against chances out of 1000, so a 0% rarity never comes up
+        const ratePool = gacha.pool[(randomPoolItem(1, 1001, drawRankRates) ?? 0) + 1]
 
         // pick item from pool
         const selectedItem = ratePool[randomPoolItem(0, 1001, ratePool.map(item => item.rarity)) ?? 0]

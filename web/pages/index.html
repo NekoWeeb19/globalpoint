@@ -182,6 +182,98 @@
                 </script>
             </section>
 
+            <section id="gacha-rates" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                    <h3 class="text-xl text-on-background font-semibold">Summon rates</h3>
+                    <span id="rates-badge"
+                        class="px-4 py-1 rounded-full text-sm font-semibold bg-surface-container-high text-on-surface">Loading...</span>
+                </div>
+                <p class="text-on-surface-variant">The chance of each rarity per pull, by kind of portal. 3★ is the rest. Featured units keep their boost within their rarity. The 10th pull of a 10-pull is still 4★ or better (5★ at the 5★ rate). Applies from the next pull. The game's own Rates screen keeps showing the original numbers.</p>
+                <form id="rates-form" class="flex flex-col gap-3">
+                    <div style="display: grid; grid-template-columns: max-content 6rem 6rem auto; gap: 0.75rem; align-items: center;" id="rates-grid">
+                        <span class="text-sm font-semibold text-on-surface-variant">Portal</span>
+                        <span class="text-sm font-semibold text-on-surface-variant">5★ %</span>
+                        <span class="text-sm font-semibold text-on-surface-variant">4★ %</span>
+                        <span class="text-sm font-semibold text-on-surface-variant">3★ %</span>
+                    </div>
+                    <div class="flex gap-3 flex-wrap">
+                        <button type="submit" id="rates-save"
+                            class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Save</button>
+                        <button type="button" id="rates-reset"
+                            class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Base game rates</button>
+                    </div>
+                    <p class="text-sm text-on-surface-variant">Each from 0 to 100 in steps of 0.1; 5★ and 4★ together at most 100.</p>
+                </form>
+                <p id="rates-message" class="text-sm text-on-surface-variant" role="status"></p>
+                <script>
+                    (function () {
+                        const $ = (id) => document.getElementById(id)
+                        const KINDS = [["standard", "Standard units"], ["featured", "Featured units"], ["armament", "Armaments"]]
+                        const inputClass = "bg-surface-container rounded-2xl border border-outline-variant p-2 w-full"
+                        const fields = {}
+                        for (const [kind, label] of KINDS) {
+                            const name = document.createElement("span")
+                            name.className = "text-on-surface"
+                            name.textContent = label
+                            const make = (star) => {
+                                const input = document.createElement("input")
+                                Object.assign(input, { type: "number", min: "0", max: "100", step: "0.1", required: true, className: inputClass })
+                                input.setAttribute("aria-label", label + " " + star + "★ %")
+                                input.addEventListener("input", () => updateRest(kind))
+                                return input
+                            }
+                            const rest = document.createElement("span")
+                            rest.className = "text-on-surface"
+                            fields[kind] = { star5: make(5), star4: make(4), rest }
+                            $("rates-grid").append(name, fields[kind].star5, fields[kind].star4, rest)
+                        }
+                        const round1 = (v) => Math.round(v * 10) / 10
+                        const updateRest = (kind) => {
+                            const f = fields[kind]
+                            const rest = round1(100 - Number(f.star5.value) - Number(f.star4.value))
+                            f.rest.textContent = Number.isFinite(rest) ? rest + "%" : "-"
+                        }
+                        let defaults = null
+                        const show = (data) => {
+                            defaults = data.defaults
+                            for (const [kind] of KINDS) {
+                                fields[kind].star5.value = data.rates[kind].star5
+                                fields[kind].star4.value = data.rates[kind].star4
+                                updateRest(kind)
+                            }
+                            const changed = KINDS.some(([k]) => data.rates[k].star5 !== data.defaults[k].star5 || data.rates[k].star4 !== data.defaults[k].star4)
+                            $("rates-badge").textContent = changed ? "Custom" : "Base game"
+                        }
+                        fetch("/api/server/gacha-rates").then(r => r.json()).then(show)
+                            .catch(error => { $("rates-badge").textContent = "Unavailable"; $("rates-message").textContent = "Could not load: " + error.message })
+                        const send = async (body, done) => {
+                            $("rates-save").disabled = $("rates-reset").disabled = true
+                            $("rates-message").textContent = "Saving..."
+                            try {
+                                const response = await fetch("/api/server/gacha-rates", {
+                                    method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body)
+                                })
+                                const data = await response.json().catch(() => ({}))
+                                if (!response.ok) throw new Error(data.message || response.statusText)
+                                show(data)
+                                $("rates-message").textContent = done
+                            } catch (error) {
+                                $("rates-message").textContent = "Error: " + error.message
+                            } finally {
+                                $("rates-save").disabled = $("rates-reset").disabled = false
+                            }
+                        }
+                        $("rates-form").addEventListener("submit", (event) => {
+                            event.preventDefault()
+                            const rates = {}
+                            for (const [kind] of KINDS) rates[kind] = { star5: Number(fields[kind].star5.value), star4: Number(fields[kind].star4.value) }
+                            send({ rates }, "Saved: the next pulls use these rates.")
+                        })
+                        $("rates-reset").addEventListener("click", () => send({ reset: true }, "Back to the base game's rates."))
+                    })()
+                </script>
+            </section>
+
             <section id="rewards" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
                 <h3 class="text-xl text-on-background font-semibold">Daily paid beads and free mails</h3>
                 <form id="beads-form" class="flex flex-col gap-2">

@@ -16,6 +16,7 @@ import { allowLoginBonusAgainSync } from "../../nya/loginBonus";
 import { withRealTimeOfDay } from "../../lib/serverClock";
 import { deleteNews, listNews, NEWS_CATEGORIES, saveNews } from "../../nya/news";
 import { DROP_MULTIPLIER_MAX, DROP_MULTIPLIER_MIN, getDropMultiplier, setDropMultiplier } from "../../nya/dropSettings";
+import { DEFAULT_GACHA_RATES, getGachaRates, resetGachaRates, setGachaRates } from "../../nya/gachaRates";
 import { lanAddresses } from "../../nya/coop";
 import { getServerSettings, setServerSettings } from "../../nya/serverSettings";
 
@@ -107,6 +108,21 @@ const routes = async (fastify: FastifyInstance) => {
             return reply.status(400).send({ error: "Bad Request", message: (error as Error).message })
         }
         return reply.send(dropsReply())
+    })
+
+    // ---- summon rates by rarity (src/nya/gachaRates.ts) ----
+
+    const ratesReply = () => ({ rates: getGachaRates(), defaults: DEFAULT_GACHA_RATES })
+    fastify.get("/gacha-rates", async (_: FastifyRequest, reply: FastifyReply) => reply.send(ratesReply()))
+    fastify.post("/gacha-rates", async (request: FastifyRequest, reply: FastifyReply) => {
+        const body = request.body as { rates?: unknown, reset?: unknown } | undefined
+        try {
+            if (body?.reset === true) resetGachaRates()
+            else setGachaRates(body?.rates)
+        } catch (error) {
+            return reply.status(400).send({ error: "Bad Request", message: (error as Error).message })
+        }
+        return reply.send(ratesReply())
     })
 
     // ---- daily paid beads and the never-ending mails (src/nya/serverSettings.ts) ----
