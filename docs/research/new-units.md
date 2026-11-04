@@ -1,5 +1,13 @@
 # New units in the CN app from data only (research, 2026-11-03)
 
+> [!IMPORTANT]
+> ## 🤖 Written by AI
+> This research and write-up were done by **Claude** (Anthropic's AI) in a Claude Code session, with the
+> repository owner testing in the game alongside. The facts come from the game's own data (every CN table scanned,
+> the file list checked, files measured), the decompiled CN client, and tests on an Android emulator; the owner
+> confirmed the battle, co-op, equipment, uncap, Mana Board 2 and summon results by hand. Parts that were not
+> tested are marked as such in the checklist. Treat those as educated guesses until someone tries them.
+
 **Result: it works.** A brand-new unit (id 111907, string id `gp_test_haruhi`, "Haruhi (GP Test)") was added to the
 patched CN 1.8.1 app with **no game-code change**: table rows plus files, shipped as an ordinary StarPoint update
 patch, plus two server data entries. On the StarPointTest emulator it was mailed to a save and claimed, and it showed in
