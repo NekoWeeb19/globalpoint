@@ -219,6 +219,12 @@ unpacks. If it's interrupted, it carries on where it stopped next time.
 - **The single-file OBB on the Drive is older** (game files 1.4.203). After it unpacks, the game
   downloads the rest from the companion once (~2 GB, from the phone itself, so it's quick). The 3
   parts and an OBB you build yourself are already up to date.
+- **Stuck on "Finding game files… (a number)" after unpacking:** a drop-off folder still holds
+  loose game files from an earlier setup, usually a `download` folder in `StarPoint/game`,
+  `starpoint_game` or `Android/obb/com.leiting.wf` (e.g. from the companion's **Full game files**).
+  The game lists and moves every one of them, which takes very long and isn't needed: the OBB
+  already has every file. Close the game fully, delete that `download` folder (leave any `.obb`
+  there, even a small leftover `part1of3`), and reopen the game. Best to delete it before step 8.
 - **The file names don't matter**, as long as they end in `.obb` and sit directly in the folder.
   One renamed to `.obb.zip` doesn't work.
 - **`Android/obb/com.leiting.wf/` also works on some phones,** with no permissions needed (they
