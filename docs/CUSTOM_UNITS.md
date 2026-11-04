@@ -328,7 +328,7 @@ Mana Boards 1+2 complete). Its rows and server entries were taken out of the bun
   detail page (Lv 100, uncap 4) and Mana Board 2 (complete). No crash reports.
 - Dashboard Give (`/api/server/give`) → mail → claim: the unit-obtained scene and its Fire EX Boost item.
 
-Then with companion 0.6.24 (same emulator, 2026-11-03):
+Then with companion 0.6.24 (same emulator, 2026-11-03; 0.6.24 was a test build only, and its changes ship in companion 0.7.0):
 - Installed over 0.6.23 with the unit file moved to `files/data/.cdn/custom_units/` first: the server found it there
   and rebuilt by itself (1.4.957).
 - **Download from PC** from a PC server running this code, with nothing ticked: the unit file, a change file
