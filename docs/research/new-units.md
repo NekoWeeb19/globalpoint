@@ -44,8 +44,10 @@ content: art, a kit, a skill script. The full list of what a unit needs is the
 
 ## How the game finds a unit
 
-- **The id** (`111907`) keys most tables. Digit 1 = rarity (1 = 5★), digit 2 = element (1 fire … 6 dark). Unused ids
-  work; nothing checks a range.
+- **The id** (`111907`) keys most tables. By convention digit 1 = rarity (1 = 5★) and digit 2 = element (1 fire …
+  6 dark), but the game reads rarity and element from the character row, not the id: CN's own 700000-700019 and
+  999999 break the pattern. Only StarPoint reads a digit (`src/lib/gacha.ts`: the first digit picks the summon
+  animation's rarity). Unused ids work; nothing checks a range.
 - **The string id** (character column 0, `gp_test_haruhi`) is the folder of every file:
   `character/<string id>/ui/...`, `/pixelart/...`, `/voice/...`, `/battle/...`. *(code)*
 - **Character column 8** names the skill (`master/skill/action_skill` key `<name>/1`, `/2`). The skill row's
@@ -165,14 +167,14 @@ How sure each part is:
 - **Not tested:** whether the "required by screens" tables are all really required (everything Haruhi has was
   copied; none was left out to see); whether screens not opened in the test (Town, home-screen character, codex) ask
   for more files (the log would name them); whether plain PNG / plain MP3 / a `png2atf` cut-in are accepted for new
-  art; the id digit rule below 5★ and the `character.json` element numbering beyond Fire. "Optional" items were
+  art; the `character.json` element numbering beyond Fire. "Optional" items were
   tested only where said (titles, the Rates list).
 
 ### 1. Ids (pick first; everything else derives from them)
 
 | Id | Rule | Test unit |
 |---|---|---|
-| Unit id | 6 digits; digit 1 = rarity (1 = 5★ … 5 = 1★), digit 2 = element (1 fire, 2 water, 3 thunder, 4 wind, 5 light, 6 dark); never used by CN | 111907 |
+| Unit id | 6 digits, not one of CN's 505 ids. Keep digit 1 = rarity (1 = 5★ … 5 = 1★) if the unit can be summoned (the server picks the summon animation from it); digit 2 = element (1 fire, 2 water, 3 thunder, 4 wind, 5 light, 6 dark) is convention only; digits 3-6 are free | 111907 |
 | String id | lowercase folder name for every file; unique | `gp_test_haruhi` |
 | Skill name | character column 8, key of the skill rows (usually = string id) | `gp_test_haruhi` |
 | Ability ids | unit id × 10 + 1..6 | 1119071-1119076 |
