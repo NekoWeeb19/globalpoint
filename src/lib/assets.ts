@@ -44,9 +44,31 @@ import starGrainShopItems from "../../assets/star_grain_shop.json";
 import treasureShopItems from "../../assets/treasure_shop.json";
 import rushEventQuestFolders from "../../assets/rush_event_quest_folder.json"
 import { readFileSync, statSync } from "fs";
+import path from "path";
 import { inCnRequest } from "./cnClient";
 import { towerOriginalQuestId } from "./towerRotation";
 import { AssetCharacter, BattleQuest, BossCoinShopItems, BoxGacha, ClearRewards, EventItemShopIdMapItem, EventShopItems, ExAbilities, ExBoostItem, ExBoostItems, ExStatus, Gacha, Gachas, ManaNode, ManaNodes, QuestCategory, RareScoreReward, RareScoreRewardGroups, RawAssetCharacters, RawBoxGachas, RawBoxRewards, RawQuests, Reward, RushEventFolders, ScoreReward, ScoreRewardGroups, ShopItem, ShopItems, ShopType, StoryQuest } from "./types";
+
+// Custom units (assets/custom_units/*.json, scripts/custom_units.cjs, docs/CUSTOM_UNITS.md): new CN units
+// from data only. Merged here into the character, Mana Board and summon data, so Give, Mana Board unlocks
+// and summon pools know them without editing the bundled assets. Read once at start.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const CU = require(path.join(__dirname, "..", "..", "scripts", "custom_units.cjs")) as {
+    readCustomUnits: () => { units: { id: string, name?: string, character: AssetCharacter, manaNodes?: ManaNodes[string], banners?: string[] }[], problems: string[] },
+    addToGachaPools: (gachas: Gachas, units: unknown[]) => Gachas
+}
+const customUnits = (() => {
+    let read: ReturnType<typeof CU.readCustomUnits>
+    try { read = CU.readCustomUnits() } catch (e) { return { units: [], problems: [String(e)] } }
+    // a game unit's id is never replaced
+    const taken = read.units.filter(u => (characters as RawAssetCharacters)[u.id] !== undefined)
+    return { units: read.units.filter(u => !taken.includes(u)), problems: [...read.problems, ...taken.map(u => `${u.id}: a game unit has that id`)] }
+})()
+for (const p of customUnits.problems) console.warn(`[custom units] skipped: ${p}`)
+if (customUnits.units.length > 0) console.log(`[custom units] ${customUnits.units.map(u => `${u.id} ${u.name ?? ""}`.trim()).join(", ")}`)
+const allCharacters: RawAssetCharacters = { ...(characters as RawAssetCharacters), ...Object.fromEntries(customUnits.units.map(u => [u.id, u.character])) }
+const customManaNodes: ManaNodes = Object.fromEntries(customUnits.units.filter(u => u.manaNodes).map(u => [u.id, u.manaNodes!]))
+const allGachas: Gachas = customUnits.units.some(u => u.banners?.length) ? CU.addToGachaPools(gachas as Gachas, customUnits.units) : gachas as Gachas
 
 /**
  * Gets a clear reward from its ID.
@@ -284,7 +306,7 @@ export function getQuestFromCategorySync(
 export function getCharacterDataSync(
     characterId: string | number
 ): AssetCharacter | null {
-    const character = (characters as RawAssetCharacters)[String(characterId)]
+    const character = allCharacters[String(characterId)]
 
     if (!character) return null;
 
@@ -305,6 +327,7 @@ export function getCharacterManaNodesSync(
     const board = (manaNodes as ManaNodes)[String(characterId)]?.[String(level)]
         // boards global never had (CN-only units, 2nd boards added after EoS): scripts/gen_cn_mana_nodes.cjs
         ?? (manaNodesCn as ManaNodes)[String(characterId)]?.[String(level)]
+        ?? customManaNodes[String(characterId)]?.[String(level)]
     return board || null
 }
 
@@ -400,7 +423,7 @@ export function getBoxGachaSync(
 export function getGachaSync(
     id: string | number
 ): Gacha | null {
-    const data = (gachas as Gachas)[String(id)];
+    const data = allGachas[String(id)];
     
     return data ?? null
 }

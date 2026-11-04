@@ -118,8 +118,9 @@ ships the table restores it.
   leader_ability, action_skill, encyclopedia, mana_board2_open_condition) are re-shipped by every schedule build
   (`scripts/gen_cn_event_schedule.cjs`), from CN's own rows, so the new rows would vanish at the next rebuild,
   and a save holding the unit would then hit C8601. The kit-by-date mechanism (`assets/kit_dates.json`) only
-  *replaces* existing rows. A permanent version needs a small server-side step that *adds* custom-unit rows
-  inside the schedule build (data only; no game-code change).
+  *replaces* existing rows. **Solved since:** custom units ([../CUSTOM_UNITS.md](../CUSTOM_UNITS.md)) keep the rows
+  in `assets/custom_units/<id>.json`, and every schedule build adds them to the 19 tables (always shipped);
+  the server merges the unit into its character, Mana Board and summon data at start.
 
 ## The proof of concept
 
@@ -145,7 +146,8 @@ Test run (emulator 5556, companion server, game at schedule build 1.4.805):
    (board 2 ids 111907 × 2000 + 400 + index). No title is awarded, since the degree rows weren't copied, and
    there's no error.
 
-Not tested yet: multiplayer with another device, a real phone, a schedule rebuild (known to drop the rows).
+Not tested yet: multiplayer with another device, a real phone. A schedule rebuild with the unit as a custom unit was
+checked offline (all 40 rows in the 19 built tables, CN's rows unchanged), not yet on a device.
 
 ## Checklist: everything a custom unit needs
 
@@ -235,8 +237,8 @@ companion's `files/server/logs/cn_requests.log` (`/cn/crash`, `未找到素材 <
 1. **Rows.** A unit as a small JSON file (id, string id, rarity, element, stats, ability rows, leader, skill rows,
    Mana Board), compiled into the 19 tables. Ability/leader columns are decoded already (memory note
    kit-rows-decode, `scripts/build_kit_*.cjs`), and `*Values.as` names every column of every table.
-2. **Schedule integration.** Add those rows in `gen_cn_event_schedule.cjs` (like kit_dates, but appending), and
-   write `character.json` / `mana_node_cn.json` entries, so rebuilds keep the unit.
+2. **Schedule integration.** Done: [../CUSTOM_UNITS.md](../CUSTOM_UNITS.md) (`assets/custom_units/`, rows added in
+   every schedule build, server data merged at start).
 3. **Art pipeline.** Pixel sprites as sheets + `.atlas` (frame rects, AMF3) + `.frame`/`.timeline` (animation
    sequences such as `special_land`/`special_pose`); portraits and icons at fixed sizes (the `ui/` list above);
    `trimmed_image`/`character_image` crop rows. `scripts/cn_sprite_merge.cjs`/`amf3.cjs` already write sheets and
