@@ -80,7 +80,7 @@ Downloads:
 | File | What it is | Where | Size |
 |---|---|---|---|
 | **World Flipper (game) APK** | the patched game app (build 25; installs over builds 23 and 24), for every setup | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 139 MB |
-| **StarPoint Companion APK** | the server-on-your-phone app (0.7.2), for setups B and C | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 76 MB |
+| **StarPoint Companion APK** | the server-on-your-phone app (0.7.6), for setups B and C | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 76 MB |
 | **OBB in 3 parts** (`main.1008001.com.leiting.wf.part1of3.obb`, `part2of3`, `part3of3`) | every game file (game files 1.4.800, up to date), for setup C; download all three | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 3.6 GB each |
 | **OBB** (`main.1008001.com.leiting.wf.obb`), the alternative | the same as one 10 GB file (game files 1.4.203: older, the game updates after unpacking), for phones and file apps that handle one big file | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 10.3 GB |
 | **`starpoint-data.zip`** | GlobalPoint's English tables, game updates (art and text patches), schedule files, dashboard pictures and news. Setup A unzips it into the server folder; setup C imports it into the companion | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 2.25 GB |
@@ -180,68 +180,96 @@ move it.
 
 ### C. On a phone, with the OBB file
 
-The OBB is every game file, ~10.3 GB. The [Google Drive folder](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) has it in **3 parts**
-(~3.6 GB each, easier to download and copy) and as one file. You can also build it on a PC that has
-setup A. After that the phone plays on its own.
+The phone plays on its own: the game's files come from the **OBB** (every game file, ~10.3 GB), and
+**StarPoint Companion** runs the server on the phone. StarPoint Companion can do most of the setup for you
+(**Setup check**); the [steps by hand](#by-hand) still work the same way.
 
-1. **Get the OBB**: download the three `part1of3` / `part2of3` / `part3of3` files (or the single
-   `.obb`), on the phone or on a PC to copy over USB. Or build it on the PC, in `<folder>`:
-   ```bash
-   node scripts/build_cn_obb.cjs <output folder> --parts 3
-   ```
-   That needs ~10.3 GB free. Leave out `--parts 3` for one file.
-2. Install the **game** APK (build 25; the parts need it) on the phone. **Don't open it yet.**
-3. **Make the folder.** At the top of internal storage, create a folder named exactly
-   **`starpoint_game`**: `Internal storage/starpoint_game/`. (`Internal storage/StarPoint/game/`
-   works the same way, if you already have it.)
-4. **Put the OBB in `starpoint_game/`**: all three parts together in that one folder, directly
-   (not in a subfolder). Copy them from the PC over USB or, if they're already on the phone,
-   **Move** them there with the file app (Move, not Copy: a copy needs twice the space, ~20 GB).
-   Don't let anything compress or zip them: the game can't read a zipped OBB.
-5. **Let the game read it (required).** Android Settings > Apps > World Flipper:
-   - turn on **All files access**;
-   - under **Permissions**, allow the storage permissions. On Android 13 and newer they're listed as
-     **Music and audio** and **Photos and videos**: allow both. On older Android it's **Storage**.
+**Downloads** (from the [Google Drive folder](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO)):
+- the **game** APK (build 25) and the **StarPoint Companion** APK (0.7.6 or newer);
+- the **OBB**: the 3 parts `part1of3` / `part2of3` / `part3of3` (~3.6 GB each, game files 1.4.800, up to
+  date), or the single `.obb` (10.3 GB, game files 1.4.203: older, the game updates itself after
+  unpacking). Either works; the 3 parts are newer and easier to download;
+- **`starpoint-data.zip`** (the server's data), and the comics zip if you want comics.
 
-   The game never asks for these itself, and without them it can't see the OBB.
-6. Install **StarPoint Companion** and give it its data: copy **`starpoint-data.zip`** to the phone
-   (e.g. into Downloads), then in the companion tap **Game data** > **Import pack...** and pick it.
-   Import the comics zip the same way if you want comics. (With setup A running on the same Wi-Fi,
-   **Download from PC** without **Full game files** does the same.)
-7. Start the companion's server as in step 8 of setup B.
-   **Easier way for steps 3-7:** put the downloads in the phone's Download folder, open StarPoint Companion and
-   tap **Setup check**. It lists what's done (green) and what's left (yellow/red), with a button for each step it can
-   do: it finds the OBB (the 3 parts or the single file), checks it's undamaged and moves it into `starpoint_game`,
-   removes leftover game files from an earlier setup, and opens World Flipper's settings for the permissions (those
-   switches only you can turn on). **Game data > Check a file** checks any download the same way.
-   The companion's main screen shows a light: **green** = open the game; **yellow** = wait (the server is starting,
-   or it's rebuilding the game update after a dashboard change); **red** = stopped.
-8. Open the game (if it was already open, close it fully first). It shows "Unpacking game files",
-   unpacks the OBB by itself and deletes it when done. With the 3 parts it checks first that all
-   three are there and complete, then unpacks from the last part back, deleting each part as it
-   empties.
+Or build the OBB on a PC that has setup A, in `<folder>` (needs ~10.3 GB free; leave out `--parts 3` for
+one file):
+```bash
+node scripts/build_cn_obb.cjs <output folder> --parts 3
+```
 
-The phone only needs a little free space beyond the OBB itself: the game shrinks the OBB as it
-unpacks. If it's interrupted, it carries on where it stopped next time.
+#### The easy way: Setup check
+
+1. Put the downloads in the phone's **Download** folder (where the browser saves them anyway, or copy
+   them there from a PC over USB). Don't unzip or rename anything.
+2. Install both APKs. **Don't open the game yet.**
+3. Open **StarPoint Companion**, tap **Game data** > **Import pack...** and pick `starpoint-data.zip`
+   (then the comics zip the same way, if you have it). With setup A running on the same Wi-Fi, **Download
+   from PC** (without **Full game files**) does the same.
+4. Back on the main screen, tap **Setup check**. Each line is **green** (done), **yellow** or **red**
+   (something left), with a button where the app can do it:
+   - **Allow** "All files access" for StarPoint Companion, so it can find and move the OBB;
+   - **Open World Flipper's settings**: turn on **All files access** and allow the storage permissions
+     (on Android 13 and newer they're **Music and audio** and **Photos and videos**; older Android:
+     **Storage**). Only you can flip these switches; the game never asks for them, and without them it
+     can't see the OBB;
+   - **Check and move it**: checks every OBB file is undamaged (a minute or two per few GB), then moves
+     them into `starpoint_game` (made for you; instant, no extra space). If a file is damaged nothing is
+     moved and it says which one to download again;
+   - **Remove them**: leftover game files from an earlier setup, which would make the game's start very
+     slow;
+   - **Start** the server, if it isn't running.
+5. When every line is green, the main screen's light is **green: Ready**. Open the game (if it was
+   already open, close it fully first). It shows "Unpacking game files", unpacks the OBB by itself and
+   deletes it when done.
+
+The light on StarPoint Companion's main screen: **green** = open the game; **yellow** = wait (the server
+is starting, or it's rebuilding the game update after a change on the dashboard; a game opened meanwhile
+would get the old update); **red** = stopped. **Game data > Check a file** checks any download (an OBB part,
+the data pack, the comics zip, the game APK) without changing anything.
+
+#### By hand
+
+1. Install the game APK (build 25). **Don't open it yet.**
+2. At the top of internal storage, create a folder named exactly **`starpoint_game`**
+   (`Internal storage/starpoint_game/`; `Internal storage/StarPoint/game/` works the same way).
+3. Put the OBB in it: all three parts together, directly in that folder (not in a subfolder), or the
+   single file. From a PC copy them over USB; already on the phone, **Move** them with the file app (Move,
+   not Copy: a copy needs twice the space). Don't let anything compress or zip them. To check a download,
+   compare its SHA-256 with the [list above](#installation).
+4. Android Settings > Apps > World Flipper: turn on **All files access**, and under **Permissions** allow
+   the storage permissions (as in step 4 above).
+5. Install StarPoint Companion, import `starpoint-data.zip` (**Game data** > **Import pack...**), and
+   start the server as in step 8 of setup B.
+6. Open the game, as in step 5 above.
+
+#### If something goes wrong
+
+The phone needs only a little free space beyond the OBB: the game shrinks the OBB as it unpacks, and if
+it's interrupted it carries on where it stopped next time. Setup check shows most of these too.
 
 - **A part missing or cut short:** the game says so, e.g. "Game files part 2 of 3 is missing" or
-  "...is incomplete: x of y GB", and unpacks nothing. Copy the missing part next to the others
-  (or download it again) and reopen the game.
-- **The single-file OBB on the Drive is older** (game files 1.4.203). After it unpacks, the game
-  downloads the rest from the companion once (~2 GB, from the phone itself, so it's quick). The 3
-  parts and an OBB you build yourself are already up to date.
-- **Stuck on "Finding game files… (a number)" after unpacking:** a drop-off folder still holds
-  loose game files from an earlier setup, usually a `download` folder in `StarPoint/game`,
-  `starpoint_game` or `Android/obb/com.leiting.wf` (e.g. from the companion's **Full game files**).
-  The game lists and moves every one of them, which takes very long and isn't needed: the OBB
-  already has every file. Close the game fully, delete that `download` folder (leave any `.obb`
-  there, even a small leftover `part1of3`), and reopen the game. Best to delete it before step 8.
-- **The file names don't matter**, as long as they end in `.obb` and sit directly in the folder.
-  One renamed to `.obb.zip` doesn't work.
-- **`Android/obb/com.leiting.wf/` also works on some phones,** with no permissions needed (they
-  don't apply there either way). What matters is which app wrote the file: some phones' file apps
-  (Samsung's My Files, for one) leave it unreadable to the game. `starpoint_game` with the
-  permissions above is the reliable route.
+  "...is incomplete: x of y GB", and unpacks nothing. Copy the missing part next to the others (or
+  download it again) and reopen the game.
+- **The single-file OBB is older** (game files 1.4.203). After it unpacks, the game downloads the rest
+  from the companion once (~2 GB, from the phone itself, so it's quick). The 3 parts and an OBB you build
+  yourself are already up to date.
+- **Stuck on "Finding game files… (a number)" after unpacking:** a drop-off folder still holds loose
+  game files from an earlier setup, usually a `download` folder in `StarPoint/game`, `starpoint_game` or
+  `Android/obb/com.leiting.wf` (e.g. from the companion's **Full game files**). The game lists and moves
+  every one of them, which takes very long and isn't needed: the OBB already has every file. Close the
+  game fully, then Setup check > **Remove them** (or delete that `download` folder by hand, leaving any
+  `.obb` there, even a small leftover `part1of3`), and reopen the game.
+- **If the game asks to download ~10 GB**, or the title screen shows **ResVer null**, instead of
+  "Unpacking game files", it can't see the OBB. Tap Cancel. Check that the OBB is directly in
+  `starpoint_game/` and that World Flipper has **All files access** and the storage permissions (Setup
+  check shows both). Close the game fully and reopen it. Nothing is lost.
+- **The file names don't matter** when placing them by hand, as long as they end in `.obb` and sit
+  directly in the folder. One renamed to `.obb.zip` doesn't work. (Setup check looks for the names as
+  downloaded: `main.1008001.com.leiting.wf.obb` and `main.1008001.com.leiting.wf.partNof3.obb`.)
+- **`Android/obb/com.leiting.wf/` also works on some phones,** with no permissions needed (they don't
+  apply there either way). What matters is which app wrote the file: some phones' file apps (Samsung's My
+  Files, for one) leave it unreadable to the game. `starpoint_game` with the permissions above is the
+  reliable route, and the one Setup check uses.
 - **With a PC and adb**, `Android/obb` always works. If the folder doesn't exist yet:
   ```bash
   adb shell mkdir -p /sdcard/Android/obb/com.leiting.wf
@@ -254,19 +282,14 @@ unpacks. If it's interrupted, it carries on where it stopped next time.
   ```
   (For the 3 parts, push each one the same way.)
   adb can't fix a folder a file app already made: rename or delete that folder first.
-- **GrapheneOS:** give World Flipper **All files access**, not Storage Scopes. Scopes only shows an
-  app the files it made plus ones you pick, and the game also has to shrink and delete the OBB.
-- **If the game asks to download ~10 GB**, or the title screen shows **ResVer null**, instead of
-  "Unpacking game files", it can't see the OBB. Tap Cancel. If you used `Android/obb`, move the OBB
-  to `starpoint_game/`. Check that it's directly in that folder and that World Flipper has **All
-  files access** and the storage permissions (step 5). Close the game fully and reopen it. Nothing
-  is lost.
+- **GrapheneOS:** give World Flipper **All files access**, not Storage Scopes. Scopes only shows an app
+  the files it made plus ones you pick, and the game also has to shrink and delete the OBB.
 
 ### D. On a phone, with the server on your PC
 
 The phone plays against your PC's StarPoint, so your save stays on the PC and the PC must be on
 while you play. The game needs its files first: on a fresh install it downloads ~12 GB from your
-PC, or use an OBB as in setup C, steps 1-5.
+PC, or use an OBB as in setup C, "By hand" steps 1-4.
 
 **Over Wi-Fi (game build 23 or newer):**
 1. On the PC, set `LISTEN_HOST="0.0.0.0"` in `.env` and start the server. Allow it if Windows asks
@@ -281,7 +304,7 @@ PC, or use an OBB as in setup C, steps 1-5.
    Whether the game can read a file there depends on the app that wrote it, as with the OBB in
    setup C. If the title screen doesn't show "Server: ...", that's the likely cause: put
    `server.txt` in `Internal storage/StarPoint/` instead and give World Flipper the permissions
-   from setup C, step 5, or push it with adb (`adb push server.txt
+   from setup C ("By hand", step 4), or push it with adb (`adb push server.txt
    /sdcard/Android/obb/com.leiting.wf/`, after the folder steps in setup C). The game doesn't read
    `server.txt` from `starpoint_game`.
 4. Install the game and open it. The title screen shows **"Server: 192.168.x.y:8000"**. If it says

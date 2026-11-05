@@ -193,7 +193,7 @@ node scripts/build_cn_obb.cjs "C:/wf/obb" --server <StarPoint folder>
   writes nothing else). `--parts 3` cuts it into three files (`...part1of3.obb` and so on), which
   game build 25 reads from the same folder. `-` instead of a folder streams it to stdout, e.g. straight onto a phone:
   `node scripts/build_cn_obb.cjs - | adb exec-in "cat > /sdcard/StarPoint/game/main.1008001.com.leiting.wf.obb"`
-  (make the folder first, and give the game the permissions in README setup C, step 5).
+  (make the folder first, and give the game the permissions in README setup C, "By hand" step 4).
 - It's a plain zip (files stored, zip64) whose first entry indexes every file. That lets the game
   unpack it from the end and shrink the file as it goes, so the phone needs little space beyond the
   OBB, and an interrupted unpack carries on next time.
