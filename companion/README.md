@@ -30,7 +30,7 @@ how to build it.
   OBB, found in Download, Downloads, Documents or the top of storage (the 3 parts or the single file),
   SHA-256 checked, then moved into `starpoint_game` (a rename, so instant; a copy only across storages);
   leftover loose game files in the drop-off folders (removed when an OBB is there, since the game would
-  list them all before starting); the server's data; the server.
+  list them all before starting); the server's data; comics (optional, grey until added); the server.
 - **Let the server run in the background:** asks Android to exempt the app from battery
   optimisation, so the phone doesn't stop the server. Shown until it's granted.
 - **Dashboard** opens the server's dashboard inside the app (Back returns to the app). **Open in

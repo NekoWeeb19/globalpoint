@@ -191,6 +191,13 @@ public class SetupActivity extends Activity {
                 ? new Line(GREEN, "The server has its data (" + DataTransfer.summary(this).split("\n")[0] + ").", null, null)
                 : new Line(RED, "The server needs its data: import starpoint-data.zip (Game data > Import pack...), or Download from PC.", "Game data", () -> startActivity(new Intent(this, DataActivity.class))));
 
+        // 6b. comics (optional): the comics pack, or Download from PC with Comics
+        File comicsDir = new File(ServerFiles.dataDir(this), ".cdn/comics");
+        String[] comicFiles = comicsDir.list();
+        out.add(comicFiles != null && comicFiles.length > 0
+                ? new Line(GREEN, "Comics are in (Menu > Other > Comics in the game).", null, null)
+                : new Line(GREY, "Comics: not added (optional). Import the comics zip (Game data > Import pack...), or Download from PC with Comics ticked.", "Game data", () -> startActivity(new Intent(this, DataActivity.class))));
+
         // 7. the server
         boolean up = ServerProbe.running(), own = ServerProbe.ownProcess(this);
         Boolean rebuilding = up ? ServerProbe.updateRebuilding() : null;
