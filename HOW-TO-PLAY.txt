@@ -57,5 +57,5 @@ Notes
   - Settings are in .env (copied from .env.example on first setup). LISTEN_HOST "127.0.0.1" keeps
     the server and its dashboard to this PC.
   - Linux/macOS: setup.sh and start-cn.sh do the same but are untested.
-  - To play on a phone (with the server on the phone, or on this PC), see README.md: setups B, C
-    and D. Google Drive downloads: https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO
+  - To play on a phone (with the server on the phone, or on this PC), see docs/INSTALL.md: setups B, C
+    and D (README.md has the quick phone steps). Google Drive downloads: https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO

@@ -218,13 +218,14 @@ Static downloads.
 | `/patch/Live/2.0.0/*` | global game files and mods (`CDN_DIR`) |
 | `/public/*` | the dashboard's stylesheet, fonts and images |
 
-## Dashboard pages (9)
+## Dashboard pages (10)
 
 | Endpoint | Method | Source | Notes |
 |---|---|---|---|
 | `/` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 | `/campaigns` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 | `/events` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
+| `/mail` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 | `/news` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 | `/news/board` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 | `/player` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
@@ -232,11 +233,11 @@ Static downloads.
 | `/summons` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 | `/unit-editor` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 
-## Dashboard API (49)
+## Dashboard API (64)
 
 What the dashboard pages call. These change the server's state and have no login. With
 `LISTEN_HOST` at `127.0.0.1` (the default, also on the phone companion) only the same device
-can reach them. Setups B and D in the README set it to `0.0.0.0`, which lets every device on your
+can reach them. Setups B and D ([INSTALL.md](INSTALL.md)) set it to `0.0.0.0`, which lets every device on your
 network use the dashboard too, so do that only on a network you trust, such as your home Wi-Fi.
 
 | Endpoint | Method | Source | Notes |
@@ -255,6 +256,8 @@ network use the dashboard too, so do that only on a network you trust, such as y
 | `/api/server/clock` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/drops` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/drops` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/server/enemies` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/server/enemies` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/event-image/:file` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/events` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/events/schedule` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
@@ -265,6 +268,9 @@ network use the dashboard too, so do that only on a network you trust, such as y
 | `/api/server/gacha-rates` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/give` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/loginBonus/again` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/server/mail` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/server/mail` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/server/mail/delete` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/news` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/news` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/news/delete` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
@@ -279,13 +285,23 @@ network use the dashboard too, so do that only on a network you trust, such as y
 | `/api/server/rotation/resume` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/settings` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/settings` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/server/status` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/time` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/time/match-real` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/unit-editor/armament-check` | POST | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/armament-kits` | GET | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/armament-kits` | POST | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/armament-lines/:id` | GET | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/armament/:id` | GET | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/armament/:id` | POST | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/armament/:id/reset` | POST | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/armaments` | GET | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
 | `/api/unit-editor/check` | POST | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
 | `/api/unit-editor/data` | GET | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
 | `/api/unit-editor/kits` | GET | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
 | `/api/unit-editor/kits` | POST | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
 | `/api/unit-editor/lines/:id` | GET | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
+| `/api/unit-editor/names` | GET | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
 | `/api/unit-editor/unit/:id` | GET | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
 | `/api/unit-editor/unit/:id` | POST | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |
 | `/api/unit-editor/unit/:id/reset` | POST | [web_api/unitEditor.ts](../src/routes/web_api/unitEditor.ts) |  |

@@ -198,13 +198,13 @@ node scripts/build_cn_obb.cjs "C:/wf/obb" --server <StarPoint folder>
   unpack it from the end and shrink the file as it goes, so the phone needs little space beyond the
   OBB, and an interrupted unpack carries on next time.
 - Where the phone takes it (`starpoint_game/` from build 24, `StarPoint/game/`, or
-  `Android/obb/com.leiting.wf/` on some phones) and the permissions it needs: README, setup C. The folder layout is in
+  `Android/obb/com.leiting.wf/` on some phones) and the permissions it needs: [INSTALL.md, setup C](INSTALL.md#c-on-a-phone-with-the-obb-file). The folder layout is in
   `scripts/client_mod/STORAGE_LAYOUT.txt`.
 
 ## Things that are different on the CN app
 
 - Co-op works from the CN app (StarPoint's COM partners); CN rooms use CN's message numbers.
-- CN-only units, events and stories were translated (see the README's Translation section).
+- CN-only units, events and stories were translated (see [DETAILS.md, Translation](DETAILS.md#translation)).
 - Artwork with Chinese text and no English version (CN-only banners, some badges, the health
   notice, the tutorial demo captions) stays Chinese.
 - Real-money bead packs aren't sold: there's no store behind them. Paid beads come with the daily

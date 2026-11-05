@@ -172,7 +172,7 @@ ${table(rows.dashboard)}
 
 What the dashboard pages call. These change the server's state and have no login. With
 \`LISTEN_HOST\` at \`127.0.0.1\` (the default, also on the phone companion) only the same device
-can reach them. Setups B and D in the README set it to \`0.0.0.0\`, which lets every device on your
+can reach them. Setups B and D ([INSTALL.md](INSTALL.md)) set it to \`0.0.0.0\`, which lets every device on your
 network use the dashboard too, so do that only on a network you trust, such as your home Wi-Fi.
 
 ${table(rows.dashboardApi)}

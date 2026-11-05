@@ -4,9 +4,9 @@ An Android app that runs the GlobalPoint server on the phone itself, on `127.0.0
 patched CN game plays with no PC: no root, no adb, no Shizuku. It's the server half of setups B and
 C in the main [README](../README.md).
 
-**Players:** the setup steps are in the main README
-([setup B](../README.md#b-on-a-phone-copying-from-your-pc-over-wi-fi) and
-[setup C](../README.md#c-on-a-phone-with-the-obb-file)). This page explains how the app works and
+**Players:** the setup steps are in the [README](../README.md#quick-start-phone-only) and the
+installation guide ([setup B](../docs/INSTALL.md#b-on-a-phone-copying-from-your-pc-over-wi-fi) and
+[setup C](../docs/INSTALL.md#c-on-a-phone-with-the-obb-file)). This page explains how the app works and
 how to build it.
 
 - [Using the app](#using-the-app)
@@ -86,7 +86,7 @@ phone (e.g. into Downloads), and loaded with **Import pack...**. The app recogni
 first entry, checks free space, unpacks it with progress (skipping files already there with the
 same size, so it resumes), and then offers to delete the pack.
 
-- **Data pack** (~2.25 GB; the README's downloads have one, `starpoint-data.zip`), made with
+- **Data pack** (~2.25 GB; the [downloads](../docs/INSTALL.md#downloads) have one, `starpoint-data.zip`), made with
   `node scripts/build_pack.cjs data <out.zip> [--from <server folder>] [--slim <slim CN folder>]`:
   everything **Download from PC** brings except the save and the full
   game files. That's the CN version files, the slim CN tables, the English tables, the patch zips,

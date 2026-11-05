@@ -16,8 +16,8 @@ holding it hit C8601.
 
 ## Getting a custom unit onto your device (or emulator)
 
-This part is for players. Setups A–D are the ones in the README's
-[Ways to play](../README.md#ways-to-play).
+This part is for players. Setups A–D are the ones in the installation guide's
+[Which setup](INSTALL.md#which-setup).
 
 **What you need:** a unit, as the unit maker (`scripts/research/clone_cn_unit.cjs`) writes it: a folder with
 `custom_unit.json` (the unit file), `art_files.json` and the unit's pictures and voices. Custom units never
@@ -149,7 +149,7 @@ The editor saves change files, and you can write one yourself for rows it doesn'
   table and column.
 - Restart the server to rebuild; the log says `Unit changes: N of N row(s) in <table>` (fewer found than listed
   means a row name doesn't exist). Changes apply on top of the game's rows and of
-  [Balance by Date](../README.md#balance-by-date); for the same row, the file whose name sorts last wins.
+  [Balance by date](DETAILS.md#balance-by-date); for the same row, the file whose name sorts last wins.
 - Phones get change files with **Download from PC**, whatever is ticked. The copy makes the phone's change files
   match the PC's, so a file deleted on the PC goes away on the phone too.
 - Element, rarity and Mana Board costs also live in the server's own data (`assets/character.json`,

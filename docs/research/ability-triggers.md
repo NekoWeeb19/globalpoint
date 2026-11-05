@@ -4,7 +4,7 @@
 > installed CN 1.8.1 client's table parser); the plain words are a reading of those names, and only the ones
 > marked ✔ were seen working in game in this project. Counts are from CN's current ability and leader tables.
 
-For the ability editor idea ([custom-unit-tooling.md](custom-unit-tooling.md#b-ability-editor-add-or-remove-what-an-ability-does-abilities-only)).
+For the ability editor idea ([custom-unit-tooling.md](custom-unit-tooling.md#the-original-plan-for-reference)).
 
 ## What a "trigger" is
 

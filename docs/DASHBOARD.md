@@ -1,7 +1,6 @@
 # Dashboard guide
 
-How to do the common jobs on the GlobalPoint dashboard. For a quick list of what each tab holds,
-see [The dashboard](../README.md#the-dashboard) in the README.
+How to do the common jobs on the GlobalPoint dashboard, after a quick list of what each tab holds.
 
 **Opening it:** with the server running, go to **http://127.0.0.1:8000** in a browser on the same
 PC. On a phone with the companion app, tap **Dashboard** in the companion: that's the phone's own
@@ -13,6 +12,39 @@ server, not the PC's.
 the date, close the game fully and open it again. It downloads a small update before the title
 screen. The server builds that update in the background, so give it a minute or two on a PC (a few
 minutes on a phone) before reopening.
+
+## The tabs
+
+- **Dashboard (first tab)**
+  - **Server time:** Visit past and future content. New installs start on 2019-12-01, just before
+    the CN game's first regular banners and events. Changing it also changes which units have Mana Board 2,
+    awakening and EX Boost, and which kit they use (see [Balance by date](DETAILS.md#balance-by-date)); the
+    game gets a small update the next time it reaches the title screen.
+  - **Quest drop amount:** multiplies quest drops (items, materials, mana, EXP) and event drops, from
+    1x up to 100x. The default, 1x, is the base game's own amounts.
+    Original StarPoint always gave 10x; set 10 to match it, or go higher for less grind.
+  - **Enemy strength:** multiplies every enemy's HP and attack (0.1x to 10x each) for a harder or easier
+    game; the game gets a small update the next time it reaches the title screen.
+  - **Play on a phone over Wi-Fi:** downloads the `server.txt` connection file for setup D (shown
+    when the server listens on the network).
+  - **Daily paid beads and free mails:** the paid beads added to each daily login bonus (150 by
+    default, 0 turns it off), and the three never-ending mails (Bread, Mana and EXP x1500) that can
+    be claimed again and again. Turn any of them off to remove it.
+  - **Summon rates:** the 5★ and 4★ chance per pull for unit banners, Star Fest / Meteor Festival and armament portals
+    (base game: 5% / 25% unit banners and armaments, 7.5% / 25% Star Fest and Meteor Festival).
+  - **Banner rotation**: the original StarPoint feature for the global app (legacy, PC only). Hidden unless
+    `BANNER_ROTATION="true"` or `DASHBOARD_BANNER_ROTATION="true"` is in `.env`.
+- **Events, Summons and Campaigns** list everything by start date, with the CN game's own dates.
+- **Events:** every event, CN-only ones included. Move any of them to any date. Each change builds a
+  small game update that the game downloads the next time it reaches the title screen.
+- **Summons:** schedule summon banners, with their banner art.
+- **Campaigns:** yearly login bonuses, free pulls and stamina/reward campaigns.
+- **News:** posts shown on the game's in-game News board.
+- **Mail:** gifts that arrive in the in-game mailbox at a set server time, once or repeating
+  (every N days, weeks, months or years), claimable for 30 days.
+- **Players:** accounts, saves (download and upload), gifts, and removing a unit from a save.
+- **Unit editor:** change any unit's abilities, numbers and details
+  ([UNIT_EDITOR.md](UNIT_EDITOR.md)).
 
 ---
 
@@ -232,7 +264,7 @@ New units are added with files, not on the dashboard: see [CUSTOM_UNITS.md](CUST
 - **The date changes how units play.** Moving the server's date also changes which units have Mana
   Board 2, awakening and EX Boost, and which kit (abilities and numbers) they use: units play as
   they did on that date. A unit your save already moved to Mana Board 2 keeps it. See
-  [Balance by date](../README.md#balance-by-date).
+  [Balance by date](DETAILS.md#balance-by-date).
 - **Nothing shows until the title screen.** The game only picks up schedule and date changes when
   it reaches the title screen. If you open it before the server has finished building the update,
   you may get an error (like C8601) or the old dates: close it, wait a minute, open it again.

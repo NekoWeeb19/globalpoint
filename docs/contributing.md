@@ -19,7 +19,7 @@ one save database. The CN app is the main one; the global app is [legacy](global
   is a new version number; the app never downloads a version it already has. The server numbers
   its schedule builds above the highest version it has seen, so they never repeat one a game may
   have (see [CN_CLIENT_SETUP.md](CN_CLIENT_SETUP.md#6-ship-it-to-the-app-as-an-update-each-time-5-min)).
-- A phone can point the app at a PC instead of `127.0.0.1` with a `server.txt` file (README, setup D).
+- A phone can point the app at a PC instead of `127.0.0.1` with a `server.txt` file ([INSTALL.md, setup D](INSTALL.md#d-on-a-phone-with-the-server-on-your-pc)).
 - Co-op battles use a separate TCP server (`src/coop/tcp.ts`, port 18888) with COM partners.
 
 Every route the server answers is listed in [routes.md](routes.md), generated from the server by
