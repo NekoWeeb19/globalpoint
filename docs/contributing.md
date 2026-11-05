@@ -65,7 +65,7 @@ Node scripts that build data, translations, game updates and packages. The ones 
 - `gen_cn_art_fill.cjs`: global's pictures for CN pictures that were missing, as an art patch.
 - `build_kit_*.cjs`, `kit_dates.cjs`: the old unit kits for balance by date (`assets/kit_dates.json`).
 - `gen_cn_slim.cjs`: the small CN data set the phone needs for schedule changes.
-- `custom_units.cjs`: custom CN units (`assets/custom_units/`, [CUSTOM_UNITS.md](CUSTOM_UNITS.md)), read by the
+- `custom_units.cjs`: custom CN units (`assets/custom_units/`, [MAKING_UNITS.md](MAKING_UNITS.md)), read by the
   schedule build and the server; `research/clone_cn_unit.cjs` makes one from an existing unit.
 - `unit_editor.cjs` and `unit_editor_text.cjs`: the dashboard's Unit editor (reading and checking a unit's
   ability lines, and writing them in the game's own words), with its code tables in `assets/unit_editor/`

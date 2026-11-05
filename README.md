@@ -52,12 +52,46 @@ Setup A needs the official CN game files (~10 GB) from the
 [CN CDN 1.4.54 release](https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54) and this repository.
 The [installation guide](docs/INSTALL.md) has every download with its size and checksum.
 
-## The dashboard
+## Features
 
-With the server running, open **http://127.0.0.1:8000** in a browser, or tap **Dashboard** in the
-companion. Move events and banners to any date, travel in time, change drop amounts, summon rates
-and enemy strength, send gifts and mail, back up saves, and edit units. See the
+Everything below is on the **dashboard**: open **http://127.0.0.1:8000** in a browser while the
+server runs, or tap **Dashboard** in StarPoint Companion. How to use each one is in the
 [dashboard guide](docs/DASHBOARD.md).
+
+- **Quest drop multiplier:** 1x (the base game) up to 100x, quests and events.
+- **Enemy strength:** enemies' HP and attack, from 0.1x to 10x each. Make the game as easy or as hard
+  as you want.
+
+  <img src="docs/images/feature-enemy-strength.png" alt="Enemy strength: HP and attack multipliers with presets" width="640">
+
+- **Summon rates:** set the 5★ and 4★ chance for unit banners, Star Fest / Meteor Festival and
+  armaments.
+
+  <img src="docs/images/feature-summon-rates.png" alt="Summon rates for unit banners, Star Fest / Meteor Festival and armaments" width="560">
+
+- **Daily and never-ending beads:** there's no in-game shop, so paid beads come with each daily login
+  bonus, and a 10-pull's worth of beads can always sit in the mailbox.
+- **Events and summons on your schedule:** move any event or banner to any date, start several at
+  once, and take an event's banners along.
+- **Yearly campaigns:** tick seasonal login bonuses, free pulls, stamina and reward campaigns, and
+  they repeat every year on their dates.
+- **Time travel:** set the server's date to replay any period. Units even play as they did then
+  ([balance by date](docs/DETAILS.md#balance-by-date)).
+- **News and mail:** post to the in-game News board, and schedule gifts (beads, items, units,
+  armaments) once or every day, week, month or year.
+
+  <img src="docs/images/feature-scheduled-mail.png" alt="A new scheduled mail: paid beads every day, 4 times" width="560">
+
+- **Unit and armament editor:** mix and match conditions, triggers and effects in any ability, change
+  a unit's numbers, or rename it and rewrite its title and description. Edited kits can be shared
+  as files. See [UNIT_EDITOR.md](docs/UNIT_EDITOR.md).
+
+  <img src="docs/images/feature-ability-editor.png" alt="The unit editor: an ability's lines, and its in-game wording" width="560">
+
+- **Custom units:** add a new unit made from game data and art
+  ([CUSTOM_UNITS.md](docs/CUSTOM_UNITS.md); an involved process).
+- **And more:** several accounts on one device, a button that syncs the daily reset with real time,
+  removing a unit from a save, and collecting the daily login bonus again right away.
 
 ## What works
 
@@ -92,7 +126,7 @@ also play as they did on any date ([balance by date](docs/DETAILS.md#balance-by-
 - [docs/DETAILS.md](docs/DETAILS.md): balance by date, the harmless errors in the log, how the game was
   translated, the server's settings (`.env`), and pointers for developers.
 - [docs/UNIT_EDITOR.md](docs/UNIT_EDITOR.md) and [docs/CUSTOM_UNITS.md](docs/CUSTOM_UNITS.md): changing
-  units and armaments, and adding new units.
+  units and armaments, and adding new units ([docs/MAKING_UNITS.md](docs/MAKING_UNITS.md) to make one).
 - [docs/contributing.md](docs/contributing.md): how the project is put together, for developers.
 
 ## Special thanks

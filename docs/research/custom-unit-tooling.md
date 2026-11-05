@@ -96,3 +96,33 @@ The first ranked plan (2026-11-03), before the user chose: 1 validator, 2 unit m
 **numbers editor** ("change a number, that's it") and an **ability editor** (add or remove what an ability does),
 which became the unit editor. Amelia's partial de-work (`assets/kit_dates.json`, 2026-11-02) was the worked example:
 the editor does it as "remove the lines the rework added, add the old ones back".
+
+## Unit editor: code
+
+- `scripts/armament_editor.cjs`: the armament side (uses the unit editor's checks and wording);
+  `scripts/test_armament_editor.mjs` (`npm test`): its offline test.
+- `scripts/unit_editor.cjs`: reading units, the checks, saving. `src/routes/web_api/unitEditor.ts`: its API
+  (`/api/unit-editor/...`). `web/pages/unit-editor.html`: the page.
+- `assets/unit_editor/ability_codes.json`: every condition, trigger, effect, who and target code with the fields
+  (columns) it reads, from the CN 1.8.1 client's own table parser (`scripts/research/ability_codes_from_pcode.cjs`;
+  the research is [research/ability-triggers.md](ability-triggers.md)).
+- `assets/unit_editor/words.json`: plain words, and which effects are percentages or on the base scale.
+- `scripts/unit_editor_text.cjs`: lines in the game's own words (a copy of the game's template engine, and its
+  wording rules for the common triggers, conditions and effects).
+- `scripts/test_unit_editor.mjs` (`npm test`): offline test.
+
+## Unit editor: tested (2026-11-03, StarPointTest emulator, companion 0.6.24 server)
+
+Amelia (221003) ability 1 edited in the editor to "if this unit is Water: every 6 → 1 s → combo +50 → 100" (a
+combination no CN unit has: the "not seen before" notice) and Lv 80 HP 3000. The change file went into the companion's
+`custom_units/changes/`; the server rebuilt by itself (update 1.4.960, both rows in it); the game took the 7 MB
+update. Her unit page showed the line in the game's own words ("When this unit is a/the ⟨Water⟩ unit → 6 seconds have
+passed → +50 Combo", locked until her Mana node), and in a quest battle with the node learned the combo jumped by 50
+every few seconds (108 combo 11 s in). Not tested yet: a custom unit's edit, a phone getting it by Download from PC.
+
+**Phone only (2026-11-04, StarPointTest emulator, companion 0.7.1):** with no PC involved, Amelia's ability 1 was
+edited and saved through the companion's own server (15 → 30% attack made 40 → 80%). The change file was written to
+the phone's `custom_units/changes/`, the phone rebuilt its update (1.4.963), the game downloaded it (21 MB) at the
+title screen, and her unit page read "+ 80 % to attack for this unit (Max + 240 %)". **Reset unit to game** removed
+the file and rebuilt. At phone width (375 px) some of the page's dropdowns (e.g. an effect's "Do") ran past the
+right edge of the screen; since companion 0.7.2 they fit the screen and long choices end in "…".
