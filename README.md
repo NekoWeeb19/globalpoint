@@ -346,7 +346,8 @@ gotchas are in the [dashboard guide](docs/DASHBOARD.md).
     be claimed again and again. Turn any of them off to remove it.
   - **Summon rates:** the 5★ and 4★ chance per pull for unit banners, Star Fest / Meteor Festival and armament portals
     (base game: 5% / 25% unit banners and armaments, 7.5% / 25% Star Fest and Meteor Festival).
-  - **Banner rotation** (off by default).
+  - **Banner rotation**: the original StarPoint feature for the global app (legacy, PC only). Hidden unless
+    `BANNER_ROTATION="true"` or `DASHBOARD_BANNER_ROTATION="true"` is in `.env`.
 - **Events, Summons and Campaigns** list everything by start date, with the CN game's own dates.
 - **Events:** every event, CN-only ones included. Move any of them to any date. Each change builds a
   small game update that the game downloads the next time it reaches the title screen.
@@ -529,7 +530,8 @@ setup C).
 | `LOGIN_BONUS_PAID_BEADS` | `150` | paid beads with each daily login bonus (0 = off); the dashboard's value replaces it once set |
 | `RAID_SOLO_CLEARS_PER_KILL` | `1` | clears of a raid's hardest stage per boss kill |
 | `COOP_SUMMON_SECONDS` | `5` | seconds before COM partners join after Recruit |
-| `BANNER_ROTATION`, `BANNER_ROTATION_HOURS` | `false`, `24` | rotate summon banners automatically |
+| `BANNER_ROTATION`, `BANNER_ROTATION_HOURS` | `false`, `24` | rotate summon banners automatically (global app, legacy) |
+| `DASHBOARD_BANNER_ROTATION` | `false` | show the dashboard's Banner rotation card even while the rotation is off |
 | `CN_ACCOUNT_ID` | empty | play every device on one account (empty = one account per device) |
 | `CN_CDN_DIR`, `CN_TRANSLATED_DIR` | `.cdn/cn`, `.cdn/cn_text` | the CN game files and their English tables |
 | `CN_SLIM_DIR` | `.cdn/cn_slim` | the small CN data set phones copy for schedule edits (the server builds it at start if missing) |

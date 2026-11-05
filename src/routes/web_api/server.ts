@@ -305,8 +305,10 @@ const routes = async (fastify: FastifyInstance) => {
     })
 
     // shows the rotation's position, the server date, and the banners that are live right now
+    // (the global app's StarPoint feature: the dashboard shows its card only when it's on, or DASHBOARD_BANNER_ROTATION="true")
     fastify.get("/rotation", async (_: FastifyRequest, reply: FastifyReply) => {
-        return reply.send(getBannerRotationStatus() ?? { "enabled": false })
+        const show = ["1", "true", "on", "yes"].includes((process.env.DASHBOARD_BANNER_ROTATION ?? "").trim().toLowerCase())
+        return reply.send({ ...(getBannerRotationStatus() ?? { "enabled": false }), show })
     })
 
     // moves to the next banner now
