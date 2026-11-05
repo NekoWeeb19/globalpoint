@@ -273,6 +273,8 @@
             }
             const serverNow = () => data === null ? Date.now() : new Date(data.serverDate).getTime() + (Date.now() - loadedAt)
 
+            // a unit banner the CN files have no picture for (scripts/gen_cn_event_schedule.cjs dates it 2011 unless it's scheduled)
+            const noArt = (event) => event.family === "gacha" && !event.image && event.bannerType === "unit" && (event.servers ?? []).length === 1 && event.servers[0] === "cn"
             function badge(text, strong) {
                 const span = document.createElement("span")
                 span.className = "px-3 py-1 rounded-full text-sm " + (strong ? "bg-primary text-on-primary" : "bg-surface-container-high text-on-surface")
@@ -343,6 +345,7 @@
                     name.textContent = event.name + (event.rerun ? " (rerun)" : "")
                     title.append(name, badge(kindOf(event), false))
                     if (appBadge(event)) title.append(badge(appBadge(event), false))
+                    if (noArt(event)) title.append(badge("No art: hidden in game unless scheduled", false))
                     const state = stateOf(event)
                     if (state === "live") title.append(badge("On now", true))
                     if (state === "upcoming" && event.scheduled) title.append(badge("Coming up", false))
@@ -476,6 +479,7 @@
                     : "Also move the " + event.bannerCount + " summon banner" + (event.bannerCount === 1 ? "" : "s") + " that opened with it"
                 $("editor-reset").disabled = busy || !event.scheduled
                 $("editor-message").textContent = ""
+                if (noArt(event)) $("editor-message").textContent = "The CN game files have no picture for this banner: in the game it shows blank (pulls work). It's kept out of the game (dated 2011) unless you schedule it here."
                 const image = $("editor-image")
                 image.classList.toggle("hidden", !event.image)
                 if (event.image) image.src = event.image

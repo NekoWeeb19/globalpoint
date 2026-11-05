@@ -357,6 +357,9 @@ async function main() {
     const raw = fs.existsSync(scheduleFile) ? JSON.parse(fs.readFileSync(scheduleFile, "utf8")) : { entries: [] }
     const { schedule } = parseSchedule(raw, catalog)
     const { moves } = planRowMoves(catalog, schedule)
+    // the banner rows the schedule moves (a banner without art is still moved when it's on the schedule)
+    const GACHA_FILE = fileOf("master/gacha/gacha.orderedmap")
+    const movedGacha = new Set([...moves.keys()].filter(k => k.startsWith(GACHA_FILE + "#")).map(k => k.slice(GACHA_FILE.length + 1)))
 
     // every file the schedule can touch, from the newest translated copy (else CN's own)
     // tables CN closed on its shutdown day (2025-08-14 23:59:59, China time) that global keeps open:
@@ -372,6 +375,8 @@ async function main() {
     // the pop-up dialog table (its logical name isn't known; this is its stored path) and the dates that hide a row
     const GUIDE_DIALOGS = "production/upload/f3/5dbdf5b3c941d0a975bd5eabb5652fa411ebf9"
     const HIDDEN = ["2000-01-01 00:00:00", "2000-01-01 00:00:01"]
+    // a unit banner without art: a week in 2011, before any save starts
+    const NO_ART_DATES = ["2011-01-01 12:00:00", "2011-01-08 11:59:59"]
     const worldStoryStart = new Map() // world story event id -> its first date (filled when tables load)
     const cnMs = text => Date.parse(text.replace(" ", "T") + "Z")
     const cnText = ms => new Date(ms).toISOString().slice(0, 19).replace("T", " ")
@@ -402,6 +407,14 @@ async function main() {
         [fileOf("master/gacha/gacha.orderedmap")]: (key, c) => {
             const date = /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/
             let changed = false
+            // a unit banner (character lineup, column 14) whose list picture (column 3) the CN files don't have shows
+            // a blank banner and a stray preview in the game: dated 2011 so it never comes up by itself (the
+            // dashboard labels it); moved on the Summons tab, it keeps the dates it was given there
+            if (c[14] && c[14] !== "(None)" && c[3] && !cnHasPicture(c[3]) && !movedGacha.has(key) && date.test(c[29] ?? "") && c[29] > NO_ART_DATES[1]) {
+                c[29] = NO_ART_DATES[0]; c[30] = NO_ART_DATES[1]
+                if (date.test(c[31] ?? "")) c[31] = NO_ART_DATES[1]
+                changed = true
+            }
             if (c[22] && c[22] !== "(None)" && !(c[14] && c[14] !== "(None)") && date.test(c[30] ?? "") && date.test(c[31] ?? "") && c[31] > c[30]) {
                 c[31] = c[30]
                 changed = true
@@ -714,10 +727,10 @@ async function main() {
             const tree = trees.get(file)
             const found = tree && R.leaves(tree).find(x => x.path.join("/") === p)
             if (!found) continue
-            // a summon banner the CN files have no picture for shows as an empty page: left where it is
+            // a summon banner the CN files have no picture for shows as an empty page, but pulls work: it moves like any
+            // other (unscheduled, it's dated 2011 by the date fixes above, and the dashboard labels it)
             if (file === fileOf("master/gacha/gacha.orderedmap") && !cnBannerHasArt(p, R.splitCsv(found.leaf.text)[3])) {
-                console.log(`${eventKey}: banner ${p} has no artwork in the CN files, not moved`)
-                continue
+                console.log(`${eventKey}: banner ${p} has no artwork in the CN files (moved anyway; it shows blank)`)
             }
             leaves.push(found.leaf)
             if (own && file === fileOf(own.table) && p === eventId) ownRow = found.leaf
