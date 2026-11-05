@@ -110,6 +110,11 @@ export function rebuildCnUpdate() {
     rebuildCnSchedule()
 }
 
+/** Whether the CN game update is being rebuilt (or queued to rebuild): opening the game now would get the old one. */
+export function cnUpdateBusy(): boolean {
+    return cnRunning || cnAgain
+}
+
 /**
  * Keeps the highest CN update version this install has seen (a game's report, an update it built or had
  * on its list) in .database/cn_client_version.json; the next build is numbered above it.

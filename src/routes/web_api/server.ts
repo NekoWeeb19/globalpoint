@@ -11,7 +11,7 @@ import { ACCOUNT_CLAIM_MINUTES } from "../../lib/accountClaim";
 import { resetPlayerActiveMissionSync, unlockPlayerActiveMissionSync } from "../../nya/activeMissionTools";
 import activeMissionData from "../../../assets/active_missions.json";
 import { getCampaignOverview, setCampaignSchedule } from "../../nya/campaignSchedule";
-import { checkCnClockDependents, eventImagePath, getEventOverview, removeEventSchedule, removeEventSchedules, setEventSchedule, setEventSchedules } from "../../nya/eventSchedule";
+import { checkCnClockDependents, cnUpdateBusy, eventImagePath, getEventOverview, removeEventSchedule, removeEventSchedules, setEventSchedule, setEventSchedules } from "../../nya/eventSchedule";
 import { createReadStream } from "fs";
 import { allowLoginBonusAgainSync } from "../../nya/loginBonus";
 import { withRealTimeOfDay } from "../../lib/serverClock";
@@ -130,6 +130,9 @@ const routes = async (fastify: FastifyInstance) => {
     // ---- summon rates by rarity (src/nya/gachaRates.ts) ----
 
     const ratesReply = () => ({ rates: getGachaRates(), defaults: DEFAULT_GACHA_RATES })
+    // the companion's ready light: is the game update being rebuilt (wait before opening the game)?
+    fastify.get("/status", async (_: FastifyRequest, reply: FastifyReply) => reply.send({ running: true, updateRebuilding: cnUpdateBusy() }))
+
     fastify.get("/gacha-rates", async (_: FastifyRequest, reply: FastifyReply) => reply.send(ratesReply()))
     fastify.post("/gacha-rates", async (request: FastifyRequest, reply: FastifyReply) => {
         const body = request.body as { rates?: unknown, reset?: unknown } | undefined

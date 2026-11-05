@@ -46,6 +46,8 @@ public class MainActivity extends Activity {
 
         status = u.text("", 16);
         data = u.text("", 14);
+        // first time here, or something isn't working: a checklist that fixes what it can
+        u.button("Setup check", () -> startActivity(new Intent(this, SetupActivity.class)));
 
         LinearLayout row1 = row(u);
         row1.addView(button("Start", () -> ServerService.start(this)));
@@ -241,18 +243,31 @@ public class MainActivity extends Activity {
         if (!visible) return;
         worker.execute(() -> {
             boolean up = ServerProbe.running(), own = ServerProbe.ownProcess(this);
+            Boolean rebuilding = up ? ServerProbe.updateRebuilding() : null;
             String tail = tail(ServerFiles.logFile(this), 6000);
             ui.post(() -> {
-                status.setText(own && up ? "Server: running on 127.0.0.1:8000"
-                        : own ? "Server: starting..."
-                        : up ? "Server: stopped (another server answers on port 8000, e.g. a PC through adb)"
-                        : "Server: stopped");
+                // the ready light: green = open the game; yellow = wait (starting, or the game update is being rebuilt); red = stopped
+                if (own && up && Boolean.TRUE.equals(rebuilding)) light(YELLOW, "Wait: the game update is being rebuilt. Open the game when this turns green.");
+                else if (own && up) light(GREEN, "Ready: open the game. (Server on 127.0.0.1:8000)");
+                else if (own) light(YELLOW, "Wait: the server is starting...");
+                else if (up) light(YELLOW, "Stopped here (another server answers on port 8000, e.g. a PC through adb)");
+                else light(RED, "Stopped: press Start.");
                 boolean atEnd = logScroll.getChildAt(0).getBottom() <= logScroll.getHeight() + logScroll.getScrollY() + 40;
                 log.setText(tail);
                 if (atEnd) logScroll.post(() -> logScroll.fullScroll(ScrollView.FOCUS_DOWN));
                 ui.postDelayed(this::refresh, 1000);
             });
         });
+    }
+
+    private static final int GREEN = 0xFF2E9E44, YELLOW = 0xFFE0A000, RED = 0xFFD32F2F;
+
+    /** The status line with a coloured dot in front. */
+    private void light(int color, String text) {
+        android.text.SpannableString s = new android.text.SpannableString("●  " + text);
+        s.setSpan(new android.text.style.ForegroundColorSpan(color), 0, 1, 0);
+        s.setSpan(new android.text.style.RelativeSizeSpan(1.4f), 0, 1, 0);
+        status.setText(s);
     }
 
     private static String tail(File f, int bytes) {

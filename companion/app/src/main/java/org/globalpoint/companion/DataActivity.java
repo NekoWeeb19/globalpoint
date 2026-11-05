@@ -33,7 +33,7 @@ import java.util.Locale;
  * first, since the save may be replaced.
  */
 public class DataActivity extends Activity {
-    private static final int PICK_ZIP = 1, PICK_COMICS = 3;
+    private static final int PICK_ZIP = 1, PICK_COMICS = 3, PICK_CHECK = 4;
 
     private final Handler ui = new Handler(Looper.getMainLooper());
     private TextView summary, status;
@@ -41,7 +41,7 @@ public class DataActivity extends Activity {
     private EditText host;
     private static final String GAME = "com.leiting.wf";
     private CheckBox save, patches, images, comics, schedule, game;
-    private Button download, importZip, comicsPack;
+    private Button download, importZip, comicsPack, checkFile;
     private SharedPreferences prefs;
     private ScrollView scroll;
 
@@ -98,6 +98,16 @@ public class DataActivity extends Activity {
             startActivityForResult(i, PICK_COMICS);
         });
 
+        u.heading("Check a download");
+        u.text("Is a downloaded file whole and undamaged? Pick an OBB, the data pack, the comics pack or the game APK: this reads it "
+                + "(a minute or two for a few GB) and compares it with the GlobalPoint downloads. Nothing is changed.", 13);
+        checkFile = u.button("Check a file...", () -> {
+            Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            i.setType("*/*");
+            startActivityForResult(i, PICK_CHECK);
+        });
+
         bar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
         bar.setMax(1000);
         bar.setVisibility(View.GONE);
@@ -131,6 +141,7 @@ public class DataActivity extends Activity {
         download.setEnabled(!on);
         importZip.setEnabled(!on);
         comicsPack.setEnabled(!on);
+        checkFile.setEnabled(!on);
         bar.setVisibility(on ? View.VISIBLE : View.GONE);
     }
 
@@ -238,6 +249,11 @@ public class DataActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, result);
         if (resultCode != RESULT_OK || result == null || result.getData() == null) return;
         Uri uri = result.getData();
+        if (requestCode == PICK_CHECK) {
+            // only reads the file: the server keeps running
+            run(() -> DownloadCheck.check(this, uri, this::progress), false);
+            return;
+        }
         if (requestCode == PICK_COMICS) {
             run(() -> {
                 String kind = DataTransfer.packKind(this, uri);

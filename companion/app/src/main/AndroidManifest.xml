@@ -45,6 +45,9 @@
         <activity
             android:name=".DataActivity"
             android:exported="false" />
+        <activity
+            android:name=".SetupActivity"
+            android:exported="false" />
 
         <service
             android:name=".ServerService"

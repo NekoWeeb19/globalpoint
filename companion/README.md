@@ -20,9 +20,17 @@ how to build it.
 ## Using the app
 
 **Main screen**
-- Server status, **Start** / **Stop**, and **Start the server when this app opens** (on by default).
-  The status says "running" only when the app's own server process exists and port 8000 answers. If
-  something else answers on 8000 (a PC through `adb reverse`, say), the screen says so.
+- A ready light, **Start** / **Stop**, and **Start the server when this app opens** (on by default).
+  **Green**: the server is up and the game update is current, so open the game. **Yellow**: wait, the
+  server is starting, or it's rebuilding the game update after a dashboard change (GET
+  `/api/server/status`, `updateRebuilding`); a game opened meanwhile would get the old update. **Red**:
+  stopped. If something else answers on 8000 (a PC through `adb reverse`, say), the screen says so.
+- **Setup check** (SetupActivity): a checklist for setup C, each line green/yellow/red with a fix button:
+  the game installed; this app's and the game's storage access (opens the right settings screen); the
+  OBB, found in Download, Downloads, Documents or the top of storage (the 3 parts or the single file),
+  SHA-256 checked, then moved into `starpoint_game` (a rename, so instant; a copy only across storages);
+  leftover loose game files in the drop-off folders (removed when an OBB is there, since the game would
+  list them all before starting); the server's data; the server.
 - **Let the server run in the background:** asks Android to exempt the app from battery
   optimisation, so the phone doesn't stop the server. Shown until it's granted.
 - **Dashboard** opens the server's dashboard inside the app (Back returns to the app). **Open in
@@ -51,6 +59,9 @@ how to build it.
   picker, so it needs no storage permission.
 - **Choose zip...** takes a zip with `.database/` and `.cdn/` folders (and optionally `.env`), as
   made by `companion/tools/make-data-zip.cjs`.
+- **Check a file...** (DownloadCheck): picks any file and works out its SHA-256, then says whether it is one of the
+  GlobalPoint downloads (the OBB parts, the single OBB, the data pack, the comics pack, the game APK), whole and
+  undamaged, or damaged / cut short. The known hashes are in `DownloadCheck.java` (update them when a Drive file changes).
 
 **Full game files.** A fresh game asks its server for the full ~10 GB download, and the companion
 doesn't keep those files. **Full game files** copies them from the PC into the game's drop-off

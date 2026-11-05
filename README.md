@@ -97,6 +97,10 @@ SHA-256 of the OBB parts, to check a download (`certutil -hashfile <file> SHA256
 a57b1629b3564aa600cfaa9b1bbc88794a36eb1214b58f58238986dc0f0aebb7  main.1008001.com.leiting.wf.part1of3.obb
 343438b6ee2debb1843609acbf386b2cf977d23a6ea018485e22e6d48a5fc453  main.1008001.com.leiting.wf.part2of3.obb
 b3676a2042c945b26b7c0bfa1bd1127cb15e07984d7b2b47971c8b0d4aa9e412  main.1008001.com.leiting.wf.part3of3.obb
+5494b5a79f6508068c133c6ebd971862b1f0aaef1e6d0b2955d85a76eca1f697  main.1008001.com.leiting.wf.obb (the single file)
+8637a682ab1439e8c62040ebe9a4ce47b3b3ec28b4f1f65c4ba00f5332a6e393  starpoint-data.zip
+7409b79cbe56c8c7ff05e48755904c7c35fb9677914925607a474f5a33424174  starpoint-comics.zip
+198f2b4fb31568e2050ca5e1989d711ff63077494b21ff990562263c0ff0774e  World Flipper (game) APK, build 25
 ```
 
 ### A. On a PC (emulator)
@@ -205,6 +209,13 @@ setup A. After that the phone plays on its own.
    Import the comics zip the same way if you want comics. (With setup A running on the same Wi-Fi,
    **Download from PC** without **Full game files** does the same.)
 7. Start the companion's server as in step 8 of setup B.
+   **Easier way for steps 3-7:** put the downloads in the phone's Download folder, open StarPoint Companion and
+   tap **Setup check**. It lists what's done (green) and what's left (yellow/red), with a button for each step it can
+   do: it finds the OBB (the 3 parts or the single file), checks it's undamaged and moves it into `starpoint_game`,
+   removes leftover game files from an earlier setup, and opens World Flipper's settings for the permissions (those
+   switches only you can turn on). **Game data > Check a file** checks any download the same way.
+   The companion's main screen shows a light: **green** = open the game; **yellow** = wait (the server is starting,
+   or it's rebuilding the game update after a dashboard change); **red** = stopped.
 8. Open the game (if it was already open, close it fully first). It shows "Unpacking game files",
    unpacks the OBB by itself and deletes it when done. With the 3 parts it checks first that all
    three are there and complete, then unpacks from the last part back, deleting each part as it
