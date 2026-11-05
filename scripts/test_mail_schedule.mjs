@@ -95,6 +95,34 @@ try {
     check("a deleted schedule sends no more; what arrived stays", scheduled(A.player).filter(m => m.type === 9).length === 26)
     ProcessAllMails(A.player)
 
+    // a first send time already past: one goes out right away, then it keeps its own times
+    at("2027-07-14T15:00:00Z") // a Wednesday
+    const late = M.saveMailSchedule({ kind: "beads_free", amount: 7, title: "late once", start: "2027-07-14T09:00:00Z", every: 0 }).at(-1)
+    let got = scheduled(A.player).filter(m => m.subject === "late once")
+    check("a once-mail whose time has passed sends right away", got.length === 1 && got[0].create_time === "2027-07-14 15:00:00", got.map(m => m.create_time))
+    const mondays = M.saveMailSchedule({ kind: "beads_free", amount: 8, title: "mondays", start: "2027-07-05T10:00:00Z", every: 1, unit: "week", times: null }).at(-1)
+    got = scheduled(A.player).filter(m => m.subject === "mondays")
+    check("weekly from a past Monday: one right away (not every missed week)", got.length === 1, got.map(m => m.create_time))
+    at("2027-07-19T10:00:30Z") // the next Monday
+    got = scheduled(A.player).filter(m => m.subject === "mondays")
+    check("...then it carries on on Mondays, at its own time", got.length === 2 && got[1].create_time === "2027-07-19 10:00:00", got.map(m => m.create_time))
+    M.saveMailSchedule({ ...mondays, title: "mondays", message: "new words" })
+    check("editing only the message doesn't send it again", scheduled(A.player).filter(m => m.subject === "mondays").length === 2)
+    M.deleteMailSchedule(late.id); M.deleteMailSchedule(mondays.id)
+    ProcessAllMails(A.player)
+
+    // a save made after a send time still gets it (dated as sent), while it's under 30 days old
+    at("2027-07-20T00:00:00Z")
+    M.saveMailSchedule({ kind: "mana", amount: 3, title: "for late joiners", start: "2027-07-20T00:00:00Z", every: 0 })
+    at("2027-07-25T00:00:00Z")
+    const C = newPlayer()
+    got = scheduled(C.player).filter(m => m.subject === "for late joiners")
+    check("a save made 5 days after the send still gets it, dated as sent", got.length === 1 && got[0].create_time === "2027-07-20 00:00:00", got.map(m => m.create_time))
+    at("2027-08-25T00:00:00Z")
+    const D = newPlayer()
+    check("one made after the 30 days doesn't (it would have expired)", scheduled(D.player).filter(m => m.subject === "for late joiners").length === 0)
+    ProcessAllMails(A.player); ProcessAllMails(C.player)
+
     // months keep their day (31st -> end of shorter months), years too
     const monthly = { start: "2026-01-31T10:00:00.000Z", every: 1, unit: "month", times: null }
     check("monthly from Jan 31: Feb 28, Mar 31, Apr 30", [1, 2, 3].map(k => new Date(M.sendTime(monthly, k)).toISOString().slice(0, 10)).join() === "2026-02-28,2026-03-31,2026-04-30")
@@ -116,6 +144,21 @@ try {
     check("the active save gets it", scheduled(A.player).length === 1)
     check("another save doesn't", scheduled(B.player).length === 0)
     check("the dashboard shows what was delivered and waits", M.mailScheduleStatus(A.player).at(-1).delivered === 1 && M.mailScheduleStatus(A.player).at(-1).waiting === 1)
+    ProcessAllMails(A.player)
+    const after = M.mailScheduleStatus(A.player).at(-1)
+    check("after claiming in the game: still delivered 1, waiting 0", after.delivered === 1 && after.waiting === 0, after)
+    // no active save picked: the counts add up every save that got some
+    setChosenAccount("cn", null)
+    at("2027-08-02T00:00:00Z")
+    const daily2 = M.saveMailSchedule({ kind: "mana", amount: 10, start: "2027-08-02T00:00:00Z", every: 1, unit: "day", times: null }).at(-1)
+    scheduled(A.player); scheduled(B.player)
+    const both = M.mailScheduleStatus(null).find(s => s.id === daily2.id)
+    check("no active save: delivered and waiting counted across saves", both.delivered === 2 && both.waiting === 2, both)
+    at("2027-08-03T00:00:00Z")
+    scheduled(A.player)
+    const later = M.mailScheduleStatus(null).find(s => s.id === daily2.id)
+    check("the next day's send shows up in the counts", later.delivered === 3 && later.waiting === 3, later)
+    M.deleteMailSchedule(daily2.id)
     check("saved to .database for restarts and the Wi-Fi copy", fs.existsSync(path.join(temp, ".database", "mail_schedule.json")) && fs.existsSync(path.join(temp, ".database", "mail_delivered.json")))
 
     // bad input

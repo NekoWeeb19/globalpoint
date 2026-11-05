@@ -219,7 +219,10 @@
                 $("title").placeholder = defaultTitle(kind, $("type-id").value, $("amount").value || "?")
                 $("message-text").placeholder = data.defaultMessage || ""
                 const s = formValue()
-                $("preview").textContent = s.start ? "Sends " + whenText({ ...s, start: s.start }) + "." : ""
+                const past = s.start && Date.parse(s.start) < Date.parse(data.serverTime) - 60000
+                $("preview").textContent = !s.start ? "" : "Sends " + whenText({ ...s, start: s.start }) + "." +
+                    (!past ? "" : s.every === 0 ? " That time has passed: it sends right away."
+                        : " The first time has passed: one sends right away, then it keeps these times (missed ones aren't all sent).")
             }
             function formValue() {
                 const repeating = $("repeat").value === "repeat"
@@ -271,7 +274,7 @@
                     const status = document.createElement("span")
                     status.className = "text-sm text-on-surface-variant"
                     status.textContent = (s.next ? "Next: " + fmt(s.next) + " UTC" : "Done: nothing left to send") +
-                        (data.activePlayer !== null || data.activeAccount === null ? " · delivered " + s.delivered + ", waiting to be claimed " + s.waiting : "")
+                        " · delivered " + s.delivered + ", waiting to be claimed " + s.waiting
                     const message = document.createElement("span")
                     message.className = "text-sm text-on-surface-variant italic"
                     message.textContent = "“" + (s.message || data.defaultMessage) + "”"
@@ -362,6 +365,13 @@
 
             fetch("/api/server/mail").then(r => r.json()).then(reply => { data = reply; reset(); render() })
                 .catch(error => { $("message").textContent = "Could not load: " + error.message })
+            // keep the list current while the page is open (sends arriving, mails claimed in the game); the form is left alone
+            const poll = () => {
+                if (busy || document.hidden) return
+                fetch("/api/server/mail").then(r => r.ok ? r.json() : null).then(reply => { if (reply && !busy) { data = { ...reply }; render() } }).catch(() => { })
+            }
+            setInterval(poll, 10000)
+            document.addEventListener("visibilitychange", poll)
         })()
     </script>
 </body>

@@ -97,8 +97,12 @@ server. For mail that's saved and can arrive later or again and again, use the *
    changes one; **Delete** stops it (mails already in the mailbox stay).
 
 How it behaves:
-- It follows the **server time**, so moving the server's date on the Dashboard tab makes due mails arrive. Send times
-  from before a mail was scheduled (or last edited) are skipped, so nothing pours out at once.
+- It follows the **server time**, so moving the server's date on the Dashboard tab makes due mails arrive.
+- **A first send time that has already passed** sends one mail right away, then it keeps its own times: "every Monday
+  from the 1st", scheduled on a Wednesday, sends now and then on Mondays. The missed sends in between aren't all sent.
+  Changing only a mail's title or message doesn't send it again; changing its times starts it over the same way.
+- **A save made later** (a new account) still gets the sends from before it existed, dated as sent, as long as they're
+  under 30 days old.
 - Each mail can be claimed for **30 days** after it arrives, then it's gone. After a long jump forward in server time,
   only the sends from the last 30 days arrive (the older ones would have expired).
 - Only the **active save** gets it: the CN account picked on the Players tab (or `CN_ACCOUNT_ID`). With none picked,

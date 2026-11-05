@@ -8,8 +8,10 @@
 // Both are saved, so mails survive a restart and go along with the companion's Wi-Fi copy.
 //
 // Delivery happens when the mailbox is read: every send time of a schedule that has come (server time) and is less
-// than 30 days old becomes a mail; older ones would already have expired. Send times before a schedule was saved
-// are skipped, so making or editing one never pours out back mail.
+// than 30 days old becomes a mail; older ones would already have expired. When a schedule is made (or its times are
+// changed) with its first send time already past, one mail goes out right away, then it carries on at its own times
+// ("every Monday from the 1st" keeps Mondays); the older sends are not poured out. An edit of only the title or
+// message keeps its progress.
 
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "fs"
 import path from "path"
@@ -82,7 +84,8 @@ export interface ScheduledMail {
 
 interface PlayerState {
     /** per schedule: the next send to deliver, for which save of the schedule */
-    progress: Record<string, { savedAt: number, next: number }>
+    /** timing: the schedule's start/repeat when this progress began (an edit of only the title or message keeps it) */
+    progress: Record<string, { savedAt: number, next: number, timing?: string }>
     mails: ScheduledMail[]
     /** how many each schedule delivered to this save (shown on the dashboard) */
     delivered?: Record<string, number>
@@ -122,8 +125,18 @@ export function listMailSchedules(): MailSchedule[] {
         return []
     }
 }
-function saveSchedules(list: MailSchedule[]) {
-    writeJson(SCHEDULE_FILE, { schedules: list })
+/** The next schedule id: ids are never reused (a deleted schedule's deliveries are kept under its id). */
+function nextScheduleId(list: MailSchedule[]): number {
+    const raw = readJson<{ nextId?: unknown }>(SCHEDULE_FILE, {})
+    const stored = Number.isSafeInteger(raw.nextId) ? raw.nextId as number : 1
+    // ...nor any id a save already has deliveries for
+    const used = Object.values(readDelivered().players).flatMap(p => Object.keys(p.progress ?? {}).map(Number))
+    return Math.max(stored, ...list.map(x => x.id + 1), ...used.map(id => id + 1), 1)
+}
+function saveSchedules(list: MailSchedule[], nextId?: number) {
+    const raw = readJson<{ nextId?: unknown }>(SCHEDULE_FILE, {})
+    const keep = Number.isSafeInteger(raw.nextId) ? raw.nextId as number : undefined
+    writeJson(SCHEDULE_FILE, { schedules: list, nextId: nextId ?? keep ?? Math.max(1, ...list.map(x => x.id + 1)) })
     scheduleCache = null
 }
 const readDelivered = (): Delivered => {
@@ -181,8 +194,10 @@ export function saveMailSchedule(input: Record<string, unknown>): MailSchedule[]
         s.id = list[at].id
         list[at] = s
     } else {
-        s.id = list.reduce((m, x) => Math.max(m, x.id), 0) + 1
+        s.id = nextScheduleId(list)
         list.push(s)
+        saveSchedules(list, s.id + 1)
+        return list
     }
     saveSchedules(list)
     return list
@@ -261,15 +276,9 @@ export function scheduledMailsFor(playerId: number, now = getServerDate().getTim
     if (isActiveSave(playerId)) {
         for (const s of listMailSchedules()) {
             const p = state.progress[s.id]
-            // a new or edited schedule starts at its first send not before the moment it was saved
-            let k = p !== undefined && p.savedAt === s.savedAt ? p.next : firstSendFrom(s, s.savedAt - 60_000)
+            const timing = timingOf(s)
             const limit = sendCount(s) ?? Infinity
-            // sends more than 30 days back would have expired already
-            const skipTo = firstSendFrom(s, now - MAIL_DAYS * DAY)
-            if (k < skipTo) k = skipTo
-            for (let i = 0; i < 1000 && k < limit; i++) {
-                const at = sendTime(s, k)
-                if (at > now) break
+            const deliver = (at: number) => {
                 state.mails.push({
                     id: d.nextMailId++,
                     create_time: date2str(at),
@@ -287,10 +296,30 @@ export function scheduledMailsFor(playerId: number, now = getServerDate().getTim
                     expires: at + MAIL_DAYS * DAY,
                 })
                 state.delivered = { ...(state.delivered ?? {}), [s.id]: (state.delivered?.[s.id] ?? 0) + 1 }
+            }
+            // a new schedule, or one whose times changed (an edit of only its title or message carries on)
+            const fresh = p === undefined || (p.timing !== undefined ? p.timing !== timing : p.savedAt !== s.savedAt)
+            let k: number
+            if (fresh) {
+                // its sends from the moment it was saved on...
+                k = firstSendFrom(s, s.savedAt - 60_000)
+                // ...and when its first send time had already passed, one right away (then it keeps its own times)
+                // (not when a send of its own is due right now anyway)
+                if (k > 0 && (k >= limit || sendTime(s, k) > s.savedAt) && s.savedAt + MAIL_DAYS * DAY > now) deliver(s.savedAt)
+            } else {
+                k = p.next
+            }
+            // sends more than 30 days back would have expired already
+            const skipTo = firstSendFrom(s, now - MAIL_DAYS * DAY)
+            if (k < skipTo) k = skipTo
+            for (let i = 0; i < 1000 && k < limit; i++) {
+                const at = sendTime(s, k)
+                if (at > now) break
+                deliver(at)
                 k++
             }
-            if (p === undefined || p.savedAt !== s.savedAt || p.next !== k) {
-                state.progress[s.id] = { savedAt: s.savedAt, next: k }
+            if (p === undefined || p.savedAt !== s.savedAt || p.next !== k || p.timing !== timing) {
+                state.progress[s.id] = { savedAt: s.savedAt, next: k, timing }
                 changed = true
             }
         }
@@ -316,20 +345,25 @@ export function removeScheduledMail(playerId: number, mailId: number) {
     if (state.mails.length !== before) writeDelivered(d)
 }
 
+/** A schedule's times, as one string: progress carries on through an edit that leaves them alone. */
+const timingOf = (s: MailSchedule) => [s.start, s.every, s.unit, s.times].join("|")
+
 /** Whether a mail id is a scheduled one. */
 export const isScheduledMailId = (id: number) => id >= FIRST_MAIL_ID && id < 90_000_000
 
 /** For the dashboard: each schedule with its next send and, for the given save, how many were delivered and wait unclaimed. */
 export function mailScheduleStatus(playerId: number | null, now = getServerDate().getTime()) {
-    const mails = playerId !== null ? scheduledMailsFor(playerId, now) : []
-    const state = playerId !== null ? readDelivered().players[String(playerId)] : undefined
+    // the active save: deliver what's due first, so the counts are current
+    if (playerId !== null) scheduledMailsFor(playerId, now)
+    // no active save (each device its own account): every save that has received some, added up
+    const players = Object.entries(readDelivered().players).filter(([id]) => playerId === null || id === String(playerId)).map(([, state]) => state)
     return listMailSchedules().map(s => {
         const next = nextSendTime(s, now)
         return {
             ...s,
             next: next === null ? null : new Date(next).toISOString(),
-            delivered: state?.delivered?.[s.id] ?? 0,
-            waiting: mails.filter(m => m.scheduleId === s.id).length,
+            delivered: players.reduce((n, p) => n + (p.delivered?.[s.id] ?? 0), 0),
+            waiting: players.reduce((n, p) => n + p.mails.filter(m => m.scheduleId === s.id && m.expires > now).length, 0),
         }
     })
 }
