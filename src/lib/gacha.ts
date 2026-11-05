@@ -120,8 +120,10 @@ export function rewardPlayerGachaDrawResultSync(
                     const rolledMovie = randomPoolItem(1, 101, rankMovieRates[rarity]) ?? GachaMovieType.NORMAL
                     const movieType = 5 - rarity < guaranteeStars ? GachaMovieType.NORMAL : rolledMovie
 
-                    // pick a seed
-                    const isRateUp = (gacha as CharacterGacha).movieName !== "normal"
+                    // pick a seed (it decides the summon animation; the game checks the result fits it). Star Fest /
+                    // Meteor Festival banners (movie "fes") take the normal seeds: with the rate-up ones the game stopped
+                    // with C3032 "result rarity mismatch" on most pulls (tested in game, 2026-11-05)
+                    const isRateUp = (gacha as CharacterGacha).movieName !== "normal" && (gacha as CharacterGacha).movieName !== "fes"
                     const seeds = ((isRateUp ? rateUpMovieSeeds : movieSeeds) as GachaMovieSeeds)[rarity + 1][movieType]
                     const seedIndex = randomInt(0, seeds.length + 1)
 
