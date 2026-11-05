@@ -91,13 +91,16 @@ function rebuildCnSchedule() {
     if (!existsSync(cnCdnRoot())) return
     if (cnRunning) { cnAgain = true; return }
     cnRunning = true
+    console.log("[cn] rebuilding the CN game update (wait before opening the game)...")
     // read by scripts/gen_cn_event_schedule.cjs
     try { writeFileSync(path.join(process.cwd(), ".database", "cn_mb2_in_use.json"), JSON.stringify(unitsOnBoard2())) } catch { }
     runScript(CN_SCRIPT).then(({ code, stdout, stderr }) => {
         cnRunning = false
         if (code !== 0) console.error(`[cn] schedule update failed: ${lastLines(stderr || stdout, 3)}`)
         else {
-            console.log(`[cn] ${lastLines(stdout, 1)}`)
+            // the build's summary line ("CN schedule 1.4.809: ..."), not its last line (other files it wrote)
+            const summary = stdout.split("\n").reverse().find(l => l.startsWith("CN schedule ")) ?? lastLines(stdout, 1)
+            console.log(`[cn] game update ready: ${summary.trim()}${cnAgain ? " (another change came in: rebuilding again)" : ". Open the game (or close and reopen it) to get it."}`)
             // the build wrote the CN game's own dates (cn_event_windows.json): the server's steps that use
             // them (the CN dates of the seasonal login bonuses) run again
             applyToServerData()
@@ -142,7 +145,7 @@ export function noteCnClientVersion(resVer: string | undefined, target: string):
     raiseSeenCnVersion(resVer)
     if (compareVersions(resVer, target) <= 0 || !existsSync(cnCdnRoot())) return false
     if (!cnRunning) {
-        console.log(`[cn] the game has update ${resVer}, newer than this server's ${target}; rebuilding the CN schedule update above it`)
+        console.log(`[cn] the game has update ${resVer}, newer than this server's ${target}: the CN game update is rebuilt above it`)
         rebuildCnSchedule()
     }
     return true
@@ -157,7 +160,7 @@ function checkCnCopyWindow() {
     if (w === null) return
     const year = getServerDate().getUTCFullYear()
     if (year - 1 < w.from || year + 1 > w.until) {
-        console.log(`[cn] game year ${year} is outside the yearly copies (${w.from}-${w.until}); rebuilding the CN schedule update`)
+        console.log(`[cn] game year ${year} is outside the yearly copies (${w.from}-${w.until}): the CN game update is rebuilt`)
         rebuildCnSchedule()
     }
 }
@@ -188,13 +191,13 @@ function checkCnScheduleMatches() {
     const waiting = (record as { customWaitingForFiles?: string[] } | null)?.customWaitingForFiles ?? []
     const newest = patches.length > 0 ? patches[patches.length - 1].version : undefined
     if (waiting.length > 0 && listed && newest !== undefined && record?.version !== undefined && compareVersions(newest, record.version) > 0) {
-        console.log(`[cn] custom unit(s) ${waiting.join(", ")} waited for their files and a newer game update is listed; rebuilding the CN schedule update`)
+        console.log(`[cn] custom unit(s) ${waiting.join(", ")} waited for their files and a newer game update is listed: the CN game update is rebuilt`)
         rebuildCnSchedule()
         return
     }
     // an update built before the dashboard showed CN's dates has no cn_event_windows.json yet
     if (now === built && listed && existsSync(path.join(dir, "cn_event_windows.json"))) return
-    console.log("[cn] the saved schedules differ from the ones the game update was built from; rebuilding the CN schedule update")
+    console.log("[cn] the saved schedules differ from the ones the game update was built from: the CN game update is rebuilt")
     rebuildCnSchedule()
 }
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -220,7 +223,7 @@ export function checkCnClockDependents() {
     const now = getServerDate().getTime()
     const kits = existsSync(KIT_FILE) ? KIT.readKits(KIT_FILE) : null
     if ((built.kitState ?? "") !== KIT.kitState(kits, now)) {
-        console.log("[cn] the game clock crossed a unit kit date; rebuilding the CN schedule update")
+        console.log("[cn] the game clock crossed a unit kit date: the CN game update is rebuilt")
         rebuildCnSchedule()
         return
     }
@@ -229,7 +232,7 @@ export function checkCnClockDependents() {
     const kept = new Set(mb2.keptOpen ?? [])
     const risky = unitsOnBoard2().filter(id => !kept.has(id) && mb2.dates?.[id] !== undefined && cnTimeMs(mb2.dates[id]) > now)
     if (risky.length > 0) {
-        console.log(`[cn] ${risky.length} unit(s) on Mana Board 2 have their board 2 date ahead of the game clock; rebuilding the CN schedule update`)
+        console.log(`[cn] ${risky.length} unit(s) on Mana Board 2 have their board 2 date ahead of the game clock: the CN game update is rebuilt`)
         rebuildCnSchedule()
     }
 }
