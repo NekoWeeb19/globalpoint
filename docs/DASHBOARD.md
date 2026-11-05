@@ -237,7 +237,7 @@ New units are added with files, not on the dashboard: see [CUSTOM_UNITS.md](CUST
 - **Yearly copies follow the clock.** Repeating campaigns, and The Haunt's monthly floors, are built
   for the game clock's year, one year before it and one after. Move the date further and the server
   rebuilds them by itself, so expect a small download at the next title screen.
-- **The Haunt** opens on 2021-05-12 and stays open. It has a new set of floors every month (fresh,
+- **The Haunt** opens on 2020-01-12 and stays open. It has a new set of floors every month (fresh,
   uncleared), also in the months before and after CN's own 48 months of it (2022-05 to 2026-04).
 - **On a phone, it's the phone's dashboard.** The companion's **Dashboard** button opens the
   phone's own server. Changes there don't touch your PC, and the other way round.

@@ -59,7 +59,7 @@ try {
     // ---- the copied months: the same element and rewards as the floor they copy ----
     let copies = 0
     const copyWrong = []
-    for (let year = 2021; year <= 2040; year++) for (let month = 1; month <= 12; month++) {
+    for (let year = 2019; year <= 2040; year++) for (let month = 1; month <= 12; month++) {
         if (!T.isTowerCopyMonth(year, month)) continue
         const set = T.towerSetForMonth(year, month)
         for (let floor = 1; floor <= 10; floor++) {
@@ -69,8 +69,14 @@ try {
             if (!qc || qc.scoreRewardGroupId !== qo?.scoreRewardGroupId || Q.questElement(HAUNT, copy) !== Q.questElement(HAUNT, original)) copyWrong.push({ year, month, floor, copy, original })
         }
     }
-    check(`every copied floor 2021-2040 (${copies}) has its original's element and rewards`, copies > 0 && copyWrong.length === 0, copyWrong.slice(0, 5))
+    check(`every copied floor 2020-2040 (${copies}) has its original's element and rewards`, copies > 0 && copyWrong.length === 0, copyWrong.slice(0, 5))
     check("the first copied month (2021-05) is set 37, 2026-05 set 1 again", T.towerSetForMonth(2021, 5) === 37 && T.towerSetForMonth(2026, 5) === 1)
+    check("The Haunt opens 2020-01 (set 21); nothing before it", T.isTowerCopyMonth(2020, 1) && !T.isTowerCopyMonth(2019, 12) && T.towerSetForMonth(2020, 1) === 21)
+    // 2020-01 to 2021-04 got their own keys later: every key is still unique, and the older months' keys didn't move
+    const keys = []
+    for (let year = 2020; year <= 2040; year++) for (let month = 1; month <= 12; month++) if (T.isTowerCopyMonth(year, month)) for (let f = 1; f <= 10; f++) keys.push(T.towerCopyKey(year, month, f))
+    check("every copy month has its own keys", new Set(keys).size === keys.length, keys.length)
+    check("2021-05 and 2026-05 keep their keys (481, 601)", T.towerCopyKey(2021, 5, 1) === 481 && T.towerCopyKey(2026, 5, 1) === 601)
 
     // ---- a clear on a throwaway save: what the server really gives ----
     const account = await D.insertAccount({ appId: "test", idpAlias: "tower-test", idpCode: "test", idpId: "tower-test", status: "0" })

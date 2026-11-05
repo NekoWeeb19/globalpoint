@@ -366,7 +366,7 @@ async function main() {
     // - element dungeons: the weekday rotation rows ended in 2018 and the every-element rows only open
     //   2020-01-15, so a save starting 2019-12-01 had none; the every-element rows open from 2001 instead
     //   (until 2022-05-31 as before, when the combined dungeon takes over)
-    // - The Haunt (2022-05-12 to 2026-05-12 04:59:59, China time) opens a year earlier, 2021-05-12, and stays
+    // - The Haunt (2022-05-12 to 2026-05-12 04:59:59, China time) opens earlier, 2020-01-12, and stays
     //   open (2199-12-31). Its floors change monthly: 48 sets of 10 quests, each with its own month. The months
     //   outside CN's get copies that carry on the same monthly loop (addTowerCopies, src/lib/towerRotation.ts).
     // the pop-up dialog table (its logical name isn't known; this is its stored path) and the dates that hide a row
@@ -389,7 +389,7 @@ async function main() {
         },
         [fileOf("master/quest/event/tower_dungeon_event.orderedmap")]: (key, c) => {
             let changed = false
-            if (c[11] === "2022-05-12 12:00:00") { c[11] = "2021-05-12 12:00:00"; changed = true }
+            if (c[11] === "2022-05-12 12:00:00" || c[11] === "2021-05-12 12:00:00") { c[11] = "2020-01-12 12:00:00"; changed = true }
             for (let i = 0; i < c.length; i++) if (c[i] === "2026-05-12 04:59:59") { c[i] = "2199-12-31 23:59:59"; changed = true }
             return changed
         },
