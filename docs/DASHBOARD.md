@@ -142,19 +142,25 @@ First tab (**Dashboard**):
 - **Quest drop amount:** 1x (the default) is the base game's own amounts. Original StarPoint gave
   10x. Pick a preset or type any value from 1x to 100x, then **Save**. It applies from the next
   quest you finish.
-- **Enemy strength:** multiplies every enemy's HP and attack (regular enemies, bosses and what bosses
-  summon; breakable blocks stay as they are) in every quest, main story included. 1x is the base game;
-  0.1x to 10x, separately for HP and attack. Saving rebuilds the CN game update: close and reopen the
-  game to get it (phones and Wi-Fi copies rebuild at their next start). How it works: each enemy's row
-  in `boss_level`, `zako_level` and `funnel_level` has an HP and an attack correction that the client
-  multiplies into its numbers (`scripts/enemy_scaling.cjs`). Tested on the emulator (2026-11-04):
-  Scorched Grizzly Inter. with a weak auto-play party cleared in 1:58 (SS) at HP 0.1x and 4:32 (A) at 1x
-  (boss fights have scripted phases, so clear time doesn't shrink by the full factor); at HP and attack
-  10x the whole party was down in 40 seconds with the boss bar still full (at 1x they had 79-93% HP then).
 - **Paid beads with each daily login bonus:** added once a day on top of the login bonus's own
   rewards (150 by default; 0 turns it off).
 - **Never-ending mails:** Bread x1500, Mana x1500 and EXP x1500 sit in the mailbox and can be
   claimed again and again. Untick one to remove it.
+
+### Make enemies stronger or weaker
+
+First tab (**Dashboard**) > **Enemy strength**: multiplies every enemy's HP and attack in every
+quest, main story included (regular enemies, bosses and what bosses summon; breakable blocks stay
+as they are).
+1. Type an **HP** and an **attack** multiplier, from 0.1x to 10x each, or pick a preset (**1x (base
+   game)**, **HP 1.5x, attack 1.2x**, **2x both**, **0.5x both**), and press **Save**. Above 1x is
+   harder, below 1x easier.
+2. Close and reopen the game: saving rebuilds the game update. (A phone, or a Wi-Fi copy, rebuilds
+   at the companion server's next start.)
+
+On the emulator, at 10x HP and attack a weak auto-play party was down in 40 seconds with the boss
+untouched; at 0.1x HP the same fight took 1:58 instead of 4:32. Boss fights have scripted phases, so the
+time doesn't shrink by the full factor.
 
 ### Change summon rates
 
@@ -171,10 +177,10 @@ pulls with their own rules (like a once-per-account guaranteed 5★) keep them. 
 screen keeps showing the original numbers. The companion's **Download from PC** brings the PC's
 rates along when **My save** is ticked.
 
-### Edit a unit's abilities and numbers
+### Edit a unit's or an armament's abilities and numbers
 
-**Unit editor** in the menu (`/unit-editor`): works for every CN unit and for custom units. No unit
-ids change, so saves are never at risk. The full guide is [UNIT_EDITOR.md](UNIT_EDITOR.md).
+**Unit editor** in the menu (`/unit-editor`): works for every CN unit, every CN armament and custom
+units. No ids change, so saves are never at risk. The full guide is [UNIT_EDITOR.md](UNIT_EDITOR.md).
 
 ![The Unit editor with Amelia open on the Abilities tab](images/dashboard-unit-editor.png)
 
@@ -183,7 +189,8 @@ ids change, so saves are never at risk. The full guide is [UNIT_EDITOR.md](UNIT_
    - **Abilities**: each ability (1-6) and the leader skill, one line per effect (**Only if**
      conditions, the trigger, and what it **Does**). Add, remove or copy lines from another unit;
      **Reset to game** gives an ability its own lines back. **In game** under each ability shows it
-     in the unit page's own words.
+     in the unit page's own words. For lines the game's wording can't show yet, tick **Use the
+     editor's wording where the game's can't be shown** to see the editor's own sentence instead.
 
      ![One ability: its line, its fields, and the In game wording](images/dashboard-unit-ability.png)
    - **Numbers**: HP/ATK, the skill gauge, and every min → max value.
@@ -193,14 +200,20 @@ ids change, so saves are never at risk. The full guide is [UNIT_EDITOR.md](UNIT_
    trigger can't have, or something the game can't read). The server rebuilds the game update.
 4. Close and reopen the game.
 
-- **Default mode** only offers the triggers and conditions CN's own units use. **Advanced mode**
-  offers everything the game can read, with a warning on the unused ones: they may not work or may
-  crash the game.
+- **Mode** (at the top; the browser remembers it):
+  - **Default** offers only the triggers and conditions CN's own units use, in the pairs they use.
+  - **Advanced** allows CN's own parts in any combination, with a note on pairs no CN unit uses.
+  - **Unrestricted** also offers parts CN never uses, marked "untested", with a warning: they may
+    not work or may crash the game.
+- **Armaments:** switch **Units / Armaments** at the top to edit any of CN's armaments the same way.
+  Each effect can have up to 3 versions by armament level (e.g. +50% from level 3, +100% from
+  level 5); the Numbers tab has HP/ATK by level, and Details its name and description.
 - **Edited units and kits** at the top lists every edited unit: **Download** them as a kit file, or
   **Import a kit file** from someone else.
 - **Reset unit to game** removes the editor's changes for that unit.
-- **On a phone**, make the edits on the PC: the companion's **Download from PC** brings them along,
-  and replaces the phone's own copy each time.
+- **On a phone**, the editor is in the companion's **Dashboard** too, and the phone rebuilds its own
+  game update. With a PC, **Download from PC** brings the PC's edits and replaces the phone's own,
+  so edit on one side only (or download a kit on the phone and import it on the PC first).
 
 New units are added with files, not on the dashboard: see [CUSTOM_UNITS.md](CUSTOM_UNITS.md).
 
