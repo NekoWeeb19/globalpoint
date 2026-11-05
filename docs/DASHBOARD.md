@@ -75,7 +75,9 @@ free pull campaigns runs then.
 
 **Players** tab > pick a player > **Give**: choose **Character**, **Item** or **Equipment**
 (armament), type its ID number and the amount, and press **Send Mail (in session)**. It arrives in the player's in-game
-mailbox. The IDs are the game's own (the files in `assets/` list them).
+mailbox. No need to know the ID: type part of a name in **Search by name** (units, armaments and items, in English
+where translated), pick it, and the ID is filled in. Typing an ID shows the name it stands for. The Mail tab has the
+same search.
 
 Beads aren't an item, so they have no ID: choose **Paid beads** or **Free beads**, type the amount (the ID box goes
 away) and send. **Title** and **Message** are optional: left empty, the mail says "Give Item" (or what it is) and

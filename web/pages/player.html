@@ -135,15 +135,16 @@
                         <span>x</span>
                         <input class="my-input" id="number" name="number" type="number" value="1" required />
                 </div>
-                <div class="flex flex-col gap-2 w-full max-w-md">
-                    <input class="my-input w-full" name="subject" maxlength="60" placeholder="Title (optional)" />
-                    <input class="my-input w-full" name="message" maxlength="300" placeholder="Message (optional; else &quot;From Web API&quot;)" />
+                <div class="flex flex-col gap-2" style="width: 100%; max-width: 28rem;">
+                    <input class="my-input" style="width: 100%;" name="subject" maxlength="60" placeholder="Title (optional)" />
+                    <input class="my-input" style="width: 100%;" name="message" maxlength="300" placeholder="Message (optional; else &quot;From Web API&quot;)" />
                 </div>
                 <button type="submit"
                     class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity">
                     Send Mail (in session)
                 </button>
             </form>
+            <script src="/public/js/name-search.js"></script>
             <script>
                 // beads are currency, not an item: no id, just an amount
                 (function () {
@@ -151,6 +152,11 @@
                     const sync = () => { const beads = type.value.startsWith("beads"); id.hidden = beads; id.required = !beads; id.disabled = beads }
                     type.addEventListener("change", sync)
                     sync()
+                    // search units, armaments and items by name (web/public/js/name-search.js)
+                    const searchBox = document.createElement("div")
+                    searchBox.style.cssText = "width: 100%; max-width: 28rem;"
+                    id.closest("div").after(searchBox)
+                    attachNameSearch(type, id, searchBox)
                 })()
             </script>
             <form

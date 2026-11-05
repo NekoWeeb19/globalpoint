@@ -184,6 +184,7 @@
             </section>
         </article>
     </div>
+    <script src="/public/js/name-search.js"></script>
     <script>
         (function () {
             const $ = (id) => document.getElementById(id)
@@ -206,7 +207,9 @@
                 return "from " + fmt(s.start) + " UTC, every " + (s.every === 1 ? "" : s.every + " ") + unit + ", " + (s.times === null ? "forever" : s.times + " times in all")
             }
 
+            let names = null
             function syncForm() {
+                names?.refresh()
                 const kind = $("kind").value
                 show($("type-id-box"), needsId(kind))
                 $("type-id").required = needsId(kind)
@@ -327,6 +330,11 @@
                     $("message").textContent = "Error: " + error.message
                 } finally { busy = false }
             }
+
+            // search units, armaments and items by name (web/public/js/name-search.js)
+            const searchBox = document.createElement("div")
+            $("type-id-box").parentElement.after(searchBox)
+            names = attachNameSearch($("kind"), $("type-id"), searchBox)
 
             for (const id of ["kind", "type-id", "amount", "start", "repeat", "every", "unit", "times", "forever"]) {
                 $(id).addEventListener("input", syncForm)

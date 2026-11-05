@@ -20,6 +20,7 @@ const UE = require(path.join(__dirname, "..", "..", "..", "scripts", "unit_edito
     resetUnit: (id: string) => boolean
     exportKits: (ids: string[]) => object
     importKits: (data: unknown) => Promise<{ imported: string[], refused: { id: string, why: string }[] }>
+    _internal: { gameTable: (logical: string) => Promise<Record<string, string>> }
 }
 
 // armaments (scripts/armament_editor.cjs): the same edit shape, abilities = slots
@@ -41,7 +42,36 @@ const modeOf = (b: { advanced?: boolean, mode?: string }): Mode => typeof b.mode
 const failed = (reply: FastifyReply, e: unknown) =>
     reply.status(500).send({ error: "Unit editor", message: e instanceof Error ? e.message : String(e) })
 
+// the game's items, id -> name (English when translated), for the dashboard's name search; read once
+let itemNames: { id: string, name: string }[] | null = null
+async function listItems() {
+    if (itemNames !== null) return itemNames
+    const table = await UE._internal.gameTable("master/item/item.orderedmap")
+    const out: { id: string, name: string }[] = []
+    for (const [id, text] of Object.entries(table)) {
+        if (id.includes("/")) continue
+        // dev name, id, name, ...; a quoted name keeps its commas
+        const name = /^[^,]*,[^,]*,("(?:[^"]|"")*"|[^,]*)/.exec(text)?.[1]?.replace(/^"|"$/g, "").replace(/""/g, "\"").trim()
+        if (name) out.push({ id, name })
+    }
+    itemNames = out.sort((a, b) => a.name.localeCompare(b.name))
+    return itemNames
+}
+
 const routes = async (fastify: FastifyInstance) => {
+    // id <-> name for units, armaments and items (Give and the Mail tab search by name)
+    fastify.get("/names", async (_: FastifyRequest, reply: FastifyReply) => {
+        try {
+            const [units, armaments, items] = await Promise.all([UE.listUnits(), AE.listArmaments(), listItems()])
+            const short = (list: unknown[], note: (x: Record<string, unknown>) => string) =>
+                (list as Record<string, unknown>[]).map(x => ({ id: String(x.id), name: String(x.name), note: note(x) }))
+            return reply.send({
+                chara: short(units, u => [u.title, u.rarity ? u.rarity + "★" : "", u.element].filter(Boolean).join(" · ")),
+                equip: short(armaments, a => a.rarity ? a.rarity + "★" : ""),
+                item: items.map(i => ({ ...i, note: "" })),
+            })
+        } catch (e) { return failed(reply, e) }
+    })
     fastify.get("/units", async (_: FastifyRequest, reply: FastifyReply) => {
         try { return reply.send(await UE.listUnits()) } catch (e) { return failed(reply, e) }
     })
