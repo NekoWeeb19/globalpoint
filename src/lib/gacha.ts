@@ -72,8 +72,8 @@ export function drawGachaSync(
     drawAmount: number
 ): GachaDrawResult {
     const isCharacterGacha = gacha.type === GachaType.CHARACTER
-    const isRateUp = isCharacterGacha ? (gacha as CharacterGacha).movieName !== "normal" : false
-    const rankRates = rankRatesFor(isCharacterGacha ? (isRateUp ? "featured" : "standard") : "armament")
+    // Star Fest / Meteor Festival (movie "fes") have their own rates ("★5 ×1.5"); every other unit banner the normal ones
+    const rankRates = rankRatesFor(isCharacterGacha ? ((gacha as CharacterGacha).movieName === "fes" ? "fes" : "normal") : "armament")
 
     const pulls: Map<number, number> = new Map()
 

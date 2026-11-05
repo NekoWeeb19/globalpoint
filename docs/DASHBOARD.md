@@ -173,9 +173,11 @@ time doesn't shrink by the full factor.
 ![The Summon rates box on the first tab](images/dashboard-rates.png)
 
 First tab (**Dashboard**) > **Summon rates**: the chance of a 5★ and a 4★ per pull, for three kinds
-of portal: **Standard units**, **Featured units** and **Armaments**. 3★ is the rest.
+of portal: **Unit banners** (the standard portal and every pickup/spotlight banner), **Star Fest / Meteor Festival**
+and **Armaments**. 3★ is the rest.
 1. Type the percentages (0 to 100, one decimal) and press **Save**. The badge then says **Custom**.
-2. **Base game rates** puts them back: standard 7.5% 5★ / 25% 4★, featured and armament 5% / 25%.
+2. **Base game rates** puts them back, as the game's own Rates screens show them: unit banners 5% 5★ / 25% 4★, Star Fest
+   and Meteor Festival 7.5% / 25% (their "★5 ×1.5"), armaments 5% / 25%.
 
 It applies from the next pull, and no game update is needed. Featured units keep their boost within
 their rarity. The 10th pull of a 10-pull is still 4★ or better (5★ at the 5★ rate), and special

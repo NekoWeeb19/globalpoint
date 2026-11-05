@@ -9,17 +9,22 @@ import path from "path"
 
 const FILE = path.join(process.cwd(), ".database", "gacha_rates.json")
 
-/** Banner kinds: standard unit portals, featured (rate-up) unit portals, armament portals. */
-export const RATE_KINDS = ["standard", "featured", "armament"] as const
+/**
+ * Banner kinds, as the game's Rates screens split them: normal (every unit banner but these, featured units or not:
+ * the game's normal_rarity, 5% / 25%), fes (Star Fest and Meteor Festival, fes_rarity: "★5 ×1.5", 7.5% / 25%),
+ * armament portals. (Before 2026-11-05 the kinds were standard 7.5% and featured 5%, sorted by the wrong rule:
+ * settings saved then aren't read.)
+ */
+export const RATE_KINDS = ["normal", "fes", "armament"] as const
 export type RateKind = typeof RATE_KINDS[number]
 /** Percent chances of a pull's rarity; 3★ is 100 - star5 - star4. */
 export interface KindRates { star5: number, star4: number }
 export type GachaRates = Record<RateKind, KindRates>
 
-/** The base game's rates (StarPoint's: standard 7.5% / 25%, featured and armament 5% / 25%). */
+/** The base game's rates, as its Rates screens show them. */
 export const DEFAULT_GACHA_RATES: GachaRates = {
-    standard: { star5: 7.5, star4: 25 },
-    featured: { star5: 5, star4: 25 },
+    normal: { star5: 5, star4: 25 },
+    fes: { star5: 7.5, star4: 25 },
     armament: { star5: 5, star4: 25 },
 }
 

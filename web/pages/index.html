@@ -272,7 +272,7 @@
                     <span id="rates-badge"
                         class="px-4 py-1 rounded-full text-sm font-semibold bg-surface-container-high text-on-surface">Loading...</span>
                 </div>
-                <p class="text-on-surface-variant">The chance of each rarity per pull, by kind of portal. 3★ is the rest. Featured units keep their boost within their rarity. The 10th pull of a 10-pull is still 4★ or better (5★ at the 5★ rate). Applies from the next pull. The game's own Rates screen keeps showing the original numbers.</p>
+                <p class="text-on-surface-variant">The chance of each rarity per pull, by kind of portal. 3★ is the rest. Unit banners: the standard portal and every pickup/spotlight banner (5% / 25% in the base game); Star Fest and Meteor Festival have their own (7.5% / 25%). Featured units keep their boost within their rarity. The 10th pull of a 10-pull is still 4★ or better (5★ at the 5★ rate). Applies from the next pull. The game's own Rates screen keeps showing the original numbers.</p>
                 <form id="rates-form" class="flex flex-col gap-3">
                     <div style="display: grid; grid-template-columns: auto minmax(3rem, 6rem) minmax(3rem, 6rem) max-content; gap: 0.75rem; align-items: center;" id="rates-grid">
                         <span class="text-sm font-semibold text-on-surface-variant">Portal</span>
@@ -292,7 +292,7 @@
                 <script>
                     (function () {
                         const $ = (id) => document.getElementById(id)
-                        const KINDS = [["standard", "Standard units"], ["featured", "Featured units"], ["armament", "Armaments"]]
+                        const KINDS = [["normal", "Unit banners"], ["fes", "Star Fest / Meteor Festival"], ["armament", "Armaments"]]
                         const inputClass = "bg-surface-container rounded-2xl border border-outline-variant p-2 w-full"
                         const fields = {}
                         for (const [kind, label] of KINDS) {
