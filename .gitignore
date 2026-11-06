@@ -31,3 +31,5 @@ download_cdn.bat
 /apk/
 *.apk
 *.obb
+# the Unit editor's saves on this PC (your own edits, like a save file)
+assets/custom_units/changes/
