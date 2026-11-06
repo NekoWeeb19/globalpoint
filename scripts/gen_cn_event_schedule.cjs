@@ -694,30 +694,27 @@ async function main() {
     // event shops: the catalog links global's shop rows, but CN added items of its own to shared events'
     // shops (some shops are all CN rows), so every CN row of the event's shop moves with it (shop table
     // column 0 = the shop kind, column 1 = the event id)
+    // "<shop kind>:<event id>" -> that shop's rows ({ p, leaf })
+    const SHOP_KIND = { story_event: "1", advent_event: "0", carnival_event: "5", rush_event: "6" }
+    const shopRows = new Map()
+    if (trees.has(EVENT_SHOP_FILE)) for (const { path: keys, leaf } of R.leaves(trees.get(EVENT_SHOP_FILE))) {
+        const c = R.splitCsv(leaf.text.replace(/\n$/, ""))
+        const k = `${c[0]}:${c[1]}`
+        if (!shopRows.has(k)) shopRows.set(k, [])
+        shopRows.get(k).push({ p: keys.join("/"), leaf })
+    }
     {
-        const SHOP_KIND = { story_event: "1", advent_event: "0", carnival_event: "5", rush_event: "6" }
-        const shopFile = EVENT_SHOP_FILE
-        const shopTree = trees.get(shopFile)
-        if (shopTree) {
-            const byShop = new Map()
-            for (const { path: keys, leaf } of R.leaves(shopTree)) {
-                const c = R.splitCsv(leaf.text.replace(/\n$/, ""))
-                const k = `${c[0]}:${c[1]}`
-                if (!byShop.has(k)) byShop.set(k, [])
-                byShop.get(k).push(keys.join("/"))
+        for (const [eventKey, entry] of byEvent) {
+            const [family, eventId] = [eventKey.slice(0, eventKey.indexOf(":")), eventKey.slice(eventKey.indexOf(":") + 1)]
+            const kind = SHOP_KIND[family]
+            if (kind === undefined) continue
+            let added = 0
+            for (const { p } of shopRows.get(`${kind}:${eventId}`) ?? []) {
+                if (moves.has(`${EVENT_SHOP_FILE}#${p}`)) continue
+                entry.rows.push({ file: EVENT_SHOP_FILE, p })
+                added++
             }
-            for (const [eventKey, entry] of byEvent) {
-                const [family, eventId] = [eventKey.slice(0, eventKey.indexOf(":")), eventKey.slice(eventKey.indexOf(":") + 1)]
-                const kind = SHOP_KIND[family]
-                if (kind === undefined) continue
-                let added = 0
-                for (const p of byShop.get(`${kind}:${eventId}`) ?? []) {
-                    if (moves.has(`${shopFile}#${p}`)) continue
-                    entry.rows.push({ file: shopFile, p })
-                    added++
-                }
-                if (added) console.log(`${eventKey}: ${added} more shop item(s) from CN's shop move with it`)
-            }
+            if (added) console.log(`${eventKey}: ${added} more shop item(s) from CN's shop move with it`)
         }
     }
     // Each event's own dates in CN's data, before any move (.database/cn_event_windows.json, ISO UTC): the
@@ -759,10 +756,29 @@ async function main() {
         console.log(`CN event dates: ${Object.keys(windows).length} event(s)`)
     }
 
+    // Shops that open after their event ended: CN's first boss and story events (the Serpents, A Not-So-Silent
+    // Night, Valentine's Fest) keep JP's 2019-20 dates on the event and its quests, but CN's 2021 dates on the
+    // shop, so the shop never opened while the event ran. Such a shop is put on its event's dates (opening on
+    // the first day, keeping its length), before any move, so a moved event takes it along too.
+    {
+        let lined = 0
+        for (const event of catalog.events) {
+            const kind = SHOP_KIND[event.family], window = cnWindows[event.key]
+            if (kind === undefined || !window) continue
+            const start = Date.parse(window.start), end = Date.parse(window.end)
+            const rows = (shopRows.get(`${kind}:${event.id}`) ?? []).map(r => ({ ...r, opens: parse(((R.splitCsv(r.leaf.text)[26] ?? "").match(DATE) ?? [])[0] ?? "") }))
+            if (rows.length === 0 || !rows.every(r => r.opens !== null && r.opens > end)) continue
+            const shift = start - Math.min(...rows.map(r => r.opens))
+            for (const { leaf } of rows) R.setLeafText(leaf, leaf.text.replace(DATE, found => { const ms = parse(found); return ms === null || ms >= FAR ? found : format(ms + shift) }))
+            console.log(`${event.key}: its shop (${rows.length} items, dated ${format(start - shift).slice(0, 10)}) opens with the event, ${format(start).slice(0, 10)}`)
+            lined++
+        }
+        if (lined) console.log(`Shops put on their events' dates: ${lined}`)
+    }
+
     let moved = 0, events = 0
     for (const [eventKey, { move, rows }] of byEvent) {
         const leaves = []
-        const shopLeaves = new Set()
         let ownRow = null
         const [family, eventId] = [eventKey.slice(0, eventKey.indexOf(":")), eventKey.slice(eventKey.indexOf(":") + 1)]
         const own = OWN_WINDOW[family]
@@ -776,7 +792,6 @@ async function main() {
                 console.log(`${eventKey}: banner ${p} has no artwork in the CN files (moved anyway; it shows blank)`)
             }
             leaves.push(found.leaf)
-            if (file === EVENT_SHOP_FILE) shopLeaves.add(found.leaf)
             if (own && file === fileOf(own.table) && p === eventId) ownRow = found.leaf
         }
         const dates = leaves.flatMap(l => (l.text.match(DATE) ?? []).map(parse)).filter(ms => ms !== null && ms < FAR)
@@ -796,21 +811,12 @@ async function main() {
             from = { start: Math.min(...dates), end: Math.max(...dates) }
             console.log(`${eventKey}: own dates not readable, using all its rows' dates`)
         }
-        let rerunShop = 0
         for (const leaf of leaves) {
-            // a shop item that opens after the event ended belongs to a later rerun of it (CN's first boss and
-            // story events only have their 2020-21 rerun's shop): it stays on the rerun's dates
-            if (shopLeaves.has(leaf)) {
-                const opens = parse(((R.splitCsv(leaf.text)[26] ?? "").match(DATE) ?? [])[0] ?? "")
-                if (opens !== null && opens > from.end) { rerunShop++; continue }
-            }
             // far-future "never ends" dates (2050, 2199) stay as they are: moved, they can pass 2200, which the
             // client refuses (C7100, e.g. an item's expiry)
             const text = leaf.text.replace(DATE, found => { const ms = parse(found); return ms === null || ms >= FAR ? found : format(mapCnInstant(ms, from, move.to)) })
             if (text !== leaf.text) { R.setLeafText(leaf, text); moved++ }
-        }
-        if (rerunShop) console.log(`${eventKey}: ${rerunShop} shop item(s) dated for a later rerun stay on their dates`)
-        events++
+        }        events++
     }
 
     // ---- yearly campaigns (.database/campaign_schedule.json, src/lib/campaignSchedule.ts), as the
