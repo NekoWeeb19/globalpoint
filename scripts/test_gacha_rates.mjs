@@ -28,6 +28,10 @@ try {
     check("base game rates with no setting", JSON.stringify(G.getGachaRates()) === JSON.stringify(G.DEFAULT_GACHA_RATES))
     check("unit banners 5% / 25% / 70% out of 1000 (the game's Rates screens)", JSON.stringify(G.rankRatesFor("normal").normal) === "[50,250,700]")
     check("Star Fest / Meteor Festival 7.5% / 25% / 67.5%", JSON.stringify(G.rankRatesFor("fes").normal) === "[75,250,675]")
+    // the in-game Rates screen's tables (scripts/gacha_odds.cjs): the defaults are the game's own rows, so nothing ships
+    const GO = require(path.join(root, "scripts", "gacha_odds.cjs"))
+    check("Rates screen tables: base rates = the game's own (nothing to ship)", GO.isDefault(GO.readGachaRates(path.join(temp, ".database"))) && JSON.stringify(GO.DEFAULTS) === JSON.stringify(G.DEFAULT_GACHA_RATES))
+    check("Rates screen rows out of 1000 (10% / 30% -> 100 / 300 / 600)", JSON.stringify(GO.rowsFor("normal_rarity", { star5: 10, star4: 30 })) === JSON.stringify({ "normal_rarity/0": "5,100", "normal_rarity/1": "4,300", "normal_rarity/2": "3,600" }))
 
     // one unit per rarity, so a pull's rarity is its unit
     const pool = { 1: [{ id: 5, rarity: 1000 }], 2: [{ id: 4, rarity: 1000 }], 3: [{ id: 3, rarity: 1000 }] }

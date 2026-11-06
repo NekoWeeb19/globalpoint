@@ -161,6 +161,48 @@ try {
     M.deleteMailSchedule(daily2.id)
     check("saved to .database for restarts and the Wi-Fi copy", fs.existsSync(path.join(temp, ".database", "mail_schedule.json")) && fs.existsSync(path.join(temp, ".database", "mail_delivered.json")))
 
+    // every year: the whole run again from its first send's anniversary
+    setChosenAccount("cn", A.account)
+    at("2028-03-01T10:00:00Z")
+    const yr = M.saveMailSchedule({ kind: "mana", amount: 9, title: "spring run", start: "2028-03-01T10:00:00Z", every: 1, unit: "week", times: 3, yearly: true }).at(-1)
+    const times6 = [0, 1, 2, 3, 4, 5].map(k => new Date(M.sendTime(yr, k)).toISOString().slice(0, 10)).join()
+    check("every year: weekly x3 from 2028-03-01, then again in 2029", times6 === "2028-03-01,2028-03-08,2028-03-15,2029-03-01,2029-03-08,2029-03-15", times6)
+    at("2028-04-01T00:00:00Z")
+    check("after this year's run, the next send is next year's first", new Date(M.nextSendTime(yr, Date.parse("2028-04-01T00:00:00Z"))).toISOString().slice(0, 10) === "2029-03-01")
+    ProcessAllMails(A.player)
+    at("2029-03-01T10:00:30Z")
+    got = scheduled(A.player).filter(m => m.subject === "spring run")
+    check("next year's run arrives on its day", got.length === 1 && got[0].create_time === "2029-03-01 10:00:00", got.map(m => m.create_time))
+    ProcessAllMails(A.player)
+    check("Feb 29 every year falls on Feb 28 in other years", new Date(M.sendTime({ start: "2028-02-29T10:00:00.000Z", every: 0, unit: "day", times: 1, yearly: true }, 1)).toISOString().slice(0, 10) === "2029-02-28")
+    for (const [what, input] of [
+        ["every year with forever", { kind: "mana", amount: 1, start: T0, every: 1, unit: "day", times: null, yearly: true }],
+        ["every year with a run over a year", { kind: "mana", amount: 1, start: T0, every: 1, unit: "month", times: 13, yearly: true }],
+    ]) {
+        let refused = false
+        try { M.saveMailSchedule(input) } catch { refused = true }
+        check(`refuses ${what}`, refused)
+    }
+
+    // sharing: export, then import (past first sends: now or next)
+    const shared = M.exportMailSchedules([yr.id])
+    check("export: one file of what and when, no ids or progress", shared.kind === "globalpoint-mail-schedule" && shared.mails.length === 1 && shared.mails[0].yearly === true && !("id" in shared.mails[0]) && !("savedAt" in shared.mails[0]), shared)
+    const before = M.listMailSchedules().length
+    at("2029-06-01T00:00:00Z")
+    const pastFile = { kind: "globalpoint-mail-schedule", version: 1, mails: [{ kind: "beads_free", typeId: null, amount: 4, title: "imported late", message: "", start: "2029-05-01T00:00:00Z", every: 1, unit: "week", times: null }] }
+    let r = M.importMailSchedules(pastFile, "next")
+    check("import adds next to what's there", r.added === 1 && M.listMailSchedules().length === before + 1, r)
+    check("import 'start at its next time': no mail right away", scheduled(A.player).filter(m => m.subject === "imported late").length === 0)
+    r = M.importMailSchedules({ ...pastFile, mails: [{ ...pastFile.mails[0], title: "imported now" }] }, "now")
+    check("import 'send them now': one right away", scheduled(A.player).filter(m => m.subject === "imported now").length === 1)
+    r = M.importMailSchedules({ kind: "globalpoint-mail-schedule", version: 1, mails: [{ kind: "chara", typeId: 999999, amount: 1, title: "", message: "", start: "2029-06-01T00:00:00Z", every: 0, unit: "day", times: 1 }, { kind: "gold", amount: 1 }] }, "now", id => id !== 999999)
+    check("import refuses a unit this server doesn't have, and a bad line, with reasons", r.added === 0 && r.refused.length === 2 && /isn't on this server/.test(r.refused[0].why), r)
+    let notFile = false
+    try { M.importMailSchedules({ hello: 1 }, "now") } catch { notFile = true }
+    check("import refuses a file that isn't a mail schedule", notFile)
+    for (const s of M.listMailSchedules().filter(s => /imported|spring run/.test(s.title))) M.deleteMailSchedule(s.id)
+    ProcessAllMails(A.player)
+
     // bad input
     for (const [what, input] of [
         ["no amount", { kind: "beads_paid", amount: 0, start: T0, every: 0 }],

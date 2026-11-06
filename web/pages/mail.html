@@ -168,6 +168,7 @@
                             <label class="flex gap-2 items-center text-on-surface h-[48px]"><input type="checkbox" id="forever" class="w-5 h-5"> Forever</label>
                         </div>
                     </div>
+                    <label id="yearly-box" class="flex gap-2 items-center text-on-surface"><input type="checkbox" id="yearly" class="w-5 h-5"> Also repeat the whole run every year (from the first send's date)</label>
                     <p id="preview" class="text-sm text-on-surface-variant"></p>
                     <div class="flex flex-wrap gap-3">
                         <button type="submit" id="save"
@@ -180,6 +181,21 @@
             </section>
             <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
                 <h3 class="text-xl text-on-background font-semibold">Scheduled</h3>
+                <p class="text-sm text-on-surface-variant">Share a schedule: <strong>Export</strong> the ticked mails (or all) as one file; someone else <strong>imports</strong> it, and its mails are added next to theirs. Only what is sent and when goes in the file, not who got what.</p>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" id="export-selected" class="text-sm border border-outline-variant text-on-surface h-[32px] px-[16px] rounded-full hover:bg-surface-container-high">Export ticked</button>
+                    <button type="button" id="export-all" class="text-sm border border-outline-variant text-on-surface h-[32px] px-[16px] rounded-full hover:bg-surface-container-high">Export all</button>
+                    <label class="text-sm border border-outline-variant text-on-surface h-[32px] px-[16px] rounded-full hover:bg-surface-container-high flex items-center cursor-pointer">Import a file…<input type="file" id="import-file" accept=".json,application/json" style="display: none"></label>
+                </div>
+                <div id="import-ask" style="display: none" class="flex flex-col gap-2 p-4 rounded-2xl bg-surface-container-low">
+                    <p id="import-ask-text" class="text-on-surface"></p>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" id="import-now" class="text-sm bg-primary text-on-primary h-[32px] px-[16px] rounded-full">Send them now</button>
+                        <button type="button" id="import-next" class="text-sm border border-outline-variant text-on-surface h-[32px] px-[16px] rounded-full hover:bg-surface-container-high">Start each at its next time</button>
+                        <button type="button" id="import-cancel" class="text-sm border border-outline-variant text-on-surface h-[32px] px-[16px] rounded-full hover:bg-surface-container-high">Cancel</button>
+                    </div>
+                </div>
+                <p id="share-message" class="text-sm text-on-surface-variant" role="status"></p>
                 <ul id="list" class="flex flex-col gap-2"></ul>
             </section>
         </article>
@@ -198,14 +214,16 @@
             const show = (el, on) => { el.style.display = on ? "" : "none" }
             const needsId = (kind) => kind === "item" || kind === "chara" || kind === "equip"
             let data = { schedules: [], serverTime: new Date().toISOString(), days: 30 }, editing = null, busy = false
+            const ticked = new Set()
 
             const fmt = (iso) => iso.slice(0, 16).replace("T", " ")
             const defaultTitle = (kind, id, amount) => KIND[kind] + (needsId(kind) && id ? " " + id : "") + " * " + amount
             function whenText(s) {
-                if (s.every === 0) return "once, " + fmt(s.start) + " UTC"
+                if (s.every === 0) return onceText(s)
                 const unit = UNIT[s.unit][s.every === 1 ? 0 : 1]
-                return "from " + fmt(s.start) + " UTC, every " + (s.every === 1 ? "" : s.every + " ") + unit + ", " + (s.times === null ? "forever" : s.times + " times in all")
+                return "from " + fmt(s.start) + " UTC, every " + (s.every === 1 ? "" : s.every + " ") + unit + ", " + (s.times === null ? "forever" : s.times + " times in all") + (s.yearly ? ", again every year" : "")
             }
+            function onceText(s) { return "once, " + fmt(s.start) + " UTC" + (s.yearly ? ", again every year" : "") }
 
             let names = null
             function syncForm() {
@@ -216,6 +234,10 @@
                 const repeating = $("repeat").value === "repeat"
                 show($("repeat-box"), repeating)
                 $("times").disabled = $("forever").checked
+                // every year: for a run with an end (once, or a number of times)
+                const yearlyOk = !repeating || !$("forever").checked
+                show($("yearly-box"), yearlyOk)
+                if (!yearlyOk) $("yearly").checked = false
                 $("title").placeholder = defaultTitle(kind, $("type-id").value, $("amount").value || "?")
                 $("message-text").placeholder = data.defaultMessage || ""
                 const s = formValue()
@@ -237,6 +259,7 @@
                     every: repeating ? Number($("every").value) : 0,
                     unit: $("unit").value,
                     times: repeating ? ($("forever").checked ? null : Number($("times").value)) : 1,
+                    yearly: $("yearly").checked && (!repeating || !$("forever").checked),
                 }
             }
             const nowValue = () => fmt(data.serverTime).replace(" ", "T")
@@ -265,9 +288,14 @@
                 for (const s of data.schedules) {
                     const item = document.createElement("li")
                     item.className = "flex flex-col gap-1 p-4 rounded-2xl bg-surface-container-low"
-                    const title = document.createElement("span")
-                    title.className = "text-on-surface font-semibold"
-                    title.textContent = s.title || defaultTitle(s.kind, s.typeId, s.amount)
+                    const title = document.createElement("label")
+                    title.className = "text-on-surface font-semibold flex gap-2 items-center"
+                    const tick = document.createElement("input")
+                    tick.type = "checkbox"
+                    tick.className = "w-5 h-5"
+                    tick.checked = ticked.has(s.id)
+                    tick.addEventListener("change", () => { if (tick.checked) ticked.add(s.id); else ticked.delete(s.id) })
+                    title.append(tick, document.createTextNode(s.title || defaultTitle(s.kind, s.typeId, s.amount)))
                     const what = document.createElement("span")
                     what.className = "text-sm text-on-surface-variant"
                     what.textContent = KIND[s.kind] + (s.typeId ? " " + s.typeId : "") + " × " + s.amount + " — " + whenText(s)
@@ -302,6 +330,7 @@
                 $("unit").value = s.unit
                 $("forever").checked = s.times === null
                 $("times").value = s.times ?? 4
+                $("yearly").checked = !!s.yearly
                 $("message").textContent = "Saving starts it again from its next send time; nothing already past is sent twice."
                 syncForm()
                 $("form").scrollIntoView({ block: "start" })
@@ -339,11 +368,47 @@
             $("type-id-box").parentElement.after(searchBox)
             names = attachNameSearch($("kind"), $("type-id"), searchBox)
 
-            for (const id of ["kind", "type-id", "amount", "start", "repeat", "every", "unit", "times", "forever"]) {
+            for (const id of ["kind", "type-id", "amount", "start", "repeat", "every", "unit", "times", "forever", "yearly"]) {
                 $(id).addEventListener("input", syncForm)
                 $(id).addEventListener("change", syncForm)
             }
             $("now").addEventListener("click", () => { $("start").value = nowValue(); syncForm() })
+            // ---- sharing: export the ticked mails or all, import someone else's ----
+            $("export-selected").addEventListener("click", () => {
+                const ids = [...ticked].filter(id => data.schedules.some(s => s.id === id))
+                if (ids.length === 0) { $("share-message").textContent = "Tick the mails to export first."; return }
+                location.href = "/api/server/mail/export?ids=" + ids.join(",")
+            })
+            $("export-all").addEventListener("click", () => {
+                if (data.schedules.length === 0) { $("share-message").textContent = "Nothing scheduled to export."; return }
+                location.href = "/api/server/mail/export"
+            })
+            let pending = null
+            async function importNow(mode) {
+                show($("import-ask"), false)
+                busy = true
+                try {
+                    await send("/api/server/mail/import", { data: pending, mode })
+                    const r = data.imported ?? { added: 0, refused: [] }
+                    $("share-message").textContent = "Imported " + r.added + " mail" + (r.added === 1 ? "" : "s") + "." +
+                        (r.refused.length ? " Not imported: " + r.refused.map(x => "“" + x.title + "” (" + x.why + ")").join("; ") : "")
+                } catch (error) {
+                    $("share-message").textContent = "Error: " + error.message
+                } finally { busy = false; pending = null; $("import-file").value = "" }
+            }
+            $("import-file").addEventListener("change", async () => {
+                const file = $("import-file").files[0]
+                if (!file) return
+                try { pending = JSON.parse(await file.text()) } catch { $("share-message").textContent = "That file isn't a mail schedule (not JSON)."; $("import-file").value = ""; return }
+                const mails = Array.isArray(pending?.mails) ? pending.mails : []
+                const past = mails.filter(m => Date.parse(m.start) < Date.parse(data.serverTime) - 60000).length
+                if (past === 0) return importNow("now")
+                $("import-ask-text").textContent = past + " of the " + mails.length + " mails in this file have a first send time that has already passed. Send one of each right away, or start each at its next send time?"
+                show($("import-ask"), true)
+            })
+            $("import-now").addEventListener("click", () => importNow("now"))
+            $("import-next").addEventListener("click", () => importNow("next"))
+            $("import-cancel").addEventListener("click", () => { show($("import-ask"), false); pending = null; $("import-file").value = ""; $("share-message").textContent = "" })
             $("cancel").addEventListener("click", () => { reset(); $("message").textContent = "" })
             $("form").addEventListener("submit", async (event) => {
                 event.preventDefault()

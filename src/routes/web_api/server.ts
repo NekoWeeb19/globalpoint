@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import path from "path";
 import { removeCharacterFromSaveSync } from "../../nya/removeCharacter"
 import { getServerDate, getServerTimeMode, isServerTimeTicking, setServerTime } from "../../utils";
 import { SendMail, MAIL_TYPE } from "../../nya/mail";
@@ -21,7 +22,7 @@ import { DEFAULT_GACHA_RATES, getGachaRates, resetGachaRates, setGachaRates } fr
 import { ENEMY_MULTIPLIER_MAX, ENEMY_MULTIPLIER_MIN, getEnemyScaling, setEnemyScaling } from "../../nya/enemySettings";
 import { lanAddresses } from "../../nya/coop";
 import { getServerSettings, setServerSettings } from "../../nya/serverSettings";
-import { DEFAULT_MESSAGE, deleteMailSchedule, MAIL_DAYS, mailScheduleStatus, saveMailSchedule } from "../../nya/mailSchedule";
+import { DEFAULT_MESSAGE, deleteMailSchedule, exportMailSchedules, importMailSchedules, MAIL_DAYS, mailScheduleStatus, saveMailSchedule } from "../../nya/mailSchedule";
 
 interface TimeQuery {
     time: string | undefined
@@ -288,6 +289,27 @@ const routes = async (fastify: FastifyInstance) => {
     fastify.post("/mail/delete", async (request: FastifyRequest, reply: FastifyReply) => {
         deleteMailSchedule(Number(((request.body ?? {}) as { id?: unknown }).id))
         return reply.send(mailOverview())
+    })
+
+    // the chosen scheduled mails (?ids=1,2; all without) as a file to share
+    fastify.get("/mail/export", async (request: FastifyRequest, reply: FastifyReply) => {
+        const raw = String(((request.query ?? {}) as { ids?: unknown }).ids ?? "").trim()
+        const ids = raw ? raw.split(",").map(Number).filter(Number.isSafeInteger) : undefined
+        reply.header("content-disposition", `attachment; filename="mail-schedule.json"`)
+        return reply.type("application/json").send(JSON.stringify(exportMailSchedules(ids), null, 1))
+    })
+
+    // a shared file's mails added next to these: { data, mode: "now" | "next" } (what a past first send does)
+    fastify.post("/mail/import", async (request: FastifyRequest, reply: FastifyReply) => {
+        const body = (request.body ?? {}) as { data?: unknown, mode?: unknown }
+        try {
+            // a unit this server doesn't have (another setup's custom unit) is refused
+            const units = new Set(((await require(path.join(__dirname, "..", "..", "..", "scripts", "unit_editor.cjs")).listUnits()) as { id: string }[]).map(u => Number(u.id)))
+            const result = importMailSchedules(body.data, body.mode === "next" ? "next" : "now", id => units.has(id))
+            return reply.send({ ...mailOverview(), imported: result })
+        } catch (error) {
+            return reply.status(400).send({ "error": "Bad Request", "message": (error as Error).message })
+        }
     })
 
     // puts an event back on its original dates: { key }

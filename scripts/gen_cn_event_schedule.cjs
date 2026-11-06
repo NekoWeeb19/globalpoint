@@ -57,6 +57,7 @@ const TRANSLATED = process.argv[2] ?? require("./cn_archives.cjs").cnTextDir()
 const { cdnDir, dataDir } = require("./cn_archives.cjs")
 const { scheduleFingerprint } = require("./schedule_fingerprint.cjs")
 const ES = require("./enemy_scaling.cjs")
+const GO = require("./gacha_odds.cjs")
 const { uploadPath: fileOf } = require("./cdn_hash.cjs")
 // the yearly free pull copies this update has (.database/cn_schedule_built.json): the server never sends the
 // CN client a used copy it doesn't have (an unknown campaign id stops it with C8601)
@@ -509,6 +510,9 @@ async function main() {
     // Enemy strength (dashboard, scripts/enemy_scaling.cjs): every enemy's HP and attack multiplied
     const enemy = ES.readEnemyScaling(dataDir())
     const enemyTables = ES.isDefault(enemy) ? [] : ES.TABLES.map(fileOf)
+    // Summon rates (dashboard, scripts/gacha_odds.cjs): the Rates screen's rarity tables show the rates the server draws
+    const gachaRates = GO.readGachaRates(dataDir())
+    const rateFiles = GO.isDefault(gachaRates) ? new Map() : new Map(GO.TABLES.map(t => [fileOf(t), t]))
     // tables the last build changed ship once more, so a change taken away goes back to the game's own rows
     const lastChanged = (() => { try { return JSON.parse(fs.readFileSync(path.join(dataDir(), "cn_schedule_built.json"), "utf8")).changedTables ?? [] } catch { return [] } })()
     // The CN client opens each unit's Mana Board 2 from a date in this table ("<unit>": "<from>,<until>") and
@@ -528,7 +532,7 @@ async function main() {
     const custom = CU.readCustomUnits()
     for (const p of custom.problems) console.log(`Custom unit skipped: ${p}`)
     const customTables = CU.unitTables(custom.units)
-    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...kitTables, MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES), ...customTables, ...changes.rows.keys(), ...enemyTables, ...lastChanged])].sort()
+    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...kitTables, MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES), ...customTables, ...changes.rows.keys(), ...enemyTables, ...rateFiles.keys(), ...lastChanged])].sort()
     const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
     const cn = await cnFiles(new Set([...fileList, featureFile]))
     // art StarPoint's patches added (scripts/gen_cn_banner_art.cjs) counts too: their file names and
@@ -652,6 +656,7 @@ async function main() {
         if (kitRows.has(file)) console.log(`Unit kits before a balance change: ${replaceRows(tree, kitRows.get(file))} row(s) in ${file}`)
         if (changes.rows.has(file)) console.log(`Unit changes: ${replaceRows(tree, changes.rows.get(file))} of ${changes.rows.get(file).size} row(s) in ${file}`)
         if (enemyTables.includes(file)) console.log(`Enemy strength: HP x${enemy.hp}, attack x${enemy.atk} on ${ES.scaleTree(tree, enemy, R)} row(s) in ${file}`)
+        if (rateFiles.has(file)) console.log(`Summon rates: ${GO.writeTree(tree, rateFiles.get(file), gachaRates, R)} row(s) in ${rateFiles.get(file)}`)
         trees.set(file, tree)
     }
 
@@ -834,7 +839,7 @@ async function main() {
     await build(version, last, list)
     fs.writeFileSync(path.join(dataDir(), "cn_schedule_built.json"), JSON.stringify({ fingerprint, version, freePullCopyIds: builtFreePullCopyIds.sort((a, b) => a - b), kitState, customUnits: customUnits.map(u => u.id),
         // units left out only because their files weren't there yet: the server rebuilds once a newer update is listed
-        customWaitingForFiles: customWaiting, changedTables: [...new Set([...changes.rows.keys(), ...enemyTables])].sort() }))
+        customWaitingForFiles: customWaiting, changedTables: [...new Set([...changes.rows.keys(), ...enemyTables, ...rateFiles.keys()])].sort() }))
     console.log(`CN schedule ${version}: ${events} event(s), ${moved} rows moved, ${campaignsMade}, ${list.length} files`)
     if (custom.units.length > 0) console.log(`Custom units: ${customUnits.map(u => `${u.id} ${u.name ?? u.dev}`).join(", ") || "none"} (${customUnits.length} of ${custom.units.length}, rows in ${customTables.length} tables)`)
     // the server's copy of the CN missions follows the new dates

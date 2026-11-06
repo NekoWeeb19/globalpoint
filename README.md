@@ -65,7 +65,7 @@ server runs, or tap **Dashboard** in StarPoint Companion. How to use each one is
   <img src="docs/images/feature-enemy-strength.png" alt="Enemy strength: HP and attack multipliers with presets" width="640">
 
 - **Summon rates:** set the 5★ and 4★ chance for unit banners, Star Fest / Meteor Festival and
-  armaments.
+  armaments; the in-game Rates screen shows them too.
 
   <img src="docs/images/feature-summon-rates.png" alt="Summon rates for unit banners, Star Fest / Meteor Festival and armaments" width="560">
 
@@ -78,7 +78,8 @@ server runs, or tap **Dashboard** in StarPoint Companion. How to use each one is
 - **Time travel:** set the server's date to replay any period. Units even play as they did then
   ([balance by date](docs/DETAILS.md#balance-by-date)).
 - **News and mail:** post to the in-game News board, and schedule gifts (beads, items, units,
-  armaments) once or every day, week, month or year.
+  armaments) once or every day, week, month or year, optionally repeating every year, and share a
+  schedule with others as a file.
 
   <img src="docs/images/feature-scheduled-mail.png" alt="A new scheduled mail: paid beads every day, 4 times" width="560">
 

@@ -79,7 +79,15 @@ player** (press it, then open the reinstalled game within 30 minutes).
    Title and message are optional.
 2. Set the **First send** (**Now** fills in the server's time) and **Repeat**: **Once**, or **Every** N
    days, weeks, months or years, a number of times or forever.
+   **Also repeat the whole run every year** sends the run again each year from its first send's date
+   (e.g. weekly for 6 weeks from 1 March, every March); for a run with an end, under a year long.
 3. **Schedule**. The list shows each mail's next send; **Edit** changes it, **Delete** stops it.
+
+**Share a schedule:** tick mails and **Export ticked** (or **Export all**) for one `.json` file of what is
+sent and when (not who got what). **Import a file…** adds someone else's next to yours, each checked like
+one you made; a unit your setup doesn't have (another setup's custom unit) is refused with the reason.
+When some of the imported mails' first send times have already passed, it asks: **Send them now** (one
+of each right away) or **Start each at its next time**.
 
 Each mail can be claimed for 30 days. It goes to the active save (Players > **Active account**) and
 follows the server time, so moving the date makes due mails arrive. A first send already in the past
@@ -119,8 +127,8 @@ app's News tab) and **Show in**, then **Post**. Players see it the next time the
   remove it.
 - **Summon rates:** the 5★ and 4★ chance per pull for **Unit banners**, **Star Fest / Meteor Festival**
   and **Armaments** (3★ is the rest). **Base game rates** restores 5% / 25%, and 7.5% / 25% for Star
-  Fest and Meteor Festival. Applies from the next pull with no update; the game's own Rates screen keeps
-  showing the original numbers.
+  Fest and Meteor Festival. Pulls follow from the next pull; the game's own **Rates** screen (and its
+  guaranteed-slot page) shows the new numbers after the game update rebuilds: close and reopen the game.
 
 ## Edit a unit or an armament
 

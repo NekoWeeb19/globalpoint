@@ -59,6 +59,10 @@ export interface MailSchedule {
     unit: RepeatUnit
     /** how many times in all; null: forever */
     times: number | null
+    /** the whole run is sent again every year from its first send's anniversary (a run with an end, under a year long) */
+    yearly?: boolean
+    /** false: no mail right away for a first send time already past (an import that asked to start at the next time) */
+    catchUp?: boolean
     /** server time (ms) when it was last saved: send times before it are skipped */
     savedAt: number
 }
@@ -160,6 +164,12 @@ function checkSchedule(s: MailSchedule) {
     if (!isInt(s.every, 0, 999)) throw new Error("Repeat every: a whole number (0 for once).")
     if (!REPEAT_UNITS.includes(s.unit)) throw new Error("Repeat every: days, weeks, months or years.")
     if (s.every > 0 ? !(s.times === null || isInt(s.times, 1, 9999)) : s.times !== 1) throw new Error("How many times: 1 to 9999, or forever.")
+    if (s.yearly !== undefined && typeof s.yearly !== "boolean") throw new Error("Every year: on or off.")
+    if (s.yearly) {
+        const count = runCount(s)
+        if (count === null) throw new Error("Every year needs a number of times (a run that sends forever never ends).")
+        if (runTime(s, count - 1) - Date.parse(s.start) >= 365 * DAY) throw new Error("Every year: the run must be shorter than a year (its sends would overlap the next year's).")
+    }
 }
 
 /** The default title, when none was typed: "Paid beads * 1500", "Item 1001 * 3". */
@@ -186,6 +196,9 @@ export function saveMailSchedule(input: Record<string, unknown>): MailSchedule[]
         times: every > 0 ? (input.times === null || input.times === "" || input.times === undefined ? null : Number(input.times)) : 1,
         savedAt: getServerDate().getTime(),
     }
+    if (input.yearly === true) s.yearly = true
+    else if (input.yearly !== undefined && input.yearly !== false && input.yearly !== null) s.yearly = input.yearly as boolean
+    if (input.catchUp === false) s.catchUp = false
     if (input.start && Number.isNaN(Date.parse(String(input.start)))) s.start = ""
     checkSchedule(s)
     if (input.id !== undefined && input.id !== null) {
@@ -214,27 +227,43 @@ export function deleteMailSchedule(id: number): MailSchedule[] {
 
 const PERIOD_MS: Partial<Record<RepeatUnit, number>> = { day: DAY, week: 7 * DAY }
 
-/** The k-th send time (0 = the first), in ms. Months and years keep the day of the month (31st -> 30th/28th). */
-export function sendTime(s: MailSchedule, k: number): number {
-    const start = Date.parse(s.start)
-    if (k === 0 || s.every === 0) return start
-    const fixed = PERIOD_MS[s.unit]
-    if (fixed !== undefined) return start + k * s.every * fixed
-    const d = new Date(start)
-    const months = k * s.every * (s.unit === "year" ? 12 : 1)
+/** A date `months` months later, keeping the day of the month (31st -> 30th/28th, Feb 29 -> Feb 28). */
+function addMonths(ms: number, months: number): number {
+    const d = new Date(ms)
     const y = d.getUTCFullYear() + Math.floor((d.getUTCMonth() + months) / 12)
-    const m = (d.getUTCMonth() + months) % 12
+    const m = (((d.getUTCMonth() + months) % 12) + 12) % 12
     const lastDay = new Date(Date.UTC(y, m + 1, 0)).getUTCDate()
     return Date.UTC(y, m, Math.min(d.getUTCDate(), lastDay), d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds())
 }
-const sendCount = (s: MailSchedule) => s.every === 0 ? 1 : s.times
+
+/** The j-th send of one run (0 = the first). Months and years keep the day of the month. */
+function runTime(s: MailSchedule, j: number): number {
+    const start = Date.parse(s.start)
+    if (j === 0 || s.every === 0) return start
+    const fixed = PERIOD_MS[s.unit]
+    if (fixed !== undefined) return start + j * s.every * fixed
+    return addMonths(start, j * s.every * (s.unit === "year" ? 12 : 1))
+}
+/** sends in one run (null: forever) */
+const runCount = (s: MailSchedule) => s.every === 0 ? 1 : s.times
+
+/** The k-th send time (0 = the first), in ms; with "every year", run r is the run moved r years on. */
+export function sendTime(s: MailSchedule, k: number): number {
+    const count = runCount(s)
+    if (!s.yearly || count === null) return runTime(s, k)
+    return addMonths(runTime(s, k % count), 12 * Math.floor(k / count))
+}
+/** sends in all (null: never ends: forever, or every year) */
+const sendCount = (s: MailSchedule) => s.yearly ? null : runCount(s)
 
 /** The first send not before `from` (ms), or the count when there is none. A minute's grace: "now" counts. */
 function firstSendFrom(s: MailSchedule, from: number): number {
     const limit = sendCount(s) ?? Infinity
     const fixed = PERIOD_MS[s.unit]
     let k = 0
-    if (s.every > 0 && fixed !== undefined) k = Math.max(0, Math.ceil((from - Date.parse(s.start)) / (s.every * fixed)) - 1)
+    const count = runCount(s)
+    if (s.yearly && count !== null) k = Math.max(0, Math.floor((from - Date.parse(s.start)) / (366 * DAY)) - 1) * count
+    else if (s.every > 0 && fixed !== undefined) k = Math.max(0, Math.ceil((from - Date.parse(s.start)) / (s.every * fixed)) - 1)
     for (let i = 0; i < 100_000 && k < limit && sendTime(s, k) < from; i++) k++
     return Math.min(k, limit)
 }
@@ -305,7 +334,7 @@ export function scheduledMailsFor(playerId: number, now = getServerDate().getTim
                 k = firstSendFrom(s, s.savedAt - 60_000)
                 // ...and when its first send time had already passed, one right away (then it keeps its own times)
                 // (not when a send of its own is due right now anyway)
-                if (k > 0 && (k >= limit || sendTime(s, k) > s.savedAt) && s.savedAt + MAIL_DAYS * DAY > now) deliver(s.savedAt)
+                if (s.catchUp !== false && k > 0 && (k >= limit || sendTime(s, k) > s.savedAt) && s.savedAt + MAIL_DAYS * DAY > now) deliver(s.savedAt)
             } else {
                 k = p.next
             }
@@ -346,7 +375,7 @@ export function removeScheduledMail(playerId: number, mailId: number) {
 }
 
 /** A schedule's times, as one string: progress carries on through an edit that leaves them alone. */
-const timingOf = (s: MailSchedule) => [s.start, s.every, s.unit, s.times].join("|")
+const timingOf = (s: MailSchedule) => [s.start, s.every, s.unit, s.times, ...(s.yearly ? ["yearly"] : [])].join("|")
 
 /** Whether a mail id is a scheduled one. */
 export const isScheduledMailId = (id: number) => id >= FIRST_MAIL_ID && id < 90_000_000
@@ -366,4 +395,44 @@ export function mailScheduleStatus(playerId: number | null, now = getServerDate(
             waiting: players.reduce((n, p) => n + p.mails.filter(m => m.scheduleId === s.id && m.expires > now).length, 0),
         }
     })
+}
+
+// ---- sharing schedules (the Mail tab's Export / Import) ----
+
+export const SCHEDULE_FILE_KIND = "globalpoint-mail-schedule"
+
+/** The chosen schedules (all when no ids) as a file to share: what and when only, no ids, progress or save. */
+export function exportMailSchedules(ids?: number[]) {
+    const list = listMailSchedules().filter(s => ids === undefined || ids.includes(s.id))
+    return {
+        kind: SCHEDULE_FILE_KIND,
+        version: 1,
+        mails: list.map(s => ({
+            kind: s.kind, typeId: s.typeId, amount: s.amount, title: s.title, message: s.message,
+            start: s.start, every: s.every, unit: s.unit, times: s.times, ...(s.yearly ? { yearly: true } : {}),
+        })),
+    }
+}
+
+/**
+ * Adds a shared file's schedules next to the ones here (each checked like a save on the Mail tab). mode "now": a mail
+ * whose first send time has passed sends one right away (as a new one does); "next": it starts at its next send time.
+ * unitExists, when given, refuses a unit this server doesn't have (e.g. another setup's custom unit).
+ */
+export function importMailSchedules(data: unknown, mode: "now" | "next", unitExists?: (id: number) => boolean): { added: number, refused: { index: number, title: string, why: string }[] } {
+    const file = data as { kind?: unknown, mails?: unknown }
+    if (!file || file.kind !== SCHEDULE_FILE_KIND || !Array.isArray(file.mails)) throw new Error("This isn't a GlobalPoint mail schedule file.")
+    const refused: { index: number, title: string, why: string }[] = []
+    let added = 0
+    file.mails.forEach((m: Record<string, unknown>, index: number) => {
+        const title = typeof m?.title === "string" && m.title ? m.title : defaultTitle(m?.kind as MailKind, (m?.typeId as number) ?? null, Number(m?.amount))
+        try {
+            if (m?.kind === "chara" && unitExists && !unitExists(Number(m.typeId))) throw new Error(`Unit ${m.typeId} isn't on this server (another setup's custom unit?).`)
+            saveMailSchedule({ ...m, id: undefined, ...(mode === "next" ? { catchUp: false } : {}) })
+            added++
+        } catch (error) {
+            refused.push({ index, title, why: (error as Error).message })
+        }
+    })
+    return { added, refused }
 }

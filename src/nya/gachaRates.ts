@@ -2,10 +2,12 @@
 // pull for each kind of banner (3★ is the rest). Which unit or armament of that rarity comes out is still the
 // banner's own weighting (featured units keep their boost). The 10th pull of a multi-pull is 4★ or better: 5★ at
 // the same 5★ rate, otherwise 4★. Special pulls with their own rules (e.g. a once-per-account guaranteed 5★) keep
-// them. The game's in-game Rates screen still shows the game's own table.
+// them. The game's in-game Rates screen shows them too: they're written into its rarity tables in the CN update
+// (scripts/gacha_odds.cjs), so a change rebuilds the update and the game shows it after its next start.
 
 import { existsSync, mkdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from "fs"
 import path from "path"
+import { rebuildCnUpdate } from "./eventSchedule"
 
 const FILE = path.join(process.cwd(), ".database", "gacha_rates.json")
 
@@ -65,17 +67,24 @@ export function setGachaRates(input: unknown): GachaRates {
         if (!isValidKindRates(value)) throw new Error(`${kind[0].toUpperCase() + kind.slice(1)} rates: 5★ and 4★ must each be 0-100% (steps of 0.1), and together at most 100%.`)
         rates[kind] = value
     }
+    const before = JSON.stringify(getGachaRates())
     mkdirSync(path.dirname(FILE), { recursive: true })
     writeFileSync(FILE, JSON.stringify(rates))
     cache = null
-    return getGachaRates()
+    const after = getGachaRates()
+    // the Rates screen's tables come with the CN update
+    if (JSON.stringify(after) !== before) rebuildCnUpdate()
+    return after
 }
 
 /** Back to the base game's rates. */
 export function resetGachaRates(): GachaRates {
+    const before = JSON.stringify(getGachaRates())
     try { if (existsSync(FILE)) unlinkSync(FILE) } catch { }
     cache = null
-    return getGachaRates()
+    const after = getGachaRates()
+    if (JSON.stringify(after) !== before) rebuildCnUpdate()
+    return after
 }
 
 /**

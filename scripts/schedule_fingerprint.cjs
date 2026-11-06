@@ -32,7 +32,9 @@ function scheduleFingerprint(dataDir) {
     try { kits = crypto.createHash("sha1").update(fs.readFileSync(path.join(__dirname, "..", "assets", "kit_dates.json"))).digest("hex") } catch { }
     // and the enemy strength (scripts/enemy_scaling.cjs; only when set, so other installs keep their fingerprint)
     const ES = require("./enemy_scaling.cjs"), enemy = ES.readEnemyScaling(dataDir)
-    return crypto.createHash("sha1").update(JSON.stringify(stable({ events, yearly, builder: BUILDER_REVISION, ...(custom ? { custom } : {}), ...(kits ? { kits } : {}), ...(ES.isDefault(enemy) ? {} : { enemy }) }))).digest("hex")
+    // and the summon rates (scripts/gacha_odds.cjs; only when changed)
+    const GO = require("./gacha_odds.cjs"), rates = GO.readGachaRates(dataDir)
+    return crypto.createHash("sha1").update(JSON.stringify(stable({ events, yearly, builder: BUILDER_REVISION, ...(custom ? { custom } : {}), ...(kits ? { kits } : {}), ...(ES.isDefault(enemy) ? {} : { enemy }), ...(GO.isDefault(rates) ? {} : { rates }) }))).digest("hex")
 }
 
 /** What the current CN update was built from, or null (an update built before this was recorded). */
