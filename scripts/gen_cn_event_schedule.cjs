@@ -392,6 +392,13 @@ async function main() {
             if (c[0].endsWith("_campaign") && c[16] === "2020-01-15 12:00:00") { c[16] = "2001-01-01 05:00:00"; return true }
             return false
         },
+        // ...and their quests too (the every-element events 13-18, their levels 1-5; level 6, added 2020-08-13, keeps
+        // its date): opened from 2020-01-15, a save before then saw the event with no quests in it
+        [fileOf("master/quest/event/daily_week_event_quest.orderedmap")]: (key, c) => {
+            const event = Number(key.split("/")[0])
+            if (event >= 13 && event <= 18 && c[4] === "2020-01-15 12:00:00") { c[4] = "2001-01-01 05:00:00"; return true }
+            return false
+        },
         [fileOf("master/quest/event/tower_dungeon_event.orderedmap")]: (key, c) => {
             let changed = false
             if (c[11] === "2022-05-12 12:00:00" || c[11] === "2021-05-12 12:00:00") { c[11] = "2020-01-12 12:00:00"; changed = true }
