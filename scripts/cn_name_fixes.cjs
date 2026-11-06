@@ -11,5 +11,8 @@ module.exports = {
         "3001": [2, "Shifting Tracks, Distant Worlds", "Lightcrest Serpent"],
         // CN: 为你奏响的镇魂歌, like its other runs (9, 300002)
         "16": [2, "Not Today, Romero", "The Descension: A Requiem for You"],
+        // the Black Clover collab: named in Japanese even in CN's file (不諦の魔道士); its missions already say
+        // "The Unyielding Mages"
+        "300001": [2, "不諦の魔道士", "The Unyielding Mages"],
     },
 }
