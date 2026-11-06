@@ -349,14 +349,23 @@ async function main() {
     const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, "assets", "event_catalog.json"), "utf8"))
     // plus the events only CN has (scripts/gen_event_catalog.cjs --cn)
     const cnCatalogFile = path.join(ROOT, "assets", "event_catalog_cn.json")
+    const clashes = new Set()
     if (fs.existsSync(cnCatalogFile)) {
         const cnCatalog = JSON.parse(fs.readFileSync(cnCatalogFile, "utf8"))
         const known = new Set(catalog.events.map(e => e.key))
+        // an event both games have moves CN's own rows: CN added rows of its own (missions, shop items, home
+        // banners...), and some of global's row numbers are another event's rows in CN's files
+        const sharedRows = cnCatalog.sharedRows ?? {}
+        for (const e of catalog.events) if (sharedRows[e.key]) e.rows = sharedRows[e.key]
+        // global's events whose number is a different event in CN: left out here (CN's has a key of its own)
+        for (const key of cnCatalog.clashes ?? []) clashes.add(key)
+        catalog.events = catalog.events.filter(e => !clashes.has(e.key))
         catalog.events.push(...cnCatalog.events.filter(e => !known.has(e.key)))
         catalog.tables = { ...cnCatalog.tables, ...catalog.tables }
     }
     const scheduleFile = path.join(dataDir(), "event_schedule.json")
     const raw = fs.existsSync(scheduleFile) ? JSON.parse(fs.readFileSync(scheduleFile, "utf8")) : { entries: [] }
+    if (Array.isArray(raw.entries)) raw.entries = raw.entries.filter(e => !clashes.has(e?.key))
     const { schedule } = parseSchedule(raw, catalog)
     const { moves } = planRowMoves(catalog, schedule)
     // the banner rows the schedule moves (a banner without art is still moved when it's on the schedule)
@@ -400,7 +409,15 @@ async function main() {
         ability_description_instant_trigger_kind_same_element_member: ["::if once::::if is_max::::else::or more:: units", "::if once::::if is_max::::else:: or more::end::::else::::end:: units"],
     }
     const UI_TEXT = "production/upload/d6/88e4a5f7d84cc422357cc8acbdb72817bc8670"
+    const NAME_FIXES = require("./cn_name_fixes.cjs")
     const DUNGEON_FIXES = {
+        // event names the translation took from another event (scripts/cn_name_fixes.cjs)
+        ...Object.fromEntries(Object.entries(NAME_FIXES).map(([table, rows]) => [fileOf(table), (key, c) => {
+            const fix = rows[key]
+            if (!fix || c[fix[0]] !== fix[1]) return false
+            c[fix[0]] = fix[2]
+            return true
+        }])),
         [UI_TEXT]: (key, c) => {
             const fix = TEXT_FIXES[key]
             let changed = false
@@ -711,32 +728,6 @@ async function main() {
         byEvent.get(move.eventKey).rows.push({ file, p })
     }
     const EVENT_SHOP_FILE = fileOf("master/shop/event_item_shop.orderedmap")
-    // event shops: the catalog links global's shop rows, but CN added items of its own to shared events'
-    // shops (some shops are all CN rows), so every CN row of the event's shop moves with it (shop table
-    // column 0 = the shop kind, column 1 = the event id)
-    // "<shop kind>:<event id>" -> that shop's rows ({ p, leaf })
-    const SHOP_KIND = { story_event: "1", advent_event: "0", carnival_event: "5", rush_event: "6" }
-    const shopRows = new Map()
-    if (trees.has(EVENT_SHOP_FILE)) for (const { path: keys, leaf } of R.leaves(trees.get(EVENT_SHOP_FILE))) {
-        const c = R.splitCsv(leaf.text.replace(/\n$/, ""))
-        const k = `${c[0]}:${c[1]}`
-        if (!shopRows.has(k)) shopRows.set(k, [])
-        shopRows.get(k).push({ p: keys.join("/"), leaf })
-    }
-    {
-        for (const [eventKey, entry] of byEvent) {
-            const [family, eventId] = [eventKey.slice(0, eventKey.indexOf(":")), eventKey.slice(eventKey.indexOf(":") + 1)]
-            const kind = SHOP_KIND[family]
-            if (kind === undefined) continue
-            let added = 0
-            for (const { p } of shopRows.get(`${kind}:${eventId}`) ?? []) {
-                if (moves.has(`${EVENT_SHOP_FILE}#${p}`)) continue
-                entry.rows.push({ file: EVENT_SHOP_FILE, p })
-                added++
-            }
-            if (added) console.log(`${eventKey}: ${added} more shop item(s) from CN's shop move with it`)
-        }
-    }
     // Each event's own dates in CN's data, before any move (.database/cn_event_windows.json, ISO UTC): the
     // dashboard shows these, since they are when the CN game runs an event that isn't moved (global's
     // dates, which the catalog has, can be years apart).
@@ -776,31 +767,67 @@ async function main() {
         console.log(`CN event dates: ${Object.keys(windows).length} event(s)`)
     }
 
-    // Shops that open after their event ended: CN's first boss and story events (the Serpents, A Not-So-Silent
-    // Night, Valentine's Fest) keep JP's 2019-20 dates on the event and its quests, but CN's 2021 dates on the
-    // shop, so the shop never opened while the event ran. Such a shop is put on its event's dates (opening on
-    // the first day, keeping its length), before any move, so a moved event takes it along too.
+    // Parts of an event on the other launch's dates. CN's data dates its events before CN's launch with JP's dates,
+    // but some of their parts with CN's own (about 640-690 days later), and the other way round for some later
+    // ones: e.g. the anniversary quests' daily attempts, Trial by Water's missions, Not Today Romero's shop, the
+    // first Serpents' shops. Such a part never opened while its event ran. When none of an event's rows in one of
+    // these tables falls inside the event, the ones 550-720 days off (a shop: any opening after the event) are put
+    // on its dates: the first opens on the event's first day, the rest keep their spacing and length. Before any
+    // move, so a moved event takes them along too.
     {
+        const LINEUP = new Map([
+            [fileOf("master/mission/event_mission.orderedmap"), "missions"],
+            [fileOf("master/mission/daily_mission.orderedmap"), "daily missions"],
+            [fileOf("master/mission/collect_item_event_mission.orderedmap"), "item missions"],
+            [EVENT_SHOP_FILE, "shop"],
+            [fileOf("master/quest/event/daily_challenge_point.orderedmap"), "daily quest attempts"],
+            ["production/upload/74/5671e8eba88e75cdc4f97e4c6ade23b04b1757", "home announcement"],
+            [fileOf("master/feature_banner/feature_banner.orderedmap"), "home banner"],
+            [fileOf("master/feature_banner/feature_banner_secondary.orderedmap"), "home banner"],
+        ])
+        const DAY = 864e5
+        const leafIndex = new Map()
+        const leafOf = (file, p) => {
+            if (!leafIndex.has(file)) leafIndex.set(file, new Map(trees.has(file) ? R.leaves(trees.get(file)).map(l => [l.path.join("/"), l.leaf]) : []))
+            return leafIndex.get(file).get(p)
+        }
+        const shifted = new Set()
         let lined = 0
         for (const event of catalog.events) {
-            const kind = SHOP_KIND[event.family], window = cnWindows[event.key]
-            if (kind === undefined || !window) continue
+            const window = cnWindows[event.key]
+            if (event.family === "gacha" || !window) continue
             const start = Date.parse(window.start), end = Date.parse(window.end)
-            const rows = (shopRows.get(`${kind}:${event.id}`) ?? []).map(r => ({ ...r, opens: parse(((R.splitCsv(r.leaf.text)[26] ?? "").match(DATE) ?? [])[0] ?? "") }))
-            if (rows.length === 0 || !rows.every(r => r.opens !== null && r.opens > end)) continue
-            const shift = start - Math.min(...rows.map(r => r.opens))
-            for (const { leaf } of rows) R.setLeafText(leaf, leaf.text.replace(DATE, found => { const ms = parse(found); return ms === null || ms >= FAR ? found : format(ms + shift) }))
-            console.log(`${event.key}: its shop (${rows.length} items, dated ${format(start - shift).slice(0, 10)}) opens with the event, ${format(start).slice(0, 10)}`)
-            lined++
+            for (const [file, label] of LINEUP) {
+                const rows = (event.rows[file] ?? []).map(p => leafOf(file, p)).filter(Boolean).map(leaf => {
+                    const ds = (leaf.text.match(DATE) ?? []).map(parse).filter(ms => ms !== null && ms < FAR)
+                    return { leaf, first: Math.min(...ds), last: Math.max(...ds), dated: ds.length > 0 }
+                }).filter(r => r.dated)
+                if (rows.length === 0 || rows.some(r => r.first <= end && r.last >= start)) continue
+                const pick = rows.filter(r => {
+                    if (shifted.has(r.leaf)) return false
+                    const days = Math.abs(r.first - start) / DAY
+                    return (days >= 550 && days <= 720) || (file === EVENT_SHOP_FILE && r.first > end)
+                })
+                if (pick.length === 0) continue
+                const from = Math.min(...pick.map(r => r.first)), shift = start - from
+                for (const r of pick) {
+                    R.setLeafText(r.leaf, r.leaf.text.replace(DATE, found => { const ms = parse(found); return ms === null || ms >= FAR ? found : format(ms + shift) }))
+                    shifted.add(r.leaf)
+                }
+                console.log(`${event.key} "${event.name}": its ${label} (${pick.length}, dated ${format(from).slice(0, 10)}) put on its dates, ${format(start).slice(0, 10)}`)
+                lined++
+            }
         }
-        if (lined) console.log(`Shops put on their events' dates: ${lined}`)
+        if (lined) console.log(`Event parts put on their events' dates: ${lined}`)
     }
 
     let moved = 0, events = 0
     for (const [eventKey, { move, rows }] of byEvent) {
         const leaves = []
         let ownRow = null
-        const [family, eventId] = [eventKey.slice(0, eventKey.indexOf(":")), eventKey.slice(eventKey.indexOf(":") + 1)]
+        // the catalog's own id (a CN event whose number global uses for another event has a key of its own, "...-cn")
+        const catalogEvent = catalog.events.find(e => e.key === eventKey)
+        const [family, eventId] = [catalogEvent?.family ?? eventKey.slice(0, eventKey.indexOf(":")), catalogEvent?.id ?? eventKey.slice(eventKey.indexOf(":") + 1)]
         const own = OWN_WINDOW[family]
         for (const { file, p } of rows) {
             const tree = trees.get(file)

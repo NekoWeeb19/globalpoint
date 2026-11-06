@@ -7,8 +7,8 @@ const path = require("path")
 const crypto = require("crypto")
 
 // raised when scripts/gen_cn_event_schedule.cjs changes what it writes, so every install rebuilds its
-// update once (2: permanent dungeons kept open; 3: one Launch Gala banner at a time; 4: blank announcements hidden; 6: column 26 change of revision 5 undone; 7: armament ticket deadlines end with their pull window; 8: own rates copies (tried, removed); 9: test, no ticket items (removed); 10: armament portals keep their rates loaded (freemium flag on); 11: launch units MB2 on later waves; 12: MB2 by JP waves; 13: home banners without a picture hidden; 14: world story banners on their events dates; 16: The Haunt from 2020-01; 17: unit banners without art dated 2011 unless scheduled; 18: every-element daily quests open with their event, 2001; 19: CN-only items of shared events' shops move with them; 20: early events' shops (CN 2021 dates) put on their events' dates; 21: broken English UI text templates fixed (U_f72d75))
-const BUILDER_REVISION = 21
+// update once (2: permanent dungeons kept open; 3: one Launch Gala banner at a time; 4: blank announcements hidden; 6: column 26 change of revision 5 undone; 7: armament ticket deadlines end with their pull window; 8: own rates copies (tried, removed); 9: test, no ticket items (removed); 10: armament portals keep their rates loaded (freemium flag on); 11: launch units MB2 on later waves; 12: MB2 by JP waves; 13: home banners without a picture hidden; 14: world story banners on their events dates; 16: The Haunt from 2020-01; 17: unit banners without art dated 2011 unless scheduled; 18: every-element daily quests open with their event, 2001; 19: CN-only items of shared events' shops move with them; 20: early events' shops (CN 2021 dates) put on their events' dates; 21: broken English UI text templates fixed (U_f72d75); 22: shared events move CN's own rows, event parts on the other launch's dates lined up, wrong event names fixed)
+const BUILDER_REVISION = 22
 
 const readJson = file => { try { return JSON.parse(fs.readFileSync(file, "utf8")) } catch { return null } }
 

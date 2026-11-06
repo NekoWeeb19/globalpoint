@@ -167,9 +167,13 @@ New units are added with files: see [CUSTOM_UNITS.md](CUSTOM_UNITS.md).
 - **Yearly copies follow the clock:** repeating campaigns and The Haunt's monthly floors are built for
   the game year and one year either side. Moving further means a small download at the next title
   screen.
-- **CN's first boss and story events** (the three Serpents, A Not-So-Silent Night, the first Valentine's
-  Fest) keep JP's 2019-20 dates in CN's data, but their shops had CN's own 2021 dates. GlobalPoint opens
-  each shop with its event, keeping the shop's length, moved or not.
+- **JP and CN dates mixed in one event:** CN's data dates the events before CN's launch (2021) with JP's
+  dates, but some of their parts with CN's own, about 640-690 days later (and the other way round for a few
+  later events): the first Serpents' and Not Today, Romero's shops, the anniversary quests' daily attempts,
+  Trial by Water's missions, some home banners and announcements. GlobalPoint puts those parts on their
+  event's dates (keeping their length), moved or not.
+- **Boss events 100006 and 100007** are different events in each game: on the CN app they're CN's own (The
+  Leap of Haruhi Suzumiya, a Lightcrest Serpent rerun), listed under their own entries.
 - **The Haunt** opens on 2020-01-12 and stays open, with a fresh set of floors every month.
 - **There's no login.** With `LISTEN_HOST` at `127.0.0.1` (the default) only the same device can reach
   the dashboard; `0.0.0.0` (setups B and D) opens it to your whole network, so use that only on a

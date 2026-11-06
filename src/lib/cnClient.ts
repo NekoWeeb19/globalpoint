@@ -401,11 +401,17 @@ export function adaptCnReply(payload: unknown, api: string = ""): unknown {
     const points = data.user_daily_challenge_point_list
     const pointIds = cnIds("dailyChallengePoint"), campaignIds = cnIds("dailyChallengePointCampaign")
     if (Array.isArray(points) && pointIds && campaignIds) {
-        data.user_daily_challenge_point_list = points
+        const kept = points
             .filter(entry => pointIds.has(entry?.id))
             .map(entry => Array.isArray(entry.campaign_list)
                 ? { ...entry, campaign_list: entry.campaign_list.filter((c: any) => campaignIds.has(c?.campaign_id)) }
                 : entry)
+        // a quest with daily attempts (the anniversary and holiday event quests, some world story bosses) can't be
+        // started without its attempts in this list, and a save only has the 4 every player starts with: every other
+        // kind is added with 1 attempt, as CN's table gives all of them (the server doesn't use attempts up)
+        const have = new Set(kept.map(entry => Number(entry?.id)))
+        for (const id of pointIds) if (!have.has(id)) kept.push({ id, point: 1, campaign_list: [] })
+        data.user_daily_challenge_point_list = kept
     }
     conformCnReply(api, payload)
     return payload
