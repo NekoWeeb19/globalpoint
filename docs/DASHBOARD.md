@@ -167,6 +167,9 @@ New units are added with files: see [CUSTOM_UNITS.md](CUSTOM_UNITS.md).
 - **Yearly copies follow the clock:** repeating campaigns and The Haunt's monthly floors are built for
   the game year and one year either side. Moving further means a small download at the next title
   screen.
+- **CN's first boss and story events** (the three Serpents, A Not-So-Silent Night, the first Valentine's
+  Fest) have no shop of their own in CN's data, only their 2020-21 rerun's: moved, they run without a
+  shop, and the shop still opens on the rerun's dates.
 - **The Haunt** opens on 2020-01-12 and stays open, with a fresh set of floors every month.
 - **There's no login.** With `LISTEN_HOST` at `127.0.0.1` (the default) only the same device can reach
   the dashboard; `0.0.0.0` (setups B and D) opens it to your whole network, so use that only on a
