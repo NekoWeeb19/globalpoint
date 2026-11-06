@@ -19,7 +19,7 @@ one save database. The CN app is the main one; the global app is [legacy](global
   is a new version number; the app never downloads a version it already has. The server numbers
   its schedule builds above the highest version it has seen, so they never repeat one a game may
   have (see [CN_CLIENT_SETUP.md](CN_CLIENT_SETUP.md#6-ship-it-to-the-app-as-an-update-each-time-5-min)).
-- A phone can point the app at a PC instead of `127.0.0.1` with a `server.txt` file ([INSTALL.md, setup D](INSTALL.md#d-on-a-phone-with-the-server-on-your-pc)).
+- A phone can point the app at a PC instead of `127.0.0.1` with a `server.txt` file ([INSTALL.md, setup 2](INSTALL.md#2-phone-with-a-pc-server)).
 - Co-op battles use a separate TCP server (`src/coop/tcp.ts`, port 18888) with COM partners.
 
 Every route the server answers is listed in [routes.md](routes.md), generated from the server by
@@ -60,7 +60,7 @@ Node scripts that build data, translations, game updates and packages. The ones 
   `../GlobalPoint-release`, next to the repository). It includes the game APK, so it's for your
   own use, not for publishing. `verify_package.cjs` checks a folder's game files and updates
   (`setup.bat` runs it).
-- `build_cn_obb.cjs` (optional): builds the OBB with every game file, for phones (setup C).
+- `build_cn_obb.cjs` (optional): builds the OBB with every game file, for phones and emulators (setup 1).
 - `build_pack.cjs`: the data and comics packs for the companion's **Import pack...**.
 - `gen_cn_art_fill.cjs`: global's pictures for CN pictures that were missing, as an art patch.
 - `build_kit_*.cjs`, `kit_dates.cjs`: the old unit kits for balance by date (`assets/kit_dates.json`).

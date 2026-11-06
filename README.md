@@ -22,9 +22,12 @@ got, plays on your own PC or phone.
 comics and the rest have been confirmed working in the game, all in English. The phone setups are
 tested on an Android 9 emulator, a Samsung Android 16 phone and an Android 16 tablet.
 
-## Quick start (phone only)
+## Quick start (phone or emulator)
 
-Everything runs on the phone: the game, and the **StarPoint Companion** app that runs the server.
+Everything runs on the phone: the game, and the **StarPoint Companion** app that runs the server. On a
+PC, do the same in an Android emulator; no server on the PC is needed. Most modern emulators run the
+game (it's ARM64): LDPlayer 9 is tested, and MuMu works with an Android 12 instance (a player saw
+hiccups on its Android 15 one).
 
 1. Download the files from the [Google Drive folder](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) (or [MEGA](https://mega.nz/folder/fWRATYbJ#z8wtDI7krmKgBn2HL_s0jg)): the two APKs,
    `starpoint-data.zip`, the comics zip if you want comics, and the game files: either the three
@@ -37,20 +40,22 @@ Everything runs on the phone: the game, and the **StarPoint Companion** app that
    unpack.
 6. Enjoy playing the game.
 
-You need about 15 GB free. Stuck? See [If something goes wrong](docs/INSTALL.md#if-something-goes-wrong).
+You need about 15 GB free on the phone or emulator. Stuck? See
+[If something goes wrong](docs/INSTALL.md#if-something-goes-wrong).
 
 ## Other ways to play
 
-| | Server | Game | Guide |
-|---|---|---|---|
-| **A. PC** | your PC | an Android emulator (e.g. LDPlayer) | [setup A](docs/INSTALL.md#a-on-a-pc-emulator) |
-| **B. Phone, copy from a PC** | the phone | the phone | [setup B](docs/INSTALL.md#b-on-a-phone-copying-from-your-pc-over-wi-fi) |
-| **C. Phone only** | the phone | the phone | the quick start above, or [setup C in full](docs/INSTALL.md#c-on-a-phone-with-the-obb-file) |
-| **D. Phone + PC server** | your PC | a phone | [setup D](docs/INSTALL.md#d-on-a-phone-with-the-server-on-your-pc) |
+The quick start above is setup 1, and it's all you need to play. With the server on a PC instead:
 
-Setup A needs the official CN game files (~10 GB) from the
-[CN CDN 1.4.54 release](https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54) and this repository.
-The [installation guide](docs/INSTALL.md) has every download with its size and checksum.
+| | Server | Game | For |
+|---|---|---|---|
+| **2. Phone with a PC server** | your PC | a phone | keeping the server and your save on the PC ([setup 2](docs/INSTALL.md#2-phone-with-a-pc-server)) |
+| **3. PC only** | your PC | an emulator on the PC | custom units, or working on GlobalPoint ([setup 3](docs/INSTALL.md#3-pc-only-an-emulator-with-a-pc-server)) |
+
+Both need [the server installed on a PC](docs/INSTALL.md#installing-the-server-on-a-pc), with the official
+CN game files (~10 GB) from the [CN CDN 1.4.54 release](https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54).
+The [installation guide](docs/INSTALL.md) has every setup in full, and every download with its size and
+checksum.
 
 ## Features
 

@@ -13,9 +13,9 @@ Setups A–D are the ones in the installation guide's [Which setup](INSTALL.md#w
 `custom_unit.json` (the unit file), `art_files.json` and the unit's pictures and voices. Custom units never
 come inside the APKs, the data zip or the OBB: you add them yourself, on a PC.
 
-### On a PC (setup A, and setup D)
+### With a PC server (setups 2 and 3)
 
-In setup D the phone plays against your PC's server, so these steps are all it needs too.
+In setup 2 the phone plays against your PC's server, so these steps are all it needs too.
 
 1. **Stop the server.**
 2. **Build the unit's art update** (once per unit). In the GlobalPoint folder:
@@ -35,10 +35,10 @@ In setup D the phone plays against your PC's server, so these steps are all it n
    is missing.
 5. **Open the game.** It downloads a small update at the title screen. Then give or summon the unit (below).
 
-### On a phone, copying from your PC (setup B)
+### On a phone or emulator, copying from your PC (setup 1)
 
 1. Do the PC steps above first, and check the PC's log lines.
-2. Start the PC's server so the phone can reach it (`LISTEN_HOST="0.0.0.0"`, as in setup B).
+2. Start the PC's server so the phone can reach it (`LISTEN_HOST="0.0.0.0"`, as in [copying the data from a PC](INSTALL.md#copying-the-data-from-a-pc-instead)).
 3. In **StarPoint Companion**, tap **Game data**, then **Download from PC**, and tick **Game updates**:
    it brings the unit's art update. The unit files always come along, whatever you tick. (Leave **My save**
    unticked unless you mean to replace the phone's save with the PC's.)
@@ -51,16 +51,16 @@ In setup D the phone plays against your PC's server, so these steps are all it n
 If you forgot **Game updates**, the phone leaves the unit out for now. Copy again with it ticked: the phone
 then rebuilds by itself.
 
-### On a phone without a PC (setup C)
+### On a phone or emulator without a PC (setup 1)
 
 **Not supported.** The OBB and the data zip never carry custom units, and the companion can't add a unit
-file on its own. You need a PC once, for setup B's copy. After that the unit stays on the phone (its file and
+file on its own. You need a PC once, for the copy from a PC. After that the unit stays on the phone (its file and
 art survive companion updates and save imports).
 
 ### On an emulator
 
-- **Setup A's emulator** plays against the PC's server: the PC steps are all it needs.
-- **An emulator running StarPoint Companion** is the same as a phone: setup B.
+- **An emulator in setup 3** plays against the PC's server: the PC steps are all it needs.
+- **An emulator running StarPoint Companion** (setup 1) is the same as a phone: copy from your PC.
 
 ### Giving and summoning it
 

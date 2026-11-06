@@ -91,7 +91,7 @@ anywhere, the picture is hidden rather than left in Chinese or blank.
 
 | Setting | Default | What it does |
 |---|---|---|
-| `LISTEN_HOST` | `127.0.0.1` | `0.0.0.0` lets other devices on your network in (needed for setup B) |
+| `LISTEN_HOST` | `127.0.0.1` | `0.0.0.0` lets other devices on your network in (needed for setup 2, and to copy to a phone) |
 | `LISTEN_PORT` | `8000` | the server's port (the game app expects 8000) |
 | `SERVER_START_DATE` | `2019-12-01T05:00:00Z` | the game date a new install starts at |
 | `SERVER_TIME_TICKS` | `true` | the server clock runs like a real one |
@@ -121,10 +121,10 @@ For working on GlobalPoint rather than playing it:
   units and adding new ones; [docs/research/](research/new-units.md) has the research behind them.
 - [docs/global/](global/README.md): the original StarPoint pages for the global app (legacy),
   including captured traffic from the official global servers.
-- `scripts/package_release.cjs`: copies a working setup A (code, game files and the game APK) into
+- `scripts/package_release.cjs`: copies a working PC server (code, game files and the game APK) into
   one ready-to-run folder, e.g. to move it to another PC. Not for publishing: the game APK isn't
   ours to host.
-- `scripts/build_cn_obb.cjs` (optional): builds the OBB for setup C from a server's game files.
+- `scripts/build_cn_obb.cjs` (optional): builds the OBB for setup 1 from a server's game files.
   See [docs/CN_CLIENT_SETUP.md](CN_CLIENT_SETUP.md#9-optional-an-obb-for-phones).
 - `scripts/gen_cn_slim.cjs`: the small CN data set the companion needs for schedule edits. The
   server runs it by itself at start when the CN game files are there and the set is missing.

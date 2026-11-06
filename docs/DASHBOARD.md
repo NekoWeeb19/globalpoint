@@ -176,5 +176,5 @@ New units are added with files: see [CUSTOM_UNITS.md](CUSTOM_UNITS.md).
   Leap of Haruhi Suzumiya, a Lightcrest Serpent rerun), listed under their own entries.
 - **The Haunt** opens on 2020-01-12 and stays open, with a fresh set of floors every month.
 - **There's no login.** With `LISTEN_HOST` at `127.0.0.1` (the default) only the same device can reach
-  the dashboard; `0.0.0.0` (setups B and D) opens it to your whole network, so use that only on a
+  the dashboard; `0.0.0.0` (needed to copy to a phone, and for setup 2) opens it to your whole network, so use that only on a
   network you trust.

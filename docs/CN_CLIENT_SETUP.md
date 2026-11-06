@@ -179,7 +179,7 @@ refreshes the CN missions, shops and pass), plus the global app's event mod when
 
 ## 9. (Optional) An OBB for phones
 
-Only needed to share the game for setup C, where a phone gets every game file as one file instead
+Only needed to share the game for setup 1, where a phone or emulator gets every game file as one file instead
 of downloading ~12 GB from a server. The game app (build 23 or newer, with
 `scripts/client_mod/patch_cn_storage_dropoff.cjs`) unpacks it by itself at its first start.
 
@@ -193,12 +193,12 @@ node scripts/build_cn_obb.cjs "C:/wf/obb" --server <StarPoint folder>
   writes nothing else). `--parts 3` cuts it into three files (`...part1of3.obb` and so on), which
   game build 25 reads from the same folder. `-` instead of a folder streams it to stdout, e.g. straight onto a phone:
   `node scripts/build_cn_obb.cjs - | adb exec-in "cat > /sdcard/StarPoint/game/main.1008001.com.leiting.wf.obb"`
-  (make the folder first, and give the game the permissions in README setup C, "By hand" step 4).
+  (make the folder first, and give the game the permissions in [INSTALL.md, setup 1, by hand](INSTALL.md#by-hand), step 4).
 - It's a plain zip (files stored, zip64) whose first entry indexes every file. That lets the game
   unpack it from the end and shrink the file as it goes, so the phone needs little space beyond the
   OBB, and an interrupted unpack carries on next time.
 - Where the phone takes it (`starpoint_game/` from build 24, `StarPoint/game/`, or
-  `Android/obb/com.leiting.wf/` on some phones) and the permissions it needs: [INSTALL.md, setup C](INSTALL.md#c-on-a-phone-with-the-obb-file). The folder layout is in
+  `Android/obb/com.leiting.wf/` on some phones) and the permissions it needs: [INSTALL.md, setup 1](INSTALL.md#1-phone-or-emulator). The folder layout is in
   `scripts/client_mod/STORAGE_LAYOUT.txt`.
 
 ## Things that are different on the CN app

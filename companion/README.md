@@ -1,12 +1,12 @@
 # StarPoint Companion
 
 An Android app that runs the GlobalPoint server on the phone itself, on `127.0.0.1:8000`, so the
-patched CN game plays with no PC: no root, no adb, no Shizuku. It's the server half of setups B and
-C in the main [README](../README.md).
+patched CN game plays with no PC: no root, no adb, no Shizuku. It's the server half of setup
+1 in the main [README](../README.md).
 
-**Players:** the setup steps are in the [README](../README.md#quick-start-phone-only) and the
-installation guide ([setup B](../docs/INSTALL.md#b-on-a-phone-copying-from-your-pc-over-wi-fi) and
-[setup C](../docs/INSTALL.md#c-on-a-phone-with-the-obb-file)). This page explains how the app works and
+**Players:** the setup steps are in the [README](../README.md#quick-start-phone-or-emulator) and the
+installation guide ([setup 1](../docs/INSTALL.md#1-phone-or-emulator), and
+[copying from a PC](../docs/INSTALL.md#copying-the-data-from-a-pc-instead)). This page explains how the app works and
 how to build it.
 
 - [Using the app](#using-the-app)
@@ -25,7 +25,7 @@ how to build it.
   server is starting, or it's rebuilding the game update after a dashboard change (GET
   `/api/server/status`, `updateRebuilding`); a game opened meanwhile would get the old update. **Red**:
   stopped. If something else answers on 8000 (a PC through `adb reverse`, say), the screen says so.
-- **Setup check** (SetupActivity): a checklist for setup C, each line green/yellow/red with a fix button:
+- **Setup check** (SetupActivity): a checklist for setup 1, each line green/yellow/red with a fix button:
   the game installed; this app's and the game's storage access (opens the right settings screen); the
   OBB, found in Download, Downloads, Documents or the top of storage (the 3 parts or the single file),
   SHA-256 checked, then moved into `starpoint_game` (a rename, so instant; a copy only across storages);
@@ -80,7 +80,7 @@ them into its own storage at its next start, with an on-screen counter, and then
 - Keep the Game data screen open during the copy: it keeps the screen and Wi-Fi awake. Leaving it
   may let Android pause the copy; pressing Download again resumes.
 
-The OBB route (setup C) gives the game its files without this copy.
+The OBB route (setup 1) gives the game its files without this copy.
 
 ### Packs
 

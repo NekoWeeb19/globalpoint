@@ -233,11 +233,11 @@ Static downloads.
 | `/summons` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 | `/unit-editor` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 
-## Dashboard API (64)
+## Dashboard API (66)
 
 What the dashboard pages call. These change the server's state and have no login. With
 `LISTEN_HOST` at `127.0.0.1` (the default, also on the phone companion) only the same device
-can reach them. Setups B and D ([INSTALL.md](INSTALL.md)) set it to `0.0.0.0`, which lets every device on your
+can reach them. Copying to a phone and setup 2 ([INSTALL.md](INSTALL.md)) set it to `0.0.0.0`, which lets every device on your
 network use the dashboard too, so do that only on a network you trust, such as your home Wi-Fi.
 
 | Endpoint | Method | Source | Notes |
@@ -271,6 +271,8 @@ network use the dashboard too, so do that only on a network you trust, such as y
 | `/api/server/mail` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/mail` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/mail/delete` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/server/mail/export` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/server/mail/import` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/news` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/news` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/news/delete` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |

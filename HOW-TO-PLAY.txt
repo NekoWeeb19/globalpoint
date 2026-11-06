@@ -4,6 +4,10 @@ World Flipper (globalized CN 1.8.1) on StarPoint - how to play
 This folder is GlobalPoint: a private World Flipper server (StarPoint) that plays the CN game in
 English, fully offline on your PC. README.md has the full steps and the download links.
 
+You don't need these steps just to play: the README's quick start (the OBB and StarPoint Companion)
+works on a phone or in an emulator, with no server on the PC. The steps below run the server on the
+PC, which setups 2 and 3 (and custom units) need.
+
 What you need
   - Windows PC with Node.js 20 or newer (https://nodejs.org)
   - An Android emulator (e.g. LDPlayer) or an Android phone connected with adb. The game talks to
@@ -57,5 +61,5 @@ Notes
   - Settings are in .env (copied from .env.example on first setup). LISTEN_HOST "127.0.0.1" keeps
     the server and its dashboard to this PC.
   - Linux/macOS: setup.sh and start-cn.sh do the same but are untested.
-  - To play on a phone (with the server on the phone, or on this PC), see docs/INSTALL.md: setups B, C
-    and D (README.md has the quick phone steps). Google Drive downloads: https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO
+  - To play on a phone (with the server on the phone, or on this PC), see docs/INSTALL.md: setups 1, 2
+    and 3 (README.md has the quick phone steps). Google Drive downloads: https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO
