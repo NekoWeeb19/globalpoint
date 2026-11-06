@@ -36,6 +36,9 @@ how to build it.
 - **Dashboard** opens the server's dashboard inside the app (Back returns to the app). **Open in
   browser** opens it in the phone's browser instead.
 - **Export save** / **Import save** (see [Saves](#saves)).
+- **Save logs (for a bug report):** one text file with the game's crash reports in full (`cn_crash.log`),
+  the end of the server log and of the game's requests, plus the app and Android versions. Send it with a
+  bug report. The logs are kept in the app's data folder, so app updates don't clear them (from 0.7.14).
 - A notification shows while the server runs; its **Stop** button ends it.
 - The app and its dashboard follow the phone's light/dark setting.
 

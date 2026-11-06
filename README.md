@@ -12,7 +12,7 @@ got, plays on your own PC or phone.
 > checked its own work in the game through direct control of an Android emulator: screenshots,
 > logs and play sessions.
 > Expect the code to read like it was written quickly by a machine, because it was. Bug reports are
-> welcome.
+> welcome: on a phone, attach the file from the companion's **Save logs (for a bug report)** button.
 
 ---
 

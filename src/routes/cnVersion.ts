@@ -7,7 +7,7 @@ import { cnVersionFile } from "../lib/cnClient";
 
 const crashLogPath = path.join(__dirname, "..", "..", "logs", "cn_crash.log")
 function logCrash(kind: string, body: unknown) {
-    const text = (typeof body === "string" ? body : JSON.stringify(body ?? null)).slice(0, 4000)
+    const text = (typeof body === "string" ? body : JSON.stringify(body ?? null)).slice(0, 20000)
     console.log(`[cn ${kind}] ${text.slice(0, 500)}`)
     try {
         mkdirSync(path.dirname(crashLogPath), { recursive: true })

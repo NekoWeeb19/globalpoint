@@ -18,6 +18,7 @@ const { cnZips } = require("./cn_archives.cjs")
 const path = require("path")
 const unzipper = require("unzipper")
 const R = require("./cdn_rows.cjs")
+const { templateProblem } = require("./template_check.cjs")
 // the follow-up generators run as worker threads (no second Node process: see run_script.cjs)
 const { runScriptOrThrow } = require("./run_script.cjs")
 const { parseSchedule, planRowMoves } = require("../out/lib/eventSchedule.js")
@@ -388,7 +389,26 @@ async function main() {
         return true
     }
     const TOWER_QUESTS = fileOf("master/quest/event/tower_dungeon_event_quest.orderedmap")
+    // UI text pieces whose English template doesn't parse (global's own text, kept by the translation), which crashed
+    // the game wherever it showed them (U_f72d75 "Unclosed 'else'" on the team screen with Megumin, whose ability
+    // uses the "...level is N or less" piece): key -> [broken part, fixed part]
+    const TEXT_FIXES = {
+        ability_description_during_trigger_kind_accumulation_unique_condition_low: ["doesn't have::end:: ::condition::::if", "doesn't have::end:: ::condition::::end::::if"],
+        ability_description_during_trigger_kind_multiball_count_high_detail: [", :if isFirst::", ", ::if isFirst::"],
+        field_cancel_trigger_kind_multiball_appear: ["::if has_constraint::  ::constraint:::end:: summon(s)", "::if has_constraint::::constraint:: ::end::summon(s)"],
+        field_cancel_trigger_kind_multiball_remove: ["::if has_constraint:: ::constraint::'s:end:: multiballs", "::if has_constraint::::constraint::'s ::end::multiballs"],
+        ability_description_instant_trigger_kind_same_element_member: ["::if once::::if is_max::::else::or more:: units", "::if once::::if is_max::::else:: or more::end::::else::::end:: units"],
+    }
+    const UI_TEXT = "production/upload/d6/88e4a5f7d84cc422357cc8acbdb72817bc8670"
     const DUNGEON_FIXES = {
+        [UI_TEXT]: (key, c) => {
+            const fix = TEXT_FIXES[key]
+            let changed = false
+            if (fix && typeof c[0] === "string" && c[0].includes(fix[0])) { c[0] = c[0].replace(fix[0], fix[1]); changed = true }
+            const problem = templateProblem(c[0])
+            if (problem) console.log(`UI text ${key}: template still broken (${problem}): ${c[0].slice(0, 120)}`)
+            return changed
+        },
         [fileOf("master/quest/event/daily_week_event.orderedmap")]: (key, c) => {
             if (c[0].endsWith("_campaign") && c[16] === "2020-01-15 12:00:00") { c[16] = "2001-01-01 05:00:00"; return true }
             return false

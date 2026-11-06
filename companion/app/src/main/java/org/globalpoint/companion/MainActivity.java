@@ -60,6 +60,8 @@ public class MainActivity extends Activity {
         LinearLayout row3 = row(u);
         row3.addView(button("Export save", this::exportSave));
         row3.addView(button("Import save", this::importSave));
+        // for bug reports: one text file with the game's crash reports and the server's logs, to send
+        u.button("Save logs (for a bug report)", this::saveLogs);
 
         battery = u.button("Let the server run in the background", this::askBattery);
         // some phones' battery savers stop the server unless the app has usage access (as with Termux)
@@ -87,7 +89,41 @@ public class MainActivity extends Activity {
         if (Build.VERSION.SDK_INT >= 33) requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, 1);
     }
 
-    private static final int EXPORT_SAVE = 10, IMPORT_SAVE = 11;
+    private static final int EXPORT_SAVE = 10, IMPORT_SAVE = 11, SAVE_LOGS = 12;
+
+    private void saveLogs() {
+        String name = "globalpoint-logs-" + new java.text.SimpleDateFormat("yyyyMMdd-HHmm", java.util.Locale.US).format(new java.util.Date()) + ".txt";
+        Intent i = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType("text/plain");
+        i.putExtra(Intent.EXTRA_TITLE, name);
+        startActivityForResult(i, SAVE_LOGS);
+    }
+
+    /** The logs file: this app and phone, the game's crash reports in full, then the ends of the server's logs. */
+    private void writeLogs(Uri uri) throws Exception {
+        // kept in the data folder (companion-main.js links the server's logs folder there), so app updates keep them
+        File logs = new File(ServerFiles.dataDir(this), "logs");
+        StringBuilder s = new StringBuilder();
+        String version = "?";
+        try { version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName; } catch (Exception ignored) { }
+        s.append("GlobalPoint logs, ").append(new java.util.Date()).append('\n')
+                .append("Companion ").append(version).append(", Android ").append(Build.VERSION.RELEASE)
+                .append(" (API ").append(Build.VERSION.SDK_INT).append("), ").append(Build.MANUFACTURER).append(' ').append(Build.MODEL).append("\n\n");
+        section(s, "Game crash reports (cn_crash.log)", new File(logs, "cn_crash.log"), 400_000);
+        section(s, "Server log (server.log)", ServerFiles.logFile(this), 300_000);
+        section(s, "Game requests (cn_requests.log)", new File(logs, "cn_requests.log"), 300_000);
+        try (java.io.OutputStream out = getContentResolver().openOutputStream(uri)) {
+            if (out == null) throw new java.io.IOException("can't write the file");
+            out.write(s.toString().getBytes("UTF-8"));
+        }
+    }
+
+    private static void section(StringBuilder s, String title, File f, int bytes) {
+        s.append("===== ").append(title).append(" =====\n");
+        String text = tail(f, bytes);
+        s.append(text.isEmpty() ? "(none)\n" : text).append("\n\n");
+    }
 
     private void exportSave() {
         String name = "starpoint-save-" + new java.text.SimpleDateFormat("yyyyMMdd-HHmm", java.util.Locale.US).format(new java.util.Date()) + ".zip";
@@ -128,6 +164,16 @@ public class MainActivity extends Activity {
                     // don't leave an empty or half-written file behind
                     try { android.provider.DocumentsContract.deleteDocument(getContentResolver(), uri); } catch (Exception ignored) { }
                     toast("Export failed: " + e.getMessage());
+                }
+            });
+        } else if (requestCode == SAVE_LOGS) {
+            worker.execute(() -> {
+                try {
+                    writeLogs(uri);
+                    toast("Logs saved: send that file with your bug report");
+                } catch (Exception e) {
+                    try { android.provider.DocumentsContract.deleteDocument(getContentResolver(), uri); } catch (Exception ignored) { }
+                    toast("Saving the logs failed: " + e.getMessage());
                 }
             });
         } else if (requestCode == IMPORT_SAVE) {

@@ -37,6 +37,27 @@ process.env.TMPDIR = tmp
 const web = path.join(dataDir, "web")
 try { fs.lstatSync(web) } catch { try { fs.symlinkSync(path.join(serverDir, "web"), web, "dir") } catch (e) { console.error(`[companion] link web: ${e.message}`) } }
 
+// the server's own logs (cn_crash.log: the game's crash reports, cn_requests.log) are written next to its code,
+// which every app update replaces: kept in <data>/logs instead, so a crash before an update can still be sent
+const logsDir = path.join(dataDir, "logs"), serverLogs = path.join(serverDir, "logs")
+fs.mkdirSync(logsDir, { recursive: true })
+// kept across updates now, so capped like server.log (every request the game makes goes in cn_requests.log)
+for (const name of ["cn_requests.log", "asset_requests.log", "cn_crash.log"]) {
+    const f = path.join(logsDir, name)
+    try { if (fs.statSync(f).size > 4 * 1024 * 1024) fs.renameSync(f, f + ".old") } catch { }
+}
+try {
+    const st = fs.lstatSync(serverLogs, { throwIfNoEntry: false })
+    if (st && !st.isSymbolicLink()) {
+        // logs written before this link (one app version's worth): moved over, then the folder replaced by the link
+        for (const name of fs.readdirSync(serverLogs)) {
+            try { fs.appendFileSync(path.join(logsDir, name), fs.readFileSync(path.join(serverLogs, name))) } catch { }
+        }
+        fs.rmSync(serverLogs, { recursive: true, force: true })
+    }
+    if (!fs.lstatSync(serverLogs, { throwIfNoEntry: false })) fs.symlinkSync(logsDir, serverLogs, "dir")
+} catch (e) { console.error(`[companion] link logs: ${e.message}`) }
+
 // companion 0.2 kept the regenerated CN tables in data/.assets
 const generated = path.join(dataDir, ".generated")
 try { if (fs.existsSync(path.join(dataDir, ".assets")) && !fs.existsSync(generated)) fs.renameSync(path.join(dataDir, ".assets"), generated) } catch { }
