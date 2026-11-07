@@ -26,6 +26,8 @@ fs.mkdirSync(stage, { recursive: true })
 for (const dir of ["out", "assets", "web", "scripts"]) {
     fs.cpSync(path.join(repo, dir), path.join(stage, dir), { recursive: true })
 }
+// generated on the PC for building the summon seed tables (scripts/gacha_seeds), not used by the server
+fs.rmSync(path.join(stage, "scripts", "gacha_seeds", "physics.js"), { force: true })
 for (const file of ["package.json", "package-lock.json"]) fs.copyFileSync(path.join(repo, file), path.join(stage, file))
 fs.copyFileSync(path.join(__dirname, "..", "server", "companion-main.js"), path.join(stage, "companion-main.js"))
 

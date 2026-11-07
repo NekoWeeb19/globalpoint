@@ -6,6 +6,7 @@
 import { randomInt } from "crypto";
 import movieSeeds from "../../assets/gacha_movie_seeds.json";
 import rateUpMovieSeeds from "../../assets/gacha_rate_up_movie_seeds.json";
+import seedsByMovie from "../../assets/gacha_seeds_by_movie.json";
 import { PlayerBoxGachaDrawnReward } from "../data/types";
 import { givePlayerCharacterSync } from "./character";
 import { givePlayerEquipmentSync } from "./equipment";
@@ -120,18 +121,24 @@ export function rewardPlayerGachaDrawResultSync(
                     const rolledMovie = randomPoolItem(1, 101, rankMovieRates[rarity]) ?? GachaMovieType.NORMAL
                     const movieType = 5 - rarity < guaranteeStars ? GachaMovieType.NORMAL : rolledMovie
 
-                    // pick a seed (it decides the summon animation; the game checks the result fits it). Star Fest /
-                    // Meteor Festival banners (movie "fes") take the normal seeds: with the rate-up ones the game stopped
-                    // with C3032 "result rarity mismatch" on most pulls (tested in game, 2026-11-05)
-                    const isRateUp = (gacha as CharacterGacha).movieName !== "normal" && (gacha as CharacterGacha).movieName !== "fes"
-                    const seeds = ((isRateUp ? rateUpMovieSeeds : movieSeeds) as GachaMovieSeeds)[rarity + 1][movieType]
-                    const seedIndex = randomInt(0, seeds.length + 1)
+                    // pick a seed (it decides the summon animation; the game rebuilds the ball field from the seed and the
+                    // movie's field config and stops with C3032 "result rarity mismatch" when the ball lands on another
+                    // rarity). Each movie has its own field (fes: 7 amulets, other odds), so the seed comes from that movie's
+                    // list, worked out with the game's own field code (scripts/gacha_seeds). The recorded tables only fit
+                    // the normal fields: fes pulls crashed on most 5★ (a player's report, 2026-11-07), and the rate-up
+                    // table fits no CN field (normal_guarantee banners, e.g. the 4★ ticket portal 900003). They stay as
+                    // the fallback for a movie the list doesn't have.
+                    const movieId = movieType === GachaMovieType.NORMAL ? characterGacha.movieName : characterGacha.guaranteeMovieName
+                    const byMovie = (seedsByMovie as Record<string, Record<string, number[]>>)[movieId]?.[String(rarity + 1)]
+                    const recorded = (characterGacha.movieName === "normal" || characterGacha.movieName === "fes" ? movieSeeds : rateUpMovieSeeds) as GachaMovieSeeds
+                    const seeds = byMovie?.length ? byMovie : recorded[rarity + 1][movieType]
+                    const seedIndex = randomInt(0, seeds.length)
 
                     // build draw
                     const draw: GachaCharacterDraw = {
                         "character_id": characterId,
-                        "movie_id": movieType === GachaMovieType.NORMAL ? characterGacha.movieName : characterGacha.guaranteeMovieName,
-                        "seed": seeds[seedIndex] ?? seeds[0],
+                        "movie_id": movieId,
+                        "seed": seeds[seedIndex],
                         "entry_count": 1
                     }
                     

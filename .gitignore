@@ -33,3 +33,4 @@ download_cdn.bat
 *.obb
 # the Unit editor's saves on this PC (your own edits, like a save file)
 assets/custom_units/changes/
+scripts/gacha_seeds/physics.js
