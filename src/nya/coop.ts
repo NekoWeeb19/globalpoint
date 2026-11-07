@@ -6,6 +6,7 @@ import { inCnRequest } from "../lib/cnClient"
 import {
     getPlayerCharacterManaNodesSync,
     getPlayerCharacterSync,
+    getPlayerCharactersSync,
     getPlayerEquipmentSync,
     getPlayerPartyGroupListSync,
     getPlayerSync,
@@ -143,9 +144,11 @@ function coopCharacter(playerId: number, characterId: number | null): CoopCharac
 
 /** A saved party with its units and armaments looked up, or null when the party doesn't exist. */
 export function loadCoopParty(playerId: number, partyId: number): CoopParty | null {
-    const at = partyGroupSlot(partyId)
-    if (at === null) return null
-    const party = getPlayerPartyGroupListSync(playerId, PartyCategory.NORMAL)[String(at.group)]?.list[String(at.slot)]
+    if (partyGroupSlot(partyId) === null) return null
+    // parties are saved under the game's own party number (group 2 holds 11-20, group 3 21-30, ...), not 1-10 per group
+    const party = Object.values(getPlayerPartyGroupListSync(playerId, PartyCategory.NORMAL))
+        .map(group => group.list[String(partyId)])
+        .find(found => found !== undefined)
     if (!party) return null
     return {
         characters: party.characterIds.map(id => coopCharacter(playerId, id)),
@@ -162,9 +165,12 @@ export function loadCoopParty(playerId: number, partyId: number): CoopParty | nu
 /** All the player's saved (normal) parties, for choosing partners. */
 export function savedParties(playerId: number): SavedParty[] {
     const out: SavedParty[] = []
-    for (const [groupId, group] of Object.entries(getPlayerPartyGroupListSync(playerId, PartyCategory.NORMAL))) {
+    for (const group of Object.values(getPlayerPartyGroupListSync(playerId, PartyCategory.NORMAL))) {
         for (const [slot, party] of Object.entries(group.list)) {
-            const partyId = (Number(groupId) - 1) * 10 + Number(slot)
+            // the saved slot is already the game's party number (group 2 is 11-20): the partner picker used to make
+            // (group - 1) * 10 + slot of it (21-30 for group 2), which never loaded, so a player whose strongest
+            // parties were outside group 1 got no COM partners and the room's battle never started
+            const partyId = Number(slot)
             const strength = party.characterIds.reduce((total: number, id) => total + (id ? getPlayerCharacterSync(playerId, id)?.exp ?? 0 : 0), 0)
             out.push({ partyId, name: party.name ?? "", characterIds: party.characterIds, strength })
         }
@@ -172,9 +178,35 @@ export function savedParties(playerId: number): SavedParty[] {
     return out
 }
 
-/** The two partner parties for a room (see pickPartnerParties), loaded. */
+/** A party of the player's most built-up units (by EXP): partners when no saved party can be used. */
+export function strongestUnitsParty(playerId: number): CoopParty | null {
+    const ids = Object.entries(getPlayerCharactersSync(playerId))
+        .sort(([, a], [, b]) => (b.exp ?? 0) - (a.exp ?? 0))
+        .map(([id]) => Number(id))
+    if (ids.length === 0) return null
+    const pick = (from: number) => [0, 1, 2].map(i => ids[from + i] === undefined ? null : coopCharacter(playerId, ids[from + i]))
+    return { characters: pick(0), unisonCharacters: pick(3), equipments: [null, null, null], abilitySoulIds: [null, null, null] }
+}
+
+/**
+ * The two partner parties for a room (see pickPartnerParties), loaded. A room without partners never starts its battle,
+ * so when those can't be loaded the slots are filled from any other saved party with units, then the party in use, then
+ * the player's strongest units (party id 0): the room always gets two.
+ */
 export function partnerParties(playerId: number, currentPartyId: number): { partyId: number, party: CoopParty }[] {
-    return pickPartnerParties(savedParties(playerId), currentPartyId)
-        .map(partyId => ({ partyId, party: loadCoopParty(playerId, partyId) }))
-        .filter((p): p is { partyId: number, party: CoopParty } => p.party !== null)
+    const saved = savedParties(playerId)
+    const load = (partyId: number) => ({ partyId, party: loadCoopParty(playerId, partyId) })
+    const loaded = (p: { partyId: number, party: CoopParty | null }): p is { partyId: number, party: CoopParty } =>
+        p.party !== null && p.party.characters.some(c => c !== null)
+    const partners = pickPartnerParties(saved, currentPartyId).map(load).filter(loaded)
+    if (partners.length >= 2) return partners
+    const others = saved
+        .filter(p => p.partyId !== currentPartyId && !partners.some(q => q.partyId === p.partyId))
+        .sort((a, b) => b.strength - a.strength || a.partyId - b.partyId)
+        .map(p => load(p.partyId)).filter(loaded)
+    const current = [load(currentPartyId)].filter(loaded)
+    const strongest = strongestUnitsParty(playerId)
+    const fill = [...others, ...current, ...(strongest ? [{ partyId: 0, party: strongest }] : [])]
+    for (let i = 0; partners.length < 2 && fill.length > 0; i++) partners.push(fill[Math.min(i, fill.length - 1)])
+    return partners
 }

@@ -205,7 +205,7 @@ function enterComs(room: CoopRoom): void {
     // the partners copy the host's rank and title as the game shows them
     const shown = { ...info, rank: Number(host.rank) || info.rank, degreeId: Number(host.degreeId) || info.degreeId }
     const coms = partners.slice(0, 2).map((partner, index) => memberEntry(shown, partner.party, `${room.roomNumber}-npc-${index + 1}`, {
-        comId: index + 1, viewerId: 900000001 + index, name: `${info.name} (party ${partner.partyId})`,
+        comId: index + 1, viewerId: 900000001 + index, name: `${info.name} (${partner.partyId ? `party ${partner.partyId}` : "best units"})`,
         format: room.cn ? "map" : coopManaNodeFormat(), entryTime: Date.now(),
     }))
     room.mates = [host, ...coms]
