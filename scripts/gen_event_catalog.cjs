@@ -345,7 +345,9 @@ async function main() {
     const noteShared = list => { for (const ev of list) if (globalDev.has(ev.key) && globalDev.get(ev.key) === ev.dev) sharedKeys.add(ev.key) }
     if (CN) {
         // only the events global doesn't have (summon banners too, below; their pools come from
-        // scripts/gen_cn_gacha.cjs); no banners tied to events
+        // scripts/gen_cn_gacha.cjs). CN's own events keep the summon banners that opened with them, so they're
+        // listed on the dashboard and move with the event (e.g. The Leap of Haruhi Suzumiya's collab banner 1574;
+        // they used to be dropped here, so a moved collab event's banner stayed on its old dates)
         noteShared(events)
         for (let i = events.length - 1; i >= 0; i--) {
             const ev = events[i]
@@ -361,7 +363,6 @@ async function main() {
                 ev.key = `${ev.key}-cn`
             }
         }
-        for (const ev of events) ev.banners = []
     }
     // CN: a summon banner's feature pictures (master/gacha/gacha_feature_content "<banner>/<n>", kind 1
     // = a picture in column 1), for banners whose list picture isn't in the files

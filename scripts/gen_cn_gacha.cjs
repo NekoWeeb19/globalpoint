@@ -99,7 +99,46 @@ async function pool(oddsId) {
         }
         added.push(id)
     }
+    // banners both have under the same id but that are different banners in CN (e.g. 1574: CN's Haruhi Suzumiya
+    // collab spotlight, a global spotlight of other units): CN's own version, used for the CN app's pulls
+    // (assets/gacha_cn_shared.json, src/lib/assets.ts getGachaSync); global's stays for the global app
+    const shared = {}
+    const sharedChanged = []
+    const unitPoolKey = g => JSON.stringify([1, 2, 3].map(k => (g.pool?.[k] ?? []).map(e => [e.id, e.isRateUp, e.rarity])))
+    for (const [id, line] of Object.entries(cn)) {
+        if (gachas[id] === undefined || gachas[id].cn === true) continue
+        const c = R.splitCsv(line.replace(/\n$/, ""))
+        const kind = Number(c[13])
+        const cols = kind === 1 ? [24, 23, 22] : [16, 15, 14]
+        const pools = []
+        for (const col of cols) pools.push(await pool(c[col]))
+        if (pools.some(p => p === null || p.length === 0) || !utc(c[29]) || !utc(c[30])) continue
+        const own = {
+            type: kind,
+            paymentType: Number(c[4]) || 0,
+            singleCost: Number(c[5]) || 0,
+            multiCost: Number(c[6]) || 0,
+            discountCost: Number(c[7]) || 0,
+            movieName: c[17],
+            guaranteeMovieName: c[18],
+            startDate: utc(c[29]),
+            endDate: utc(c[30]),
+            pool: { 1: pools[0], 2: pools[1], 3: pools[2] },
+            ...perAccount(c),
+        }
+        const global = gachas[id]
+        const differs = unitPoolKey(own) !== unitPoolKey(global) || own.type !== global.type
+            || own.movieName !== global.movieName || own.guaranteeMovieName !== global.guaranteeMovieName
+            || own.singleCost !== global.singleCost || own.multiCost !== global.multiCost || own.paymentType !== global.paymentType
+        if (!differs) continue
+        if (kind === 0) for (const p of pools) for (const e of p) if (characters[e.id] === undefined) missingUnits.set(e.id, (missingUnits.get(e.id) ?? 0) + 1)
+        shared[id] = own
+        sharedChanged.push(id)
+    }
+    const sharedFile = path.join(ROOT, "assets", "gacha_cn_shared.json")
     if (!DRY) fs.writeFileSync(file, JSON.stringify(gachas))
+    if (!DRY) fs.writeFileSync(sharedFile, JSON.stringify(shared))
     console.log(`added ${added.length} CN-only banners (${skipped.length} skipped: no odds or dates)`)
+    console.log(`${sharedChanged.length} banners have the same id as a global one but are different in CN (CN's own version written): ${sharedChanged.slice(0, 60).join(",")}${sharedChanged.length > 60 ? ",..." : ""}`)
     console.log(`units in their pools the server doesn't know: ${missingUnits.size} -> ${[...missingUnits.keys()].slice(0, 40).join(",")}`)
 })().catch(e => { console.error(e); process.exit(1) })

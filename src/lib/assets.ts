@@ -27,6 +27,7 @@ import exBoost from "../../assets/ex_boost.json";
 import exQuests from "../../assets/ex_quest.json";
 import exStatus from "../../assets/ex_status.json";
 import gachas from "../../assets/gacha.json";
+import gachaCnShared from "../../assets/gacha_cn_shared.json";
 import mainQuests from "../../assets/main_quest.json";
 import manaNodes from "../../assets/mana_node.json";
 import manaNodesCn from "../../assets/mana_node_cn.json";
@@ -69,6 +70,7 @@ if (customUnits.units.length > 0) console.log(`[custom units] ${customUnits.unit
 const allCharacters: RawAssetCharacters = { ...(characters as RawAssetCharacters), ...Object.fromEntries(customUnits.units.map(u => [u.id, u.character])) }
 const customManaNodes: ManaNodes = Object.fromEntries(customUnits.units.filter(u => u.manaNodes).map(u => [u.id, u.manaNodes!]))
 const allGachas: Gachas = customUnits.units.some(u => u.banners?.length) ? CU.addToGachaPools(gachas as Gachas, customUnits.units) : gachas as Gachas
+const cnSharedGachas: Gachas = customUnits.units.some(u => u.banners?.length) ? CU.addToGachaPools(gachaCnShared as Gachas, customUnits.units) : gachaCnShared as Gachas
 
 /**
  * Gets a clear reward from its ID.
@@ -423,8 +425,14 @@ export function getBoxGachaSync(
 export function getGachaSync(
     id: string | number
 ): Gacha | null {
+    // the CN app pulls CN's own version of a banner number that is a different banner in global (other featured
+    // units, pool, costs or movies: assets/gacha_cn_shared.json, scripts/gen_cn_gacha.cjs)
+    if (inCnRequest()) {
+        const cn = cnSharedGachas[String(id)]
+        if (cn) return cn
+    }
     const data = allGachas[String(id)];
-    
+
     return data ?? null
 }
 
