@@ -52,7 +52,8 @@ The quick start above is setup 1, and it's all you need to play. With the server
 | **2. Phone with a PC server** | your PC | a phone | keeping the server and your save on the PC ([setup 2](docs/INSTALL.md#2-phone-with-a-pc-server)) |
 | **3. PC only** | your PC | an emulator on the PC | custom units, or working on GlobalPoint ([setup 3](docs/INSTALL.md#3-pc-only-an-emulator-with-a-pc-server)) |
 
-Both need [the server installed on a PC](docs/INSTALL.md#installing-the-server-on-a-pc), with the official
+Both need [the server installed on a PC](docs/INSTALL.md#installing-the-server-on-a-pc) (more technical: Node.js 22
+and a few Command Prompt steps), with the official
 CN game files (~10 GB) from the [CN CDN 1.4.54 release](https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54).
 The [installation guide](docs/INSTALL.md) has every setup in full, and every download with its size and
 checksum.

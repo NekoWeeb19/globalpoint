@@ -83,7 +83,9 @@ The StarPoint Companion Android app, which runs this same server on a phone. Its
 
 ## Development Setup
 
-1. Install Node.js 20+, then `npm ci`.
+1. Install Node.js 22 (or 20), then `npm ci`. `better-sqlite3` 11.3 has ready-made Windows builds only
+   for Node 20 and 22; on 23 and newer `npm ci` compiles it, which needs Visual Studio's C++ build tools
+   (Desktop development with C++) and Python.
 2. Copy `.env.example` to `.env` (it isn't in git; `setup.bat` makes it too) and point
    `CN_CDN_DIR` / `CN_TRANSLATED_DIR` at your CN game files and English tables. A few more settings
    are only for rebuilding the translation and art patches (`CN_GLOBALIZE_DIR`, `HEADER_FONT`,

@@ -9,7 +9,9 @@ works on a phone or in an emulator, with no server on the PC. The steps below ru
 PC, which setups 2 and 3 (and custom units) need.
 
 What you need
-  - Windows PC with Node.js 20 or newer (https://nodejs.org)
+  - Windows PC with Node.js 22 (https://nodejs.org/en/download, pick version 22). Newer versions
+    (23, 24 and up) need Visual Studio's C++ build tools to install the server's packages; see
+    docs/INSTALL.md, "Installing the server on a PC", step 1.
   - An Android emulator (e.g. LDPlayer) or an Android phone connected with adb. The game talks to
     127.0.0.1:8000, so on an emulator it reaches your PC through "adb reverse" (done for you).
   - About 16 GB of free space (the game downloads ~12 GB of files from this server the first time).

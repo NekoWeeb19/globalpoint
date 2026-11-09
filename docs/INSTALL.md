@@ -82,7 +82,7 @@ The phone plays on its own: the game's files come from the **OBB** (every game f
   unpacking). Either works; the 3 parts are newer and easier to download;
 - **`starpoint-data.zip`** (the server's data), and the comics zip if you want comics.
 
-Or build the OBB yourself on a PC with [the server installed](#installing-the-server-on-a-pc), in `<folder>` (needs ~10.3 GB free; leave out `--parts 3` for
+Or build the OBB yourself on a PC with [the server installed](#installing-the-server-on-a-pc), in its folder (needs ~10.3 GB free; leave out `--parts 3` for
 one file):
 ```bash
 node scripts/build_cn_obb.cjs <output folder> --parts 3
@@ -251,7 +251,7 @@ also write it by hand. Lines starting with `#` are ignored. The game reads it ea
 Delete it to go back to the phone's own server (the companion). If your router gives the PC a new
 address, download the file again.
 
-**Over USB (any game build):** turn on **USB debugging** in the phone's Developer options, connect
+**Over USB (any game build; needs [adb](#getting-adb)):** turn on **USB debugging** in the phone's Developer options, connect
 it to the PC, and run `start-cn.bat`. It forwards the phone's `127.0.0.1:8000` to the PC with
 `adb reverse`. Android 11+ can do the same without a cable through **Wireless debugging**. The link
 drops whenever adb loses the phone; run `start-cn.bat` again to restore it.
@@ -262,9 +262,10 @@ For **custom units** ([CUSTOM_UNITS.md](CUSTOM_UNITS.md)), which are added on a 
 GlobalPoint**. Just to play on a PC, use [setup 1](#1-phone-or-emulator) in an emulator instead.
 
 1. Install an Android emulator (tested: LDPlayer 9; it must run ARM64 apps, as in setup 1), and put
-   the game APK in `<folder>\apk\` (make the `apk` folder) before the next step.
-2. [Install the server on the PC](#installing-the-server-on-a-pc). When `setup.bat` finds `adb`, it offers
-   to install the APK on the emulator; or install it yourself.
+   the game APK in an `apk` folder inside your GlobalPoint folder (e.g. `D:\GlobalPoint\apk\`) before the next step.
+2. [Install the server on the PC](#installing-the-server-on-a-pc), and [get adb](#getting-adb): the
+   emulator reaches the server through it. When `setup.bat` finds `adb`, it offers to install the APK on
+   the emulator; or install it yourself.
 3. From then on, start the server with **`start-cn.bat`**. It also connects the emulator to it
    (`adb reverse`).
 4. Open the game.
@@ -277,36 +278,94 @@ GlobalPoint**. Just to play on a PC, use [setup 1](#1-phone-or-emulator) in an e
 
 For setups 2 and 3, and for copying the data to a phone in setup 1.
 
-1. Install [Node.js](https://nodejs.org) 20 or newer.
-2. **Get GlobalPoint:** `git clone https://github.com/NekoWeeb19/globalpoint.git`, or download the
-   repository's ZIP and unpack it. Put it on a drive with at least 16 GB free. The steps below call
-   this folder `<folder>`.
-3. **Get the CN game files.** Download the six `cn-cdn.tar.part.*` files and `SHA256SUMS.txt` from
-   the [CN CDN 1.4.54 release](https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54).
-   - **Check them** (optional, recommended): in Command Prompt, run
-     `certutil -hashfile cn-cdn.tar.part.00 SHA256` for each part and compare with `SHA256SUMS.txt`.
-     With Git Bash, Linux or macOS: `sha256sum -c SHA256SUMS.txt`.
-   - **Unpack them into `<folder>\.cdn`** (make the `.cdn` folder first if it isn't there). Windows
-     10 and newer have `tar` built in. In Command Prompt (not PowerShell), in the download folder:
-     ```bat
-     copy /b cn-cdn.tar.part.00 + cn-cdn.tar.part.01 + cn-cdn.tar.part.02 + cn-cdn.tar.part.03 + cn-cdn.tar.part.04 + cn-cdn.tar.part.05 cn-cdn.tar
-     ```
-     ```bat
-     tar -xf cn-cdn.tar -C <folder>\.cdn
-     ```
-     Joining the parts into one `cn-cdn.tar` needs about 10 GB more space for a while; delete
-     `cn-cdn.tar` and the parts afterwards. With Git Bash, Linux or macOS you can skip the join:
-     `cat cn-cdn.tar.part.* | tar -x -C <folder>/.cdn`.
-   - You get `<folder>\.cdn\cn\...` (the `archive-*` folders and `entities`), which is where the
-     server looks by default. No settings to change.
-4. **Unzip `starpoint-data.zip` into `<folder>`** itself, so its `.cdn` and `.database` folders land
-   on top of the ones already there. Do the same with the comics zip if you want comics.
-5. Run **`setup.bat`**. It installs the server's packages (needs internet once), builds the server,
-   makes your `.env` from `.env.example`, and checks the game files and updates; if something is
-   missing it stops and says what. If it finds `adb`, it offers to install the APK from the `apk`
-   folder on your emulator. Then it starts the server.
+**This part is more technical:** it uses the Command Prompt a few times and moves about 12 GB of files
+around. Just to play, you don't need any of it: [setup 1](#1-phone-or-emulator) works on a phone or in an
+emulator. The steps below use `D:\GlobalPoint` as the folder; use your own (any drive with at least 16 GB
+free), and type your own folder wherever the commands say `D:\GlobalPoint`.
 
-After that, run **`start-cn.bat`** and open the game. Close the server window to stop it.
+**Opening Command Prompt in a folder:** open the folder in File Explorer, click the address bar at the
+top, type `cmd` and press Enter. A black window opens, already in that folder.
+
+![File Explorer's address bar with cmd typed in, in the downloads folder](images/install-open-cmd.png)
+
+1. **Install Node.js 22.** Download the Windows installer from
+   [nodejs.org/dist/latest-v22.x](https://nodejs.org/dist/latest-v22.x/): the file whose name ends in
+   **`-x64.msi`** (e.g. `node-v22.23.4-x64.msi`). Run it and keep the default options.
+   - Why 22: the server uses a package (`better-sqlite3`) that comes ready-made for Node.js 20 and 22
+     only. With a newer Node.js (23, 24 and up, including the one nodejs.org offers first), installing
+     it means compiling it, which needs Microsoft's C++ build tools.
+   - **Already have a newer Node.js?** If `setup.bat` (step 5) fails with errors that mention
+     `better-sqlite3`, `node-gyp` or Visual Studio, either install Node.js 22 instead, or install
+     [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) with
+     **Desktop development with C++** ticked, then run `setup.bat` again.
+2. **Get GlobalPoint.** On the GitHub page, press **Code** > **Download ZIP**, and unpack it to
+   `D:\GlobalPoint` (right-click the zip > **Extract All**). Check that `setup.bat` is directly in
+   `D:\GlobalPoint`, not one folder deeper (move the files up if it is). With git:
+   `git clone https://github.com/NekoWeeb19/globalpoint.git D:\GlobalPoint`.
+3. **Put the CN game files in.** Download the six `cn-cdn.tar.part.00` to `.05` files and
+   `SHA256SUMS.txt` from the [CN CDN 1.4.54 release](https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54),
+   all into the same folder (e.g. Downloads). Then open Command Prompt **in that folder** and run these,
+   one at a time:
+   ```bat
+   mkdir D:\GlobalPoint\.cdn
+   ```
+   ```bat
+   copy /b cn-cdn.tar.part.00 + cn-cdn.tar.part.01 + cn-cdn.tar.part.02 + cn-cdn.tar.part.03 + cn-cdn.tar.part.04 + cn-cdn.tar.part.05 cn-cdn.tar
+   ```
+   ```bat
+   tar -xf cn-cdn.tar -C D:\GlobalPoint\.cdn
+   ```
+   ![Command Prompt after the three commands: 1 file(s) copied, then tar finishes quietly](images/install-cmd-commands.png)
+
+   - The first makes the `.cdn` folder (if it says it already exists, that's fine). The second joins the
+     six parts into one file, `cn-cdn.tar`: it needs about 10 GB more free space for a while. The third
+     unpacks it; it takes several minutes and shows nothing until it's done.
+   - **Check it worked:** `D:\GlobalPoint\.cdn\cn` now holds folders named `archive-...` and one named
+     `entities`. Then you can delete `cn-cdn.tar` and the six parts.
+
+     ![The .cdn\cn folder after unpacking: the archive folders, entities and path](images/install-cdn-cn.png)
+   - Use Command Prompt, not PowerShell: `copy /b` only works in Command Prompt. (`tar` is built into
+     Windows 10 and newer.)
+   - **Check the downloads** (optional): in the same window, `certutil -hashfile cn-cdn.tar.part.00 SHA256`
+     for each part, and compare with `SHA256SUMS.txt`. With Git Bash, Linux or macOS,
+     `sha256sum -c SHA256SUMS.txt` checks them all, and `cat cn-cdn.tar.part.* | tar -x -C /path/to/GlobalPoint/.cdn`
+     unpacks them without the extra 10 GB.
+4. **Unzip `starpoint-data.zip` into `D:\GlobalPoint`** itself: right-click it > **Extract All**, and
+   make the destination exactly `D:\GlobalPoint` (Windows suggests `D:\GlobalPoint\starpoint-data`;
+   remove the last part). If Windows asks about files that already exist, choose to replace them. Check
+   it worked: `D:\GlobalPoint\.cdn` now also has `cn_text` and `cn_patches`. Do the same with the comics
+   zip if you want comics.
+
+   ![Extract All with the destination set to D:\GlobalPoint](images/install-extract-all.png)
+5. **Run `setup.bat`** (double-click it in `D:\GlobalPoint`). It installs the server's packages (this
+   needs internet once), builds the server, makes your `.env` settings file from `.env.example`, and
+   checks the game files and updates. If something is missing it stops and says what. If it finds
+   `adb`, it offers to install the APK from the `apk` folder on your emulator (for setup 3, or setup 2
+   over USB, [get adb](#getting-adb) before this step). Then it starts the server.
+
+### Getting adb
+
+`adb` is Android's own tool for talking to a phone or emulator from a PC. `setup.bat` uses it to install
+the game, and `start-cn.bat` to connect the emulator (setup 3) or a USB phone (setup 2) to the server.
+Without it, setup 3's emulator can't reach the server. Setups 1 and 2 over Wi-Fi don't need it.
+
+1. Download **SDK Platform-Tools for Windows** from
+   [Android's site](https://developer.android.com/tools/releases/platform-tools) and unzip it.
+2. Copy three files from its `platform-tools` folder into your GlobalPoint folder (next to
+   `setup.bat`): **`adb.exe`**, **`AdbWinApi.dll`** and **`AdbWinUsbApi.dll`**. The scripts look
+   there first. (Or add the `platform-tools` folder to your PATH, if you know how.)
+
+   ![adb.exe, AdbWinApi.dll and AdbWinUsbApi.dll in the GlobalPoint folder, with setup.bat](images/install-adb-files.png)
+3. Check it: open Command Prompt in the GlobalPoint folder and run `adb devices`. With the emulator
+   running (or the phone plugged in, with USB debugging on), it lists one device.
+
+Many emulators also come with their own `adb.exe` in their install folder (LDPlayer 9 does, in
+`D:\LDPlayer\LDPlayer9` or wherever you installed it); copying that one in works too. If `adb devices`
+lists nothing for your emulator, its settings or help page shows how to turn on ADB, or which
+`adb connect 127.0.0.1:<port>` it needs.
+
+After that, run **`start-cn.bat`** to start the server, and open the game. Close the server window to
+stop it.
 
 The short version of these steps is in [`HOW-TO-PLAY.txt`](../HOW-TO-PLAY.txt). Linux and macOS have `setup.sh` and
 `start-cn.sh`, which are untested.
