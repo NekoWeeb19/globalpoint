@@ -40,6 +40,15 @@ First time
 Every other time
   Run start-cn.bat, then open the game. Close the server window to stop the server.
 
+Updating (no need to install again)
+  1. Close the server and back up your save: copy the .database folder somewhere safe.
+  2. Get the new code: unpack the new ZIP from GitHub and copy everything in it over this folder
+     (choose Replace), or run git pull here.
+  3. Delete the node_modules folder, then run setup.bat again.
+  4. If there is a newer starpoint-data.zip on the Drive, unzip it into this folder again.
+  Your save, game files and settings (.database, .cdn, .env) stay as they are.
+  More detail: docs/INSTALL.md, "Updating the server on a PC".
+
 Dashboard
   With the server running, open http://127.0.0.1:8000 in your browser:
   - Server time: visit past and future content. New installs start on 2019-12-01, just before the

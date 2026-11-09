@@ -10,6 +10,7 @@ emulator, with nothing on a PC.
 - [2. Phone with a PC server](#2-phone-with-a-pc-server)
 - [3. PC only: an emulator with a PC server](#3-pc-only-an-emulator-with-a-pc-server) (custom units, development)
 - [Installing the server on a PC](#installing-the-server-on-a-pc) (for setups 2 and 3)
+- [Updating the server on a PC](#updating-the-server-on-a-pc)
 
 ## Which setup
 
@@ -369,3 +370,30 @@ stop it.
 
 The short version of these steps is in [`HOW-TO-PLAY.txt`](../HOW-TO-PLAY.txt). Linux and macOS have `setup.sh` and
 `start-cn.sh`, which are untested.
+
+## Updating the server on a PC
+
+No need to install again: update the code in the same folder. Your save (`.database`), the game files
+(`.cdn`), your settings (`.env`) and the `apk` folder aren't part of the code, so an update leaves them
+alone.
+
+1. **Close the server window**, and **back up your save**: copy the `.database` folder somewhere safe (or
+   download it on the dashboard: **Players** > a player > **Download Save**).
+2. **Get the new code:**
+   - **Downloaded the ZIP:** download the new ZIP from GitHub (**Code** > **Download ZIP**), unpack it
+     anywhere, then copy everything inside it into your GlobalPoint folder, and choose **Replace the files
+     in the destination** when Windows asks. Don't delete your old folder first.
+   - **Used git:** open Command Prompt in the GlobalPoint folder and run `git pull`.
+3. **Delete the `node_modules` folder** in your GlobalPoint folder, then **run `setup.bat`** again. It
+   reinstalls the server's packages (needs internet), rebuilds the server and checks the game files.
+   (`setup.bat` skips the packages when `node_modules` is already there, so deleting it makes sure an
+   update's new packages get installed.)
+4. **If the update comes with a new `starpoint-data.zip`** (the Drive has a newer one), unzip it into the
+   GlobalPoint folder again, as in [step 4](#installing-the-server-on-a-pc) above.
+5. **Start the server** (`start-cn.bat`) and open the game. If the server changed its game update, the
+   game downloads a small one at the title screen.
+
+**A new game APK** installs over the old one, on a phone or an emulator, and keeps your progress. Clear the
+game's cache once before opening it: Android Settings > Apps > World Flipper > Storage > **Clear cache**
+(not Clear data, which deletes the game files). **A new StarPoint Companion APK** also installs over the
+old one and keeps the save on the phone.

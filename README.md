@@ -55,8 +55,8 @@ The quick start above is setup 1, and it's all you need to play. With the server
 Both need [the server installed on a PC](docs/INSTALL.md#installing-the-server-on-a-pc) (more technical: Node.js 22
 and a few Command Prompt steps), with the official
 CN game files (~10 GB) from the [CN CDN 1.4.54 release](https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54).
-The [installation guide](docs/INSTALL.md) has every setup in full, and every download with its size and
-checksum.
+The [installation guide](docs/INSTALL.md) has every setup in full, every download with its size and
+checksum, and [how to update a PC server](docs/INSTALL.md#updating-the-server-on-a-pc).
 
 ## Features
 
