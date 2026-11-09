@@ -413,6 +413,34 @@
                 </script>
             </section>
 
+            <section id="stamina" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <h3 class="text-xl text-on-background font-semibold">Stamina</h3>
+                <label class="flex gap-3 items-center cursor-pointer text-on-surface"><input id="stamina-real" type="checkbox" class="w-5 h-5" /> Spend stamina like the real game</label>
+                <p class="text-sm text-on-surface-variant">Off (the default): battles never cost stamina. On: each battle costs its stamina when it starts (half-cost stamina campaigns included), retiring gives it back, stamina refills by 1 every 6 minutes (faster at higher ranks) up to your rank's maximum, ranking up adds your new maximum on top, and stamina items or 50 beads refill it. Close and reopen the game after changing this.</p>
+                <p id="stamina-message" class="text-sm text-on-surface-variant" role="status"></p>
+                <script>
+                    (function () {
+                        const box = document.getElementById("stamina-real"), message = document.getElementById("stamina-message")
+                        fetch("/api/server/settings").then(r => r.json()).then(data => { box.checked = data.realStamina === true })
+                            .catch(error => { message.textContent = "Could not load: " + error.message })
+                        box.addEventListener("change", async () => {
+                            message.textContent = "Saving..."
+                            try {
+                                const response = await fetch("/api/server/settings", {
+                                    method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ realStamina: box.checked })
+                                })
+                                const data = await response.json().catch(() => ({}))
+                                if (!response.ok) throw new Error(data.message || response.statusText)
+                                box.checked = data.realStamina === true
+                                message.textContent = box.checked ? "On: battles now cost stamina. Reopen the game to see it." : "Off: battles no longer cost stamina."
+                            } catch (error) {
+                                message.textContent = "Error: " + error.message
+                            }
+                        })
+                    })()
+                </script>
+            </section>
+
             <section id="phone" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
                 <h3 class="text-xl text-on-background font-semibold">Play on a phone over Wi-Fi</h3>
                 <p class="text-on-surface-variant">Download a connection file, then put it on the phone in <code>Android/obb/com.leiting.wf/</code> (the same folder as the OBB). The game (build 23 or newer) then connects to this PC over Wi-Fi, with no cable or adb. Close and reopen the game after adding or changing it; the title screen shows which server it's on. Delete the file to go back to normal.</p>

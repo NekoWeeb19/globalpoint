@@ -2,6 +2,7 @@ import storyJoinData from "../../assets/story_join_character.json"
 import { StoryJoinData, townPickupHistory } from "../lib/storyJoin"
 import { getCharacterDataSync } from "../lib/assets"
 import { getDateFromServerTime, epochOf, getServerTime } from "../utils"
+import { realStaminaOn } from "../nya/serverSettings"
 import { ClientPlayerData, DailyChallengePointListEntry, MergedPlayerData, PartyCategory, Player, PlayerBoxGacha, PlayerCharacter, PlayerCharacterBondToken, PlayerDrawnQuest, PlayerEquipment, PlayerGachaCampaign, PlayerGachaInfo, PlayerMultiSpecialExchangeCampaign, PlayerParty, PlayerPartyGroup, PlayerQuestProgress, PlayerRushEvent, PlayerRushEventPlayedParty, PlayerStartDashExchangeCampaign, RushEventBattleType, UserBoxGacha, UserCharacter, UserCharacterBondTokenStatus, UserEquipment, UserGachaCampaign, UserPartyGroup, UserPartyGroupTeam, UserQuestProgress, UserRushEvent, UserRushEventPlayedParty, UserRushEventPlayedPartyList, UserTutorial } from "./types"
 
 import { getAvailableAssetVersion } from "../routes/api/asset"
@@ -260,7 +261,8 @@ export function serializePlayerData(
     const clientData: ClientPlayerData = {
         "user_info": {
             "stamina": playerData.stamina,
-            "stamina_heal_time": getServerTime(playerData.staminaHealTime),
+            // real stamina counts the refill from the saved heal time (src/nya/stamina.ts); otherwise it's "now", as before
+            "stamina_heal_time": realStaminaOn() ? epochOf(playerData.staminaHealTime) : getServerTime(playerData.staminaHealTime),
             "boost_point": playerData.boostPoint,
             "boss_boost_point": playerData.bossBoostPoint,
             "transition_state": playerData.transitionState,

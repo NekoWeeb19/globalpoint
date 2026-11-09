@@ -2,6 +2,9 @@ import player_rank_data from "../../assets/player_rank.json";
 import { Player } from "../data/types";
 import { updatePlayerSync } from "../data/wdfpData";
 import { onPlayerRankUp } from "./delegates";
+import { STAMINA_OVERFLOW_MAX, currentStamina, recoverySeconds } from "../lib/stamina";
+import { getServerDate } from "../utils";
+import { realStaminaOn } from "./serverSettings";
 import { bisect } from "./utils";
 
 /**
@@ -47,10 +50,21 @@ export const givePlayerRankPoint = (playerData: Player, rankPoint: number) => {
     if (!playerData) throw new Error("Player not found");
     const currentRank = getRankByPt(playerData.rankPoint);
     modifyPlayer(playerData, 'rankPoint', playerData.rankPoint + rankPoint);
-    // a rank-up refills stamina to the new rank's cap
     const newRank = getRankByPt(playerData.rankPoint);
     if (newRank.rank > currentRank.rank) {
-        modifyPlayer(playerData, 'stamina', newRank.stamina);
+        if (realStaminaOn()) {
+            // real stamina (src/nya/stamina.ts): each new rank's maximum is added to the stamina now, as the game does
+            const now = getServerDate().getTime()
+            const before = currentStamina({ stamina: playerData.stamina, healTimeMs: playerData.staminaHealTime.getTime() }, now,
+                currentRank.stamina, recoverySeconds(currentRank.stamina_heal_time_decrease_rate))
+            let gained = 0
+            for (let rank = currentRank.rank + 1; rank <= newRank.rank; rank++) gained += getRank(rank).stamina
+            modifyPlayer(playerData, 'stamina', Math.min(STAMINA_OVERFLOW_MAX, before + gained));
+            modifyPlayer(playerData, 'staminaHealTime', new Date(now));
+        } else {
+            // stamina isn't spent: a rank-up fills it to the new rank's maximum
+            modifyPlayer(playerData, 'stamina', newRank.stamina);
+        }
         onPlayerRankUp.call(playerData, newRank.rank);
     }
     return playerData;

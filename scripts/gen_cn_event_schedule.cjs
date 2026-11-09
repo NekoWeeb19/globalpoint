@@ -923,6 +923,22 @@ async function main() {
         if (copied || closed) console.log(`summon banners without feature content (C2032): ${copied} given their original's, ${closed} closed`)
     }
 
+    // the stamina campaigns this update ships (after event moves and yearly copies), for real stamina's battle costs
+    // (src/nya/stamina.ts): China time, as the CN game reads its tables
+    {
+        const tree = trees.get(CAMPAIGN_TABLES.stamina) ?? (await (async () => { const b = await tableBuffer(CAMPAIGN_TABLES.stamina); return b ? R.decodeFile(b) : null })())
+        const cnMs = text => Date.parse(String(text).replace(" ", "T") + "+08:00")
+        const selector = text => text === undefined || text === "(None)" ? null : text === "" ? [] : text.split(",").map(Number)
+        const campaigns = []
+        if (tree) for (const { leaf } of R.leaves(tree)) for (const line of R.splitCsvLines(leaf.text.replace(/\n$/, ""))) {
+            const c = R.splitCsv(line)
+            const startMs = cnMs(c[1]), endMs = cnMs(c[2]), rate = parseFloat(c[5]), questType = parseInt(c[6])
+            if (!Number.isFinite(startMs) || !Number.isFinite(endMs) || !Number.isFinite(rate) || !Number.isFinite(questType)) continue
+            campaigns.push({ startMs, endMs, rate, questType, selectors: [selector(c[7]), selector(c[8]), selector(c[9])] })
+        }
+        fs.writeFileSync(path.join(dataDir(), "cn_stamina_campaigns.json"), JSON.stringify({ campaigns }))
+    }
+
     // the next CN update
     const patches = fs.existsSync(PATCHES) ? JSON.parse(fs.readFileSync(PATCHES, "utf8")) : []
     const last = patches.length ? patches[patches.length - 1].version : "1.4.54"

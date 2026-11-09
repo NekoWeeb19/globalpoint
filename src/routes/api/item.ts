@@ -6,6 +6,7 @@
 // errors go out as a result code in data_headers, which the client turns into its own message.
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { addStaminaSync, currentPlayerStamina, realStaminaOn, staminaUserInfo } from "../../nya/stamina";
 import itemRulesData from "../../../assets/item_rules.json"
 import getDatabase, { Database } from "../../data"
 import { getAccountPlayers, getPlayerItemSync, getPlayerSync, getSession, updatePlayerItemSync, updatePlayerSync } from "../../data/wdfpData";
@@ -49,7 +50,10 @@ const routes = async (fastify: FastifyInstance) => {
 
         const result = getDatabase(Database.WDFP_DATA).transaction(() => {
             const player = getPlayerSync(playerId)!
-            const plan = planItemUse(rules, requests, id => getPlayerItemSync(playerId, id) ?? 0, player.stamina, getServerDate().getTime())
+            // real stamina (src/nya/stamina.ts): items add to the stamina now, refill included
+            const real = realStaminaOn()
+            const staminaBefore = real ? currentPlayerStamina(player) : player.stamina
+            const plan = planItemUse(rules, requests, id => getPlayerItemSync(playerId, id) ?? 0, staminaBefore, getServerDate().getTime())
             if (!plan.ok) return plan
             const itemList: Record<string, number> = {}
             for (const spend of plan.spend) {
@@ -57,15 +61,19 @@ const routes = async (fastify: FastifyInstance) => {
                 updatePlayerItemSync(playerId, spend.id, after)
                 itemList[String(spend.id)] = after
             }
+            if (real) {
+                const after = addStaminaSync(playerId, plan.staminaAfter - staminaBefore)!
+                return { ok: true as const, itemList, stamina: after.stamina, staminaBefore, healTime: after.staminaHealTime, real }
+            }
             const healTime = getServerDate()
             updatePlayerSync({ id: playerId, stamina: plan.staminaAfter, staminaHealTime: healTime })
-            return { ok: true as const, itemList, stamina: plan.staminaAfter, staminaBefore: player.stamina, healTime }
+            return { ok: true as const, itemList, stamina: plan.staminaAfter, staminaBefore: player.stamina, healTime, real }
         })()
         if (!result.ok) return refuse(reply, body.viewer_id, result, "use_item", playerId)
 
         console.log(`[item] Player ${playerId}: used ${requests.map(r => `${r.count}x ${r.id}`).join(", ")}, stamina ${result.staminaBefore} -> ${result.stamina}.`)
         return ok(reply, body.viewer_id, {
-            "user_info": {
+            "user_info": result.real ? staminaUserInfo({ stamina: result.stamina, staminaHealTime: result.healTime }) : {
                 "stamina": result.stamina,
                 "stamina_heal_time": getServerTime(result.healTime),
             },

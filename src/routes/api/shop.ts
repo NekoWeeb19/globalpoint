@@ -13,6 +13,8 @@ import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";
 import { withMissionRewards } from "../../nya/mission";
 import { addPassPointSync, getPassPointPack, openPassIdSync } from "../../nya/passCard";
 import { isCnRequest } from "../../lib/cnClient";
+import { addStaminaSync, currentPlayerStamina, realStaminaOn, staminaUserInfo } from "../../nya/stamina";
+import { STAMINA_OVERFLOW_MAX, STAMINA_RECOVERY_BEADS, STAMINA_RECOVERY_VALUE } from "../../lib/stamina";
 import { COUNTER_KINDS, CounterEvent } from "../../lib/mission";
 
 interface GetSalesListBody {
@@ -381,6 +383,42 @@ export const howToGetRoutes = async (fastify: FastifyInstance) => {
     // the item details' "How to Get": open shop entries that give the item (the trove, general and star
     // grain shops; event and boss coin shops are listed by their own screens). Box summons aren't
     // looked through (box_gacha_id_list stays empty), so the item's own "how to get" text is shown.
+    // 50 beads (free beads first) for 100 stamina, up to 999 (the stamina window's bead button; src/lib/stamina.ts)
+    // (in this plugin, which has no /shop prefix: the game asks for shop/recover_stamina)
+    fastify.post("/shop/recover_stamina", async (request: FastifyRequest, reply: FastifyReply) => {
+        const body = request.body as { viewer_id: number }
+        const viewerId = Number(body?.viewer_id)
+        const viewerIdSession = isNaN(viewerId) ? null : await getSession(viewerId.toString())
+        if (!viewerIdSession) return reply.status(400).send({ "error": "Bad Request", "message": "Invalid request body." })
+        const playerId = (await getAccountPlayers(viewerIdSession.accountId))[0]
+        const player = getPlayerSync(playerId)
+        if (player === null) return reply.status(400).send({ "error": "Bad Request", "message": "No player." })
+        reply.header("content-type", "application/x-msgpack")
+        const real = realStaminaOn()
+        const before = real ? currentPlayerStamina(player) : player.stamina
+        // the game's "stamina is already at the maximum" (2102) and "not enough beads" refusals
+        if (before >= STAMINA_OVERFLOW_MAX) return reply.status(200).send({ "data_headers": generateDataHeaders({ viewer_id: viewerId, result_code: 2102 }), "data": {} })
+        if (player.freeVmoney + player.vmoney < STAMINA_RECOVERY_BEADS) return reply.status(400).send({ "error": "Bad Request", "message": "Not enough beads." })
+        const fromFree = Math.min(player.freeVmoney, STAMINA_RECOVERY_BEADS)
+        const freeVmoney = player.freeVmoney - fromFree, vmoney = player.vmoney - (STAMINA_RECOVERY_BEADS - fromFree)
+        updatePlayerSync({ id: playerId, freeVmoney, vmoney })
+        const after = real
+            ? addStaminaSync(playerId, STAMINA_RECOVERY_VALUE)!
+            : (() => {
+                const stamina = Math.min(STAMINA_OVERFLOW_MAX, player.stamina + STAMINA_RECOVERY_VALUE), staminaHealTime = getServerDate()
+                updatePlayerSync({ id: playerId, stamina, staminaHealTime })
+                return { stamina, staminaHealTime }
+            })()
+        console.log(`[stamina] Player ${playerId}: ${STAMINA_RECOVERY_BEADS} beads for stamina ${before} -> ${after.stamina}.`)
+        return reply.status(200).send({
+            "data_headers": generateDataHeaders({ viewer_id: viewerId }),
+            "data": {
+                "user_info": { ...staminaUserInfo(after), "vmoney": vmoney, "free_vmoney": freeVmoney },
+                "mail_arrived": false,
+            }
+        })
+    })
+
     fastify.post("/how_to_get/get_list", async (request: FastifyRequest, reply: FastifyReply) => {
         const body = request.body as { viewer_id: number, item_id: number }
         const viewerId = Number(body?.viewer_id), itemId = Number(body?.item_id)

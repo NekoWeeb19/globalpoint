@@ -17,6 +17,7 @@ import { progressPlayerMissionsSync, questStaminaCost } from "../../nya/mission"
 import { finishCarnivalBattleSync } from "../../nya/carnival";
 import { finishRaidBattleSync } from "../../nya/raid";
 import { refundEntryItemSync, spendEntryItemSync } from "../../nya/soloAdvent";
+import { addStaminaSync, realStaminaOn, spendQuestStaminaSync, staminaUserInfo } from "../../nya/stamina";
 import { battleMissionEvents } from "../../lib/mission";
 import { giveQuestJoinUnitsSync } from "../../nya/storyJoin";
 import { spendBoostPoint } from "../../lib/bossBoost";
@@ -114,6 +115,8 @@ export interface ActiveQuest {
     entryItem?: { id: number, count: number }
     /** A co-op battle (/multi_battle_quest/start), hosted by the player: counts as multiplayer. */
     coop?: boolean
+    /** Stamina spent at the start (real stamina, src/nya/stamina.ts): given back on abort. */
+    staminaCost?: number
 }
 
 const continueVmoneyCost = 50;
@@ -301,6 +304,7 @@ const routes = async (fastify: FastifyInstance) => {
             expPool: currentPlayer.expPool + rewardPoolExp,
             rankPoint: newRankPoint,
             stamina: newStamina,
+            staminaHealTime: playerData.staminaHealTime,
             boostPoint: newBoostPoint,
             bossBoostPoint: newBossBoostPoint
         })
@@ -482,7 +486,7 @@ const routes = async (fastify: FastifyInstance) => {
             fieldMana: body.add_mana,
             statistics: body.statistics,
             clearTimeMs: clearTime,
-            staminaCost: questStaminaCost(questCategory, questId),
+            staminaCost: activeQuestData?.staminaCost ?? questStaminaCost(questCategory, questId),
         }))
 
         // the player's totals after everything above was saved (rewards, drops, overflow exp, missions).
@@ -500,8 +504,10 @@ const routes = async (fastify: FastifyInstance) => {
                     "exp_pooled_time": epochOf(playerData.expPooledTime),
                     "free_vmoney": finalPlayer.freeVmoney,
                     "rank_point": newRankPoint,
-                    "stamina": newStamina,
-                    "stamina_heal_time": getServerTime(playerData.staminaHealTime),
+                    ...(realStaminaOn() ? staminaUserInfo({ stamina: newStamina, staminaHealTime: playerData.staminaHealTime }) : {
+                        "stamina": newStamina,
+                        "stamina_heal_time": getServerTime(playerData.staminaHealTime),
+                    }),
                     "boost_point": newBoostPoint,
                     "boss_boost_point": newBossBoostPoint
                 },
@@ -590,6 +596,8 @@ const routes = async (fastify: FastifyInstance) => {
         // delete existing active quest, giving back its entry ticket
         const abortedQuest = activeQuests[playerId]
         const refundedTotal = abortedQuest?.entryItem ? refundEntryItemSync(playerId, abortedQuest.entryItem) : null
+        // real stamina: retiring gives the battle's stamina back
+        const refundedStamina = abortedQuest?.staminaCost ? addStaminaSync(playerId, abortedQuest.staminaCost) : null
         delete activeQuests[playerId]
 
         // the recorded global reply is msgpack like every other one (this header was missing, so the
@@ -598,7 +606,7 @@ const routes = async (fastify: FastifyInstance) => {
         return reply.status(200).send({
             "data_headers": headers,
             "data": {
-                "user_info": {},
+                "user_info": refundedStamina !== null ? staminaUserInfo(refundedStamina) : {},
                 ...(refundedTotal !== null && abortedQuest?.entryItem ? { "item_list": { [String(abortedQuest.entryItem.id)]: refundedTotal } } : {}),
                 "category_id": body.category,
                 "is_multi": "single",
@@ -649,7 +657,15 @@ const routes = async (fastify: FastifyInstance) => {
         // an unfinished earlier battle gives its ticket back before this one starts
         const previousQuest = activeQuests[playerId]
         if (previousQuest?.entryItem) refundEntryItemSync(playerId, previousQuest.entryItem)
+        if (previousQuest?.staminaCost) addStaminaSync(playerId, previousQuest.staminaCost)
         delete activeQuests[playerId]
+
+        // real stamina (dashboard switch, src/nya/stamina.ts): the battle costs its stamina now
+        const staminaSpent = realStaminaOn() ? spendQuestStaminaSync(playerId, category, questId) : null
+        if (realStaminaOn() && staminaSpent === null) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Not enough stamina."
+        })
 
         // battles with an entry ticket (The Purge's Empress) spend it on every attempt
         const entryItem = spendEntryItemSync(playerId, questId)
@@ -665,7 +681,8 @@ const routes = async (fastify: FastifyInstance) => {
             useBoostPoint: useBoostPoint,
             useBossBoostPoint: useBossBoostPoint,
             isAutoStartMode: isAutoStartMode,
-            ...(entryItem !== null ? { entryItem: { id: entryItem.id, count: entryItem.count } } : {})
+            ...(entryItem !== null ? { entryItem: { id: entryItem.id, count: entryItem.count } } : {}),
+            ...(staminaSpent !== null && staminaSpent.cost > 0 ? { staminaCost: staminaSpent.cost } : {}),
         }
 
         // update player last quest id
@@ -685,7 +702,8 @@ const routes = async (fastify: FastifyInstance) => {
             "data_headers": dataHeaders,
             "data": {
                 "user_info": {
-                    "last_main_quest_id": body.quest_id
+                    "last_main_quest_id": body.quest_id,
+                    ...(staminaSpent !== null ? staminaUserInfo(staminaSpent) : {}),
                 },
                 // the ticket's new total, as the recorded global start reply reports an entry item
                 ...(entryItem !== null ? { "item_list": { [String(entryItem.id)]: entryItem.total } } : {}),

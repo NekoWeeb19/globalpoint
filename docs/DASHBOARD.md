@@ -125,6 +125,11 @@ app's News tab) and **Show in**, then **Post**. Players see it the next time the
 - **Paid beads with each daily login bonus:** 150 by default; 0 turns it off.
 - **Never-ending mails:** Bread, Mana and EXP x1500 that can be claimed again and again; untick one to
   remove it.
+- **Stamina (Spend stamina like the real game):** off by default, so battles never cost stamina. On: each
+  battle costs its stamina when it starts (half-cost stamina campaigns included, CN app), retiring gives
+  it back, stamina refills 1 point every 6 minutes (faster at higher ranks) up to your rank's maximum,
+  ranking up adds the new maximum on top, and stamina items or 50 beads (100 stamina) refill it. Close and
+  reopen the game after changing it.
 - **Summon rates:** the 5★ and 4★ chance per pull for **Unit banners**, **Star Fest / Meteor Festival**
   and **Armaments** (3★ is the rest). **Base game rates** restores 5% / 25%, and 7.5% / 25% for Star
   Fest and Meteor Festival. Pulls follow from the next pull; the game's own **Rates** screen (and its

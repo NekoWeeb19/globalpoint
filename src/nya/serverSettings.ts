@@ -1,6 +1,7 @@
 // Settings changed on the dashboard's first tab (.database/server_settings.json):
 // - the paid beads given with the everyday login bonus (overrides LOGIN_BONUS_PAID_BEADS in .env)
 // - which of the three never-ending mails (Bread, Mana, EXP x1500) are in the mailbox (all on by default)
+// - real stamina: battles spend stamina like the real game (off by default: stamina is never spent; src/nya/stamina.ts)
 
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "fs"
 import path from "path"
@@ -11,7 +12,7 @@ export const PAID_BEADS_MAX = 100000
 export type InfiniteMail = "bread" | "mana" | "exp"
 export const INFINITE_MAILS: readonly InfiniteMail[] = ["bread", "mana", "exp"]
 
-interface Saved { dailyPaidBeads?: number, infiniteMails?: Partial<Record<InfiniteMail, boolean>> }
+interface Saved { dailyPaidBeads?: number, infiniteMails?: Partial<Record<InfiniteMail, boolean>>, realStamina?: boolean }
 
 let cache: { mtimeMs: number, saved: Saved } | null = null
 function read(): Saved {
@@ -43,7 +44,12 @@ export function infiniteMailOn(mail: InfiniteMail): boolean {
     return read().infiniteMails?.[mail] !== false
 }
 
-export interface ServerSettings { dailyPaidBeads: number, fromEnv: boolean, infiniteMails: Record<InfiniteMail, boolean>, max: number }
+/** Whether battles spend stamina like the real game (off unless turned on on the dashboard). */
+export function realStaminaOn(): boolean {
+    return read().realStamina === true
+}
+
+export interface ServerSettings { dailyPaidBeads: number, fromEnv: boolean, infiniteMails: Record<InfiniteMail, boolean>, realStamina: boolean, max: number }
 
 export function getServerSettings(): ServerSettings {
     const saved = read()
@@ -51,12 +57,13 @@ export function getServerSettings(): ServerSettings {
         dailyPaidBeads: dailyPaidBeads(),
         fromEnv: !validBeads(saved.dailyPaidBeads),
         infiniteMails: { bread: infiniteMailOn("bread"), mana: infiniteMailOn("mana"), exp: infiniteMailOn("exp") },
+        realStamina: realStaminaOn(),
         max: PAID_BEADS_MAX,
     }
 }
 
 /** Saves the given settings (others unchanged). Throws when a value is out of range. */
-export function setServerSettings(change: { dailyPaidBeads?: unknown, infiniteMails?: unknown }): ServerSettings {
+export function setServerSettings(change: { dailyPaidBeads?: unknown, infiniteMails?: unknown, realStamina?: unknown }): ServerSettings {
     const saved = { ...read() }
     if (change.dailyPaidBeads !== undefined) {
         const n = Number(change.dailyPaidBeads)
@@ -71,6 +78,7 @@ export function setServerSettings(change: { dailyPaidBeads?: unknown, infiniteMa
         }
         saved.infiniteMails = mails
     }
+    if (typeof change.realStamina === "boolean") saved.realStamina = change.realStamina
     write(saved)
     return getServerSettings()
 }
