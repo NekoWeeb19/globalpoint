@@ -1,6 +1,7 @@
 import { clientSerializeDate } from "../data/utils";
 import { getPlayerCharacterSync, getPlayerSync, givePlayerItemSync, insertPlayerCharacterSync, updatePlayerCharacterSync, updatePlayerSync } from "../data/wdfpData";
-import { getCharacterDataSync } from "./assets";
+import { getCharacterDataSync, getCharacterManaNodesSync } from "./assets";
+import getDatabase, { Database } from "../data";
 import { inCnRequest } from "./cnClient";
 import { AddExpList, AddExpListItem, ClientReturnBondTokenStatus, ClientReturnBondTokenStatusList, ClientReturnCharacter, Element, GivePlayerCharacterResult, RewardPlayerCharacterExpResult } from "./types";
 
@@ -133,9 +134,9 @@ export function givePlayerCharacterSync(
             }
         ]
 
-        // add the second bond token list item
-        // if the character has more than 1 mana board
-        if (assetData.skill_count > 3) {
+        // add the second bond token list item if the character has more than 1 mana board: global's data
+        // (skill_count) or a board 2 in any board data (CN added board 2 to units global never gave one)
+        if (assetData.skill_count > 3 || getCharacterManaNodesSync(characterId, 2) !== null) {
             bondTokenList.push({
                 manaBoardIndex: 2,
                 status: 0
@@ -210,6 +211,29 @@ export function givePlayerCharacterSync(
             item: returnItem
         }
     }
+}
+
+/**
+ * Gives every owned unit that has a Mana Board 2 (in any board data) its board-2 bond token. Units whose board 2
+ * only CN has (e.g. 151141, 151147, 161177) were given one token, as global's data has one board for them, and
+ * opening their board 2 was refused (H400 on character/open_mana_board). Returns how many were added.
+ */
+export function addMissingBoardTwoBondTokensSync(playerId: number): number {
+    const db = getDatabase(Database.WDFP_DATA)
+    const missing = db.prepare(`
+    SELECT c.id FROM players_characters c
+    WHERE c.player_id = ? AND NOT EXISTS (
+        SELECT 1 FROM players_characters_bond_tokens b
+        WHERE b.player_id = c.player_id AND b.character_id = c.id AND b.mana_board_index = 2)
+    `).all(playerId) as { id: number }[]
+    const insert = db.prepare(`INSERT INTO players_characters_bond_tokens (mana_board_index, status, player_id, character_id) VALUES (2, 0, ?, ?)`)
+    let added = 0
+    for (const { id } of missing) {
+        if (getCharacterManaNodesSync(id, 2) === null) continue
+        insert.run(playerId, id)
+        added++
+    }
+    return added
 }
 
 /**

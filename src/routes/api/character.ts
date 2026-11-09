@@ -7,7 +7,7 @@ import { getAccountPlayers, getPlayerCharacterManaNodesSync, getPlayerCharacterS
 import { generateDataHeaders } from "../../utils";
 import { getCharacterDataSync, getCharacterManaNodesSync } from "../../lib/assets";
 import { clientSerializeDate } from "../../data/utils";
-import { givePlayerCharacterSync } from "../../lib/character";
+import { addMissingBoardTwoBondTokensSync, givePlayerCharacterSync } from "../../lib/character";
 import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";
 import { withMissionRewards } from "../../nya/mission";
 import { COUNTER_KINDS } from "../../lib/mission";
@@ -215,6 +215,9 @@ const routes = async (fastify: FastifyInstance) => {
             "error": "Internal Server Error",
             "message": "No players bound to account."
         })
+
+        // a unit whose board 2 only CN has gets its board-2 bond token first (lib/character.ts)
+        if (manaBoardIndex === 2) addMissingBoardTwoBondTokensSync(playerId)
 
         // get character data
         const characterData = getPlayerCharacterSync(playerId, characterId)

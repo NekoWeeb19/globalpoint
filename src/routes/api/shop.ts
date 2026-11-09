@@ -12,7 +12,8 @@ import { givePlayerRewardsSync } from "../../lib/quest";
 import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";
 import { withMissionRewards } from "../../nya/mission";
 import { addPassPointSync, getPassPointPack, openPassIdSync } from "../../nya/passCard";
-import { isCnRequest } from "../../lib/cnClient";
+import { CN_INTERNAL_HEADER, inCnRequest, isCnRequest } from "../../lib/cnClient";
+import { unpack } from "msgpackr";
 import { addStaminaSync, currentPlayerStamina, realStaminaOn, staminaUserInfo } from "../../nya/stamina";
 import { STAMINA_OVERFLOW_MAX, STAMINA_RECOVERY_BEADS, STAMINA_RECOVERY_VALUE } from "../../lib/stamina";
 import { COUNTER_KINDS, CounterEvent } from "../../lib/mission";
@@ -282,6 +283,49 @@ const routes = async (fastify: FastifyInstance) => {
         })
     })
 
+    // Bulk exchange (Event Item and Boss Coin exchanges, the CN app's "Bulk Exchange" button):
+    // { shop_type, buy_item_list: { "<shop item id>": count } }. Each item is bought by /buy in turn and
+    // the replies are put together; the first refusal stops it (items before it stay bought, as /buy saved them).
+    fastify.post("/bulk_buy", async (request: FastifyRequest, reply: FastifyReply) => {
+        const body = request.body as { viewer_id: number, shop_type: number, buy_item_list: Record<string, unknown> }
+        const list = body?.buy_item_list
+        if (!body?.viewer_id || isNaN(Number(body.shop_type)) || typeof list !== "object" || list === null || Array.isArray(list)) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Invalid request body."
+        })
+        const entries = Object.entries(list).map(([id, count]) => [Number(id), Number(count)] as const)
+        if (entries.length === 0 || entries.some(([id, count]) => !Number.isSafeInteger(id) || id <= 0 || !Number.isSafeInteger(count) || count <= 0)) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Invalid bulk purchase items."
+        })
+        const merged: Record<string, any> = {
+            "user_info": {}, "joined_character_id_list": [], "character_list": [], "equipment_list": [], "item_list": {}, "mail_arrived": false,
+        }
+        for (const [shopItemId, count] of entries) {
+            const res = await fastify.inject({
+                method: "POST",
+                url: request.url.replace(/\/bulk_buy(\?.*)?$/, "/buy"),
+                headers: { "content-type": "application/json", ...(inCnRequest() ? { [CN_INTERNAL_HEADER]: "1" } : {}) },
+                payload: JSON.stringify({ viewer_id: body.viewer_id, shop_type: body.shop_type, shop_item_id: shopItemId, number: count }),
+            })
+            let data: any
+            try { data = unpack(Buffer.from(res.body, "base64")) } catch { try { data = JSON.parse(res.body) } catch { data = res.body } }
+            if (res.statusCode !== 200) return reply.status(res.statusCode).send(data)
+            const part = data?.data ?? {}
+            Object.assign(merged.user_info, part.user_info ?? {})
+            Object.assign(merged.item_list, part.item_list ?? {})
+            for (const key of ["joined_character_id_list", "character_list", "equipment_list"]) if (Array.isArray(part[key])) merged[key].push(...part[key])
+            if (Array.isArray(part.active_mission_list)) merged.active_mission_list = [...(merged.active_mission_list ?? []), ...part.active_mission_list]
+            if (part.mission_info) merged.mission_info = part.mission_info
+        }
+        console.log(`[shop] Player of viewer ${body.viewer_id}: bulk exchange in shop ${body.shop_type}: ${entries.map(([id, count]) => `${count}x ${id}`).join(", ")}.`)
+        reply.header("content-type", "application/x-msgpack")
+        return reply.status(200).send({
+            "data_headers": generateDataHeaders({ viewer_id: body.viewer_id }),
+            "data": merged
+        })
+    })
+
     fastify.post("/get_sales_list", async (request: FastifyRequest, reply: FastifyReply) => {
         const body = request.body as GetSalesListBody
 
@@ -420,8 +464,11 @@ export const howToGetRoutes = async (fastify: FastifyInstance) => {
     })
 
     fastify.post("/how_to_get/get_list", async (request: FastifyRequest, reply: FastifyReply) => {
-        const body = request.body as { viewer_id: number, item_id: number }
-        const viewerId = Number(body?.viewer_id), itemId = Number(body?.item_id)
+        // an item ({ item_id }) or, from an armament's page, an armament ({ equipment_id }: refused before, H400)
+        const body = request.body as { viewer_id: number, item_id?: number, equipment_id?: number }
+        const isEquipment = body?.item_id === undefined && body?.equipment_id !== undefined
+        const viewerId = Number(body?.viewer_id), itemId = Number(isEquipment ? body?.equipment_id : body?.item_id)
+        const rewardType = isEquipment ? ShopItemRewardType.EQUIPMENT : ShopItemRewardType.ITEM
         const viewerIdSession = isNaN(viewerId) ? null : await getSession(viewerId.toString())
         if (!viewerIdSession || isNaN(itemId)) return reply.status(400).send({
             "error": "Bad Request",
@@ -433,7 +480,7 @@ export const howToGetRoutes = async (fastify: FastifyInstance) => {
         const salesList: Object[] = []
         for (const shopType of [ShopType.TREASURE, ShopType.GENERAL, ShopType.STAR_GRAIN]) {
             for (const [shopItemId, item] of Object.entries(getGenericShopItemsSync(shopType) ?? {})) {
-                if (!(item.rewards as { type?: number, id?: number }[]).some(reward => (reward.type ?? 0) === 0 && Number(reward.id) === itemId)) continue
+                if (!(item.rewards as { type?: number, id?: number }[]).some(reward => (reward.type ?? 0) === rewardType && Number(reward.id) === itemId)) continue
                 const until = item.availableUntil === null ? null : deserializeClientDate(item.availableUntil).getTime()
                 if (now < deserializeClientDate(item.availableFrom).getTime() || (until !== null && until <= now)) continue
                 const counts = bought.get(`${shopType}:${shopItemId}`) ?? { today: 0, month: 0, total: 0 }

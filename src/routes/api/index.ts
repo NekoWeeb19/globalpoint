@@ -1,3 +1,4 @@
+import { addMissingBoardTwoBondTokensSync } from "../../lib/character";
 import { getFundReceiveListSync } from "../../nya/growthFund";
 import { specialExchangeListSync, startDashListSync } from "../../nya/exchangeCampaigns";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
@@ -94,6 +95,9 @@ const routes = async (fastify: FastifyInstance) => {
 
         // Boss Boost: back to 3 after the daily reset (once per real day), before the player data
         refillBossBoostSync(playerId)
+        // units with a Mana Board 2 only CN has: their board-2 bond token (lib/character.ts)
+        const boardTwoTokens = addMissingBoardTwoBondTokensSync(playerId)
+        if (boardTwoTokens > 0) console.log(`[mana board] Player ${playerId}: ${boardTwoTokens} unit(s) given their Mana Board 2 bond token.`)
         // Hard Multi "Daily Reward Count" points
         refillPeriodicRewardPointsSync(playerId)
         // yearly seasonal free pulls: back once a real day
