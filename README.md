@@ -124,7 +124,7 @@ also play as they did on any date ([balance by date](docs/DETAILS.md#balance-by-
 - **I changed something on the dashboard. Why don't I see it?** Close the game fully, wait a minute,
   and open it again: it downloads a small update at the title screen.
 - **I installed a newer game APK over the old one.** Clear the game's cache once before opening it:
-  Settings > Apps > World Flipper > Storage > **Clear cache** (not Clear data).
+  Settings > Apps > World Flipper (listed as 世界弹射物语) > Storage > **Clear cache** (not Clear data).
 
 ## More
 

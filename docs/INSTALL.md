@@ -94,25 +94,57 @@ node scripts/build_cn_obb.cjs <output folder> --parts 3
 1. Put the downloads in the phone's **Download** folder (where the browser saves them anyway, or copy
    them there from a PC over USB). Don't unzip or rename anything.
 2. Install both APKs. **Don't open the game yet.**
-3. Open **StarPoint Companion**, tap **Game data** > **Import pack...** and pick `starpoint-data.zip`
-   (then the comics zip the same way, if you have it). Or copy them from a PC server instead
-   ([below](#copying-the-data-from-a-pc-instead)).
-4. Back on the main screen, tap **Setup check**. Each line is **green** (done), **yellow** or **red**
-   (something left), with a button where the app can do it:
-   - **Allow** "All files access" for StarPoint Companion, so it can find and move the OBB;
-   - **Open World Flipper's settings**: turn on **All files access** and allow the storage permissions
-     (on Android 13 and newer they're **Music and audio** and **Photos and videos**; older Android:
-     **Storage**). Only you can flip these switches; the game never asks for them, and without them it
-     can't see the OBB;
+3. Open **StarPoint Companion**. The first time, its light is red and it says **Game data: missing**:
+   that's expected.
+
+   ![StarPoint Companion the first time: red, Stopped, Game data: missing](images/install-p-first-open.png)
+
+   Tap **Game data** > **Import pack...**, open **Downloads** in the file picker (the ☰ menu at the top
+   left) and pick `starpoint-data.zip`. Then the comics zip the same way, if you have it. Or copy them
+   from a PC server instead ([below](#copying-the-data-from-a-pc-instead)).
+
+   ![Game data: the Import pack button](images/install-p-import-pack.png)
+   ![The file picker's Downloads folder with starpoint-data.zip](images/install-p-picker.png)
+
+   A bar at the bottom shows the import (a minute or two). When it's done, the app asks whether to
+   delete the zip: **Delete** frees 2.2 GB, and **Keep** is fine too.
+
+   ![The import's progress bar at the bottom of Game data](images/install-p-import-progress.png)
+   ![Delete the pack? It's unpacked, so the pack isn't needed any more](images/install-p-delete-pack.png)
+4. Go back and tap **Setup check**. Each line is **green** (done), **yellow** (wait) or **red** (something
+   left), with a button where the app can do it:
+
+   ![A fresh Setup check: red lines for StarPoint Companion's storage access, the server's data and the stopped server](images/install-p-setup-fresh.png)
+
+   - **Allow**: lets StarPoint Companion use the phone's storage, so it can find and move the OBB.
+     Android asks; tap **Allow** (on Android 11 and newer it opens the **All files access** page: switch
+     it on and come back).
+
+     ![Android asking to allow StarPoint Companion to access photos, media and files](images/install-p-allow-prompt.png)
+   - **Open World Flipper's settings**: turn on **All files access** and allow the storage permissions.
+     Only you can flip these switches; the game never asks for them, and without them it can't see the
+     OBB. In Android's settings the game is listed under its Chinese name, **世界弹射物语**, not "World
+     Flipper"; the button takes you straight there. Open **Permissions** and switch the storage
+     permission on.
+
+     ![Setup check with a red line for World Flipper's storage access and its Open World Flipper's settings button](images/install-p-setup-check.png)
+     ![The game's App info page, listed as 世界弹射物语](images/install-p-appinfo.png)
+     ![Its permissions, with Storage switched on](images/install-p-permissions.png)
+
+     (These pictures are from an Android 9 emulator. On Android 11 and newer there's also an **All
+     files access** switch, and on Android 13 and newer Storage is split into **Music and audio** and
+     **Photos and videos**: allow both.)
    - **Check and move it**: checks every OBB file is undamaged (a minute or two per few GB), then moves
      them into `starpoint_game` (made for you; instant, no extra space). If a file is damaged nothing is
-     moved and it says which one to download again;
+     moved and it says which one to download again.
    - **Remove them**: leftover game files from an earlier setup, which would make the game's start very
-     slow;
-   - **Start** the server, if it isn't running.
+     slow.
+   - **Start**: starts the server, if it isn't running (yellow while it starts).
 5. When every line is green, the main screen's light is **green: Ready**. Open the game (if it was
    already open, close it fully first). It shows "Unpacking game files", unpacks the OBB by itself and
    deletes it when done.
+
+   ![StarPoint Companion's main screen: green, Ready: open the game](images/install-p-main.png)
 
 The light on StarPoint Companion's main screen: **green** = open the game; **yellow** = wait (the server
 is starting, or it's rebuilding the game update after a change on the dashboard; a game opened meanwhile
@@ -128,7 +160,7 @@ the data pack, the comics zip, the game APK) without changing anything.
    single file. From a PC copy them over USB; already on the phone, **Move** them with the file app (Move,
    not Copy: a copy needs twice the space). Don't let anything compress or zip them. To check a download,
    compare its SHA-256 with the [list above](#checksums).
-4. Android Settings > Apps > World Flipper: turn on **All files access**, and under **Permissions** allow
+4. Android Settings > Apps > World Flipper (listed as **世界弹射物语**): turn on **All files access**, and under **Permissions** allow
    the storage permissions (as in step 4 above).
 5. Install StarPoint Companion, import `starpoint-data.zip` (**Game data** > **Import pack...**), and
    start the server: the main screen should say **Server: running**. Tap **Let the server run in the
@@ -400,6 +432,6 @@ alone.
    game downloads a small one at the title screen.
 
 **A new game APK** installs over the old one, on a phone or an emulator, and keeps your progress. Clear the
-game's cache once before opening it: Android Settings > Apps > World Flipper > Storage > **Clear cache**
+game's cache once before opening it: Android Settings > Apps > World Flipper (listed as 世界弹射物语) > Storage > **Clear cache**
 (not Clear data, which deletes the game files). **A new StarPoint Companion APK** also installs over the
 old one and keeps the save on the phone.

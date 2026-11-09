@@ -61,7 +61,7 @@ Dashboard
   - News and Players: in-game news posts, accounts, saves and gifts.
 
 After updating the game app
-  Clear the game's cache once: Android Settings > Apps > World Flipper > Storage > Clear cache
+  Clear the game's cache once: Android Settings > Apps > World Flipper (listed as 世界弹射物语) > Storage > Clear cache
   (not Clear data: that deletes the downloaded game files).
 
 Notes
