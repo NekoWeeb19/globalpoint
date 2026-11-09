@@ -234,6 +234,8 @@ too: on a fresh install it downloads ~12 GB from your PC, or put an OBB on the p
 2. Open the dashboard on the PC (**http://127.0.0.1:8000**). Under **Play on a phone over Wi-Fi**,
    pick the PC's address (the one starting with 192.168 or 10) and tap **Download phone connection
    file**. You get `server.txt`.
+
+   ![The dashboard's Play on a phone over Wi-Fi box, with the PC's address picked](images/install-phone-wifi-box.png)
 3. Put `server.txt` on the phone in `Internal storage/Android/obb/com.leiting.wf/` (make the
    folder if needed). You can send it to yourself, or download the file straight on the phone by
    opening the dashboard there at `http://<PC address>:8000`.
@@ -246,6 +248,8 @@ too: on a fresh install it downloads ~12 GB from your PC, or put an OBB on the p
    `server.txt` from `starpoint_game`.
 4. Install the game and open it. The title screen shows **"Server: 192.168.x.y:8000"**. If it says
    "server.txt not understood", the file's address line is wrong.
+
+   ![The title screen showing Server: 192.168.x.y:8000 next to TAP TO START](images/install-title-server.png)
 
 `server.txt` is just one line, the PC's address and port, e.g. `192.168.1.20:8000`, so you can
 also write it by hand. Lines starting with `#` are ignored. The game reads it each time it starts.
