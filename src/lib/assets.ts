@@ -48,6 +48,7 @@ import { readFileSync, statSync } from "fs";
 import path from "path";
 import { inCnRequest } from "./cnClient";
 import { towerOriginalQuestId } from "./towerRotation";
+import { getServerDate } from "../utils";
 import { AssetCharacter, BattleQuest, BossCoinShopItems, BoxGacha, ClearRewards, EventItemShopIdMapItem, EventShopItems, ExAbilities, ExBoostItem, ExBoostItems, ExStatus, Gacha, Gachas, ManaNode, ManaNodes, QuestCategory, RareScoreReward, RareScoreRewardGroups, RawAssetCharacters, RawBoxGachas, RawBoxRewards, RawQuests, Reward, RushEventFolders, ScoreReward, ScoreRewardGroups, ShopItem, ShopItems, ShopType, StoryQuest } from "./types";
 
 // Custom units (assets/custom_units/*.json, scripts/custom_units.cjs, docs/CUSTOM_UNITS.md): new CN units
@@ -276,7 +277,7 @@ export function getQuestFromCategorySync(
         case QuestCategory.TOWER_DUNGEON_EVENT:
             // the CN client's floors have CN's reward groups (scripts/gen_cn_tower_quests.cjs); a copied month's floor
             // (src/lib/towerRotation.ts) has the same quest as CN's floor it copies
-            return getQuestSync(((inCnRequest() ? towerDungeonEventQuestsCn : towerDungeonEventQuests) as RawQuests), towerOriginalQuestId(Number(questId)))
+            return getQuestSync(((inCnRequest() ? towerDungeonEventQuestsCn : towerDungeonEventQuests) as RawQuests), towerOriginalQuestId(Number(questId), getServerDate().getTime()))
         case QuestCategory.EXPERT_SINGLE_EVENT:
             return getQuestSync((expertSingleEventQuests as RawQuests), questId)
         case QuestCategory.CARNIVAL_EVENT:

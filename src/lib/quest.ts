@@ -5,6 +5,7 @@ import { givePlayerCharacterSync } from "./character";
 import { givePlayerEquipmentSync } from "./equipment";
 import { CharacterReward, CommonScoreReward, CurrencyReward, CurrencyScoreReward, DropScoreRewardId, EquipmentItemReward, GivePlayerScoreRewardsResult, ItemScoreReward, PlayerRewardResult, QuestCategory, RareScoreRewardGroup, Reward, RewardType, ScoreReward, ScoreRewardType } from "./types";
 import { towerOriginalQuestId } from "./towerRotation";
+import { getServerDate } from "../utils";
 import { itemDropMultiplier, multipliedDrop } from "./rewardCampaign";
 import { withDropAmount } from "../nya/dropSettings";
 import elementItemMap from "../../assets/reward_element_map.json";
@@ -28,7 +29,7 @@ const ELEMENT_TABLES: Record<number, string> = {
 export function questElement(category: number, questId: number): number | undefined {
     const table = (questElements as Record<string, Record<string, number>>)[ELEMENT_TABLES[category]]
     // The Haunt's copied months (src/lib/towerRotation.ts) have their floor's element
-    return table?.[String(category === QuestCategory.TOWER_DUNGEON_EVENT ? towerOriginalQuestId(questId) : questId)]
+    return table?.[String(category === QuestCategory.TOWER_DUNGEON_EVENT ? towerOriginalQuestId(questId, getServerDate().getTime()) : questId)]
 }
 
 /** The item an element-material drop of `tier` gives on a stage of `element`, or undefined. */

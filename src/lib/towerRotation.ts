@@ -8,10 +8,13 @@
  * year -1 to +1, like the yearly campaign copies); the server maps a copy's quest id back to its floor's rewards.
  *
  * The game takes a floor's quest id from its row's key in the table (quest id = 1000 + key, for The Haunt's
- * event 1), not from the row's id column, so every copy month has fixed keys: after CN's 480 rows come the 12
- * months before CN's (2021-05 to 2022-04, keys 481-600), then every month from 2026-05 on (keys 601 up), 10 each.
- * The months added later, 2020-01 to 2021-04, have keys of their own (50001-50160), so no earlier month's keys
- * (and so no save's cleared floors) moved.
+ * event 1), not from the row's id column, and reads the event back as quest id / 1000, so a key must stay under
+ * 1000 (key 50001 became quest 51001, "event 51", and the game stopped with C8601 when it listed The Haunt). Every
+ * copy month has a slot: the 12 months before CN's (2021-05 to 2022-04) are slots 0-11 (keys 481-600), the months
+ * from 2026-05 on are slots 12 up (keys 601 up), and 2020-01 to 2021-04 are slots -16 to -1. Keys go round 51
+ * slots (481-990): a slot and the one 51 later share keys, and as the update only carries the game clock's year
+ * -1 to +1, two months that share keys (4 years and more apart) are never in the game at once. So 2020-01 to
+ * 2021-04 use keys 831-990 (as 2028-12 to 2029-07 do), and from 2029-08 the keys start again at 481.
  */
 
 const SETS = 48
@@ -24,8 +27,6 @@ export const TOWER_FIRST_MONTH = { year: 2020, month: 1 }
 const OLDEST = monthIndex(TOWER_FIRST_MONTH.year, TOWER_FIRST_MONTH.month)
 /** the first month of the original copy layout (keys 481 up): 2021-05 */
 const FIRST = monthIndex(2021, 5)
-/** keys of the months before 2021-05 (2020-01 to 2021-04): their own block, after every other key */
-const OLDER_KEYS = 50000
 /** CN's own months: 2022-05 (set 1) up to 2026-04 (set 48) */
 const REAL_FROM = monthIndex(2022, 5)
 const REAL_UNTIL = monthIndex(2026, 4)
@@ -58,17 +59,22 @@ const EARLY_MONTHS = REAL_FROM - FIRST
 const KEY_TO_QUEST = 1000
 const CN_ROWS = SETS * FLOORS
 
-/** A copy month's place among all copy months (0 = 2021-05, 12 = 2026-05). */
+/** slots that keys go round (481-990, all under 1000) */
+const KEY_SLOTS = 51
+const mod = (n: number, m: number) => ((n % m) + m) % m
+
+/** A copy month's slot (0 = 2021-05, 12 = 2026-05, negative before 2021-05). */
 function copySlot(year: number, month: number): number {
     const i = monthIndex(year, month)
     return i < REAL_FROM ? i - FIRST : EARLY_MONTHS + (i - REAL_UNTIL - 1)
 }
 
+/** The month (as a month index) of a copy slot. */
+const slotMonth = (slot: number) => slot < EARLY_MONTHS ? FIRST + slot : REAL_UNTIL + 1 + (slot - EARLY_MONTHS)
+
 /** The table key of a floor (1-10) in a copy month (CN's own rows are keys 1-480). */
 export function towerCopyKey(year: number, month: number, floor: number): number {
-    const i = monthIndex(year, month)
-    if (i < FIRST) return OLDER_KEYS + (i - OLDEST) * FLOORS + floor
-    return CN_ROWS + copySlot(year, month) * FLOORS + floor
+    return CN_ROWS + mod(copySlot(year, month), KEY_SLOTS) * FLOORS + floor
 }
 
 /** The quest id of a floor (1-10) in a copy month (what the game sends: 1000 + its key). */
@@ -76,17 +82,21 @@ export function towerCopyQuestId(year: number, month: number, floor: number): nu
     return KEY_TO_QUEST + towerCopyKey(year, month, floor)
 }
 
-/** For a copy's quest id: the CN quest id it copies (same floor of the month's set). CN's own ids come back as they are. */
-export function towerOriginalQuestId(questId: number): number {
-    const older = questId - KEY_TO_QUEST - OLDER_KEYS - 1
-    if (older >= 0 && older < (FIRST - OLDEST) * FLOORS) {
-        const index = OLDEST + Math.floor(older / FLOORS)
-        return towerQuestId(towerSetForMonth(Math.floor(index / 12), index % 12 + 1), older % FLOORS + 1)
-    }
+/**
+ * For a copy's quest id: the CN quest id it copies (same floor of the month's set). CN's own ids come back as they
+ * are. Months 51 slots apart share keys: the one nearest the game clock (nowMs) is meant.
+ */
+export function towerOriginalQuestId(questId: number, nowMs: number = Date.now()): number {
     const k = questId - KEY_TO_QUEST - CN_ROWS - 1
-    if (k < 0) return questId
-    const slot = Math.floor(k / FLOORS)
-    const index = slot < EARLY_MONTHS ? FIRST + slot : REAL_UNTIL + 1 + (slot - EARLY_MONTHS)
-    const year = Math.floor(index / 12), month = index % 12 + 1
-    return towerQuestId(towerSetForMonth(year, month), k % FLOORS + 1)
+    if (k < 0 || k >= KEY_SLOTS * FLOORS) return questId
+    const now = new Date(nowMs)
+    const nowIndex = monthIndex(now.getUTCFullYear(), now.getUTCMonth() + 1)
+    let best: number | null = null
+    for (let slot = Math.floor(k / FLOORS) - 2 * KEY_SLOTS; slot <= Math.floor(k / FLOORS) + 4 * KEY_SLOTS; slot += KEY_SLOTS) {
+        const index = slotMonth(slot)
+        if (index < OLDEST || (index >= REAL_FROM && index <= REAL_UNTIL)) continue
+        if (best === null || Math.abs(index - nowIndex) < Math.abs(best - nowIndex)) best = index
+    }
+    if (best === null) return questId
+    return towerQuestId(towerSetForMonth(Math.floor(best / 12), best % 12 + 1), k % FLOORS + 1)
 }
