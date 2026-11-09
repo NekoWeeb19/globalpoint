@@ -1,4 +1,5 @@
-import { awakeManaNodesSync } from "../../nya/manaAwake";
+import { awakeManaNodesSync, manaBoardAwakeSync } from "../../nya/manaAwake";
+import { inCnRequest } from "../../lib/cnClient";
 // Handles the insertion of mana into characters.
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
@@ -451,6 +452,8 @@ const routes = async (fastify: FastifyInstance) => {
                     [String(characterId)]: userCharacterManaNodeListItem
                 },
                 "mail_arrived": false,
+                // CN node awakening opens once board 1 is complete (src/nya/manaAwake.ts awakeUnlocksSync)
+                ...(inCnRequest() ? { "mana_board_awake": { [String(characterId)]: manaBoardAwakeSync(playerId)[String(characterId)] ?? {} } } : {}),
                 ...(activeMissionList.length > 0 ? { "active_mission_list": activeMissionList } : {})
             }, manaCost > 0 ? [{ kind: COUNTER_KINDS.MANA_SPENT, amount: manaCost }] : [])
         })

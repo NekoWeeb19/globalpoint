@@ -35,16 +35,28 @@ export function nodeAwakeLevelsSync(playerId: number): Record<string, Record<str
     return out
 }
 
-/** The awake level each unit has unlocked per board, from its finished "complete all" awake missions. */
+/**
+ * The awake level each unit has unlocked per board, from its finished "complete all" awake missions. Only for units
+ * whose board 1 is complete: the missions count battles from the start (many are "clear any quest with the unit"), and
+ * a unit sent as awakened with board 1 unfinished shows its board as learned, and Unlock All stops the game (C2326).
+ */
 export function awakeUnlocksSync(playerId: number): Record<string, Record<string, number>> {
     const data = manaAwakeData()
     const out: Record<string, Record<string, number>> = {}
     if (data === null) return out
     const saved = getPlayerActiveMissionsSync(playerId)
+    const learnedNodes = getPlayerCharactersManaNodesSync(playerId)
+    const boardOneComplete = (unit: string) => {
+        const board = data.nodes[unit]
+        if (!board) return false
+        const learned = new Set((learnedNodes[unit] ?? []).map(Number))
+        return Object.keys(board).every(node => learned.has(Number(node)))
+    }
     for (const [id, mission] of Object.entries(data.missions)) {
         if (!mission.unlock) continue
         const needed = Math.max(0, ...Object.values(mission.requirements))
         if ((saved[id]?.progress ?? 0) < needed || needed <= 0) continue
+        if (!boardOneComplete(String(mission.unlock.character))) continue
         const levels = out[String(mission.unlock.character)] ??= {}
         levels[String(mission.unlock.board)] = Math.max(levels[String(mission.unlock.board)] ?? 0, mission.unlock.level)
     }
