@@ -199,6 +199,9 @@ export function givePlayerCharacterSync(
         return {
             character: {
                 "character_id": characterId,
+                // the CN game needs it on every unit it's sent (C2274 "entry_count doesn't exist" otherwise, e.g. a unit
+                // bought several times at once in the Star Speck exchange, or one already owned)
+                "entry_count": playerCharacter.entryCount,
                 "stack": newStack,
                 "create_time": clientSerializeDate(playerCharacter.joinTime),
                 "update_time": clientSerializeDate(playerCharacter.updateTime),

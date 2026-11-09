@@ -570,10 +570,14 @@ async function main() {
     // table when it lacks them, so a save holding one (e.g. 50107 Polar Bear Cookies) doesn't stop the game (C8601)
     const globalItems = (() => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, "assets", "cn_global_items.json"), "utf8")) } catch { return null } })()
     const globalItemTable = globalItems ? fileOf(globalItems.table) : null
+    // the Star Speck Exchange's English rows that belonged to other products (assets/cn_star_grain_text.json,
+    // scripts/gen_cn_star_grain_text.cjs): each product's own name and description
+    const starGrainText = (() => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, "assets", "cn_star_grain_text.json"), "utf8")) } catch { return null } })()
+    const starGrainTable = starGrainText ? fileOf(starGrainText.table) : null
     const custom = CU.readCustomUnits()
     for (const p of custom.problems) console.log(`Custom unit skipped: ${p}`)
     const customTables = CU.unitTables(custom.units)
-    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...(globalItemTable ? [globalItemTable] : []), ...kitTables, MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES), ...customTables, ...changes.rows.keys(), ...enemyTables, ...rateFiles.keys(), ...lastChanged])].sort()
+    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...(globalItemTable ? [globalItemTable] : []), ...(starGrainTable ? [starGrainTable] : []), ...kitTables, MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES), ...customTables, ...changes.rows.keys(), ...enemyTables, ...rateFiles.keys(), ...lastChanged])].sort()
     const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
     const cn = await cnFiles(new Set([...fileList, featureFile]))
     // art StarPoint's patches added (scripts/gen_cn_banner_art.cjs) counts too: their file names and
@@ -649,6 +653,10 @@ async function main() {
             const have = new Set(tree.entries.map(e => e.key))
             const missing = Object.fromEntries(Object.entries(globalItems.rows).filter(([id]) => !have.has(id)))
             if (CU.addRows(tree, missing) > 0) console.log(`Global-only items added: ${Object.keys(missing).join(", ")}`)
+        }
+        if (file === starGrainTable) {
+            const fixes = new Map(Object.entries(starGrainText.rows).map(([key, cols]) => [key, { cols }]))
+            console.log(`Star Speck Exchange text: ${replaceRows(tree, fixes)} row(s) given their own product's English`)
         }
         if (EOS_TABLES.includes(file)) for (const { leaf } of R.leaves(tree)) {
             if (leaf.text.includes("2025-08-14 23:59:59")) R.setLeafText(leaf, leaf.text.split("2025-08-14 23:59:59").join("2199-12-31 23:59:59"))

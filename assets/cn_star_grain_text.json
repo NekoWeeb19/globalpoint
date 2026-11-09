@@ -1,0 +1,116 @@
+{
+ "_note": "Built by scripts/gen_cn_star_grain_text.cjs: English text for Star Speck Exchange rows whose English copy belonged to other products.",
+ "table": "master/shop/star_grain_shop.orderedmap",
+ "rows": {
+  "100001": {
+   "1": "5★ Astral Gem",
+   "3": "A mysterious gem that can grant immense power. Resonates only with 5-Star units.",
+   "4": "Usable on units of 5★ or lower."
+  },
+  "100002": {
+   "1": "5★ Astral Gem",
+   "3": "A mysterious gem that can grant immense power. Resonates only with 5-Star units.",
+   "4": "Usable on units of 5★ or lower."
+  },
+  "100004": {
+   "1": "4★ Astral Gem",
+   "3": "A mysterious gem that can grant great power. Resonates with units of up to 4-Star rarity.",
+   "4": "Usable on units of 4★ or lower."
+  },
+  "100005": {
+   "1": "Staminade Swig",
+   "3": "A small dose of an energizing potion. Recovers 25 Stamina.",
+   "4": "A small dose of an energizing potion. Recovers 25 Stamina."
+  },
+  "100006": {
+   "1": "Staminade Flask",
+   "3": "A hearty dose of an energizing potion. Recovers 50 Stamina.",
+   "4": "A hearty dose of an energizing potion. Recovers 50 Stamina."
+  },
+  "100007": {
+   "1": "Staminade Decanter",
+   "3": "A full decanter of an energizing potion. Recovers 100 Stamina.",
+   "4": "A full decanter of an energizing potion. Recovers 100 Stamina."
+  },
+  "100008": {
+   "1": "Quazer",
+   "3": "Born into a family of arms dealers, Quazer is accustomed to getting everything she desires no matter the cost. From children and handicrafts, to stuffed animals and candy, she loves adorable things above all else. But woe is the fool who gets between her and the objects of her desire.",
+   "4": "(None)"
+  },
+  "100009": {
+   "1": "Challua",
+   "3": "A sprite born from the Spirit Tree. Challua is enchanted when she encounters a festively decked out holiday tree, and decides to imitate it.",
+   "4": "(None)"
+  },
+  "100010": {
+   "1": "Mew",
+   "3": "A catfolk fighter, Mew's appearance is more human than feline. Though troubled by her lack of fur, she finally finds some comfort with her unusual form after arriving in Starview Village.",
+   "4": "(None)"
+  },
+  "100011": {
+   "1": "Prismatic Dual Blades",
+   "3": "An exquisite piece discovered on a battlefield. The katana is masterfully crafted, and the slender blade it is paired with has an iridescent beryl set in its hilt.",
+   "4": "(None)"
+  },
+  "100012": {
+   "1": "5★ Astral Gem",
+   "3": "A mysterious gem that can grant immense power. Resonates only with 5-Star units.",
+   "4": "Usable on units of 5★ or lower."
+  },
+  "100013": {
+   "1": "4★ Astral Gem",
+   "3": "A mysterious gem that can grant great power. Resonates with units of up to 4-Star rarity.",
+   "4": "Usable on units of 4★ or lower."
+  },
+  "100014": {
+   "1": "Staminade Swig",
+   "3": "A small dose of an energizing potion. Recovers 25 Stamina.",
+   "4": "A small dose of an energizing potion. Recovers 25 Stamina."
+  },
+  "100015": {
+   "1": "Staminade Flask",
+   "3": "A hearty dose of an energizing potion. Recovers 50 Stamina.",
+   "4": "A hearty dose of an energizing potion. Recovers 50 Stamina."
+  },
+  "100016": {
+   "1": "Staminade Decanter",
+   "3": "A full decanter of an energizing potion. Recovers 100 Stamina.",
+   "4": "A full decanter of an energizing potion. Recovers 100 Stamina."
+  },
+  "100017": {
+   "1": "Fire Unit Upgrade Box",
+   "3": "3★ Astral Gem x1\nEmber Element x175\nFlame Element x140\nInferno Element x75\nMars Element x25\nDreamer's Crest x25",
+   "4": "Contains a set of items \nused to train your characters"
+  },
+  "100018": {
+   "1": "Wind Unit Upgrade Box",
+   "3": "3★ Astral Gem x1\nBreeze Element x175\nGust Element x140\nGale Element x75\nUranus Element x25\nDreamer's Crest x25",
+   "4": "Contains a set of items \nused to train your characters"
+  },
+  "100019": {
+   "1": "Thunder Unit Upgrade Box",
+   "3": "3★ Astral Gem x1\nSpark Element x175\nZap Element x140\nThunderbolt Element x75\nJupiter Element x25\nDreamer's Crest x25",
+   "4": "Contains a set of items \nused to train your characters"
+  },
+  "100020": {
+   "1": "Water Unit Upgrade Box",
+   "3": "3★ Astral Gem x1\nWater Element x175\nDeluge Element x140\nTidalwave Element x75\nNeptune Element x25\nDreamer's Crest x25",
+   "4": "Contains a set of items \nused to train your characters"
+  },
+  "100021": {
+   "1": "Light Unit Upgrade Box",
+   "3": "3★ Astral Gem x1\nFlash Element x175\nBeam Element x140\nLuster Element x75\nSun Element x25\nDreamer's Crest x25",
+   "4": "Contains a set of items \nused to train your characters"
+  },
+  "100022": {
+   "1": "Dark Unit Upgrade Box",
+   "3": "3★ Astral Gem x1\nShade Element x175\nDusk Element x140\nMidnight Element x75\nPluto Element x25\nDreamer's Crest x25",
+   "4": "Contains a set of items \nused to train your characters"
+  },
+  "100060": {
+   "1": "Chaos Grimoire",
+   "3": "An exquisite piece brought by adventurers from another world. This meticulously bound tome is filled with intricate formulas for powerful magical spells.",
+   "4": "(None)"
+  }
+ }
+}

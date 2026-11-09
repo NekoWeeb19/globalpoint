@@ -266,7 +266,8 @@ export function givePlayerRewardsSync(
     
                 const giveCharacter = giveResult?.character
                 if (giveCharacter !== undefined) {
-                    characters.set(characterId, giveCharacter)
+                    // the same unit given again (bought several at once): its new stack on top of the first entry
+                    characters.set(characterId, { ...(characters.get(characterId) ?? {}), ...giveCharacter })
                 }
                 break;
             }
