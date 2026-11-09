@@ -566,10 +566,14 @@ async function main() {
     // added to every table they touch, and those tables always ship, so a rebuild never drops a unit a save has
     // (C8601). The unit's own files (art, voices) are a separate update; a unit whose files aren't in the CN
     // files or StarPoint's updates yet is left out (the game would ask for them: "Insufficient data").
+    // Items only global's game has (assets/cn_global_items.json, scripts/gen_cn_global_items.cjs): added to CN's item
+    // table when it lacks them, so a save holding one (e.g. 50107 Polar Bear Cookies) doesn't stop the game (C8601)
+    const globalItems = (() => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, "assets", "cn_global_items.json"), "utf8")) } catch { return null } })()
+    const globalItemTable = globalItems ? fileOf(globalItems.table) : null
     const custom = CU.readCustomUnits()
     for (const p of custom.problems) console.log(`Custom unit skipped: ${p}`)
     const customTables = CU.unitTables(custom.units)
-    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...kitTables, MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES), ...customTables, ...changes.rows.keys(), ...enemyTables, ...rateFiles.keys(), ...lastChanged])].sort()
+    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...(globalItemTable ? [globalItemTable] : []), ...kitTables, MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES), ...customTables, ...changes.rows.keys(), ...enemyTables, ...rateFiles.keys(), ...lastChanged])].sort()
     const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
     const cn = await cnFiles(new Set([...fileList, featureFile]))
     // art StarPoint's patches added (scripts/gen_cn_banner_art.cjs) counts too: their file names and
@@ -640,6 +644,11 @@ async function main() {
         for (const unit of customUnits) {
             const rows = Object.entries(unit.rows).filter(([ref]) => CU.tableFile(ref) === file)
             for (const [, r] of rows) CU.addRows(tree, r)
+        }
+        if (file === globalItemTable) {
+            const have = new Set(tree.entries.map(e => e.key))
+            const missing = Object.fromEntries(Object.entries(globalItems.rows).filter(([id]) => !have.has(id)))
+            if (CU.addRows(tree, missing) > 0) console.log(`Global-only items added: ${Object.keys(missing).join(", ")}`)
         }
         if (EOS_TABLES.includes(file)) for (const { leaf } of R.leaves(tree)) {
             if (leaf.text.includes("2025-08-14 23:59:59")) R.setLeafText(leaf, leaf.text.split("2025-08-14 23:59:59").join("2199-12-31 23:59:59"))

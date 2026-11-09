@@ -1,0 +1,10 @@
+{
+ "_note": "Built by scripts/gen_cn_global_items.cjs: global-only items as CN item table rows.",
+ "table": "master/item/item.orderedmap",
+ "rows": {
+  "50107": "whiteday_23_stamina_present_01,50107,Polar Bear Cookies,item/materials/event/whiteday_22/white_day_2022,(None),\"Cookies in the shape of polar bears. Cute and delicious, these treats are immensely popular.\",2,100,false,,,,,,0,(None),50,4,9999,2017-08-27 23:59:59,(None),false,",
+  "980006": "multi_special_exchange_ticket_04_A,980006,People's Choice Ticket,item/spends/tickets/special_exchange_ticket,(None),A ticket used for the People's Choice Reward.,12,,,,,,,,4,(None),100,5,9999,2017-08-27 23:59:59,2199-12-31 23:59:59,false,",
+  "980007": "multi_special_exchange_ticket_05_A,980007,People's Choice Ticket,item/spends/tickets/special_exchange_ticket,(None),A ticket used for the People's Choice Reward.,12,,,,,,,,4,(None),100,5,9999,2017-08-27 23:59:59,2199-12-31 23:59:59,false,",
+  "980008": "multi_special_exchange_ticket_06_A,980008,People's Choice Ticket,item/spends/tickets/special_exchange_ticket,(None),A ticket used for the People's Choice Reward.,12,,,,,,,,4,(None),100,5,9999,2017-08-27 23:59:59,2199-12-31 23:59:59,false,"
+ }
+}
