@@ -31,7 +31,8 @@ hiccups on its Android 15 one).
 
 1. Download the files from the [Google Drive folder](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) (or [MEGA](https://mega.nz/folder/fWRATYbJ#z8wtDI7krmKgBn2HL_s0jg)): the two APKs,
    `starpoint-data.zip`, the comics zip if you want comics, and the game files: either the three
-   `.obb` parts, or the single large `.obb` (Google Drive only).
+   `.obb` parts, or the single large `.obb` (Google Drive only). Leave them in the phone's **Download**
+   folder and don't unzip anything.
 2. Install both APKs: **World Flipper** (the game) and **StarPoint Companion**.
 3. Open **StarPoint Companion**.
 4. Tap **Setup** at the top, then **Set up everything**, and allow what Android asks. It finds the

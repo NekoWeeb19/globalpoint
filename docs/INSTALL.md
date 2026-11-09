@@ -91,27 +91,45 @@ node scripts/build_cn_obb.cjs <output folder> --parts 3
 
 ### The easy way: one button
 
-1. Put the downloads in the phone's **Download** folder (where the browser saves them anyway, or copy
-   them there from a PC over USB): the OBB, `starpoint-data.zip`, and the comics zip if you want comics.
-   Don't unzip or rename anything.
-2. Install both APKs. **Don't open the game yet.**
-3. Open **StarPoint Companion** and tap **Setup** at the top, then **Set up everything**.
-   - Android asks to let StarPoint Companion use the phone's storage: tap **Allow** (on Android 11 and
-     newer it opens the **All files access** page: switch it on and go back).
-   - Then it opens World Flipper's settings (listed under its Chinese name, **世界弹射物语**): turn on
-     **All files access** and allow the storage permissions (on Android 13 and newer: **Music and audio**
-     and **Photos and videos**), then go back.
-   - It lists what it's about to do. Tap **Go** and keep the screen open: it checks the OBB is undamaged
-     and moves it where the game reads it, imports the data and comics zips, removes leftovers from an
-     earlier setup and starts the server. It takes a few minutes.
-   - At the end it offers to delete the zips it imported (**Delete** frees the space; **Keep** is fine
-     too) and says **All set**, or what's still missing (a download it couldn't find, or a damaged one).
-4. When the main screen's light is **green: Ready**, open the game. It shows "Unpacking game files",
-   unpacks the OBB by itself and deletes it when done.
+1. **Download the files** to the phone: the OBB, `starpoint-data.zip`, and the comics zip if you want
+   comics. Leave them in the phone's **Download** folder, where the browser saves them (or copy them
+   there from a PC over USB). Don't unzip or rename anything.
+2. **Install both APKs**: World Flipper and StarPoint Companion. **Don't open the game yet.**
+3. **Open StarPoint Companion** and tap the button at the top, **Setup (set up everything, or check)**.
+
+   ![StarPoint Companion's main screen with the Setup button at the top](images/install-p-main.png)
+4. **Tap Set up everything.**
+
+   ![The Setup screen with the Set up everything button](images/install-p-setup-button.png)
+
+   Then do what it asks:
+   - **Android asks** to let StarPoint Companion use the phone's storage: tap **Allow**. (On Android 11
+     and newer it opens the **All files access** page instead: switch it on, then press Back.)
+   - **It opens World Flipper's settings.** The game is listed under its Chinese name, **世界弹射物语**.
+     Turn on **All files access**, and under **Permissions** allow the storage permissions (on Android 13
+     and newer: **Music and audio** and **Photos and videos**). Then press Back. The app carries on by
+     itself.
+   - **It shows a list of what it will do.** Tap **Go**.
+
+     ![Set up everything: This will import the data pack. Keep this screen open until it's done. Cancel or Go](images/install-p-this-will.png)
+5. **Wait, and keep the screen open.** It checks the OBB isn't damaged and moves it where the game reads
+   it, imports the data and comics zips, cleans up leftovers from an earlier setup and starts the server.
+   This can take a few minutes.
+6. **It asks whether to delete the zips** it imported. **Delete** frees the space; **Keep** is fine too.
+
+   ![Delete the imported packs? Keep or Delete](images/install-p-delete-packs.png)
+7. **It says All set.** If something is still missing (a download it couldn't find, or a damaged one), it
+   says what instead, under **Still to do**.
+
+   ![The end of Set up everything: Server ready, Data pack imported, All set](images/install-p-all-set.png)
+8. **Open the game** once the server line says **ready** (the main screen's light is **green: Ready**).
+   The first time, it shows "Unpacking game files", unpacks the OBB by itself and deletes it when done.
 
 ### Step by step: Setup check
 
-If **Set up everything** says something is missing, or you'd rather do each step yourself:
+If **Set up everything** says something is missing, or you'd rather do each step yourself. (Some pictures
+below are from an earlier version, where the main button read **Setup check** and the Setup screen had no
+**Set up everything** button; the list itself is the same.)
 
 1. Put the downloads in **Download** and install both APKs, as above.
 2. Open **StarPoint Companion**. The first time, its light is red and it says **Game data: missing**:
@@ -181,11 +199,11 @@ the data pack, the comics zip, the game APK) without changing anything.
    not Copy: a copy needs twice the space). Don't let anything compress or zip them. To check a download,
    compare its SHA-256 with the [list above](#checksums).
 4. Android Settings > Apps > World Flipper (listed as **世界弹射物语**): turn on **All files access**, and under **Permissions** allow
-   the storage permissions (as in step 4 above).
+   the storage permissions (as in [step 3 of Step by step](#step-by-step-setup-check)).
 5. Install StarPoint Companion, import `starpoint-data.zip` (**Game data** > **Import pack...**), and
    start the server: the main screen should say **Server: running**. Tap **Let the server run in the
    background**, and allow notifications if asked.
-6. Open the game, as in step 5 above.
+6. Open the game, as in [step 8 of the easy way](#the-easy-way-one-button).
 
 ### Keeping the server running
 
