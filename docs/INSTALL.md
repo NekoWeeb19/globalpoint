@@ -307,6 +307,8 @@ top, type `cmd` and press Enter. A black window opens, already in that folder.
    `D:\GlobalPoint` (right-click the zip > **Extract All**). Check that `setup.bat` is directly in
    `D:\GlobalPoint`, not one folder deeper (move the files up if it is). With git:
    `git clone https://github.com/NekoWeeb19/globalpoint.git D:\GlobalPoint`.
+
+   ![GitHub's green Code button opened, with Download ZIP at the bottom of the menu](images/install-github-zip.png)
 3. **Put the CN game files in.** Download the six `cn-cdn.tar.part.00` to `.05` files and
    `SHA256SUMS.txt` from the [CN CDN 1.4.54 release](https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54),
    all into the same folder (e.g. Downloads). Then open Command Prompt **in that folder** and run these,
