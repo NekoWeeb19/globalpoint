@@ -184,6 +184,22 @@ final class DataTransfer {
         return null;
     }
 
+    /** A pack's info (its first entry: kind, gameFilesVersion, files, bytes), or null when the file isn't a pack. */
+    static JSONObject packInfo(Context c, Uri uri) {
+        try (InputStream raw = c.getContentResolver().openInputStream(uri);
+             ZipInputStream zip = new ZipInputStream(new BufferedInputStream(raw, 1 << 16))) {
+            ZipEntry first = zip.getNextEntry();
+            if (first == null || !(COMICS_MARKER.equals(first.getName()) || DATA_MARKER.equals(first.getName()))) return null;
+            return new JSONObject(new String(readAll(zip), "UTF-8"));
+        } catch (Exception ignored) { }
+        return null;
+    }
+
+    /** The game files version of the last data pack imported here ("" if none was, or it was before 0.7.24). */
+    static String importedDataPackVersion(Context c) {
+        return c.getSharedPreferences("companion", Context.MODE_PRIVATE).getString("dataPackVersion", "");
+    }
+
     /**
      * Unpacks a data pack (the basics, schedule-edit data, patch zips, pictures) into files/data, with the
      * server stopped. Never touches the save or account files: from .database only the files the pack
@@ -253,6 +269,7 @@ final class DataTransfer {
             }
         }
         if (result.written + result.skipped == 0) throw new IOException("the pack holds no data");
+        c.getSharedPreferences("companion", Context.MODE_PRIVATE).edit().putString("dataPackVersion", result.version).apply();
         p.update("Done", total, total);
         return result;
     }

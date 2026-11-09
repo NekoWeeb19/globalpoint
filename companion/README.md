@@ -27,10 +27,18 @@ how to build it.
   stopped. If something else answers on 8000 (a PC through `adb reverse`, say), the screen says so.
 - **Setup check** (SetupActivity): a checklist for setup 1, each line green/yellow/red with a fix button:
   the game installed; this app's and the game's storage access (opens the right settings screen); the
-  OBB, found in Download, Downloads, Documents or the top of storage (the 3 parts or the single file),
+  OBB, found in Download, Downloads, Documents (and their folders one level down) or the top of storage, on
+  the phone or an SD card (the 3 parts or the single file; a browser's " (1)", "-1" or ".bin" is allowed and
+  dropped on the move),
   SHA-256 checked, then moved into `starpoint_game` (a rename, so instant; a copy only across storages);
   leftover loose game files in the drop-off folders (removed when an OBB is there, since the game would
   list them all before starting); the server's data; comics (optional, grey until added); the server.
+  **Set up everything** at the top does it all in one go: asks for this app's storage access, then opens
+  the game's All files access page (carrying on when the player comes back), finds the OBB and the
+  data/comics packs (by their first zip entry) in the same folders, shows what it will do, then checks
+  and moves the OBB, removes leftovers, imports the packs (the data pack only when the server has no data
+  or it's another version than the one last imported, kept in prefs as `dataPackVersion`), starts the
+  server and offers to delete the imported zips.
 - **Let the server run in the background:** asks Android to exempt the app from battery
   optimisation, so the phone doesn't stop the server. Shown until it's granted.
 - **Dashboard** opens the server's dashboard inside the app (Back returns to the app). **Open in

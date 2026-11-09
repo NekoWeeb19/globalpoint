@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
         status = u.text("", 16);
         data = u.text("", 14);
         // first time here, or something isn't working: a checklist that fixes what it can
-        u.button("Setup check", () -> startActivity(new Intent(this, SetupActivity.class)));
+        u.button("Setup (set up everything, or check)", () -> startActivity(new Intent(this, SetupActivity.class)));
 
         LinearLayout row1 = row(u);
         row1.addView(button("Start", () -> ServerService.start(this)));

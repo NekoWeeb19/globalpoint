@@ -34,8 +34,9 @@ hiccups on its Android 15 one).
    `.obb` parts, or the single large `.obb` (Google Drive only).
 2. Install both APKs: **World Flipper** (the game) and **StarPoint Companion**.
 3. Open **StarPoint Companion**.
-4. Tap **Setup check** at the top and follow its steps. It finds the downloads, checks them, moves the
-   game files where the game reads them, and shows which permissions to turn on.
+4. Tap **Setup** at the top, then **Set up everything**, and allow what Android asks. It finds the
+   downloads, checks them, moves the game files where the game reads them, imports the data (and comics)
+   and starts the server.
 5. When setup is complete (the light is **green: Ready**), open the game and wait for the files to
    unpack.
 6. Enjoy playing the game.

@@ -73,8 +73,8 @@ by translating them. Known so far: **LDPlayer 9** works (tested), and **MuMu** w
 emulator gives trouble, try its Android 12 instance or another emulator.
 
 The phone plays on its own: the game's files come from the **OBB** (every game file, ~10.3 GB), and
-**StarPoint Companion** runs the server on the phone. StarPoint Companion can do most of the setup for you
-(**Setup check**); the [steps by hand](#by-hand) still work the same way.
+**StarPoint Companion** runs the server on the phone. StarPoint Companion can do the setup for you
+with one button (**Set up everything**); the [steps by hand](#by-hand) still work the same way.
 
 **Downloads** (from the [Google Drive folder](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO)):
 - the **game** APK (build 25) and the **StarPoint Companion** APK (0.7.23 or newer);
@@ -89,12 +89,32 @@ one file):
 node scripts/build_cn_obb.cjs <output folder> --parts 3
 ```
 
-### The easy way: Setup check
+### The easy way: one button
 
 1. Put the downloads in the phone's **Download** folder (where the browser saves them anyway, or copy
-   them there from a PC over USB). Don't unzip or rename anything.
+   them there from a PC over USB): the OBB, `starpoint-data.zip`, and the comics zip if you want comics.
+   Don't unzip or rename anything.
 2. Install both APKs. **Don't open the game yet.**
-3. Open **StarPoint Companion**. The first time, its light is red and it says **Game data: missing**:
+3. Open **StarPoint Companion** and tap **Setup** at the top, then **Set up everything**.
+   - Android asks to let StarPoint Companion use the phone's storage: tap **Allow** (on Android 11 and
+     newer it opens the **All files access** page: switch it on and go back).
+   - Then it opens World Flipper's settings (listed under its Chinese name, **世界弹射物语**): turn on
+     **All files access** and allow the storage permissions (on Android 13 and newer: **Music and audio**
+     and **Photos and videos**), then go back.
+   - It lists what it's about to do. Tap **Go** and keep the screen open: it checks the OBB is undamaged
+     and moves it where the game reads it, imports the data and comics zips, removes leftovers from an
+     earlier setup and starts the server. It takes a few minutes.
+   - At the end it offers to delete the zips it imported (**Delete** frees the space; **Keep** is fine
+     too) and says **All set**, or what's still missing (a download it couldn't find, or a damaged one).
+4. When the main screen's light is **green: Ready**, open the game. It shows "Unpacking game files",
+   unpacks the OBB by itself and deletes it when done.
+
+### Step by step: Setup check
+
+If **Set up everything** says something is missing, or you'd rather do each step yourself:
+
+1. Put the downloads in **Download** and install both APKs, as above.
+2. Open **StarPoint Companion**. The first time, its light is red and it says **Game data: missing**:
    that's expected.
 
    ![StarPoint Companion the first time: red, Stopped, Game data: missing](images/install-p-first-open.png)
@@ -111,7 +131,7 @@ node scripts/build_cn_obb.cjs <output folder> --parts 3
 
    ![The import's progress bar at the bottom of Game data](images/install-p-import-progress.png)
    ![Delete the pack? It's unpacked, so the pack isn't needed any more](images/install-p-delete-pack.png)
-4. Go back and tap **Setup check**. Each line is **green** (done), **yellow** (wait) or **red** (something
+3. Go back and tap **Setup**. Each line is **green** (done), **yellow** (wait) or **red** (something
    left), with a button where the app can do it:
 
    ![A fresh Setup check: red lines for StarPoint Companion's storage access, the server's data and the stopped server](images/install-p-setup-fresh.png)
@@ -140,7 +160,7 @@ node scripts/build_cn_obb.cjs <output folder> --parts 3
    - **Remove them**: leftover game files from an earlier setup, which would make the game's start very
      slow.
    - **Start**: starts the server, if it isn't running (yellow while it starts).
-5. When every line is green, the main screen's light is **green: Ready**. Open the game (if it was
+4. When every line is green, the main screen's light is **green: Ready**. Open the game (if it was
    already open, close it fully first). It shows "Unpacking game files", unpacks the OBB by itself and
    deletes it when done.
 
@@ -233,7 +253,10 @@ it's interrupted it carries on where it stopped next time. Setup check shows mos
   check shows both). Close the game fully and reopen it. Nothing is lost.
 - **The file names don't matter** when placing them by hand, as long as they end in `.obb` and sit
   directly in the folder. One renamed to `.obb.zip` doesn't work. (Setup check looks for the names as
-  downloaded: `main.1008001.com.leiting.wf.obb` and `main.1008001.com.leiting.wf.partNof3.obb`.)
+  downloaded: `main.1008001.com.leiting.wf.obb` and `main.1008001.com.leiting.wf.partNof3.obb`, also
+  with a browser's ` (1)` or `-1` or an added `.bin`. It looks in Download, Downloads and Documents, one
+  folder deeper (some phones' browsers save to `Download/Browser` and the like), the top of storage, and
+  the same on an SD card.)
 - **`Android/obb/com.leiting.wf/` also works on some phones,** with no permissions needed (they don't
   apply there either way). What matters is which app wrote the file: some phones' file apps (Samsung's My
   Files, for one) leave it unreadable to the game. `starpoint_game` with the permissions above is the
