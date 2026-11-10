@@ -43,12 +43,18 @@ uses the PC's time of day, so the server's day turns over with the daily reset. 
 
    ![An event's date editor](images/dashboard-event-editor.png)
 3. To move several, tick them and use **All start at (UTC)**; **Also move the summon banners that opened
-   with them** moves their banners too. **Back to original dates** undoes a move.
+   with them** moves their banners too. To start one of them at another time, fill in its **Own start
+   (UTC)** in the picked list (each keeps its own length; **Use All start at** puts it back). Handy for
+   banners, whose names repeat: pick them by their pictures, then give each its start. **Back to
+   original dates** undoes a move.
 
 ## Schedule a summon banner
 
 **Summons** works like Events, for unit and armament banners: **Schedule**, set the dates, **Save**. A
 banner given dates here keeps them, even if an event it opened with moves later.
+
+Many banners share a name (there are 181 "New Faces Spotlight Portal"s). Search a unit's or armament's
+name to list the banners that feature it, e.g. **Bianca**.
 
 ## Repeat a yearly campaign
 

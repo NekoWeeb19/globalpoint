@@ -151,7 +151,7 @@
             <section id="group" class="hidden flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
                 <div class="flex flex-col gap-1">
                     <h3 id="group-title" class="text-xl text-on-background font-semibold"></h3>
-                    <p class="text-on-surface-variant">Start them all at the same moment. Each one keeps its own original length.</p>
+                    <p class="text-on-surface-variant">Start them all at the same moment. Each one keeps its own original length.<span id="group-own-hint"> To start one at another time, set its own start next to it; the others use "All start at".</span></p>
                 </div>
                 <ul id="group-list" class="flex flex-col gap-2"></ul>
                 <label class="flex flex-col gap-2">
@@ -242,7 +242,7 @@
             if (SUMMONS) {
                 $("page-title").textContent = "Summon schedule"
                 $("page-intro").textContent = "Move any unit or armament banner to new dates. Times are in UTC, on the server's calendar. A banner given dates here keeps them, even if an event it opened with is moved."
-                $("search").placeholder = "Banner name"
+                $("search").placeholder = "Banner name, or a featured unit or armament"
                 $("family-label").textContent = "Type"
                 $("family-all").textContent = "Units and armaments"
                 $("editor-banners-row").classList.add("hidden")
@@ -255,6 +255,8 @@
             let editing = null
             let busy = false
             const selected = new Set()
+            // picked events given their own start (key -> ms); the rest use "All start at"
+            const ownStart = new Map()
             let lastShown = []
 
             // dates: the server sends ISO (UTC); inputs are "YYYY-MM-DDTHH:MM:SS" in UTC
@@ -292,6 +294,15 @@
                 return now < start ? "upcoming" : now <= end ? "live" : "ended"
             }
 
+            // unit and armament names (the Give search's list), to find a banner by a featured unit's name
+            let featuredNames = null
+            fetch("/api/unit-editor/names").then(r => r.ok ? r.json() : null).then(names => {
+                if (!names) return
+                featuredNames = new Map([...names.chara, ...names.equip].map(n => [Number(n.id), n.name.toLowerCase()]))
+                renderList()
+            }).catch(() => { })
+            const featuresName = (event, search) => featuredNames !== null && (event.featured ?? []).some(id => (featuredNames.get(id) ?? "").includes(search))
+
             function renderList() {
                 if (data === null) return
                 const search = $("search").value.trim().toLowerCase()
@@ -302,7 +313,7 @@
                 const all = data.events.filter(inMode).filter(inGame)
                 const shown = all.filter(event => {
                     if (family && kindKey(event) !== family) return false
-                    if (search && !event.name.toLowerCase().includes(search)) return false
+                    if (search && !event.name.toLowerCase().includes(search) && !featuresName(event, search)) return false
                     const state = stateOf(event)
                     if (showing === "scheduled" && !event.scheduled) return false
                     if (showing === "live" && state !== "live") return false
@@ -331,7 +342,7 @@
                     pick.setAttribute("aria-label", "Select " + event.name)
                     pick.addEventListener("change", () => {
                         if (pick.checked) selected.add(event.key)
-                        else selected.delete(event.key)
+                        else { selected.delete(event.key); ownStart.delete(event.key) }
                         renderGroup()
                     })
                     left.appendChild(pick)
@@ -386,11 +397,14 @@
                 $("group").classList.toggle("hidden", picked.length === 0)
                 if (picked.length === 0) return
                 $("group-title").textContent = noun(picked.length) + " picked"
+                $("group-own-hint").classList.toggle("hidden", picked.length < 2)
                 if (!$("group-start").value) $("group-start").value = toInput(Math.ceil(serverNow() / 3600000) * 3600000)
-                const start = fromInput($("group-start").value)
+                const groupStart = fromInput($("group-start").value)
                 const list = $("group-list")
                 list.replaceChildren()
                 for (const event of picked) {
+                    // own starts only with two or more picked (with one, "All start at" is its start)
+                    const start = picked.length > 1 && ownStart.has(event.key) ? ownStart.get(event.key) : groupStart
                     const item = document.createElement("li")
                     item.className = "flex flex-wrap gap-3 items-center"
                     if (event.image) item.appendChild(picture(event.image, "w-32 max-w-full rounded-lg"))
@@ -403,8 +417,33 @@
                     remove.type = "button"
                     remove.className = "text-sm text-on-surface-variant underline"
                     remove.textContent = "Remove"
-                    remove.addEventListener("click", () => { selected.delete(event.key); renderGroup(); renderList() })
-                    item.append(text, remove)
+                    remove.addEventListener("click", () => { selected.delete(event.key); ownStart.delete(event.key); renderGroup(); renderList() })
+                    // its own start (optional): blank follows "All start at"
+                    const own = document.createElement("label")
+                    own.className = "flex gap-2 items-center text-sm text-on-surface-variant"
+                    own.append("Own start (UTC)")
+                    const ownInput = document.createElement("input")
+                    ownInput.type = "datetime-local"
+                    ownInput.step = "1"
+                    ownInput.className = "bg-surface-container rounded-xl border border-outline-variant p-1 text-on-surface"
+                    if (ownStart.has(event.key)) ownInput.value = toInput(ownStart.get(event.key))
+                    ownInput.addEventListener("change", () => {
+                        const value = fromInput(ownInput.value)
+                        if (isNaN(value)) ownStart.delete(event.key)
+                        else ownStart.set(event.key, value)
+                        renderGroup()
+                    })
+                    own.appendChild(ownInput)
+                    if (ownStart.has(event.key)) {
+                        const clear = document.createElement("button")
+                        clear.type = "button"
+                        clear.className = "text-sm text-on-surface-variant underline"
+                        clear.textContent = "Use All start at"
+                        clear.addEventListener("click", () => { ownStart.delete(event.key); renderGroup() })
+                        own.appendChild(clear)
+                    }
+                    if (picked.length > 1) item.append(text, own, remove)
+                    else item.append(text, remove)
                     list.appendChild(item)
                 }
                 $("group-reset").disabled = busy || !picked.some(e => e.scheduled)
@@ -587,22 +626,24 @@
             })
             $("group-clear").addEventListener("click", () => {
                 selected.clear()
+                ownStart.clear()
                 $("group-message").textContent = ""
                 renderList()
                 renderGroup()
             })
             $("group-save").addEventListener("click", () => {
-                const start = fromInput($("group-start").value)
-                if (isNaN(start)) {
+                const groupStart = fromInput($("group-start").value)
+                const picked = data.events.filter(e => selected.has(e.key))
+                const startOf = (event) => picked.length > 1 && ownStart.has(event.key) ? ownStart.get(event.key) : groupStart
+                if (picked.some(event => isNaN(startOf(event)))) {
                     $("group-message").textContent = "Pick a start date."
                     return
                 }
-                const picked = data.events.filter(e => selected.has(e.key))
                 postGroup("/api/server/events/schedule-many", {
                     entries: picked.map(event => ({
                         key: event.key,
-                        start: new Date(start).toISOString(),
-                        end: new Date(start + originalLength(event)).toISOString(),
+                        start: new Date(startOf(event)).toISOString(),
+                        end: new Date(startOf(event) + originalLength(event)).toISOString(),
                         moveBanners: $("group-banners").checked
                     }))
                 }, "Saved " + noun(picked.length) + ". Reopen the game to see them.")

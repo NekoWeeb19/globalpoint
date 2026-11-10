@@ -16,6 +16,7 @@ import raidData from "../../assets/raid_event.json"
 import periodicRewardData from "../../assets/periodic_reward.json"
 import loginBonusData from "../../assets/login_bonus.json"
 import gachaData from "../../assets/gacha.json"
+import cnSharedGachaData from "../../assets/gacha_cn_shared.json"
 import {
     CatalogEvent, checkEntry, dateFields, EventCatalog, eventWindow, parseSchedule, planRowMoves, remapRecordDates,
     RowMove, Schedule, ScheduleEntry
@@ -408,7 +409,23 @@ export interface EventOverview {
     bannerType: "unit" | "armament" | null, // summon banners only
     image: string | null, // URL of the event's banner picture
     banners: { name: string, image: string | null }[], // summon banners that opened with it
+    /** Summon banners: the featured (rate-up) unit or armament ids, global's and CN's version. Not shown;
+     *  the dashboard's search finds a banner by their names. */
+    featured: number[],
     state: "upcoming" | "live" | "ended"
+}
+
+type PoolEntry = { id: number, isRateUp?: boolean }
+type GachaPools = Record<string, { pool?: Record<string, PoolEntry[]> }>
+/** A summon banner's featured ids (both apps' versions of the banner number). */
+function featuredIds(id: string): number[] {
+    const out = new Set<number>()
+    for (const source of [gachaData as unknown as GachaPools, cnSharedGachaData as unknown as GachaPools]) {
+        for (const entries of Object.values(source[id]?.pool ?? {})) {
+            for (const entry of entries) if (entry.isRateUp) out.add(entry.id)
+        }
+    }
+    return [...out]
 }
 
 /** Every event's own dates in CN's data (.database/cn_event_windows.json, written by each CN update build), or null. */
@@ -464,6 +481,7 @@ export function getEventOverview(): { serverDate: string, events: EventOverview[
             image: imageUrl(event.image),
             bannerType: event.bannerType ?? null,
             banners: (event.bannerInfo ?? []).map(b => ({ id: b.id, name: b.name, image: imageUrl(b.image) })),
+            featured: event.family === "gacha" ? featuredIds(event.id) : [],
             state: now < start ? "upcoming" : now <= end ? "live" : "ended"
         })
     }

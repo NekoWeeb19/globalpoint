@@ -4604,7 +4604,10 @@ export function dailyResetPlayerDataSync(
 ): boolean {
     const lastLoginTime = player.lastLoginTime
     const playerId = player.id
-    if ((loginDate.getUTCFullYear() > lastLoginTime.getUTCFullYear()) || (loginDate.getUTCMonth() > lastLoginTime.getUTCMonth()) || (loginDate.getUTCDate() > lastLoginTime.getUTCDate())) {
+    // the game's day starts at 05:00 UTC, like the login bonus and the daily missions (dayNumber and
+    // DAILY_RESET_HOUR_UTC in src/lib/mission.ts); comparing plain UTC dates reset these at 00:00 UTC
+    const resetDay = (date: Date) => Math.floor((date.getTime() - 5 * 60 * 60 * 1000) / (24 * 60 * 60 * 1000))
+    if (resetDay(loginDate) > resetDay(lastLoginTime)) {
         // TODO: daily reset logic.
         updatePlayerSync({
             id: playerId,
