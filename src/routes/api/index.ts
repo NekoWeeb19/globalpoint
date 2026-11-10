@@ -1,4 +1,6 @@
 import { addMissingBoardTwoBondTokensSync } from "../../lib/character";
+import { favoritePartyGroupList } from "../../lib/profile";
+import { getFavoritePartySync } from "../../nya/profile";
 import { getFundReceiveListSync } from "../../nya/growthFund";
 import { specialExchangeListSync, startDashListSync } from "../../nya/exchangeCampaigns";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
@@ -132,6 +134,11 @@ const routes = async (fastify: FastifyInstance) => {
             (clientData as Record<string, any>).fund_receive_list = getFundReceiveListSync(playerId)
             ;(clientData as Record<string, any>).special_exchange_campaign_list = specialExchangeListSync(playerId)
             ;(clientData as Record<string, any>).start_dash_exchange_campaign_list = startDashListSync(playerId)
+            // the favorite party, as /profile/get_my_profile sends it: with the home screen set to show it
+            // (a setting the game keeps on the phone, so it survives a reinstall or a new account), an empty
+            // list left the game without the party it reads and the home screen crashed (F1010 in
+            // HomeScene/getCharacters)
+            ;(clientData as Record<string, any>).favorite_party_group_list = favoritePartyGroupList(getFavoritePartySync(playerId))
             addCnLoadFields(clientData as Record<string, any>, request.headers.host ?? "127.0.0.1:8000")
         }
 
