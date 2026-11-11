@@ -142,4 +142,23 @@
     setInterval(loadClock, 30000)
     // a change on this page (a moved event, a new date) starts a rebuild: look again soon after any click
     document.addEventListener("click", () => setTimeout(() => { loadStatus(); loadClock() }, 1500), true)
+
+    // back to the top: a round button in the bottom-right corner once the page has scrolled a screen down
+    // (long lists like the Events and Summons tabs)
+    const toTop = document.createElement("button")
+    toTop.type = "button"
+    toTop.title = "Back to the top"
+    toTop.setAttribute("aria-label", "Back to the top")
+    toTop.className = "fixed bottom-5 right-5 z-40 w-12 h-12 rounded-full bg-primary text-on-primary shadow-lg hidden items-center justify-center text-2xl hover:opacity-90"
+    toTop.textContent = "↑"
+    toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }))
+    document.body.appendChild(toTop)
+    // (a class, not the hidden attribute: the button's "flex" would override that)
+    const showToTop = () => {
+        const show = window.scrollY >= window.innerHeight
+        toTop.classList.toggle("flex", show)
+        toTop.classList.toggle("hidden", !show)
+    }
+    window.addEventListener("scroll", showToTop, { passive: true })
+    showToTop()
 })()

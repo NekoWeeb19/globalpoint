@@ -13,6 +13,8 @@ The bottom of the sidebar, on every tab, shows the server time, the real time, w
 is, and the game update: **Rebuilding the game update** (wait before opening the game) or **Game update
 ready**. On a phone, the menu button in the bar at the top opens the tabs and this block; the bar's dot
 shows the game update (olive ready, yellow rebuilding, red can't reach the server).
+On long pages (Events, Summons), a round **↑** button in the bottom-right corner, shown once you've scrolled
+a screen down, goes back to the top.
 
 | Tab | What it's for |
 |---|---|
