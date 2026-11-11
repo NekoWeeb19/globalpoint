@@ -968,6 +968,15 @@ async function main() {
         fs.writeFileSync(out, R.encodeFile(tree))
         list.push({ path: file, from: out })
     }
+    // small art fixes that ship with the server code (scripts/gen_cn_art_fixes.cjs: Vagner's sprites, the guest units'
+    // icons): in every update, so a player gets them with a normal companion or code update
+    const artFixes = path.join(ROOT, "assets", "cn_art_fixes.json")
+    if (fs.existsSync(artFixes)) {
+        for (const fix of JSON.parse(fs.readFileSync(artFixes, "utf8"))) {
+            const from = path.join(ROOT, "assets", "cn_art_fixes", fix.path)
+            if (fs.existsSync(from) && !list.some(f => f.path === fix.path)) list.push({ path: fix.path, from })
+        }
+    }
     await build(version, last, list)
     fs.writeFileSync(path.join(dataDir(), "cn_schedule_built.json"), JSON.stringify({ fingerprint, version, freePullCopyIds: builtFreePullCopyIds.sort((a, b) => a - b), kitState, customUnits: customUnits.map(u => u.id),
         // units left out only because their files weren't there yet: the server rebuilds once a newer update is listed

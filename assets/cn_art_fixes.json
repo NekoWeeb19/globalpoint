@@ -1,0 +1,142 @@
+[
+ {
+  "path": "production/upload/c9/8a9bf46984a5f113981f4f1d6c8052b47e7e36",
+  "from": "global",
+  "why": "character/fire_dragon/pixelart/sprite_sheet.png: CN's frames don't fit the animation timing"
+ },
+ {
+  "path": "production/upload/af/bb6dce346ee2614b9529c2465c289459c4e8df",
+  "from": "global",
+  "why": "character/fire_dragon/pixelart/sprite_sheet.atlas.amf3.deflate: CN's frames don't fit the animation timing"
+ },
+ {
+  "path": "production/upload/6e/ba1c5f91350698f1dd957e39b5d68bfeb28485",
+  "from": "global",
+  "why": "character/fire_dragon/pixelart/special_sprite_sheet.png: CN's frames don't fit the animation timing"
+ },
+ {
+  "path": "production/upload/ee/70263819fe3e38f5f78e64bf41daa9c7b9d9c9",
+  "from": "global",
+  "why": "character/fire_dragon/pixelart/special_sprite_sheet.atlas.amf3.deflate: CN's frames don't fit the animation timing"
+ },
+ {
+  "path": "production/medium_upload/ff/dfa55a39458269055c2f985ca7d3f8cb9bed3a",
+  "from": "character/devil_leader/ui/square_0.png",
+  "why": "character/devil_leader_assist/ui/square_0.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/e5/d56d5d2d3fcf1d69009552b90c375b3e4b9804",
+  "from": "character/devil_leader/ui/square_1.png",
+  "why": "character/devil_leader_assist/ui/square_1.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/c0/302b876f9c28106baad06162c7d86fe7b25832",
+  "from": "character/devil_leader/ui/square_0.png",
+  "why": "character/devil_leader_chapter11_assist/ui/square_0.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/8b/002db3bc7ffd02b8b4c56f1938c3821a987c5c",
+  "from": "character/devil_leader/ui/square_1.png",
+  "why": "character/devil_leader_chapter11_assist/ui/square_1.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/4c/efce6acbda62521102f964f03660b0f6b4b321",
+  "from": "character/elf_princess/ui/square_0.png",
+  "why": "character/elf_princess_assist/ui/square_0.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/05/76262a7f92eb52ccd66eb682a9dcfdceb3d966",
+  "from": "character/elf_princess/ui/square_1.png",
+  "why": "character/elf_princess_assist/ui/square_1.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/01/3c7cdb54b5da117f47a296cdbd13e22d6003ac",
+  "from": "character/guildknight_leader/ui/square_0.png",
+  "why": "character/guildknight_leader_assist/ui/square_0.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/f5/17af8b301d07ed844a658c479f4a932929aab8",
+  "from": "character/guildknight_leader/ui/square_1.png",
+  "why": "character/guildknight_leader_assist/ui/square_1.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/cf/21a9e73086cd79736e333a07f8fed98e3cb90d",
+  "from": "character/horn_leader/ui/square_0.png",
+  "why": "character/horn_leader_assist/ui/square_0.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/65/2795394f9512ac6cc9b6abdd5483e64823815d",
+  "from": "character/horn_leader/ui/square_1.png",
+  "why": "character/horn_leader_assist/ui/square_1.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/43/b4349b93aea1b93144d7c25ea97bb4b8f72510",
+  "from": "character/ice_witch_2anv/ui/square_0.png",
+  "why": "character/ice_witch_2anv_assist/ui/square_0.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/08/ff47f80c899c0aa61c0c887ebcb9905206fdd8",
+  "from": "character/ice_witch_2anv/ui/square_1.png",
+  "why": "character/ice_witch_2anv_assist/ui/square_1.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/b4/be2e5846f24bb29d3e19cdd7848b836f86ca29",
+  "from": "character/justice_lady/ui/square_0.png",
+  "why": "character/justice_lady_assist/ui/square_0.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/92/aea08a82071571cc216659a255b6ef56fbb8ad",
+  "from": "character/justice_lady/ui/square_1.png",
+  "why": "character/justice_lady_assist/ui/square_1.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/e2/653225cbee414378a6603e83704b6a20a16638",
+  "from": "character/psychic_shouta/ui/square_0.png",
+  "why": "character/psychic_shouta_assist/ui/square_0.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/7a/5bd7df4ba7ebd6ac6c98f87a41835be2a299aa",
+  "from": "character/psychic_shouta/ui/square_1.png",
+  "why": "character/psychic_shouta_assist/ui/square_1.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/fc/4d6096950c279238dd2709d91b49ca3023963a",
+  "from": "character/psychic_yuki/ui/square_0.png",
+  "why": "character/psychic_yuki_assist/ui/square_0.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/67/84caba4d6f3588f5fb1b6e4d4e62d37b69a04b",
+  "from": "character/psychic_yuki/ui/square_1.png",
+  "why": "character/psychic_yuki_assist/ui/square_1.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/04/2b7c27b3b23b9c0cb02fd592b29cbf5224bba9",
+  "from": "character/resistance_princess/ui/square_0.png",
+  "why": "character/resistance_princess_assist/ui/square_0.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/28/a74e481d088d0b6e1fd427bf523364f0054c40",
+  "from": "character/resistance_princess/ui/square_1.png",
+  "why": "character/resistance_princess_assist/ui/square_1.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/40/6c3f1245749dd429dac0e4a33fb49ab4914001",
+  "from": "character/stella/ui/square_0.png",
+  "why": "character/stella_chapter12_assist/ui/square_0.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/34/5e01c94356fab86a314d4441a6f936f3cb9ebf",
+  "from": "character/stella_copy/ui/square_0.png",
+  "why": "character/stella_copy_assist/ui/square_0.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/3f/be4be60c80aeb62bf99ae4eff2d0fdb7cf533d",
+  "from": "character/white_tiger_2anv/ui/square_0.png",
+  "why": "character/white_tiger_2anv_assist/ui/square_0.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/medium_upload/67/9a3c3af29b75ae48a1b2b36a3fb2d455fd28ec",
+  "from": "character/white_tiger_2anv/ui/square_1.png",
+  "why": "character/white_tiger_2anv_assist/ui/square_1.png: missing; the normal version's icon"
+ }
+]
