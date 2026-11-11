@@ -921,11 +921,13 @@ async function main() {
                 closed++
             }
         }
-        if (copied > 0) {
-            featureTree.entries.sort((a, b) => Number(a.key) - Number(b.key))
-            featureTree.dirty = true
-            trees.set(featureFile, featureTree)
-        }
+        // shipped in every update, also with nothing copied: the game keeps the feature table of the last update that
+        // carried one, which can be another server's (a game set up from a PC, then played on a phone) and lack rows
+        // this server's newest copy has. A player's game had banner 61 open (the second Launch Gala, from
+        // 2020-01-27) with none of its rows and stopped with C2032 on the Portal (2026-11-11).
+        if (copied > 0) featureTree.entries.sort((a, b) => Number(a.key) - Number(b.key))
+        featureTree.dirty = true
+        trees.set(featureFile, featureTree)
         if (copied || closed) console.log(`summon banners without feature content (C2032): ${copied} given their original's, ${closed} closed`)
     }
 
