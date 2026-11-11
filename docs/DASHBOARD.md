@@ -9,10 +9,15 @@ UTC** everywhere on the dashboard.
 **Changes reach the game at its title screen.** After a change to events, summons, campaigns, enemy
 strength, units or the date, close the game fully and open it again: it downloads a small update.
 The server builds it in the background, so wait a minute or two on a PC (a few minutes on a phone).
+The bottom of the sidebar, on every tab, shows the server time, the real time, when the next daily reset
+is, and the game update: **Rebuilding the game update** (wait before opening the game) or **Game update
+ready**. On a phone, the menu button in the bar at the top opens the tabs and this block; the bar's dot
+shows the game update (olive ready, yellow rebuilding, red can't reach the server).
 
 | Tab | What it's for |
 |---|---|
-| **Dashboard** (first tab) | [the server's date](#go-to-another-date-and-back), and [settings](#first-tab-settings): drops, enemy strength, daily beads and mails, summon rates |
+| **Overview** (first tab) | [the server's date and time jumps](#go-to-another-date-and-back), [what's on now and next](#whats-on-now), playing on a phone over Wi-Fi |
+| **Game settings** | [drops, enemy strength, summon rates, daily beads and mails, stamina, co-op rescues](#game-settings) |
 | **Events** | [move any event](#move-an-event), CN-only ones included |
 | **Summons** | [schedule summon banners](#schedule-a-summon-banner) |
 | **Campaigns** | [yearly login bonuses, free pulls and stamina/reward campaigns](#repeat-a-yearly-campaign) |
@@ -25,12 +30,27 @@ The server builds it in the background, so wait a minute or two on a PC (a few m
 
 ## Go to another date, and back
 
-![The dashboard's first tab: server time, quest drop amount, daily paid beads](images/dashboard-home.png)
+**Overview**, the first tab, shows three clocks: the **server time** (the date the game plays on), the
+**real time**, and when the **next daily reset** is (05:00 UTC by the real clock: the login bonus and daily
+missions follow the real day, not the server's). Each also shows in your own time zone.
 
-First tab: pick a date and time in the box at the top and press **Set Time**; the clock keeps ticking
-from there. **Reset** goes back to today's real time. **Match real time (keep date)** keeps the date but
-uses the PC's time of day, so the server's day turns over with the daily reset. New installs start on
-2019-12-01, just before the CN game's first banners and events.
+- Pick a date and time and press **Set time**; the clock keeps ticking from there.
+- **+1 day** and **+1 week** move the server's date forward. **Next event** jumps to the start of the next
+  event or summon banner (on its own dates or the ones you gave it). **Undo** goes back to the date before
+  the last change.
+- **More**: **Reset to the real time**, and **Match real time (keep date)**, which keeps the date but
+  uses the real time of day, so the server's day turns over with the daily reset.
+
+Close and reopen the game after changing the date. A jump doesn't give a login bonus or reset the dailies:
+those follow the real day. New installs start on 2019-12-01, just before the CN game's first banners and
+events.
+
+## What's on now
+
+The Overview lists the events and summon banners running at the server's date in the CN app (with how
+long is left), and those starting in the next 7 days, with a **Jump to its start** link each. Things that
+run for years, like the permanent portals and The Haunt, aren't listed. After CN's last events (2025),
+nothing is listed unless you move events there.
 
 ## Move an event
 
@@ -76,6 +96,19 @@ a unit** (close the game first; it can't be undone, see
 [CUSTOM_UNITS.md](CUSTOM_UNITS.md#removing-a-unit-safely)), and **Link my reinstalled game to this
 player** (press it, then open the reinstalled game within 30 minutes).
 
+**Save tools** on the player page (close the game first, then reopen it):
+- **Clone save:** a full copy as a new player, everything included. Play it by picking it under **Active
+  account**; handy for testing something, or keeping a save as it is.
+- **Reset parties:** every normal party back to the game's default (the hero alone), if a party breaks the
+  game.
+- **Clear mailbox:** removes unclaimed mails without claiming them. The never-ending mails come back unless
+  they're switched off on Game settings.
+- **Reset account:** starts the save over as a brand-new player (the tutorial first) on the same account, so
+  the game keeps playing it with no other setup. Everything in the save is lost (download it first to keep a
+  copy). The new player has a new number; the page goes to it.
+- **Delete save:** removes the player for good (download the save first to keep a copy). The save the game
+  plays on can't be deleted: pick another one under **Active account** first.
+
 ## Schedule mail
 
 ![A new scheduled mail: paid beads every day, 4 times](images/feature-scheduled-mail.png)
@@ -95,7 +128,8 @@ one you made; a unit your setup doesn't have (another setup's custom unit) is re
 When some of the imported mails' first send times have already passed, it asks: **Send them now** (one
 of each right away) or **Start each at its next time**.
 
-Each mail can be claimed for 30 days. It goes to the active save (Players > **Active account**) and
+Each mail can be claimed for 30 days. It goes to the active save (Players > **Active account**), or with
+**Send to every save** ticked to every save (each gets it the next time its mailbox opens), and
 follows the server time, so moving the date makes due mails arrive. A first send already in the past
 sends once right away, not every missed one. Mails survive restarts, and the companion's **Download
 from PC** brings them with **My save**.
@@ -118,11 +152,21 @@ from PC** brings them with **My save**.
 **News** > **New post**: a title, the text (a blank line between paragraphs), the **Category** (the CN
 app's News tab) and **Show in**, then **Post**. Players see it the next time they open News.
 
-## First-tab settings
+**Automatic event posts** (on by default; the switch is at the top of the News tab): the CN app's News board
+announces events and summon banners under its **Events** tab, each with its picture: **Coming soon**
+(starting within 7 days), **Now on**, and **Ended** (for 7 days after), newest first, up to 100. They follow
+the server's date, moved events and time jumps included, and nothing is stored: they come and go by
+themselves. Banners that open with an event are in its post. Your own posts sit next to them.
+
+**Open the News board once a day** (on by default, under the automatic posts switch): like the live game's
+daily news, the first time the CN app opens after the daily reset (05:00 UTC) it shows the News board after
+the login bonuses. Opening the game again the same day goes straight home. Not during the tutorial.
+
+## Game settings
 
 ![Enemy strength: HP and attack multipliers with presets](images/feature-enemy-strength.png)
 
-![The Summon rates box on the first tab](images/dashboard-rates.png)
+![The Summon rates box](images/dashboard-rates.png)
 
 - **Quest drop amount:** 1x (default) is the base game's amounts; original StarPoint gave 10x. Up to
   100x; applies from the next quest.
@@ -136,6 +180,10 @@ app's News tab) and **Show in**, then **Post**. Players see it the next time the
   it back, stamina refills 1 point every 6 minutes (faster at higher ranks) up to your rank's maximum,
   ranking up adds the new maximum on top, and stamina items or 50 beads (100 stamina) refill it. Close and
   reopen the game after changing it.
+- **Co-op rescues (Count co-op clears as rescues):** on by default (CN app). Every cleared co-op battle
+  counts as joining someone else's battle as a backup, like the live game: it pays 10 Silver, Gold or
+  Lilac Nuggets (harder battles pay better ones) and counts for the "clear battles as a backup" missions.
+  Boss battles, advent events, world story boss battles, raids and hard multi battles pay nuggets.
 - **Summon rates:** the 5★ and 4★ chance per pull for **Unit banners**, **Star Fest / Meteor Festival**
   and **Armaments** (3★ is the rest). **Base game rates** restores 5% / 25%, and 7.5% / 25% for Star
   Fest and Meteor Festival. Pulls follow from the next pull; the game's own **Rates** screen (and its

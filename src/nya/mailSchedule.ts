@@ -1,7 +1,8 @@
 // Scheduled mail, set on the dashboard's Mail page: gifts that arrive in the in-game mailbox at a set server time,
 // once or again and again (every N days / weeks / months / years, a number of times or forever), like the
 // game's own maintenance and event gifts. Only the active save gets them (the CN account picked on the Players tab,
-// or CN_ACCOUNT_ID; with neither, any save that opens its mailbox). Each delivered mail can be claimed for 30 days.
+// or CN_ACCOUNT_ID; with neither, any save that opens its mailbox), unless a mail is marked for every save (each
+// gets it when its mailbox opens). Each delivered mail can be claimed for 30 days.
 //
 // .database/mail_schedule.json   the schedules
 // .database/mail_delivered.json  per player: how far each schedule has been delivered, and the mails not yet claimed
@@ -61,6 +62,8 @@ export interface MailSchedule {
     times: number | null
     /** the whole run is sent again every year from its first send's anniversary (a run with an end, under a year long) */
     yearly?: boolean
+    /** true: every save gets it, not only the active one */
+    everyone?: boolean
     /** false: no mail right away for a first send time already past (an import that asked to start at the next time) */
     catchUp?: boolean
     /** server time (ms) when it was last saved: send times before it are skipped */
@@ -199,6 +202,7 @@ export function saveMailSchedule(input: Record<string, unknown>): MailSchedule[]
     if (input.yearly === true) s.yearly = true
     else if (input.yearly !== undefined && input.yearly !== false && input.yearly !== null) s.yearly = input.yearly as boolean
     if (input.catchUp === false) s.catchUp = false
+    if (input.everyone === true) s.everyone = true
     if (input.start && Number.isNaN(Date.parse(String(input.start)))) s.start = ""
     checkSchedule(s)
     if (input.id !== undefined && input.id !== null) {
@@ -302,8 +306,10 @@ export function scheduledMailsFor(playerId: number, now = getServerDate().getTim
     const state: PlayerState = d.players[key] ?? { progress: {}, mails: [] }
     let changed = false
 
-    if (isActiveSave(playerId)) {
+    const active = isActiveSave(playerId)
+    {
         for (const s of listMailSchedules()) {
+            if (!active && s.everyone !== true) continue
             const p = state.progress[s.id]
             const timing = timingOf(s)
             const limit = sendCount(s) ?? Infinity
@@ -364,6 +370,37 @@ export function scheduledMailsFor(playerId: number, now = getServerDate().getTim
     return state.mails.map(m => ({ ...m }))
 }
 
+/** Players tab > Clear mailbox: drops a save's delivered, unclaimed scheduled mails (their schedules don't send them
+ *  again: the progress is kept). Returns how many were dropped. */
+export function clearScheduledMailsFor(playerId: number): number {
+    const d = readDelivered()
+    const state = d.players[String(playerId)]
+    if (!state || state.mails.length === 0) return 0
+    const count = state.mails.length
+    state.mails = []
+    writeDelivered(d)
+    return count
+}
+
+/** Players tab > Clone save: the copy gets the original's schedule progress and unclaimed mails (new mail ids). */
+export function copyScheduledMailState(fromPlayerId: number, toPlayerId: number) {
+    const d = readDelivered()
+    const state = d.players[String(fromPlayerId)]
+    if (!state) return
+    const copy: PlayerState = JSON.parse(JSON.stringify(state))
+    for (const mail of copy.mails) mail.id = d.nextMailId++
+    d.players[String(toPlayerId)] = copy
+    writeDelivered(d)
+}
+
+/** Players tab > Delete save: forgets the save's scheduled mail state. */
+export function forgetScheduledMailState(playerId: number) {
+    const d = readDelivered()
+    if (d.players[String(playerId)] === undefined) return
+    delete d.players[String(playerId)]
+    writeDelivered(d)
+}
+
 /** Takes a delivered mail out once it's claimed. */
 export function removeScheduledMail(playerId: number, mailId: number) {
     const d = readDelivered()
@@ -410,6 +447,7 @@ export function exportMailSchedules(ids?: number[]) {
         mails: list.map(s => ({
             kind: s.kind, typeId: s.typeId, amount: s.amount, title: s.title, message: s.message,
             start: s.start, every: s.every, unit: s.unit, times: s.times, ...(s.yearly ? { yearly: true } : {}),
+            ...(s.everyone ? { everyone: true } : {}),
         })),
     }
 }

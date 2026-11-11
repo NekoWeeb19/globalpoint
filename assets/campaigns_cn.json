@@ -2428,7 +2428,7 @@
    "start": "2023-01-19 04:00:00",
    "end": "2023-02-03 20:59:59",
    "days": 16,
-   "image": null
+   "image": "c164f74311bf5adb1a4caf3e19c88792f035c624"
   },
   "smr_v23": {
    "name": "Summer Login Reward",
@@ -2533,7 +2533,7 @@
    "start": "2022-12-15 04:00:00",
    "end": "2022-12-29 20:59:59",
    "days": 15,
-   "image": null
+   "image": "50f254e733e30e1535507c71ca73b21b4ea58ef2"
   },
   "rcollab_re01_1": {
    "name": "Re:ZERO -Starting Life in Another World- Collab Login Perks",
@@ -2617,7 +2617,7 @@
     218,
     219
    ],
-   "image": null
+   "image": "ab6977350e1382dc7378a6d42bdd8321526b1adc"
   },
   {
    "id": 1000,

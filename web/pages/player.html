@@ -22,7 +22,15 @@
                     <path
                         d="M520-600v-240h320v240H520ZM120-440v-400h320v400H120Zm400 320v-400h320v400H520Zm-400 0v-240h320v240H120Zm80-400h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z" />
                 </svg>
-                Dashboard
+                Overview
+            </a>
+            <a href="/settings" data-nav="settings"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M370-80l-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z" />
+                </svg>
+                Game settings
             </a>
             <a href="/events"
                 class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
@@ -118,6 +126,68 @@
                     Upload Save
                 </button>
             </form>
+            <section id="save-tools" data-player-id="{{playerId}}"
+                class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-4">
+                <h3 class="text-xl text-on-background font-semibold mt-2">Save tools</h3>
+                <p class="text-on-surface-variant text-center">Close the game before using these, then reopen it.</p>
+                <div class="flex flex-wrap gap-3 justify-center">
+                    <button type="button" data-tool="clone" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Clone save</button>
+                    <button type="button" data-tool="reset-parties" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Reset parties</button>
+                    <button type="button" data-tool="clear-mailbox" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Clear mailbox</button>
+                    <button type="button" data-tool="reset-account" class="text-base border border-error text-error h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-error before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Reset account</button>
+                    <button type="button" data-tool="delete" class="text-base border border-error text-error h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-error before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Delete save</button>
+                </div>
+                <ul class="text-sm text-on-surface-variant flex flex-col gap-1 max-w-2xl">
+                    <li><b>Clone save:</b> a full copy as a new player (for testing, or a save to keep). Play it by picking it under Players &gt; Active account.</li>
+                    <li><b>Reset parties:</b> every normal party back to the game's default (the hero alone), e.g. if a party breaks the game.</li>
+                    <li><b>Clear mailbox:</b> removes unclaimed mails without claiming them. The never-ending mails come back unless they're switched off on Game settings.</li>
+                    <li><b>Reset account:</b> starts this save over as a brand-new player (the tutorial first), on the same account, so the game keeps playing it with no other setup. Everything in the save is lost.</li>
+                    <li><b>Delete save:</b> removes this player for good. The save the game plays on can't be deleted.</li>
+                </ul>
+                <p id="save-tools-message" class="text-on-surface text-center" role="status"></p>
+            </section>
+            <script>
+                (function () {
+                    const box = document.getElementById("save-tools")
+                    const playerId = Number(box.dataset.playerId)
+                    const message = document.getElementById("save-tools-message")
+                    const questions = {
+                        "clone": "Make a full copy of this save as a new player?",
+                        "reset-parties": "Put every normal party of this save back to the default (the hero alone)? Your party setups are lost. Close the game first.",
+                        "clear-mailbox": "Remove every unclaimed mail of this save without claiming it? This can't be undone. Close the game first.",
+                        "reset-account": "Start this save over as a brand-new player? Everything in it (units, items, progress) is lost. This can't be undone (download the save first to keep a copy). Close the game first.",
+                        "delete": "Delete this save for good? This can't be undone (download the save first to keep a copy)."
+                    }
+                    const done = {
+                        "clone": (r) => `Copied as player ${r.playerId} ("${r.name}"). <a class="underline" href="/player/${r.playerId}">Open it</a>, or play it by picking it under Players &gt; Active account.`,
+                        "reset-parties": () => "Parties reset to the default. Reopen the game.",
+                        "clear-mailbox": (r) => `${r.cleared} unclaimed mail(s) removed. Reopen the game.`,
+                        "reset-account": (r) => `Reset: the account starts over as player ${r.playerId}. Reopen the game to play the tutorial. Going to the new save...`,
+                        "delete": () => "Deleted. Going back to the player list..."
+                    }
+                    for (const button of box.querySelectorAll("[data-tool]")) {
+                        button.addEventListener("click", async () => {
+                            const tool = button.dataset.tool
+                            if (!confirm(questions[tool])) return
+                            if ((tool === "delete" || tool === "reset-account") && !confirm("Really " + (tool === "delete" ? "delete" : "reset") + " player " + playerId + "? Last chance.")) return
+                            for (const b of box.querySelectorAll("button")) b.disabled = true
+                            message.textContent = "Working..."
+                            try {
+                                const response = await fetch("/api/player/" + tool, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: playerId }) })
+                                const reply = await response.json().catch(() => ({}))
+                                if (!response.ok) throw new Error(reply.message || response.statusText)
+                                message.innerHTML = done[tool](reply)
+                                if (tool === "delete") setTimeout(() => location.href = "/player", 1500)
+                                if (tool === "reset-account") setTimeout(() => location.href = "/player/" + reply.playerId, 2500)
+                            } catch (error) {
+                                message.textContent = "Error: " + error.message
+                            } finally {
+                                if (tool !== "delete" && tool !== "reset-account") for (const b of box.querySelectorAll("button")) b.disabled = false
+                            }
+                        })
+                    }
+                })()
+            </script>
             <form
                 class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5"
                 method="get" action="/api/server/give">
@@ -315,6 +385,7 @@
             </script>
         </article>
     </div>
+    <script src="/public/js/sidebar-status.js" defer></script>
 </body>
 <style>
     .my-select {

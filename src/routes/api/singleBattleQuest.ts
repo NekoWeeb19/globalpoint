@@ -28,6 +28,9 @@ import eventDropData from "../../../assets/event_drops.json";
 import cnEventDropData from "../../../assets/event_drops_cn.json";
 import { EventDropData, eventDropItems, eventDrops } from "../../lib/eventDrops";
 import { givePeriodicDropSync } from "../../nya/periodicReward";
+import { NUGGETS_PER_CLEAR, rescueNugget } from "../../nya/rescue";
+import { cnCoinSwap } from "../../lib/cnCoinSwaps";
+import { rescueRewardsOn } from "../../nya/serverSettings";
 import scoreAttackJson from "../../../assets/score_attack.json";
 import { borderRewardItems, mainCharacterIds, newlyPassedBorders, ScoreAttackData, scoreAttackCleared, scoreAttackGrade } from "../../lib/scoreAttack";
 import { recordScoreAttackBattleSync } from "../../nya/scoreAttack";
@@ -310,7 +313,7 @@ const routes = async (fastify: FastifyInstance) => {
         })
 
         // reward score rewards
-        const scoreRewardsResult = givePlayerScoreRewardsSync(playerId, questData.scoreRewardGroupId, questData.scoreRewardGroup, useBoostPoint, campaign.items, questElement(questCategory, questId))
+        const scoreRewardsResult = givePlayerScoreRewardsSync(playerId, questData.scoreRewardGroupId, questData.scoreRewardGroup, useBoostPoint, campaign.items, questElement(questCategory, questId), cnCoinSwap(questCategory, questId))
 
         // treasure hunt / collect item events: extra items for a cleared battle while one is open
         // (drop boosts and "more drops" campaigns count, like the score drops)
@@ -327,6 +330,13 @@ const routes = async (fastify: FastifyInstance) => {
         // Hard Multi: a cleared co-op battle spends one "Daily Reward Count" point for the event's bonus drop
         const periodicResult = questAccomplished && questCategory === QuestCategory.HARD_MULTI_EVENT && activeQuestData.coop === true
             ? givePeriodicDropSync(playerId, questId)
+            : null
+
+        // co-op rescue: a cleared co-op battle stands in for a rescue (10 nuggets; src/nya/rescue.ts). CN app only
+        const rescue = questAccomplished && activeQuestData.coop === true && inCnRequest() && rescueRewardsOn()
+        const nugget = rescue ? rescueNugget(questCategory, questId) : null
+        const rescueResult = nugget !== null
+            ? givePlayerRewardsSync(playerId, [{ type: RewardType.ITEM, id: nugget, count: NUGGETS_PER_CLEAR } as EquipmentItemReward])
             : null
 
         if (additionalDrops.length > 0) console.log(`[event drops] Player ${playerId}: quest ${questCategory}/${questId} dropped ${[...additionalItems].map(([id, n]) => `${n}x ${id}`).join(", ")}.`)
@@ -478,6 +488,7 @@ const routes = async (fastify: FastifyInstance) => {
             isMulti: activeQuestData.coop === true,
             isHost: activeQuestData.coop === true,
             guestStandIn: activeQuestData.coop === true,
+            rescue,
             questCategory: questCategory,
             questId: questId,
             clearRank: clearRank,
@@ -553,6 +564,7 @@ const routes = async (fastify: FastifyInstance) => {
                     ...(additionalResult?.items ?? {}),
                     ...(scoreAttackRewards?.items ?? {}),
                     ...(periodicResult?.items ?? {}),
+                    ...(rescueResult?.items ?? {}),
                     ...(rushEventRewardsResult?.items ?? {}),
                     ...(carnivalResult?.item_list ?? {}),
                     // mission totals are read last, so they win over older totals of the same item

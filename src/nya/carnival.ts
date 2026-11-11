@@ -1,6 +1,8 @@
 // Connects the Hanifolk Carnival logic (src/lib/carnival.ts) to the real database.
 
 import carnivalData from "../../assets/carnival_event.json"
+import carnivalMedalsCn from "../../assets/carnival_medals_cn.json"
+import { inCnRequest } from "../lib/cnClient"
 import getDatabase, { Database } from "../data"
 import { PartyCategory, PlayerPartyGroup } from "../data/types"
 import { getPlayerPartyGroupListSync, insertPlayerPartyGroupListSync } from "../data/wdfpData"
@@ -157,8 +159,12 @@ export function finishCarnivalBattleSync(
         `).run(result.eventId, result.folderId, result.folderBestScore, result.score.total, serializeIds(characterIds), serializeIds(unisonCharacterIds), playerId)
 
         const rewards: Reward[] = []
+        // the CN app's runs pay CN's own medals, which its shops take (scripts/gen_cn_carnival_medals.cjs)
+        const medals = inCnRequest() ? carnivalMedalsCn as Record<string, Record<string, number>> : {}
         for (const rewardId of result.rewardIds) {
-            for (const slot of data.rewards[String(rewardId)].rewards) {
+            const swap = medals[String(rewardId)] ?? {}
+            for (const raw of data.rewards[String(rewardId)].rewards) {
+                const slot = raw.id !== undefined && swap[String(raw.id)] !== undefined ? { ...raw, id: swap[String(raw.id)] } : raw
                 const reward = toReward(slot)
                 if (reward !== null) rewards.push(reward)
                 else console.warn(`[carnival] Player ${playerId}: reward ${rewardId} gives a title (${slot.id}); titles aren't stored by this server yet, so it was skipped.`)

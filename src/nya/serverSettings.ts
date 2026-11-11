@@ -2,6 +2,8 @@
 // - the paid beads given with the everyday login bonus (overrides LOGIN_BONUS_PAID_BEADS in .env)
 // - which of the three never-ending mails (Bread, Mana, EXP x1500) are in the mailbox (all on by default)
 // - real stamina: battles spend stamina like the real game (off by default: stamina is never spent; src/nya/stamina.ts)
+// - daily news: the CN app opens its News board at the first load after each daily reset (on by default)
+// - co-op rescue rewards: nuggets and backup-mission counts for co-op clears (on by default; src/nya/rescue.ts)
 
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "fs"
 import path from "path"
@@ -12,7 +14,7 @@ export const PAID_BEADS_MAX = 100000
 export type InfiniteMail = "bread" | "mana" | "exp"
 export const INFINITE_MAILS: readonly InfiniteMail[] = ["bread", "mana", "exp"]
 
-interface Saved { dailyPaidBeads?: number, infiniteMails?: Partial<Record<InfiniteMail, boolean>>, realStamina?: boolean }
+interface Saved { dailyPaidBeads?: number, infiniteMails?: Partial<Record<InfiniteMail, boolean>>, realStamina?: boolean, autoNews?: boolean, dailyNews?: boolean, rescueRewards?: boolean }
 
 let cache: { mtimeMs: number, saved: Saved } | null = null
 function read(): Saved {
@@ -49,7 +51,22 @@ export function realStaminaOn(): boolean {
     return read().realStamina === true
 }
 
-export interface ServerSettings { dailyPaidBeads: number, fromEnv: boolean, infiniteMails: Record<InfiniteMail, boolean>, realStamina: boolean, max: number }
+/** Whether the CN app's News board gets the automatic event posts (src/nya/autoNews.ts; on unless turned off). */
+export function autoNewsOn(): boolean {
+    return read().autoNews !== false
+}
+
+/** Whether the CN app opens its News board at the first load after each daily reset (on unless turned off). */
+export function dailyNewsOn(): boolean {
+    return read().dailyNews !== false
+}
+
+/** Whether cleared co-op battles count as rescues: nuggets and backup missions (src/nya/rescue.ts; on unless turned off). */
+export function rescueRewardsOn(): boolean {
+    return read().rescueRewards !== false
+}
+
+export interface ServerSettings { dailyPaidBeads: number, fromEnv: boolean, infiniteMails: Record<InfiniteMail, boolean>, realStamina: boolean, autoNews: boolean, dailyNews: boolean, rescueRewards: boolean, max: number }
 
 export function getServerSettings(): ServerSettings {
     const saved = read()
@@ -58,12 +75,15 @@ export function getServerSettings(): ServerSettings {
         fromEnv: !validBeads(saved.dailyPaidBeads),
         infiniteMails: { bread: infiniteMailOn("bread"), mana: infiniteMailOn("mana"), exp: infiniteMailOn("exp") },
         realStamina: realStaminaOn(),
+        autoNews: autoNewsOn(),
+        dailyNews: dailyNewsOn(),
+        rescueRewards: rescueRewardsOn(),
         max: PAID_BEADS_MAX,
     }
 }
 
 /** Saves the given settings (others unchanged). Throws when a value is out of range. */
-export function setServerSettings(change: { dailyPaidBeads?: unknown, infiniteMails?: unknown, realStamina?: unknown }): ServerSettings {
+export function setServerSettings(change: { dailyPaidBeads?: unknown, infiniteMails?: unknown, realStamina?: unknown, autoNews?: unknown, dailyNews?: unknown, rescueRewards?: unknown }): ServerSettings {
     const saved = { ...read() }
     if (change.dailyPaidBeads !== undefined) {
         const n = Number(change.dailyPaidBeads)
@@ -79,6 +99,9 @@ export function setServerSettings(change: { dailyPaidBeads?: unknown, infiniteMa
         saved.infiniteMails = mails
     }
     if (typeof change.realStamina === "boolean") saved.realStamina = change.realStamina
+    if (typeof change.autoNews === "boolean") saved.autoNews = change.autoNews
+    if (typeof change.dailyNews === "boolean") saved.dailyNews = change.dailyNews
+    if (typeof change.rescueRewards === "boolean") saved.rescueRewards = change.rescueRewards
     write(saved)
     return getServerSettings()
 }

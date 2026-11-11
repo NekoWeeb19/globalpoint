@@ -1,0 +1,646 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/public/tailwind.css">
+    <title>Starpoint: Game settings</title>
+</head>
+
+<body
+    class="bg-background text-on-surface relative mt-16 m-auto max-w-screen-2xl min-h-screen box-border flex flex-col items-start px-3 pb-3">
+    <header class="flex gap-3 items-center md:justify-start justify-center mb-3 w-full">
+        <img src="/public/img/logo.png" class="w-9 h-9">
+        <h1 class="text-4xl mt-4 font-black mb-4 text-on-background">Starpoint</h1>
+    </header>
+    <div class="md:grid md:grid-cols-sidebar flex flex-col gap-5 w-full h-fit">
+        <nav class="px-3 py-5 gap-3 flex flex-col bg-surface-container-low rounded-3xl h-fit w-full">
+            <a href="/"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M520-600v-240h320v240H520ZM120-440v-400h320v400H120Zm400 320v-400h320v400H520Zm-400 0v-240h320v240H120Zm80-400h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z" />
+                </svg>
+                Overview
+            </a>
+            <div
+                class="px-5 py-3 flex gap-3 items-center bg-primary rounded-full w-full font-bold text-on-primary text-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-primary">
+                    <path d="M370-80l-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z" />
+                </svg>
+                Game settings
+            </div>
+            <a href="/events"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z" />
+                </svg>
+                Events
+            </a>
+            <a href="/summons" data-nav="summons"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M480-80 371-371 80-480l291-109 109-291 109 291 291 109-291 109L480-80Z" />
+                </svg>
+                Summons
+            </a>
+            <a href="/campaigns" data-nav="campaigns"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-280v80h640v-80H160Zm0-440h88q-5-9-6.5-19t-1.5-21q0-50 35-85t85-35q30 0 55.5 15.5T460-826l20 26 20-26q18-24 44-39t56-15q50 0 85 35t35 85q0 11-1.5 21t-6.5 19h88q33 0 56.5 23.5T880-640v440q0 33-23.5 56.5T800-120H160q-33 0-56.5-23.5T80-200v-440q0-33 23.5-56.5T160-720Zm0 320h640v-240H596l84 114-64 46-136-184-136 184-64-46 82-114H160v240Zm200-320q17 0 28.5-11.5T400-760q0-17-11.5-28.5T360-800q-17 0-28.5 11.5T320-760q0 17 11.5 28.5T360-720Zm240 0q17 0 28.5-11.5T640-760q0-17-11.5-28.5T600-800q-17 0-28.5 11.5T560-760q0 17 11.5 28.5T600-720Z" />
+                </svg>
+                Campaigns
+            </a>
+            <a href="/news" data-nav="news"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120H160Zm0-80h640v-560H160v560Zm80-80h480v-80H240v80Zm0-160h160v-240H240v240Zm240 0h240v-80H480v80Zm0-160h240v-80H480v80ZM160-200v-560 560Z" />
+                </svg>
+                News
+            </a>
+            <a href="/mail" data-nav="mail"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z" />
+                </svg>
+                Mail
+            </a>
+            <a href="/player"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M40-160v-112q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0 130 15.5T616-378q29 15 46.5 43.5T680-272v112H40Zm720 0v-120q0-44-24.5-84.5T666-434q51 6 96 20.5t84 35.5q36 20 55 44.5t19 53.5v120H760ZM360-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm400-160q0 66-47 113t-113 47q-11 0-28-2.5t-28-5.5q27-32 41.5-71t14.5-81q0-42-14.5-81T544-792q14-5 28-6.5t28-1.5q66 0 113 47t47 113ZM120-240h480v-32q0-11-5.5-20T580-306q-54-27-109-40.5T360-360q-56 0-111 13.5T140-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T440-640q0-33-23.5-56.5T360-720q-33 0-56.5 23.5T280-640q0 33 23.5 56.5T360-560Zm0 320Zm0-400Z" />
+                </svg>
+                Players
+            </a>
+            <a href="/unit-editor" data-nav="unit-editor"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
+                </svg>
+                Unit editor
+            </a>
+            <a href="https://github.com/NekoWeeb19/globalpoint"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path
+                        d="M320-240 80-480l240-240 57 57-184 184 183 183-56 56Zm320 0-57-57 184-184-183-183 56-56 240 240-240 240Z" />
+                </svg>
+                Source Code
+            </a>
+            <a href="https://github.com/Duosion/starpoint"
+                class="px-5 text-sm text-on-surface-variant hover:underline">Based on StarPoint</a>
+        </nav>
+        <article class="w-full flex flex-col gap-5">
+            <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-2">
+                <h2 class="text-2xl text-on-background font-semibold">Game settings</h2>
+                <p class="text-on-surface-variant">How the game plays on this server: drops, enemies, summon rates, daily beads and stamina. Most changes reach the game when it's reopened.</p>
+            </section>
+
+            <section id="drops" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                    <h3 class="text-xl text-on-background font-semibold">Quest drop amount</h3>
+                    <span id="drops-badge"
+                        class="px-4 py-1 rounded-full text-sm font-semibold bg-surface-container-high text-on-surface">Loading...</span>
+                </div>
+                <p class="text-on-surface-variant">Multiplies the items, materials, mana and EXP that quests drop, and event drops. 1x is the base game's amounts; raise it to make the game less grindy. Reward campaigns and boosts still multiply on top. Applies from the next quest you finish.</p>
+                <form id="drops-form" class="flex flex-col gap-3">
+                    <div class="flex gap-3 flex-wrap items-center">
+                        <input id="drops-value" type="number" min="1" max="100" step="0.5" required
+                            class="bg-surface-container rounded-2xl border border-outline-variant p-3" />
+                        <button type="submit" id="drops-save"
+                            class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Save</button>
+                    </div>
+                    <div class="flex gap-3 flex-wrap" id="drops-presets">
+                        <button type="button" data-value="1" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">1x (base game)</button>
+                        <button type="button" data-value="2" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">2x</button>
+                        <button type="button" data-value="5" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">5x</button>
+                        <button type="button" data-value="10" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">10x</button>
+                    </div>
+                    <p class="text-sm text-on-surface-variant">Any value from 1x to 100x; the presets fill the box, then press Save.</p>
+                </form>
+                <p id="drops-message" class="text-sm text-on-surface-variant" role="status"></p>
+                <script>
+                    (function () {
+                        const $ = (id) => document.getElementById(id)
+                        const show = (data) => {
+                            $("drops-badge").textContent = data.multiplier + "x"
+                            $("drops-value").value = data.multiplier
+                        }
+                        fetch("/api/server/drops").then(r => r.json()).then(show)
+                            .catch(error => { $("drops-badge").textContent = "Unavailable"; $("drops-message").textContent = "Could not load: " + error.message })
+                        for (const button of $("drops-presets").querySelectorAll("button"))
+                            button.addEventListener("click", () => { $("drops-value").value = button.dataset.value })
+                        $("drops-form").addEventListener("submit", async (event) => {
+                            event.preventDefault()
+                            $("drops-save").disabled = true
+                            $("drops-message").textContent = "Saving..."
+                            try {
+                                const response = await fetch("/api/server/drops", {
+                                    method: "POST", headers: { "content-type": "application/json" },
+                                    body: JSON.stringify({ multiplier: Number($("drops-value").value) })
+                                })
+                                const data = await response.json().catch(() => ({}))
+                                if (!response.ok) throw new Error(data.message || response.statusText)
+                                show(data)
+                                $("drops-message").textContent = "Saved: quests now drop " + data.multiplier + "x."
+                            } catch (error) {
+                                $("drops-message").textContent = "Error: " + error.message
+                            } finally {
+                                $("drops-save").disabled = false
+                            }
+                        })
+                    })()
+                </script>
+            </section>
+
+            <section id="enemies" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                    <h3 class="text-xl text-on-background font-semibold">Enemy strength</h3>
+                    <span id="enemies-badge"
+                        class="px-4 py-1 rounded-full text-sm font-semibold bg-surface-container-high text-on-surface">Loading...</span>
+                </div>
+                <p class="text-on-surface-variant">Multiplies every enemy's HP and attack (regular enemies, bosses and what bosses summon) in every quest. 1x is the base game; above 1x is harder, below 1x easier. Saving rebuilds the CN game update: close and reopen the game to get it.</p>
+                <form id="enemies-form" class="flex flex-col gap-3">
+                    <div class="flex gap-3 flex-wrap items-end">
+                        <label class="flex flex-col gap-1 text-sm text-on-surface-variant">HP
+                            <input id="enemies-hp" type="number" min="0.1" max="10" step="0.05" required
+                                class="bg-surface-container rounded-2xl border border-outline-variant p-3 text-base text-on-surface" />
+                        </label>
+                        <label class="flex flex-col gap-1 text-sm text-on-surface-variant">Attack
+                            <input id="enemies-atk" type="number" min="0.1" max="10" step="0.05" required
+                                class="bg-surface-container rounded-2xl border border-outline-variant p-3 text-base text-on-surface" />
+                        </label>
+                        <button type="submit" id="enemies-save"
+                            class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Save</button>
+                    </div>
+                    <div class="flex gap-3 flex-wrap" id="enemies-presets">
+                        <button type="button" data-hp="1" data-atk="1" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">1x (base game)</button>
+                        <button type="button" data-hp="1.5" data-atk="1.2" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">HP 1.5x, attack 1.2x</button>
+                        <button type="button" data-hp="2" data-atk="2" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">2x both</button>
+                        <button type="button" data-hp="0.5" data-atk="0.5" class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">0.5x both</button>
+                    </div>
+                    <p class="text-sm text-on-surface-variant">Any value from 0.1x to 10x; the presets fill the boxes, then press Save.</p>
+                </form>
+                <p id="enemies-message" class="text-sm text-on-surface-variant" role="status"></p>
+                <script>
+                    (function () {
+                        const $ = (id) => document.getElementById(id)
+                        const show = (data) => {
+                            $("enemies-badge").textContent = data.hp === 1 && data.atk === 1 ? "Base game" : `HP ${data.hp}x · attack ${data.atk}x`
+                            $("enemies-hp").value = data.hp
+                            $("enemies-atk").value = data.atk
+                        }
+                        fetch("/api/server/enemies").then(r => r.json()).then(show)
+                            .catch(error => { $("enemies-badge").textContent = "Unavailable"; $("enemies-message").textContent = "Could not load: " + error.message })
+                        for (const button of $("enemies-presets").querySelectorAll("button"))
+                            button.addEventListener("click", () => { $("enemies-hp").value = button.dataset.hp; $("enemies-atk").value = button.dataset.atk })
+                        $("enemies-form").addEventListener("submit", async (event) => {
+                            event.preventDefault()
+                            $("enemies-save").disabled = true
+                            $("enemies-message").textContent = "Saving..."
+                            try {
+                                const response = await fetch("/api/server/enemies", {
+                                    method: "POST", headers: { "content-type": "application/json" },
+                                    body: JSON.stringify({ hp: Number($("enemies-hp").value), atk: Number($("enemies-atk").value) })
+                                })
+                                const data = await response.json().catch(() => ({}))
+                                if (!response.ok) throw new Error(data.message || response.statusText)
+                                show(data)
+                                $("enemies-message").textContent = data.rebuilding
+                                    ? `Saved: enemies have ${data.hp}x HP and ${data.atk}x attack. The game update is rebuilding; close and reopen the game to get it.`
+                                    : "Saved (no change)."
+                            } catch (error) {
+                                $("enemies-message").textContent = "Error: " + error.message
+                            } finally {
+                                $("enemies-save").disabled = false
+                            }
+                        })
+                    })()
+                </script>
+            </section>
+
+            <section id="gacha-rates" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                    <h3 class="text-xl text-on-background font-semibold">Summon rates</h3>
+                    <span id="rates-badge"
+                        class="px-4 py-1 rounded-full text-sm font-semibold bg-surface-container-high text-on-surface">Loading...</span>
+                </div>
+                <p class="text-on-surface-variant">The chance of each rarity per pull, by kind of portal. 3★ is the rest. Unit banners: the standard portal and every pickup/spotlight banner (5% / 25% in the base game); Star Fest and Meteor Festival have their own (7.5% / 25%). Featured units keep their boost within their rarity. The 10th pull of a 10-pull is still 4★ or better (5★ at the 5★ rate). Pulls follow from the next pull; the game's own Rates screen shows the new numbers after the game update rebuilds (close and reopen the game).</p>
+                <form id="rates-form" class="flex flex-col gap-3">
+                    <div style="display: grid; grid-template-columns: auto minmax(3rem, 6rem) minmax(3rem, 6rem) max-content; gap: 0.75rem; align-items: center;" id="rates-grid">
+                        <span class="text-sm font-semibold text-on-surface-variant">Portal</span>
+                        <span class="text-sm font-semibold text-on-surface-variant">5★ %</span>
+                        <span class="text-sm font-semibold text-on-surface-variant">4★ %</span>
+                        <span class="text-sm font-semibold text-on-surface-variant">3★ %</span>
+                    </div>
+                    <div class="flex gap-3 flex-wrap">
+                        <button type="submit" id="rates-save"
+                            class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Save</button>
+                        <button type="button" id="rates-reset"
+                            class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Base game rates</button>
+                    </div>
+                    <p class="text-sm text-on-surface-variant">Each from 0 to 100 in steps of 0.1; 5★ and 4★ together at most 100.</p>
+                </form>
+                <p id="rates-message" class="text-sm text-on-surface-variant" role="status"></p>
+                <script>
+                    (function () {
+                        const $ = (id) => document.getElementById(id)
+                        const KINDS = [["normal", "Unit banners"], ["fes", "Star Fest / Meteor Festival"], ["armament", "Armaments"]]
+                        const inputClass = "bg-surface-container rounded-2xl border border-outline-variant p-2 w-full"
+                        const fields = {}
+                        for (const [kind, label] of KINDS) {
+                            const name = document.createElement("span")
+                            name.className = "text-on-surface"
+                            name.textContent = label
+                            const make = (star) => {
+                                const input = document.createElement("input")
+                                Object.assign(input, { type: "number", min: "0", max: "100", step: "0.1", required: true, className: inputClass })
+                                input.setAttribute("aria-label", label + " " + star + "★ %")
+                                input.addEventListener("input", () => updateRest(kind))
+                                return input
+                            }
+                            const rest = document.createElement("span")
+                            rest.className = "text-on-surface"
+                            fields[kind] = { star5: make(5), star4: make(4), rest }
+                            $("rates-grid").append(name, fields[kind].star5, fields[kind].star4, rest)
+                        }
+                        const round1 = (v) => Math.round(v * 10) / 10
+                        const updateRest = (kind) => {
+                            const f = fields[kind]
+                            const rest = round1(100 - Number(f.star5.value) - Number(f.star4.value))
+                            f.rest.textContent = Number.isFinite(rest) ? rest + "%" : "-"
+                        }
+                        let defaults = null
+                        const show = (data) => {
+                            defaults = data.defaults
+                            for (const [kind] of KINDS) {
+                                fields[kind].star5.value = data.rates[kind].star5
+                                fields[kind].star4.value = data.rates[kind].star4
+                                updateRest(kind)
+                            }
+                            const changed = KINDS.some(([k]) => data.rates[k].star5 !== data.defaults[k].star5 || data.rates[k].star4 !== data.defaults[k].star4)
+                            $("rates-badge").textContent = changed ? "Custom" : "Base game"
+                        }
+                        fetch("/api/server/gacha-rates").then(r => r.json()).then(show)
+                            .catch(error => { $("rates-badge").textContent = "Unavailable"; $("rates-message").textContent = "Could not load: " + error.message })
+                        const send = async (body, done) => {
+                            $("rates-save").disabled = $("rates-reset").disabled = true
+                            $("rates-message").textContent = "Saving..."
+                            try {
+                                const response = await fetch("/api/server/gacha-rates", {
+                                    method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body)
+                                })
+                                const data = await response.json().catch(() => ({}))
+                                if (!response.ok) throw new Error(data.message || response.statusText)
+                                show(data)
+                                $("rates-message").textContent = done
+                            } catch (error) {
+                                $("rates-message").textContent = "Error: " + error.message
+                            } finally {
+                                $("rates-save").disabled = $("rates-reset").disabled = false
+                            }
+                        }
+                        $("rates-form").addEventListener("submit", (event) => {
+                            event.preventDefault()
+                            const rates = {}
+                            for (const [kind] of KINDS) rates[kind] = { star5: Number(fields[kind].star5.value), star4: Number(fields[kind].star4.value) }
+                            send({ rates }, "Saved: the next pulls use these rates.")
+                        })
+                        $("rates-reset").addEventListener("click", () => send({ reset: true }, "Back to the base game's rates."))
+                    })()
+                </script>
+            </section>
+
+            <section id="rewards" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <h3 class="text-xl text-on-background font-semibold">Daily paid beads and free mails</h3>
+                <form id="beads-form" class="flex flex-col gap-2">
+                    <label for="beads-value" class="font-semibold text-on-background">Paid beads with each daily login bonus</label>
+                    <div class="flex gap-3 flex-wrap items-center">
+                        <input id="beads-value" type="number" min="0" max="100000" step="1" required
+                            class="bg-surface-container rounded-2xl border border-outline-variant p-3" />
+                        <button type="submit" id="beads-save"
+                            class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Save</button>
+                    </div>
+                    <p class="text-sm text-on-surface-variant">Added to the everyday login bonus once a day, on top of its own rewards. 0 turns it off. <span id="beads-source"></span></p>
+                </form>
+                <div class="flex flex-col gap-2">
+                    <p class="font-semibold text-on-background">Never-ending mails</p>
+                    <p class="text-sm text-on-surface-variant">Mails that stay in the mailbox and can be claimed again and again. Turn any off to remove it.</p>
+                    <label class="flex gap-3 items-center cursor-pointer text-on-surface"><input type="checkbox" class="w-5 h-5" data-mail="bread" /> Bread (paid beads) x1500</label>
+                    <label class="flex gap-3 items-center cursor-pointer text-on-surface"><input type="checkbox" class="w-5 h-5" data-mail="mana" /> Mana x1500</label>
+                    <label class="flex gap-3 items-center cursor-pointer text-on-surface"><input type="checkbox" class="w-5 h-5" data-mail="exp" /> EXP x1500</label>
+                </div>
+                <p id="rewards-message" class="text-sm text-on-surface-variant" role="status"></p>
+                <script>
+                    (function () {
+                        const $ = (id) => document.getElementById(id)
+                        const boxes = [...document.querySelectorAll("#rewards input[data-mail]")]
+                        const show = (data) => {
+                            $("beads-value").value = data.dailyPaidBeads
+                            $("beads-source").textContent = data.fromEnv ? "(Now from the .env file; saving here overrides it.)" : ""
+                            for (const box of boxes) box.checked = data.infiniteMails[box.dataset.mail]
+                        }
+                        const save = async (change, done) => {
+                            $("rewards-message").textContent = "Saving..."
+                            try {
+                                const response = await fetch("/api/server/settings", {
+                                    method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(change)
+                                })
+                                const data = await response.json().catch(() => ({}))
+                                if (!response.ok) throw new Error(data.message || response.statusText)
+                                show(data)
+                                $("rewards-message").textContent = done(data)
+                            } catch (error) {
+                                $("rewards-message").textContent = "Error: " + error.message
+                            }
+                        }
+                        fetch("/api/server/settings").then(r => r.json()).then(show)
+                            .catch(error => { $("rewards-message").textContent = "Could not load: " + error.message })
+                        $("beads-form").addEventListener("submit", (event) => {
+                            event.preventDefault()
+                            save({ dailyPaidBeads: Number($("beads-value").value) }, data => "Saved: " + data.dailyPaidBeads + " paid beads a day.")
+                        })
+                        for (const box of boxes) box.addEventListener("change", () =>
+                            save({ infiniteMails: { [box.dataset.mail]: box.checked } }, () => "Saved. The mailbox shows the change the next time it opens."))
+                    })()
+                </script>
+            </section>
+
+            <section id="stamina" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <h3 class="text-xl text-on-background font-semibold">Stamina</h3>
+                <label class="flex gap-3 items-center cursor-pointer text-on-surface"><input id="stamina-real" type="checkbox" class="w-5 h-5" /> Spend stamina like the real game</label>
+                <p class="text-sm text-on-surface-variant">Off (the default): battles never cost stamina. On: each battle costs its stamina when it starts (half-cost stamina campaigns included), retiring gives it back, stamina refills by 1 every 6 minutes (faster at higher ranks) up to your rank's maximum, ranking up adds your new maximum on top, and stamina items or 50 beads refill it. Close and reopen the game after changing this.</p>
+                <p id="stamina-message" class="text-sm text-on-surface-variant" role="status"></p>
+                <script>
+                    (function () {
+                        const box = document.getElementById("stamina-real"), message = document.getElementById("stamina-message")
+                        fetch("/api/server/settings").then(r => r.json()).then(data => { box.checked = data.realStamina === true })
+                            .catch(error => { message.textContent = "Could not load: " + error.message })
+                        box.addEventListener("change", async () => {
+                            message.textContent = "Saving..."
+                            try {
+                                const response = await fetch("/api/server/settings", {
+                                    method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ realStamina: box.checked })
+                                })
+                                const data = await response.json().catch(() => ({}))
+                                if (!response.ok) throw new Error(data.message || response.statusText)
+                                box.checked = data.realStamina === true
+                                message.textContent = box.checked ? "On: battles now cost stamina. Reopen the game to see it." : "Off: battles no longer cost stamina."
+                            } catch (error) {
+                                message.textContent = "Error: " + error.message
+                            }
+                        })
+                    })()
+                </script>
+            </section>
+
+            <section id="rescue" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <h3 class="text-xl text-on-background font-semibold">Co-op rescues</h3>
+                <label class="flex gap-3 items-center cursor-pointer text-on-surface"><input id="rescue-on" type="checkbox" class="w-5 h-5" /> Count co-op clears as rescues</label>
+                <p class="text-sm text-on-surface-variant">On (the default): every cleared co-op battle counts as if you joined someone else's battle as a backup, like the live game. It pays 10 Silver, Gold or Lilac Nuggets (harder battles pay better ones; nuggets buy things in many event exchanges) and counts for the "clear battles as a backup" missions. Boss battles, advent events, world story boss battles, raids and hard multi battles pay nuggets. CN app only.</p>
+                <p id="rescue-message" class="text-sm text-on-surface-variant" role="status"></p>
+                <script>
+                    (function () {
+                        const box = document.getElementById("rescue-on"), message = document.getElementById("rescue-message")
+                        fetch("/api/server/settings").then(r => r.json()).then(data => { box.checked = data.rescueRewards !== false })
+                            .catch(error => { message.textContent = "Could not load: " + error.message })
+                        box.addEventListener("change", async () => {
+                            message.textContent = "Saving..."
+                            try {
+                                const response = await fetch("/api/server/settings", {
+                                    method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ rescueRewards: box.checked })
+                                })
+                                const data = await response.json().catch(() => ({}))
+                                if (!response.ok) throw new Error(data.message || response.statusText)
+                                box.checked = data.rescueRewards !== false
+                                message.textContent = box.checked ? "On: co-op clears now pay nuggets." : "Off: co-op clears no longer pay nuggets."
+                            } catch (error) {
+                                message.textContent = "Error: " + error.message
+                            }
+                        })
+                    })()
+                </script>
+            </section>
+
+            <!-- the global app's banner rotation (legacy, PC only): hidden unless it's on, or DASHBOARD_BANNER_ROTATION="true" in .env -->
+            <section id="rotation" style="display: none" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                    <h3 class="text-xl text-on-background font-semibold">Banner rotation</h3>
+                    <span id="rotation-badge"
+                        class="px-4 py-1 rounded-full text-sm font-semibold bg-surface-container-high text-on-surface">Loading...</span>
+                </div>
+
+                <div id="rotation-off" class="hidden flex flex-col gap-2 text-on-surface-variant">
+                    <p>The banner rotation is off.</p>
+                    <p>To turn it on, add this to the <code>.env</code> file and restart the server:</p>
+                    <pre class="bg-surface-container rounded-2xl border border-outline-variant p-3 text-on-surface overflow-x-auto">BANNER_ROTATION="true"
+BANNER_ROTATION_HOURS="24"</pre>
+                </div>
+
+                <div id="rotation-on" class="hidden flex flex-col gap-4">
+                    <div class="flex flex-col gap-1">
+                        <p id="rotation-step" class="text-lg text-on-surface"></p>
+                        <p id="rotation-date" class="text-on-surface-variant"></p>
+                        <p id="rotation-next" class="text-on-surface-variant"></p>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <h4 class="font-semibold text-on-background">Banners live right now</h4>
+                        <ul id="rotation-banners" class="flex flex-col gap-2"></ul>
+                    </div>
+
+                    <div class="flex gap-3 flex-wrap">
+                        <button type="button" id="rotation-previous"
+                            class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Previous</button>
+                        <button type="button" id="rotation-next-button"
+                            class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Next</button>
+                        <button type="button" id="rotation-resume"
+                            class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Resume rotation</button>
+                    </div>
+
+                    <form id="rotation-jump" class="flex flex-col gap-2">
+                        <label for="rotation-jump-time" class="font-semibold text-on-background">Jump to a date (UTC)</label>
+                        <div class="flex gap-3 flex-wrap items-center">
+                            <input id="rotation-jump-time" type="datetime-local" step="1" required
+                                class="bg-surface-container rounded-2xl border border-outline-variant p-3" />
+                            <button type="submit" id="rotation-jump-button"
+                                class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Jump</button>
+                        </div>
+                        <p class="text-sm text-on-surface-variant">Moves to the banner that started at or before that date, then keeps rotating from there.</p>
+                    </form>
+
+                    <p class="text-sm text-on-surface-variant">Setting the time above pauses the rotation. Reset or Resume rotation hands the date back to it.</p>
+                </div>
+
+                <p id="rotation-message" class="text-sm text-on-surface-variant" role="status"></p>
+            </section>
+        </article>
+    </div>
+
+    <script>
+        (function () {
+            const $ = (id) => document.getElementById(id)
+            const buttons = ["rotation-previous", "rotation-next-button", "rotation-resume", "rotation-jump-button"]
+            let status = null
+            let busy = false
+            let jumpEdited = false
+
+            const formatDate = (iso) => iso.slice(0, 16).replace("T", " ") + " UTC"
+
+            function formatCountdown(ms) {
+                const total = Math.max(0, Math.floor(ms / 1000))
+                const days = Math.floor(total / 86400)
+                const hours = Math.floor((total % 86400) / 3600)
+                const minutes = Math.floor((total % 3600) / 60)
+                const seconds = total % 60
+                if (days > 0) return days + "d " + hours + "h " + minutes + "m"
+                if (hours > 0) return hours + "h " + minutes + "m"
+                return minutes + "m " + String(seconds).padStart(2, "0") + "s"
+            }
+
+            function setMessage(text) {
+                $("rotation-message").textContent = text || ""
+            }
+
+            function renderBanners(banners) {
+                const list = $("rotation-banners")
+                list.replaceChildren()
+                if (banners.length === 0) {
+                    const item = document.createElement("li")
+                    item.className = "text-on-surface-variant"
+                    item.textContent = "No banners are live at this date."
+                    list.appendChild(item)
+                    return
+                }
+                for (const banner of banners) {
+                    const item = document.createElement("li")
+                    item.className = "flex gap-3 items-center flex-wrap"
+                    const kind = document.createElement("span")
+                    kind.className = "px-3 py-1 rounded-full text-sm bg-surface-container-high text-on-surface"
+                    kind.textContent = banner.type === 1 ? "Armament" : "Unit"
+                    const label = document.createElement("span")
+                    label.className = "text-on-surface"
+                    label.textContent = "Banner #" + banner.id
+                    const dates = document.createElement("span")
+                    dates.className = "text-on-surface-variant"
+                    dates.textContent = banner.startDate.slice(0, 16) + " to " + banner.endDate.slice(0, 16)
+                    item.append(kind, label, dates)
+                    list.appendChild(item)
+                }
+            }
+
+            // with ticking on, the date counts up between refreshes (a paused date ticks too)
+            function showRotationDate() {
+                if (status === null || !status.enabled) return
+                const elapsed = status.ticking ? Date.now() - status.loadedAt : 0
+                $("rotation-date").textContent = "Server date: " + formatDate(new Date(new Date(status.serverDate).getTime() + elapsed).toISOString())
+            }
+
+            function updateCountdown() {
+                if (status === null || !status.enabled) return
+                showRotationDate()
+                if (status.paused) {
+                    $("rotation-next").textContent = "Paused: the date was set by hand, so the rotation is not moving."
+                    return
+                }
+                const remaining = new Date(status.nextChangeAt).getTime() - Date.now()
+                $("rotation-next").textContent = "Next change in " + formatCountdown(remaining)
+            }
+
+            function render(next) {
+                status = next
+                $("rotation").style.display = status.enabled || status.show ? "" : "none"
+                const badge = $("rotation-badge")
+                if (!status.enabled) {
+                    badge.textContent = "Off"
+                    $("rotation-off").classList.remove("hidden")
+                    $("rotation-on").classList.add("hidden")
+                    return
+                }
+                $("rotation-off").classList.add("hidden")
+                $("rotation-on").classList.remove("hidden")
+                badge.textContent = status.paused ? "Paused" : "Running"
+                $("rotation-step").textContent = "Step " + status.step + " of " + status.totalSteps +
+                    " (" + status.stepHours + " hour" + (status.stepHours === 1 ? "" : "s") + " per step)"
+                status.loadedAt = Date.now()
+                showRotationDate()
+                renderBanners(status.liveBanners)
+                $("rotation-resume").disabled = busy || !status.paused
+                if (!jumpEdited) $("rotation-jump-time").value = status.serverDate.slice(0, 16)
+                updateCountdown()
+            }
+
+            function setBusy(value) {
+                busy = value
+                for (const id of buttons) $(id).disabled = value
+                if (!value && status !== null && status.enabled) $("rotation-resume").disabled = !status.paused
+            }
+
+            async function request(path, doneMessage) {
+                if (busy) return
+                setBusy(true)
+                setMessage("")
+                try {
+                    const response = await fetch(path)
+                    const data = await response.json().catch(() => ({}))
+                    if (!response.ok) throw new Error(data.message || response.statusText)
+                    jumpEdited = false
+                    render(data)
+                    setMessage(typeof doneMessage === "function" ? doneMessage(data) : doneMessage)
+                } catch (error) {
+                    setMessage("Error: " + error.message)
+                } finally {
+                    setBusy(false)
+                }
+            }
+
+            async function refresh() {
+                if (busy) return
+                try {
+                    const response = await fetch("/api/server/rotation")
+                    if (!response.ok) throw new Error(response.statusText)
+                    render(await response.json())
+                } catch (error) {
+                    $("rotation-badge").textContent = "Unavailable"
+                    setMessage("Could not load the rotation status: " + error.message)
+                }
+            }
+
+            $("rotation-previous").addEventListener("click", () => request("/api/server/rotation/previous", "Moved to the previous banner."))
+            $("rotation-next-button").addEventListener("click", () => request("/api/server/rotation/next", "Moved to the next banner."))
+            $("rotation-resume").addEventListener("click", () => request("/api/server/rotation/resume", "The rotation is running again."))
+            $("rotation-jump-time").addEventListener("input", () => { jumpEdited = true })
+            $("rotation-jump").addEventListener("submit", (event) => {
+                event.preventDefault()
+                const value = $("rotation-jump-time").value
+                if (value) request("/api/server/rotation/goto?time=" + encodeURIComponent(value), (data) =>
+                    data.serverDate.slice(0, 16) > value
+                        ? "That date is before the first banner in the rotation, so this is the first one."
+                        : "Jumped to the banner for that date.")
+            })
+
+            refresh()
+            setInterval(updateCountdown, 1000)
+            setInterval(() => {
+                // the timer ran out (or it's been a while), so ask the server where the rotation is now
+                if (status !== null && status.enabled && !status.paused && new Date(status.nextChangeAt).getTime() <= Date.now()) refresh()
+            }, 2000)
+            setInterval(refresh, 30000)
+        })()
+    </script>
+    <script src="/public/js/sidebar-status.js" defer></script>
+</body>
+
+</html>

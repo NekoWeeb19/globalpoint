@@ -151,7 +151,7 @@ const routes = async (fastify: FastifyInstance) => {
     fastify.get("/settings", async (_: FastifyRequest, reply: FastifyReply) => reply.send(getServerSettings()))
     fastify.post("/settings", async (request: FastifyRequest, reply: FastifyReply) => {
         try {
-            return reply.send(setServerSettings((request.body ?? {}) as { dailyPaidBeads?: unknown, infiniteMails?: unknown, realStamina?: unknown }))
+            return reply.send(setServerSettings((request.body ?? {}) as { dailyPaidBeads?: unknown, infiniteMails?: unknown, realStamina?: unknown, autoNews?: unknown, dailyNews?: unknown, rescueRewards?: unknown }))
         } catch (error) {
             return reply.status(400).send({ error: "Bad Request", message: (error as Error).message })
         }

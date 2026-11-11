@@ -371,26 +371,48 @@ async function main() {
         const c = splitCsv(line)
         if (c[0] === "1" && c[1]) { const id = key.split("/")[0]; if (!featurePictures.has(id)) featurePictures.set(id, c[1]) }
     }
-    /** The first of the pictures the files have. */
+    /** The first of the pictures the files have. With a key, its game-file path is kept too (artPaths, CN only):
+     *  News posts show it with <img src="file://<path>"> (src/nya/autoNews.ts). */
+    const artPaths = new Map()
     const firstImage = async (...candidates) => {
-        for (const logical of candidates) { const id = await copyImage(index, logical); if (id) return id }
+        for (const logical of candidates) { const id = await copyImage(index, logical); if (id) { firstImage.last = logical; return id } }
         return null
     }
-    for (const ev of events) {
-        // phased events list one banner per phase ("a,b,c"); the first one is shown. Without one: the
-        // boss battle banner, the logo, the background, or a backslash path (CN's passes)
+    // [path, width, height]: the size from the copied file (the CN game's own picture when CN has it), so a News post
+    // can show it at the post's width without squashing it
+    const keepPath = (key, id, logical) => {
+        if (!CN || !id || !logical) return
+        let width = 0, height = 0
+        try { const head = fs.readFileSync(path.join(IMAGES_OUT, `${id}.png`)).subarray(0, 24); width = head.readUInt32BE(16); height = head.readUInt32BE(20) } catch { }
+        artPaths.set(key, width > 0 && height > 0 ? [logical, width, height] : [logical])
+    }
+    /** An event's banner picture: the banner column, else the boss battle banner, the logo, the background, or a
+     *  backslash path (CN's passes). Phased events list one banner per phase ("a,b,c"); the first one is shown. */
+    const eventImage = async (ev) => {
         const cells = splitCsv(ev.row.t)
         const banner = cells.find(v => v.startsWith("quest/event/banner/"))?.split(",")[0]
         const fallbacks = ["quest/event/bossbattle_banner/", "quest/event/logo/", "quest/event/background/", "dynamic\\"].map(prefix => cells.find(v => v.startsWith(prefix))?.split(",")[0]?.split("\\").join("/"))
-        ev.image = await firstImage(banner, ...fallbacks)
+        const id = await firstImage(banner, ...fallbacks)
+        keepPath(ev.key, id, firstImage.last)
+        return id
+    }
+    for (const ev of events) {
+        ev.image = await eventImage(ev)
         if (ev.image) pictures++
         ev.bannerInfo = []
         for (const r of ev.banners) {
             const f = splitCsv(r.t)
             const image = await copyImage(index, f[3])
             if (image) pictures++
+            keepPath(`gacha:${r.p}`, image, f[3])
             ev.bannerInfo.push({ id: r.p, name: names[f[1]] ?? f[1], image })
         }
+    }
+    // the events both games have use global's catalog entry (and picture); the CN app's own picture of each, for
+    // its News posts
+    if (CN) for (const ev of sharedEvents.values()) {
+        await eventImage(ev)
+        for (const r of ev.banners) { const f = splitCsv(r.t); keepPath(`gacha:${r.p}`, await copyImage(index, f[3]), f[3]) }
     }
     console.log(`${pictures} pictures in ${path.relative(ROOT, IMAGES_OUT)}`)
 
@@ -404,6 +426,7 @@ async function main() {
             start: f[29], end: f[30], close, row: r, linked: new Map([[`${r.table}#${r.p}`, "banner"]]), banners: [],
             image: await firstImage(f[3], featurePictures.get(r.p), f[3]?.replace("gacha_list_banner", "gacha_banner")), bannerInfo: [], bannerType: f[13] === "1" ? "armament" : "unit",
         })
+        keepPath(`gacha:${r.p}`, events[events.length - 1].image, firstImage.last)
     }
 
     if (CN) {
@@ -450,6 +473,12 @@ async function main() {
     }
     const out = path.join(ROOT, "assets", CN ? "event_catalog_cn.json" : "event_catalog.json")
     fs.writeFileSync(out, JSON.stringify(output))
+    if (CN) {
+        // event key -> [its picture's path in the CN game files, width, height] (for News posts' pictures)
+        const artOut = path.join(ROOT, "assets", "event_art_paths_cn.json")
+        fs.writeFileSync(artOut, JSON.stringify(Object.fromEntries([...artPaths].sort())))
+        console.log(`Wrote ${artOut}: ${artPaths.size} picture paths.`)
+    }
     const shared = new Map()
     for (const ev of events) for (const k of ev.linked.keys()) shared.set(k, (shared.get(k) ?? 0) + 1)
     console.log(`Wrote ${out}: ${events.length} events, ${[...shared.keys()].length} rows (${[...shared.values()].filter(n => n > 1).length} shared by more than one event), ${Object.keys(tables).length} files.`)

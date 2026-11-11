@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   mode: "all",
-  content: ["./web/pages/*.{html,css}", "./src/routes/web/*.ts"],
+  content: ["./web/pages/*.{html,css}", "./web/public/js/*.js", "./src/routes/web/*.ts"],
   theme: {
     fontFamily: {
       sans: ["Inter"],

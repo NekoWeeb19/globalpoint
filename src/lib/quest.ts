@@ -56,6 +56,8 @@ export function givePlayerScoreRewardsSync(
     itemCampaignRate: number = 1,
     /** The stage's recommended element, for element-material drops (questElement()). */
     stageElement?: number,
+    /** Swaps an item drop for another (the CN app's own event coins: src/lib/cnCoinSwaps.ts). */
+    itemSwap?: (itemId: number) => number,
 ): GivePlayerScoreRewardsResult {
     // drops are multiplied by the campaign rate, plus 1 with a boost (a boost alone doubles them)
     const dropMultiplier = itemDropMultiplier(itemCampaignRate, boostPointUsed)
@@ -92,7 +94,7 @@ export function givePlayerScoreRewardsSync(
                         }
                         case RewardType.ITEM: {
                             const itemReward = reward as ItemScoreReward
-                            const itemId = itemReward.id
+                            const itemId = itemSwap ? itemSwap(itemReward.id) : itemReward.id
                             rewardAmount = multipliedDrop(withDropAmount(itemReward.count), dropMultiplier)
                             items[String(itemId)] = givePlayerItemSync(playerId, itemId, rewardAmount);
                             break;
@@ -147,6 +149,10 @@ export function givePlayerScoreRewardsSync(
                                 const itemId = elementDropItemId((picked as Reward as EquipmentItemReward).id, stageElement)
                                 if (itemId === undefined) break
                                 picked = { ...picked, type: RewardType.ITEM, id: itemId } as typeof picked
+                            }
+                            if (picked.type === RewardType.ITEM && itemSwap) {
+                                const id = (picked as Reward as EquipmentItemReward).id
+                                picked = { ...picked, id: itemSwap(id) } as typeof picked
                             }
                             // an item drop is multiplied like the score drops; units and beads aren't
                             const reward = picked.type === RewardType.ITEM

@@ -22,7 +22,15 @@
                     <path
                         d="M520-600v-240h320v240H520ZM120-440v-400h320v400H120Zm400 320v-400h320v400H520Zm-400 0v-240h320v240H120Zm80-400h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z" />
                 </svg>
-                Dashboard
+                Overview
+            </a>
+            <a href="/settings" data-nav="settings"
+                class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    class="fill-on-surface">
+                    <path d="M370-80l-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z" />
+                </svg>
+                Game settings
             </a>
             <a href="/events" data-nav="events"
                 class="px-5 py-3 flex gap-3 items-center rounded-full hover:bg-surface-container-high text-on-surface text-lg transition-colors">
@@ -169,6 +177,7 @@
                         </div>
                     </div>
                     <label id="yearly-box" class="flex gap-2 items-center text-on-surface"><input type="checkbox" id="yearly" class="w-5 h-5"> Also repeat the whole run every year (from the first send's date)</label>
+                    <label class="flex gap-2 items-center text-on-surface"><input type="checkbox" id="everyone" class="w-5 h-5"> Send to every save, not only the active one (each gets it the next time its mailbox opens)</label>
                     <p id="preview" class="text-sm text-on-surface-variant"></p>
                     <div class="flex flex-wrap gap-3">
                         <button type="submit" id="save"
@@ -260,6 +269,7 @@
                     unit: $("unit").value,
                     times: repeating ? ($("forever").checked ? null : Number($("times").value)) : 1,
                     yearly: $("yearly").checked && (!repeating || !$("forever").checked),
+                    everyone: $("everyone").checked,
                 }
             }
             const nowValue = () => fmt(data.serverTime).replace(" ", "T")
@@ -276,7 +286,7 @@
                 $("days").textContent = data.days
                 $("active").textContent = data.activeAccount === null
                     ? "Goes to: any save that opens its mailbox (no CN account is picked on the Players tab)."
-                    : "Goes to: the active save (account " + data.activeAccount + (data.activePlayer ? ", player " + data.activePlayer : "") + ", picked on the Players tab). Other saves don't get it."
+                    : "Goes to: the active save (account " + data.activeAccount + (data.activePlayer ? ", player " + data.activePlayer : "") + ", picked on the Players tab). Other saves don't get it, unless a mail is set to every save."
                 const list = $("list")
                 list.replaceChildren()
                 if (data.schedules.length === 0) {
@@ -298,7 +308,7 @@
                     title.append(tick, document.createTextNode(s.title || defaultTitle(s.kind, s.typeId, s.amount)))
                     const what = document.createElement("span")
                     what.className = "text-sm text-on-surface-variant"
-                    what.textContent = KIND[s.kind] + (s.typeId ? " " + s.typeId : "") + " × " + s.amount + " — " + whenText(s)
+                    what.textContent = KIND[s.kind] + (s.typeId ? " " + s.typeId : "") + " × " + s.amount + " — " + whenText(s) + (s.everyone ? ", to every save" : "")
                     const status = document.createElement("span")
                     status.className = "text-sm text-on-surface-variant"
                     status.textContent = (s.next ? "Next: " + fmt(s.next) + " UTC" : "Done: nothing left to send") +
@@ -331,6 +341,7 @@
                 $("forever").checked = s.times === null
                 $("times").value = s.times ?? 4
                 $("yearly").checked = !!s.yearly
+                $("everyone").checked = !!s.everyone
                 $("message").textContent = "Saving starts it again from its next send time; nothing already past is sent twice."
                 syncForm()
                 $("form").scrollIntoView({ block: "start" })
@@ -439,6 +450,7 @@
             document.addEventListener("visibilitychange", poll)
         })()
     </script>
+    <script src="/public/js/sidebar-status.js" defer></script>
 </body>
 
 </html>

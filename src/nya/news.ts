@@ -19,6 +19,8 @@ export interface NewsPost {
     apps: NewsApp[]
     /** When it was posted, on the server's game clock (ISO, UTC). */
     date: string
+    /** The body as ready-made rich text (the automatic event posts, src/nya/autoNews.ts: pictures); else from body. */
+    html?: string
 }
 
 const FILE = path.join(process.cwd(), ".database", "news.json")
@@ -96,6 +98,7 @@ const escapeHtml = (text: string) => text.replace(/&/g, "&amp;").replace(/</g, "
 
 /** A post's text as the CN client's rich text (paragraphs, line breaks). */
 export function newsHtml(post: NewsPost): string {
+    if (post.html !== undefined) return post.html
     // the CN client parses this as XML (error C7613 / #1085 on an unclosed tag), so <br/>, not <br>
     return post.body.split(/\n{2,}/).map(paragraph => `<p>${escapeHtml(paragraph).replace(/\r?\n/g, "<br/>")}</p>`).join("")
 }

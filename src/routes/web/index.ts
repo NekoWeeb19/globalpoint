@@ -19,6 +19,13 @@ const routes = async (fastify: FastifyInstance) => {
         reply.send(html)
     })
 
+    // Game settings: drops, enemy strength, summon rates, daily beads and mails, stamina, banner rotation
+    // (moved off the first tab, which became the Overview)
+    fastify.get("/settings", async (_: FastifyRequest, reply: FastifyReply) => {
+        reply.header("content-type", "text/html; charset=utf-8")
+        reply.send(readFileSync(path.join(__dirname, staticPagesDir, "settings.html")).toString("utf-8"))
+    })
+
     // the Events and Summons tabs are one page in two modes (events, or summon banners)
     const schedulePage = (mode: "events" | "summons") => async (_: FastifyRequest, reply: FastifyReply) => {
         reply.header("content-type", "text/html; charset=utf-8")

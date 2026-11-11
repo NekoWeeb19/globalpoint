@@ -137,6 +137,13 @@ export const SendMail = (player_id: number, mail: Mail) => {
     console.log(`Mail sent to player ${player_id}: ${JSON.stringify(mail_)}`)
 }
 
+/** Players tab > Clear mailbox: drops the mails sent with Give this session. Returns how many. */
+export const clearSessionMails = (player_id: number): number => {
+    const count = CachedMails[player_id]?.length ?? 0
+    delete CachedMails[player_id]
+    return count
+}
+
 // the built-in mails never run out; they're shown as just sent (server time) (their fixed
 // 2020 date showed as "2194 days ago")
 export const GetMails = (player_id: number) => {

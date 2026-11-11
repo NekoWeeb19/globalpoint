@@ -2,6 +2,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import "@fastify/multipart"; // adds request.file() to the request type
 import { deserializePlayerData, getClientSerializedData } from "../../data/utils";
 import { getAllPlayersSync, replacePlayerDataSync } from "../../data/wdfpData";
+import { clearMailboxSync, cloneSaveSync, deleteSaveSync, resetPartiesSync, resetSaveSync } from "../../nya/saveTools";
 
 interface SaveQuery {
     id: string | undefined
@@ -15,6 +16,7 @@ interface GetPlayersQuery {
 const defaultPerPage = 25
 
 const routes = async (fastify: FastifyInstance) => {
+    await saveToolRoutes(fastify)
     fastify.get("/", async (request: FastifyRequest, reply: FastifyReply) => {
         // get page and perPage
         const { page, perPage } = request.query as GetPlayersQuery
@@ -72,6 +74,26 @@ const routes = async (fastify: FastifyInstance) => {
 
         return reply.redirect(`/player/${id}`);
     })
+}
+
+// ---- save tools (the player page's Save tools box, src/nya/saveTools.ts): POST with { id } ----
+
+const saveTool = (run: (playerId: number) => object) => async (request: FastifyRequest, reply: FastifyReply) => {
+    const playerId = Number((request.body as { id?: unknown } | undefined)?.id)
+    if (!Number.isSafeInteger(playerId) || playerId <= 0) return reply.status(400).send({ error: "Bad Request", message: "Invalid player id." })
+    try {
+        return reply.send(run(playerId))
+    } catch (error) {
+        return reply.status(400).send({ error: "Bad Request", message: (error as Error).message })
+    }
+}
+
+export const saveToolRoutes = async (fastify: FastifyInstance) => {
+    fastify.post("/clone", saveTool(playerId => cloneSaveSync(playerId)))
+    fastify.post("/delete", saveTool(playerId => deleteSaveSync(playerId)))
+    fastify.post("/reset-account", saveTool(playerId => resetSaveSync(playerId)))
+    fastify.post("/reset-parties", saveTool(playerId => ({ unitId: resetPartiesSync(playerId) })))
+    fastify.post("/clear-mailbox", saveTool(playerId => ({ cleared: clearMailboxSync(playerId) })))
 }
 
 export default routes;

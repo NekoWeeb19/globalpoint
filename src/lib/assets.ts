@@ -44,9 +44,11 @@ import generalShopItems from "../../assets/general_shop.json";
 import starGrainShopItems from "../../assets/star_grain_shop.json";
 import treasureShopItems from "../../assets/treasure_shop.json";
 import rushEventQuestFolders from "../../assets/rush_event_quest_folder.json"
+import rushEventQuestFoldersCn from "../../assets/rush_event_quest_folder_cn.json"
 import { readFileSync, statSync } from "fs";
 import path from "path";
 import { inCnRequest } from "./cnClient";
+import questOverridesCn from "../../assets/quest_overrides_cn.json";
 import { towerOriginalQuestId } from "./towerRotation";
 import { getServerDate } from "../utils";
 import { AssetCharacter, BattleQuest, BossCoinShopItems, BoxGacha, ClearRewards, EventItemShopIdMapItem, EventShopItems, ExAbilities, ExBoostItem, ExBoostItems, ExStatus, Gacha, Gachas, ManaNode, ManaNodes, QuestCategory, RareScoreReward, RareScoreRewardGroups, RawAssetCharacters, RawBoxGachas, RawBoxRewards, RawQuests, Reward, RushEventFolders, ScoreReward, ScoreRewardGroups, ShopItem, ShopItems, ShopType, StoryQuest } from "./types";
@@ -237,6 +239,20 @@ export function getAdventEventQuest(
     return getQuestSync((adventEventQuests as RawQuests), questId) as StoryQuest | null
 }
 
+/** quest category -> its file in assets/quest_overrides_cn.json */
+const CN_OVERRIDE_FILES: Partial<Record<QuestCategory, string>> = {
+    [QuestCategory.ADVENT_EVENT_SINGLE]: "advent_event_quest",
+    [QuestCategory.ADVENT_EVENT_MULTI]: "advent_event_quest",
+    [QuestCategory.STORY_EVENT_SINGLE]: "story_event_single_quest",
+    [QuestCategory.WORLD_STORY_EVENT]: "world_story_event_quest",
+    [QuestCategory.WORLD_STORY_EVENT_BOSS_BATTLE]: "world_story_event_boss_battle_quest",
+    [QuestCategory.CARNIVAL_EVENT]: "carnival_event_quest",
+    [QuestCategory.RUSH_EVENT]: "rush_event_quest",
+    [QuestCategory.RANKING_EVENT_SINGLE]: "ranking_event_single_quest",
+    [QuestCategory.HARD_MULTI_EVENT]: "hard_multi_event_quest",
+    [QuestCategory.BOSS_BATTLE]: "boss_battle_quest",
+}
+
 /**
  * Gets a quest from a specific quest category.
  * 
@@ -248,6 +264,13 @@ export function getQuestFromCategorySync(
     category: QuestCategory,
     questId: string | number
 ): BattleQuest | StoryQuest | null {
+    // events that are a different event in CN under the same number: the CN app's quests are CN's own
+    // (scripts/gen_cn_quests.cjs -> assets/quest_overrides_cn.json)
+    const overrideFile = CN_OVERRIDE_FILES[category]
+    if (overrideFile !== undefined && inCnRequest()) {
+        const table = (questOverridesCn as Record<string, RawQuests>)[overrideFile]
+        if (table?.[String(questId)] !== undefined) return getQuestSync(table, questId)
+    }
     switch (category) {
         case QuestCategory.MAIN:
             return getMainQuestSync(questId)
@@ -609,7 +632,9 @@ export function getRushEventFolderClearRewards(
     rushEventId: number,
     folderId: number
 ): Reward[] | null {
-    const folders = (rushEventQuestFolders as RushEventFolders)[rushEventId]
+    // the CN app is paid CN's own rewards: its runs' coins are 2370001-2370007 (what its Gauntlet shops cost);
+    // global's coins 70001-70005 are other items in CN (boss coins, a Golden Week 10-pull ticket, ...)
+    const folders = ((inCnRequest() ? rushEventQuestFoldersCn : rushEventQuestFolders) as RushEventFolders)[rushEventId]
     if (folders === undefined) return null;
 
     return folders[folderId] ?? null

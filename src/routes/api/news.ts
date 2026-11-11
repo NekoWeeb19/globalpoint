@@ -7,6 +7,7 @@ import { getSession } from "../../data/wdfpData";
 import { generateDataHeaders, getServerDate } from "../../utils";
 import { inCnRequest } from "../../lib/cnClient";
 import { cnNewsItem, getNews, newsHtml } from "../../nya/news";
+import { autoNewsPost } from "../../nya/autoNews";
 import { clientSerializeDate } from "../../data/utils";
 
 interface GetInfoBody {
@@ -32,7 +33,7 @@ const routes = async (fastify: FastifyInstance) => {
         })
 
         const cn = inCnRequest()
-        const found = getNews(Number(body.news_id))
+        const found = getNews(Number(body.news_id)) ?? (cn ? autoNewsPost(Number(body.news_id)) : null)
         // a home banner can link to one of the official posts (e.g. CN's banner for news 2245), which this
         // server doesn't have: a 404 sends the client back to its title screen (H404), so a short note is
         // shown instead

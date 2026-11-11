@@ -272,6 +272,12 @@ export const COUNTER_KINDS = Object.freeze({
     SOLO_AUTO_COMPLETE: 1999,
     SINGLE_BATTLE_CLEAR: 12,
     MULTI_BATTLE_CLEAR: 14,
+    /**
+     * "Clear N battles as a backup" (rescues: joining someone else's co-op battle). Co-op here is hosted with COM
+     * partners, so every co-op clear stands in for one while the rescue switch is on (src/nya/rescue.ts). params[8]
+     * is the boss battle difficulty (the quest id's last part, 1-5), like the Chinese fork's rescue counters.
+     */
+    RESCUE_CLEAR: 18,
     /** The highest score in one battle. */
     MAX_SCORE: 23,
     /** Battles cleared with the top rank (SS, clear_rank 5). */
@@ -649,6 +655,8 @@ export interface BattleResult {
      * (the partners are COMs), so a hosted co-op clear stands in for joining one.
      */
     guestStandIn?: boolean
+    /** Also count the battle for "Clear N battles as a backup" (RESCUE_CLEAR). */
+    rescue?: boolean
     questCategory: number
     questId?: number
     clearRank: number
@@ -686,6 +694,7 @@ export function battleMissionEvents(battle: BattleResult): CounterEvent[] {
         ...(battle.isMulti ? [{ ...base, kind: COUNTER_KINDS.MULTI_BATTLE_CLEAR, amount: 1 }] : []),
         ...(battle.isMulti && battle.isHost ? [{ ...base, kind: MULTI_HOST_CLEAR, amount: 1 }] : []),
         ...(battle.isMulti && battle.guestStandIn ? [{ ...base, kind: MULTI_GUEST_CLEAR, amount: 1 }] : []),
+        ...(battle.isMulti && battle.rescue ? [{ ...base, kind: COUNTER_KINDS.RESCUE_CLEAR, amount: 1 }] : []),
         { ...base, kind: COUNTER_KINDS.MAX_SCORE, amount: count(battle.score) },
         { ...base, kind: COUNTER_KINDS.MAX_POWER, amount: count(stats.max_power) },
         { ...base, kind: COUNTER_KINDS.MAX_COMBO, amount: count(stats.max_combo_count) },
@@ -786,7 +795,7 @@ export function questInRangeQuery(range: readonly [number, string | null, string
 /** Solo (1), multiplayer (2) or either (3) when params[2] is blank, per kind (the Chinese fork's defaults). */
 function defaultBattleMode(kind: number): number {
     if (kind === COUNTER_KINDS.SINGLE_BATTLE_CLEAR || kind === COUNTER_KINDS.TIME_CLEAR || (kind >= COUNTER_KINDS.PHASE_1_CLEAR && kind <= COUNTER_KINDS.PHASE_1_CLEAR + 3)) return 1
-    if (kind === COUNTER_KINDS.MULTI_BATTLE_CLEAR || kind === MULTI_HOST_CLEAR || kind === MULTI_GUEST_CLEAR) return 2
+    if (kind === COUNTER_KINDS.MULTI_BATTLE_CLEAR || kind === MULTI_HOST_CLEAR || kind === MULTI_GUEST_CLEAR || kind === COUNTER_KINDS.RESCUE_CLEAR) return 2
     return 3
 }
 const MULTI_HOST_CLEAR = 15
@@ -810,7 +819,13 @@ export function counterMatches(definition: MissionDefinition, event: CounterEven
     const p = definition.params
     // params[3] is understood only as the battle condition of a CONDITION_SS_CLEAR mission
     const conditionMission = definition.kind === COUNTER_KINDS.CONDITION_SS_CLEAR
-    if (p.some((param, index) => param !== null && !UNDERSTOOD_PARAMS.has(index) && !(conditionMission && index === 3))) return false
+    // params[8] is understood only as the boss battle difficulty of a RESCUE_CLEAR mission
+    const rescueMission = definition.kind === COUNTER_KINDS.RESCUE_CLEAR
+    if (p.some((param, index) => param !== null && !UNDERSTOOD_PARAMS.has(index) && !(conditionMission && index === 3) && !(rescueMission && index === 8))) return false
+    if (rescueMission && p[8] !== null) {
+        const ranks = segment(p[8])
+        if (!ranks || event.questId === undefined || !ranks.includes(event.questId % 1_000)) return false
+    }
     if (questClearRule(definition) !== null) return false
     if (conditionMission && (p[3] === null || !(event.conditions ?? []).includes(p[3]))) return false
     if (definition.kind === COUNTER_KINDS.TIME_CLEAR) {

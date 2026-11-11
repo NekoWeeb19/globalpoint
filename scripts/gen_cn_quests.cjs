@@ -9,6 +9,16 @@
 // Quest files whose rewards point at ids the server doesn't know yet are reported (clear_reward.json,
 // score_reward.json); scripts/gen_cn_rewards.cjs adds those.
 //
+// Some event numbers are different events in the two games (advent 100006: global's Re:ZERO collab rerun, CN's
+// Haruhi collab; 100007: global's Uma collab, CN's Lightcrest Serpent rerun): their quests keep global's rows, but a
+// quest can even be a story chapter in one game and a battle in the other. Every event with a shared quest whose
+// rewards (or battle/story) differ from CN's row gets CN's rows in assets/quest_overrides_cn.json, which the CN app
+// is paid from (src/lib/assets.ts getQuestFromCategorySync).
+//
+// Also written: assets/advent_coins_cn.json, each CN boss event's own coins (CN's advent_event columns 17-19:
+// Silver, Gold, Lilac). CN's reruns pay from the original run's reward lists but their shops charge their own
+// coins; the CN app gets the event's own (src/lib/cnCoinSwaps.ts).
+//
 //   node scripts/gen_cn_quests.cjs [--dry]
 const fs = require("fs")
 const path = require("path")
@@ -80,6 +90,7 @@ function learn(entries, cnRows, keyOf) {
     const scoreRewards = require(path.join(ROOT, "assets", "score_reward.json"))
     const missing = { clear: new Set(), score: new Set() }
     const report = {}
+    const overrides = {}
     for (const [file, table] of Object.entries(FILES)) {
         const assetFile = path.join(ROOT, "assets", `${file}.json`)
         if (!fs.existsSync(assetFile)) continue
@@ -98,6 +109,33 @@ function learn(entries, cnRows, keyOf) {
         // a CN-only row is a battle when it has the column the battle plan reads rank points from
         const rpCol = battlePlan.plan.rankPointReward?.col
         const added = []
+        // CN's own row for a quest, read through the learned columns
+        const cnEntry = (r, isBattle) => {
+            const { plan } = isBattle ? battlePlan : storyPlan
+            const entry = { name: "" }
+            for (const [field, how] of Object.entries(plan)) entry[field] = "constant" in how ? how.constant : (TRANSFORMS[how.transform](r.cols[how.col]) ?? 0)
+            return entry
+        }
+        const cnIsBattle = r => storyPlan.shared === 0 || (rpCol !== undefined && TRANSFORMS.int(r.cols[rpCol]) !== null)
+        // events whose shared quests aren't CN's (a different event under the same number)
+        const clashEvents = new Set()
+        for (const r of rows) {
+            const id = keyOf(r)
+            if (!/^\d+$/.test(id) || entries[id] === undefined || entries[id].cn) continue
+            const ours = entries[id], battle = cnIsBattle(r), cn = cnEntry(r, battle)
+            const differs = battle !== ("rankPointReward" in ours)
+                || ["scoreRewardGroup", "clearRewardId", "sPlusRewardId"].some(f => (cn[f] ?? 0) !== (ours[f] ?? 0))
+            if (differs) clashEvents.add(Math.floor(Number(id) / 1000))
+        }
+        for (const r of rows) {
+            const id = keyOf(r)
+            if (!/^\d+$/.test(id) || entries[id] === undefined || entries[id].cn || !clashEvents.has(Math.floor(Number(id) / 1000))) continue
+            const entry = cnEntry(r, cnIsBattle(r))
+            ;(overrides[file] ??= {})[id] = entry
+            if (entry.clearRewardId !== undefined && clearRewards[entry.clearRewardId] === undefined) missing.clear.add(entry.clearRewardId)
+            if (entry.scoreRewardGroup !== undefined && scoreRewards[entry.scoreRewardGroup] === undefined) missing.score.add(entry.scoreRewardGroup)
+        }
+        if (clashEvents.size > 0) console.log(`${file}: CN's own rows for event(s) ${[...clashEvents].join(", ")} (a different event in global)`)
         for (const r of rows) {
             const id = keyOf(r)
             if (!/^\d+$/.test(id) || entries[id] !== undefined) continue
@@ -125,6 +163,16 @@ function learn(entries, cnRows, keyOf) {
         }
         if (!DRY && added.length) fs.writeFileSync(assetFile, JSON.stringify(entries))
     }
+    if (!DRY) fs.writeFileSync(path.join(ROOT, "assets", "quest_overrides_cn.json"), JSON.stringify(overrides))
+    // each CN boss event's own coins: { event id: [Silver, Gold, Lilac] } (null where it has none)
+    const adventCoins = {}
+    for (const [id, line] of Object.entries(await readCnTable("master/quest/event/advent_event.orderedmap"))) {
+        const c = R.splitCsv(line.replace(/\n$/, ""))
+        const coins = [17, 18, 19].map(i => TRANSFORMS.int(c[i]))
+        if (coins.some(x => x !== null)) adventCoins[id] = coins
+    }
+    if (!DRY) fs.writeFileSync(path.join(ROOT, "assets", "advent_coins_cn.json"), JSON.stringify(adventCoins))
+    console.log(`advent coins: ${Object.keys(adventCoins).length} CN boss events`)
     console.log(JSON.stringify(report, null, 1))
     console.log(`missing clear rewards: ${[...missing.clear].join(",") || "none"}; missing score groups: ${[...missing.score].join(",") || "none"}`)
 })().catch(e => { console.error(e); process.exit(1) })

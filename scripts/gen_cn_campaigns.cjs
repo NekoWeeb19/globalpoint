@@ -121,22 +121,24 @@ const rows = async table => Object.entries(await readCnTable(table)).map(([k, v]
     }
 
     // ---- pictures (login bonus backgrounds, free pull share images) from CN's game files ----
+    // picture file -> everything that shows it (CN reused some: Lunar New Year 2023 has 2022's background)
     const wanted = new Map()
-    for (const info of Object.values(loginInfo)) if (info.background) wanted.set(hashed(info.background + ".png"), info)
-    for (const pull of freePulls) if (pull.picture) wanted.set(hashed(pull.picture + ".png"), pull)
+    const want = (file, owner) => { const key = hashed(file + ".png"); wanted.set(key, [...(wanted.get(key) ?? []), owner]) }
+    for (const info of Object.values(loginInfo)) if (info.background) want(info.background, info)
+    for (const pull of freePulls) if (pull.picture) want(pull.picture, pull)
     fs.mkdirSync(IMAGES_OUT, { recursive: true })
     let pictures = 0
     for (const zip of cnZips()) {
         for (const entry of (await unzipper.Open.file(zip)).files) {
             const key = "production/" + entry.path.split("\\").join("/").replace(/^production\//, "")
-            const owner = wanted.get(key)
-            if (!owner || owner.image) continue
+            const owners = wanted.get(key)
+            if (!owners || owners[0].image) continue
             const data = await entry.buffer()
             if (data.length < 8 || data[0] !== 0x89 || data.toString("latin1", 1, 4).toUpperCase() !== "PNG") continue
             data.write("PNG", 1, "latin1")
             const id = key.split("/").slice(-2).join("")
             fs.writeFileSync(path.join(IMAGES_OUT, `${id}.png`), data)
-            owner.image = id
+            for (const owner of owners) owner.image = id
             pictures++
         }
     }

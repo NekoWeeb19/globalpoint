@@ -3,6 +3,7 @@
 // (startpoint-cn src/routes/cn and src/cn-server.ts). See src/lib/cnClient.ts.
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { cnNewsItem, listNews } from "../../nya/news";
+import { autoNewsPosts } from "../../nya/autoNews";
 import { SessionType } from "../../data/types";
 import { generateViewerIdSession, getAccount, getAccountFromIdpIdSync, getAccountSessionsOfType, getPlayerFromAccountIdSync, insertAccount, insertDefaultPlayerSync, updateAccount } from "../../data/wdfpData";
 import { generateDataHeaders } from "../../utils";
@@ -118,7 +119,9 @@ const routes = async (fastify: FastifyInstance) => {
     // (category 4); 10 a page. A post opens with news/get_info (src/routes/api/news.ts).
     const PAGE = 10
     const newsPage = (category: number, page: number) => {
-        const posts = listNews("cn").filter(post => post.category === category)
+        // the dashboard's posts (newest first), then the automatic event posts in their own order (src/nya/autoNews.ts:
+        // Now on, Coming soon, Ended)
+        const posts = [...listNews("cn"), ...autoNewsPosts()].filter(post => post.category === category)
         const index = Math.max(1, page)
         return { current_page: index, news: posts.slice((index - 1) * PAGE, index * PAGE).map(cnNewsItem), news_count: posts.length }
     }

@@ -200,9 +200,15 @@ function addTowerCopies(tree) {
             c[0] = String(T.towerCopyQuestId(year, month, floor))
             c[5] = start
             c[6] = end
-            // the floor before it (column 13) is the copy's own floor, not CN's
+            // the floor before it is the copy's own floor, not CN's: column 12 is its key (what the game unlocks the
+            // floor by: event 1, quest key; left as CN's key, floors 4-6 on stayed locked in copy months), column 13
+            // its quest id
             const before = Number(c[13])
-            if (before >= T.towerQuestId(set, 1) && before <= T.towerQuestId(set, 10)) c[13] = String(T.towerCopyQuestId(year, month, before - T.towerQuestId(set, 1) + 1))
+            if (before >= T.towerQuestId(set, 1) && before <= T.towerQuestId(set, 10)) {
+                const beforeFloor = before - T.towerQuestId(set, 1) + 1
+                c[13] = String(T.towerCopyQuestId(year, month, beforeFloor))
+                if (/^\d+$/.test(c[12])) c[12] = String(T.towerCopyKey(year, month, beforeFloor))
+            }
             lines[0] = c.map(R.csvField).join(",")
             // the game takes the quest id from the key (1000 + key), so the key is fixed per month and floor
             list.entries.push({ key: String(T.towerCopyKey(year, month, floor)), node: { kind: "leaf", text: lines.join("\n") + (text.endsWith("\n") ? "\n" : ""), original: "" } })

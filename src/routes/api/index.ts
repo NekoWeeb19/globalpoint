@@ -8,6 +8,7 @@ import { SessionType } from "../../data/types";
 import { getClientSerializedData } from "../../data/utils";
 import { cnManaNodeList, manaBoardAwakeSync, nodeAwakeLevelsSync, payPendingAwakeStagesSync } from "../../nya/manaAwake";
 import { collectPlayerDataPooledExpSync, dailyResetPlayerDataSync, getAccountPlayers, getPlayerSync, getSession } from "../../data/wdfpData";
+import { dailyNewsOn } from "../../nya/serverSettings";
 import { generateDataHeaders } from "../../utils";
 import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";
 import { progressPlayerMissionsSync } from "../../nya/mission";
@@ -69,8 +70,10 @@ const routes = async (fastify: FastifyInstance) => {
             "message": "No players bound to account."
         })
 
-        // get last login time
-        dailyResetPlayerDataSync(player)
+        // get last login time. The first load after the daily reset (05:00 UTC) also opens the CN app's News board,
+        // like the live game's daily news (unless switched off on the dashboard's News tab)
+        const firstLoadToday = dailyResetPlayerDataSync(player)
+        const dailyNews = cn && firstLoadToday && dailyNewsOn()
 
         // collect the player's pooled exp
         collectPlayerDataPooledExpSync(player)
@@ -144,10 +147,15 @@ const routes = async (fastify: FastifyInstance) => {
 
         reply.header("content-type", "application/x-msgpack")
         reply.status(200).send({
-            "data_headers": generateDataHeaders({
-                asset_update: true,
-                viewer_id: viewerId
-            }),
+            "data_headers": {
+                ...generateDataHeaders({
+                    asset_update: true,
+                    viewer_id: viewerId
+                }),
+                // 2: the CN client opens the whole News board when home starts (HomeScene.startDailyNews; not
+                // during the tutorial), then forgets the flag
+                ...(dailyNews ? { "force_news": 2 } : {}),
+            },
             "data": clientData
         })
     })
