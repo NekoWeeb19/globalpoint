@@ -152,7 +152,7 @@
                         <button type="button" id="editor-cancel"
                             class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">Close</button>
                     </div>
-                    <p id="editor-message" class="text-sm text-on-surface-variant" role="status"></p>
+                    <div id="editor-message" class="flex flex-col gap-1 text-sm text-on-surface-variant" role="status"></div>
                 </form>
             </section>
 
@@ -181,7 +181,7 @@
                     <button type="button" id="group-clear"
                         class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-surface before:hover:opacity-[0.12] transition-opacity">Clear selection</button>
                 </div>
-                <p id="group-message" class="text-sm text-on-surface-variant" role="status"></p>
+                <div id="group-message" class="flex flex-col gap-1 text-sm text-on-surface-variant" role="status"></div>
             </section>
 
             <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
@@ -302,6 +302,23 @@
                 return now < start ? "upcoming" : now <= end ? "live" : "ended"
             }
 
+            /** "5 days", "3 h", "12 min": a span of time, roughly. */
+            function spanText(ms) {
+                const minutes = Math.max(1, Math.round(Math.abs(ms) / 60000))
+                if (minutes < 60) return minutes + " min"
+                const hours = Math.round(minutes / 60)
+                if (hours < 48) return hours + " h"
+                const days = Math.round(hours / 24)
+                return days + " day" + (days === 1 ? "" : "s")
+            }
+            /** Where a moved event stands on the server's date. */
+            function timingText(event) {
+                const now = serverNow(), start = Date.parse(event.scheduled.start), end = Date.parse(event.scheduled.end)
+                if (now < start) return "Starts in " + spanText(start - now)
+                if (now <= end) return "On now \u00b7 ends in " + spanText(end - now)
+                return "Ended " + spanText(now - end) + " ago \u00b7 not in the game now"
+            }
+
             // unit and armament names (the Give search's list), to find a banner by a featured unit's name
             let featuredNames = null
             fetch("/api/unit-editor/names").then(r => r.ok ? r.json() : null).then(names => {
@@ -366,9 +383,12 @@
                     if (appBadge(event)) title.append(badge(appBadge(event), false))
                     if (noArt(event)) title.append(badge("No art: hidden in game unless scheduled", false))
                     const state = stateOf(event)
-                    if (state === "live") title.append(badge("On now", true))
-                    if (state === "upcoming" && event.scheduled) title.append(badge("Coming up", false))
-                    if (event.scheduled) title.append(badge("Moved", false))
+                    if (event.scheduled) {
+                        // a moved one says where it stands on the server's date (a window already past or still ahead
+                        // isn't in the game now, which looks like the move didn't work)
+                        title.append(badge("Moved", false))
+                        title.append(badge(timingText(event), state === "live"))
+                    } else if (state === "live") title.append(badge("On now", true))
                     const dates = document.createElement("span")
                     dates.className = "text-on-surface-variant text-sm"
                     const own = ownDates(event)
@@ -457,6 +477,78 @@
                 $("group-reset").disabled = busy || !picked.some(e => e.scheduled)
             }
 
+            // ---- after a save: where each moved event stands on the server's date, a button to move the server's date
+            // to it, and the game update's rebuild until it's ready (a player moved a banner, kept the server's date
+            // years away and saw nothing change in the game) ----
+            let rebuildWatch = null
+            function showSaved(box, keys, fallbackText) {
+                const events = keys.map(key => data.events.find(e => e.key === key)).filter(e => e && e.scheduled)
+                box.replaceChildren()
+                clearInterval(rebuildWatch)
+                if (events.length === 0) { box.textContent = fallbackText; return }
+                const now = serverNow()
+                const day = (iso) => new Date(iso).toISOString().slice(0, 16).replace("T", " ")
+                const head = document.createElement("p")
+                head.className = "text-on-surface"
+                head.textContent = "Saved. The server's date is " + day(new Date(now).toISOString()) + " UTC."
+                box.appendChild(head)
+                const list = document.createElement("ul")
+                list.className = "flex flex-col gap-1"
+                for (const event of events.slice(0, 8)) {
+                    const item = document.createElement("li")
+                    const state = stateOf(event)
+                    item.textContent = event.name + ": " + day(event.scheduled.start) + " to " + day(event.scheduled.end) + " UTC. "
+                        + (state === "live" ? "It's on now."
+                            : state === "upcoming" ? "It shows in " + spanText(Date.parse(event.scheduled.start) - now) + "."
+                            : "It ended " + spanText(now - Date.parse(event.scheduled.end)) + " ago, so it isn't in the game at this date.")
+                    list.appendChild(item)
+                }
+                if (events.length > 8) {
+                    const more = document.createElement("li")
+                    more.textContent = "...and " + (events.length - 8) + " more."
+                    list.appendChild(more)
+                }
+                box.appendChild(list)
+                // not on now: offer to move the server's date to the first one's start
+                const waiting = events.filter(e => stateOf(e) !== "live").sort((a, b) => Date.parse(a.scheduled.start) - Date.parse(b.scheduled.start))
+                if (waiting.length > 0) {
+                    const target = waiting[0]
+                    const jump = document.createElement("button")
+                    jump.type = "button"
+                    jump.className = "mt-1 self-start text-sm border border-outline-variant text-on-surface h-[36px] px-[18px] rounded-full hover:bg-surface-container-high"
+                    jump.textContent = "Move the server's date to " + (events.length > 1 ? "the start of " + target.name : "its start") + " (" + day(target.scheduled.start) + ")"
+                    jump.addEventListener("click", async () => {
+                        jump.disabled = true
+                        try {
+                            const before = serverNow()
+                            const response = await fetch("/api/server/time?time=" + encodeURIComponent(toInput(Date.parse(target.scheduled.start))))
+                            if (!response.ok) throw new Error((await response.json().catch(() => ({}))).message || response.statusText)
+                            try { sessionStorage.setItem("undoTime", String(before)) } catch { } // the Overview's Undo
+                            await load()
+                            showSaved(box, keys, fallbackText)
+                        } catch (error) {
+                            jump.disabled = false
+                            jump.textContent = "Error: " + error.message
+                        }
+                    })
+                    box.appendChild(jump)
+                }
+                // the game update: rebuilding, then ready
+                const update = document.createElement("p")
+                update.className = "font-semibold text-on-surface"
+                update.textContent = "Checking the game update..."
+                box.appendChild(update)
+                const check = async () => {
+                    try {
+                        const status = await fetch("/api/server/status").then(r => r.json())
+                        if (status.updateRebuilding) update.textContent = "Rebuilding the game update... Don't open the game yet."
+                        else { update.textContent = "Game update ready: close and reopen the game to see the change."; clearInterval(rebuildWatch) }
+                    } catch { update.textContent = "Can't reach the server." }
+                }
+                check()
+                rebuildWatch = setInterval(check, 2000)
+            }
+
             async function postGroup(path, body, doneText) {
                 if (busy) return
                 setBusy(true)
@@ -466,7 +558,8 @@
                     const reply = await response.json().catch(() => ({}))
                     if (!response.ok) throw new Error(reply.message || response.statusText)
                     accept(reply)
-                    $("group-message").textContent = data.mod.state === "failed" ? data.mod.message : doneText
+                    if (data.mod.state === "failed") $("group-message").textContent = data.mod.message
+                    else showSaved($("group-message"), (body.entries ?? []).map(entry => entry.key), doneText)
                 } catch (error) {
                     $("group-message").textContent = "Error: " + error.message
                 } finally {
@@ -583,7 +676,8 @@
                     accept(reply)
                     const updated = data.events.find(e => e.key === body.key)
                     if (updated) openEditor(updated.key)
-                    $("editor-message").textContent = data.mod.state === "failed" ? data.mod.message : doneText
+                    if (data.mod.state === "failed") $("editor-message").textContent = data.mod.message
+                    else showSaved($("editor-message"), path.endsWith("/schedule") ? [body.key] : [], doneText)
                 } catch (error) {
                     $("editor-message").textContent = "Error: " + error.message
                 } finally {

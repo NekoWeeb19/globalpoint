@@ -65,6 +65,12 @@ nothing is listed unless you move events there.
    10 years. A longer run stretches everything inside it to fit (its phases, shop and mission windows),
    and events over about a year are left out of **What's on** and the automatic News posts.
 
+   After saving, a summary says where each one stands on the **server's** date (on now, starts in N days, or
+   ended and so not in the game at that date), with a **Move the server's date to its start** button, and the
+   game update's progress (**Rebuilding**... then **ready**: close and reopen the game). In the list, moved ones
+   show the same status, e.g. **On now · ends in 5 days** or **Ended 3 days ago · not in the game now**: an event
+   only shows in the game while the server's date is inside its dates.
+
    ![An event's date editor](images/dashboard-event-editor.png)
 3. To move several, tick them and use **All start at (UTC)**; **Also move the summon banners that opened
    with them** moves their banners too. To start one of them at another time, fill in its **Own start
