@@ -70,11 +70,16 @@ export function randomPoolItem(
 
 export function drawGachaSync(
     gacha: Gacha,
-    drawAmount: number
+    drawAmount: number,
+    /** A banner's own fixed star rates, [5★, 4★, 3★] per mille (ticket portals: assets/gacha_rarity_cn.json). */
+    fixedRates?: number[]
 ): GachaDrawResult {
     const isCharacterGacha = gacha.type === GachaType.CHARACTER
-    // Star Fest / Meteor Festival (movie "fes") have their own rates ("★5 ×1.5"); every other unit banner the normal ones
-    const rankRates = rankRatesFor(isCharacterGacha ? ((gacha as CharacterGacha).movieName === "fes" ? "fes" : "normal") : "armament")
+    // Star Fest / Meteor Festival (movie "fes") have their own rates ("★5 ×1.5"); every other unit banner the normal
+    // ones; a banner with fixed rates (e.g. the 5★ guaranteed ticket portal) its own, for every pull
+    const rankRates = fixedRates !== undefined
+        ? { normal: fixedRates, multiGuarantee: fixedRates }
+        : rankRatesFor(isCharacterGacha ? ((gacha as CharacterGacha).movieName === "fes" ? "fes" : "normal") : "armament")
 
     const pulls: Map<number, number> = new Map()
 

@@ -1,6 +1,6 @@
 import storyJoinData from "../../assets/story_join_character.json"
 import { StoryJoinData, townPickupHistory } from "../lib/storyJoin"
-import { getCharacterDataSync } from "../lib/assets"
+import { getCharacterDataSync, getQuestFromCategorySync } from "../lib/assets"
 import { getDateFromServerTime, epochOf, getServerTime } from "../utils"
 import { realStaminaOn } from "../nya/serverSettings"
 import { ClientPlayerData, DailyChallengePointListEntry, MergedPlayerData, PartyCategory, Player, PlayerBoxGacha, PlayerCharacter, PlayerCharacterBondToken, PlayerDrawnQuest, PlayerEquipment, PlayerGachaCampaign, PlayerGachaInfo, PlayerMultiSpecialExchangeCampaign, PlayerParty, PlayerPartyGroup, PlayerQuestProgress, PlayerRushEvent, PlayerRushEventPlayedParty, PlayerStartDashExchangeCampaign, RushEventBattleType, UserBoxGacha, UserCharacter, UserCharacterBondTokenStatus, UserEquipment, UserGachaCampaign, UserPartyGroup, UserPartyGroupTeam, UserQuestProgress, UserRushEvent, UserRushEventPlayedParty, UserRushEventPlayedPartyList, UserTutorial } from "./types"
@@ -160,6 +160,16 @@ export function serializeRushEvent(
  * @param player The player data object to serialize.
  * @returns A serialized player data object.
  */
+/** Whether a quest is a battle (it has rank times and rewards), not a story chapter. */
+function isBattleQuest(section: number, questId: number): boolean {
+    try {
+        const quest = getQuestFromCategorySync(section, questId)
+        return quest !== null && "rankPointReward" in quest
+    } catch {
+        return false
+    }
+}
+
 export function serializePlayerData(
     toSerialize: MergedPlayerData,
     options?: SerializePlayerDataOptions
@@ -216,9 +226,13 @@ export function serializePlayerData(
     for (const [section, progresses] of Object.entries(toSerialize.questProgress)) {
         const list: UserQuestProgress[] = []
         for (const progress of progresses) {
+            // a cleared battle with no clear rank (e.g. from an imported or edited save) stops the game on the chapter
+            // list (C3212 "no clear rank for a cleared battle quest"): it's sent as the lowest rank (1, below B)
+            const missingRank = progress.finished && (progress.clearRank === undefined || progress.clearRank === null)
+                && isBattleQuest(Number(section), progress.questId)
             list.push({
                 "best_elapsed_time_ms": progress.bestElapsedTimeMs,
-                "clear_rank": progress.clearRank,
+                "clear_rank": missingRank ? 1 : progress.clearRank,
                 "finished": progress.finished,
                 "high_score": progress.highScore,
                 "quest_id": progress.questId,

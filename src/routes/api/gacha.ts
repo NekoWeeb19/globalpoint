@@ -19,6 +19,7 @@ import cnGachaTickets from "../../../assets/cn_gacha_tickets.json";
 // global's GachaExecType: 3/4/14 use the banner's own single/10-pull/"crazy" tickets
 // (assets/cn_gacha_tickets.json, scripts/gen_cn_gacha_tickets.cjs), 20 is the "at least 4★" ticket.
 // The client loads the summon movie for the count it expects, so a wrong count crashes it (C8016).
+import gachaRarityCn from "../../../assets/gacha_rarity_cn.json"
 const CN_TEN_PULL_KINDS = new Set([2, 4, 7, 8, 9, 13, 14])
 const CN_WILDCARD_TICKETS: Record<number, number> = { 9: 999001, 10: 999003, 12: 999005, 13: 999004, 20: 999008 }
 const CN_RARE4_KIND = 20
@@ -412,7 +413,9 @@ const routes = async (fastify: FastifyInstance) => {
         // 5★, 2 is 4★, 3 is 3★), the rest as usual
         const guaranteed = perAccountPull ? Math.min(pullCount, perAccount.guaranteeNumber ?? 0) : 0
         const guaranteePool = drawFrom.pool[6 - (perAccount.guaranteeRarity ?? 5)]
-        const drawResult = drawGachaSync(drawFrom, pullCount - (guaranteed > 0 && guaranteePool?.length ? guaranteed : 0))
+        // the CN ticket portals' own star rates (5★ guaranteed, 4★ or higher), from CN's rarity tables
+        const fixedRates = cn ? (gachaRarityCn as Record<string, number[]>)[String(gachaId)] : undefined
+        const drawResult = drawGachaSync(drawFrom, pullCount - (guaranteed > 0 && guaranteePool?.length ? guaranteed : 0), fixedRates)
         if (guaranteed > 0 && guaranteePool?.length) {
             for (let i = 0; i < guaranteed; i++) {
                 const id = guaranteePool[randomPoolItem(0, 1001, guaranteePool.map(e => e.rarity)) ?? 0].id

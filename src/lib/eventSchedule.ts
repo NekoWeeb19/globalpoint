@@ -145,6 +145,9 @@ export function parseSchedule(raw: unknown, catalog: Pick<EventCatalog, "events"
     return { schedule: { entries }, problems }
 }
 
+/** The longest run an event can be moved to: 10 years (was 1; a long run is the player's choice). */
+const MAX_RUN_MS = 10 * 366 * 24 * 60 * 60 * 1000
+
 /**
  * Why an entry can't be used, or null if it's fine. `others` are the entries already accepted.
  */
@@ -155,7 +158,8 @@ export function checkEntry(entry: ScheduleEntry, catalog: Pick<EventCatalog, "ev
     const start = isoMs(entry.start), end = isoMs(entry.end)
     if (start === null || end === null) return "start and end must be dates (UTC)"
     if (end <= start) return "the end must be after the start"
-    if (end - start > 366 * 24 * 60 * 60 * 1000) return "an event can run for a year at most"
+    // a long run stretches every date inside the event (phases, shop and mission windows) to fit; the player's choice
+    if (end - start > MAX_RUN_MS) return "an event can run for 10 years at most"
     if (others.some(other => other.key === entry.key)) return "the event is already scheduled"
     return null
 }

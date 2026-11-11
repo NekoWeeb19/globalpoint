@@ -59,7 +59,9 @@ nothing is listed unless you move events there.
 1. Find the event (search, or filter by **Game**, **Kind** and **Show**). Set **Game** to **CN app**
    for the CN game's list.
 2. Press **Schedule**, set **Starts** and **Ends** (or **Start now**, and **Original length** to keep
-   its length), and **Save**. Its quests, missions, shop and tokens move with it.
+   its length), and **Save**. Its quests, missions, shop and tokens move with it. An event can run for up to
+   10 years. A longer run stretches everything inside it to fit (its phases, shop and mission windows),
+   and events over about a year are left out of **What's on** and the automatic News posts.
 
    ![An event's date editor](images/dashboard-event-editor.png)
 3. To move several, tick them and use **All start at (UTC)**; **Also move the summon banners that opened
