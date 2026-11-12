@@ -621,6 +621,32 @@ export function getShopItemSync(
     }
 }
 
+// last round of each rush event folder, from the quests themselves ("eventId/folderId" -> round)
+let rushEventFolderLastRounds: Map<string, number> | null = null
+
+/**
+ * Gets the last round of a rush event (Grand Gauntlet) folder: clearing it clears the folder.
+ * Most events' Godly folder has 3 rounds, the other folders 2.
+ *
+ * @param rushEventId The ID of the rush event.
+ * @param folderId The ID of the folder.
+ * @returns The folder's last round, or 0 when the event has no such folder (the endless folder's quests are round 0).
+ */
+export function getRushEventFolderLastRound(
+    rushEventId: number,
+    folderId: number
+): number {
+    if (rushEventFolderLastRounds === null) {
+        rushEventFolderLastRounds = new Map()
+        for (const quest of Object.values(rushEventQuests as RawQuests)) {
+            if (quest.rushEventId === undefined || quest.rushEventFolderId === undefined || quest.rushEventRound === undefined) continue
+            const key = `${quest.rushEventId}/${quest.rushEventFolderId}`
+            rushEventFolderLastRounds.set(key, Math.max(rushEventFolderLastRounds.get(key) ?? 0, quest.rushEventRound))
+        }
+    }
+    return rushEventFolderLastRounds.get(`${rushEventId}/${folderId}`) ?? 0
+}
+
 /**
  * Gets the rewards that should be given when clearing a given folder.
  * 

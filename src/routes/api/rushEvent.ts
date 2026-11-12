@@ -4,7 +4,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { PartyCategory, RushEventBattleType } from "../../data/types";
 import { deletePlayerRushEventPlayedPartiesUntilSync, deletePlayerRushEventPlayedPartyListSync, deletePlayerRushEventPlayedPartySync, getAccountPlayers, getDefaultPlayerRushEventSync, getPlayerPartyGroupListSync, getPlayerRushEventClearedFoldersSync, getPlayerRushEventSync, getRushEventEndlessRankingListSync, getSession, insertPlayerPartyGroupListSync, insertPlayerRushEventSync, updatePlayerRushEventSync } from "../../data/wdfpData";
 import { getQuestFromCategorySync } from "../../lib/assets";
-import { BattleQuest, QuestCategory, RushEventFolder } from "../../lib/types";
+import { BattleQuest, QuestCategory } from "../../lib/types";
 import { generateDataHeaders, getServerDate } from "../../utils";
 import { insertActiveQuest } from "./singleBattleQuest";
 import { getPlayerRushEventEndlessBattleRankingSync, getRushEventEndlessBattleRankPlayedPartyListSync, getSerializedPlayerRushEventPlayedPartiesSync } from "../../lib/rush";
@@ -78,12 +78,6 @@ interface RushPartyGroup {
     party_group_color_id: number,
     party_group_id: number,
     party_list: RushParty[]
-}
-
-export const rushEventFolderMaxRounds: { [key in RushEventFolder]?: number } = {
-    [RushEventFolder.INTERMEDIATE]: 2,
-    [RushEventFolder.ADVANCED]: 2,
-    [RushEventFolder.GODLY]: 2
 }
 
 const routes = async (fastify: FastifyInstance) => {

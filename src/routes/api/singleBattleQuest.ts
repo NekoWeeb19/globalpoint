@@ -1,11 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { deletePlayerRushEventPlayedPartyListSync, getAccountPlayers, getPlayerRushEventSync, getPlayerSingleQuestProgressSync, getPlayerSync, getSession, insertPlayerQuestProgressSync, insertPlayerRushEventClearedFolderSync, insertPlayerRushEventPlayedPartySync, updatePlayerQuestProgressSync, updatePlayerRushEventSync, updatePlayerSync } from "../../data/wdfpData";
-import { getQuestFromCategorySync, getRushEventFolderClearRewards } from "../../lib/assets";
+import { getQuestFromCategorySync, getRushEventFolderClearRewards, getRushEventFolderLastRound } from "../../lib/assets";
 import { getCharactersEvolutionImgLevels, givePlayerCharactersExpSync } from "../../lib/character";
 import { questElement, givePlayerRewardsSync, givePlayerRewardSync, givePlayerScoreRewardsSync } from "../../lib/quest";
 import { BattleQuest, EquipmentItemReward, PlayerRewardResult, QuestCategory, RewardType } from "../../lib/types";
 import { generateDataHeaders, epochOf, getServerDate, getServerTime } from "../../utils";
-import { rushEventFolderMaxRounds } from "./rushEvent";
 import { RushEventBattleType, UserRushEventPlayedParty } from "../../data/types";
 import { getSerializedPlayerRushEventPlayedPartiesSync } from "../../lib/rush";
 import { givePlayerRankPoint } from "../../nya/player";
@@ -390,6 +389,11 @@ const routes = async (fastify: FastifyInstance) => {
                 const unisonEvolutionImgLevels: (number | null)[] = getCharactersEvolutionImgLevels(playerId, unisonCharacterIds)
 
                 let round: number = questId
+                // Grand Gauntlet folders: only a won battle uses up its team (a lost or retired one is fought again);
+                // winning the folder's last round (most events' Godly folder has 3 rounds, the others 2) clears it
+                const recordBattle = rushEventBattleType === RushEventBattleType.ENDLESS || questAccomplished === true
+                const folderCleared = rushEventBattleType === RushEventBattleType.FOLDER && recordBattle
+                    && rushEventRound >= getRushEventFolderLastRound(rushEventId, rushEventFolderId)
 
                 // update endless battle stats
                 if (rushEventBattleType === RushEventBattleType.ENDLESS) {
@@ -411,7 +415,7 @@ const routes = async (fastify: FastifyInstance) => {
                         })
                     }
 
-                } else if (rushEventBattleType === RushEventBattleType.FOLDER && (rushEventRound >= (rushEventFolderMaxRounds[rushEventFolderId] ?? 0))) {
+                } else if (folderCleared) {
                     // mark folder as complete since this is the final round
                     insertPlayerRushEventClearedFolderSync(playerId, rushEventId, rushEventFolderId)
                     // update the active folder value
@@ -419,12 +423,13 @@ const routes = async (fastify: FastifyInstance) => {
                         eventId: rushEventId,
                         activeRushBattleFolderId: null
                     })
-                    // delete played parties
+                    // delete played parties: the next run of a folder starts again at its first boss
                     deletePlayerRushEventPlayedPartyListSync(playerId, rushEventId, rushEventBattleType)
                 }
 
-                // insert played party
-                insertPlayerRushEventPlayedPartySync(playerId, rushEventId, {
+                // insert played party (not the last round's: the run is over, and a team left here made the
+                // game start the next run at boss 2)
+                if (recordBattle && !folderCleared) insertPlayerRushEventPlayedPartySync(playerId, rushEventId, {
                     characterIds: characterIds,
                     unisonCharacterIds: unisonCharacterIds,
                     equipmentIds: bodyPartyStatistics.equipments.map(val => val?.id ?? null),
@@ -447,7 +452,7 @@ const routes = async (fastify: FastifyInstance) => {
                 }
 
                 // give rewards if allowed
-                if (rushEventRound >= (rushEventFolderMaxRounds[rushEventFolderId] ?? 0)) {
+                if (folderCleared) {
                     const rewards = getRushEventFolderClearRewards(rushEventId, rushEventFolderId) ?? []
                     rushEventRewardsResult = givePlayerRewardsSync(playerId, rewards)
 

@@ -599,6 +599,39 @@ async function main() {
             if (name === featureFile) featureBuf = await e.buffer()
         }
     }
+    // CN reruns whose own summon page is wrong in CN's files: a picture CN never shipped (blank page), or another
+    // banner's art (1526-1530 all show one New Faces banner's units; 1518 and 25010 the neighbouring banner's
+    // picture). Each gets its original's rows (same unit pools; 25010 by name, armaments have none), whose art is in
+    // CN's files. Found 2026-11-12 after a player saw a summon banner without its picture; 71 opens with "A
+    // Not-So-Silent Night". Applied to the newest copy, so the art checks below and the shipped table both see it.
+    const RERUN_ART = { 70: 13, 71: 6, 1547: 10074, 1526: 53, 1527: 54, 1528: 55, 1529: 56, 1530: 58, 1518: 155, 25010: 15010 }
+    if (featureBuf) {
+        const tree = R.decodeFile(featureBuf)
+        const byId = new Map(tree.entries.map(e => [e.key, e]))
+        const copy = node => node.kind === "leaf" ? { kind: "leaf", text: node.text, original: "" } : { kind: "map", entries: node.entries.map(e => ({ key: e.key, node: copy(e.node) })), dirty: true }
+        let fixed = 0
+        for (const [rerun, original] of Object.entries(RERUN_ART)) {
+            const from = byId.get(String(original))
+            if (!from) { console.log(`summon art fix: banner ${original} has no rows, ${rerun} left as it is`); continue }
+            const node = copy(from.node)
+            // CN's new_character_pickup_37 (10074) has no top page row (global's copy has one): the top animation
+            // goes first when its files are in the CN files
+            const firstMovie = node.entries.map(e => R.splitCsv(e.node.text)).find(c => c[0] === "0" && c[2])
+            const top = firstMovie && firstMovie[2].replace(/\/[^/]+\/feature$/, "/top/feature")
+            if (!node.entries.some(e => e.key === "1") && top && top !== firstMovie[2]
+                && cnNames.has(fileOf(top + ".timeline.amf3.deflate").replace(/^production\/upload\//, ""))) {
+                node.entries.unshift({ key: "1", node: { kind: "leaf", text: `0,,${top},,,,(None),,`, original: "" } })
+            }
+            const entry = byId.get(rerun)
+            if (entry) entry.node = node
+            else tree.entries.push({ key: rerun, node })
+            fixed++
+        }
+        tree.entries.sort((a, b) => Number(a.key) - Number(b.key))
+        tree.dirty = true
+        featureBuf = R.encodeFile(tree)
+        console.log(`summon banners with wrong art in CN's files: ${fixed} given their original's`)
+    }
     if (featureBuf) {
         featureContent = {}
         for (const { path: keys, leaf } of R.leaves(R.decodeFile(featureBuf))) featureContent[keys.join("/")] = leaf.text
