@@ -153,6 +153,35 @@ public class DashboardActivity extends Activity {
         return guess;
     }
 
+    /** A picked file copied into the app's cache (keeping its name), as a file:// Uri; null when it can't be read. */
+    private Uri copyPicked(Uri uri, int index) {
+        String name = "picked-" + index;
+        try (android.database.Cursor c = getContentResolver().query(uri, new String[] { android.provider.OpenableColumns.DISPLAY_NAME }, null, null, null)) {
+            if (c != null && c.moveToFirst() && c.getString(0) != null) name = c.getString(0);
+        } catch (Exception ignored) { }
+        name = name.replaceAll("[\\\\/:*?<>|\"]", "_");
+        java.io.File dir = new java.io.File(getCacheDir(), "picked/" + System.currentTimeMillis() + "-" + index);
+        java.io.File old = new java.io.File(getCacheDir(), "picked");
+        if (index == 0 && old.isDirectory()) deleteTree(old);
+        if (!dir.mkdirs() && !dir.isDirectory()) return null;
+        java.io.File file = new java.io.File(dir, name);
+        try (InputStream in = getContentResolver().openInputStream(uri); OutputStream outStream = new java.io.FileOutputStream(file)) {
+            if (in == null) return null;
+            byte[] buf = new byte[65536];
+            int n;
+            while ((n = in.read(buf)) > 0) outStream.write(buf, 0, n);
+        } catch (Exception e) {
+            return null;
+        }
+        return Uri.fromFile(file);
+    }
+
+    private static void deleteTree(java.io.File f) {
+        java.io.File[] kids = f.listFiles();
+        if (kids != null) for (java.io.File k : kids) deleteTree(k);
+        f.delete();
+    }
+
     private boolean isNight() {
         return (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
     }
@@ -167,8 +196,20 @@ public class DashboardActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent result) {
         super.onActivityResult(requestCode, resultCode, result);
         if (requestCode == PICK_FILE && pendingUpload != null) {
-            pendingUpload.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, result));
+            Uri[] picked = WebChromeClient.FileChooserParams.parseResult(resultCode, result);
+            ValueCallback<Uri[]> callback = pendingUpload;
             pendingUpload = null;
+            if (picked == null || picked.length == 0) { callback.onReceiveValue(picked); return; }
+            // the page gets the app's own copy: some file managers (Xiaomi's, a player report) give the WebView a
+            // file it reads as 0 bytes ("the file is empty"), while the app can read it through ContentResolver
+            new Thread(() -> {
+                Uri[] out = new Uri[picked.length];
+                for (int i = 0; i < picked.length; i++) {
+                    Uri copy = copyPicked(picked[i], i);
+                    out[i] = copy != null ? copy : picked[i];
+                }
+                runOnUiThread(() -> callback.onReceiveValue(out));
+            }).start();
         } else if (requestCode == SAVE_FILE && resultCode == RESULT_OK && result != null && pendingDownload != null) {
             Uri target = result.getData();
             String url = pendingDownload;
