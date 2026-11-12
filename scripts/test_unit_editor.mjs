@@ -82,7 +82,16 @@ try {
     check("... allowed in advanced mode with a note (not the crash warning)", !inAdvanced.errors.some(e => e.includes("together")) && inAdvanced.warnings.some(w => w.level === "notice" && w.text.startsWith("Not used together")) && !inAdvanced.warnings.some(w => w.level === "strong"), inAdvanced)
     check("a trigger CN never uses: refused in advanced mode too", UE.checkLine(strong, cat, "advanced").errors.some(e => e.includes("unrestricted mode")))
     check("... allowed in unrestricted mode with the crash warning (true = unrestricted, for older pages)", UE.checkLine(strong, cat, "unrestricted").warnings.some(w => w.level === "strong") && UE.checkLine(strong, cat, true).errors.length === 0)
-    check("contradictions stay refused in unrestricted mode", UE.checkLine(contra, cat, "unrestricted").errors.some(e => e.includes("can't both be true")))
+    // multiball-only effects (U_573686 on the party screen / two-boss battles): refused in every mode, not offered
+    const mbOnly = ["29", "30", "689", "710"]
+    for (const mode of ["default", "advanced", "unrestricted"]) {
+        const bad = [...whenLine]; bad[47] = "29"; bad[27] = "23"
+        check(`"Pierce for its multiball" on a unit is refused (${mode} mode)`, UE.checkLine(bad, cat, mode).errors.some(e => e.includes("U_573686")))
+    }
+    check("multiball-only effects aren't in the editor's used list", !mbOnly.some(e => cat.used.whenEffect.includes(e) || cat.used.whileEffect.includes(e)))
+    const pierce = [...whenLine]; pierce[47] = "26"; pierce[27] = "23"; pierce[28] = "5"; pierce[29] = "Red"
+    check("the unit's own pierce (26) is still allowed", UE.checkLine(pierce, cat, "default").errors.length === 0, UE.checkLine(pierce, cat, "default"))
+    check("contradictions stay refused in unrestricted mode",UE.checkLine(contra, cat, "unrestricted").errors.some(e => e.includes("can't both be true")))
 
     // saving
     const e1 = edit()

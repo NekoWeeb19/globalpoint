@@ -72,6 +72,14 @@ const pad = c => { const out = [...c]; while (out.length < ABILITY_COLUMNS) out.
 
 // ---- what CN's own units use (the guard rails) -----------------------------------------------------------
 
+/**
+ * Effects only a multiball's own ability may have ("Pierce/Float/fixed speed for its multiball", CN uses them only
+ * in multiball abilities 90011, 90012, 90090, 98001). The client builds them with its "multiball only" flag and
+ * stops with U_573686 ("マルチボール専用のアビリティが使用されています") when a unit's ability, leader skill or
+ * armament has one: on the party screen and at the start of a two-boss battle. Refused in every mode.
+ */
+const multiballOnly = (part, code) => /MultiballSelf$/.test(CODES[part]?.[code]?.name ?? "")
+
 let catalogCache = null
 /**
  * From every CN ability and leader line: which codes and combinations the game uses, a template line for each
@@ -102,12 +110,12 @@ async function catalog() {
         }
         for (const at of [11, 18, 25, 29, 36, 49, 99, 103, 111]) if (c[at] && c[at] !== "(None)") for (const g of c[at].split(",")) groups.add(g)
         if (c[5] === "0") {
-            used.whenTrigger.add(c[27]); used.whenEffect.add(c[47])
+            used.whenTrigger.add(c[27]); if (!multiballOnly("whenEffect", c[47])) used.whenEffect.add(c[47])
             if (fieldsOf("whenTrigger", c[27]).trigger_puller) used.whenWho.add(c[28])
             pairs.whenWho.add(`${c[27]}|${c[28]}`); pairs.trigEffect.add(`0|${c[27]}|${c[47]}`); pairs.effectTarget.add(`0|${c[47]}|${c[48]}`)
             count("whenTrigger", c[27], c.slice(27, 47)); count("whenEffect", c[47], c.slice(47, 85))
         } else if (c[5] === "1") {
-            used.whileTrigger.add(c[97]); used.whileEffect.add(c[109])
+            used.whileTrigger.add(c[97]); if (!multiballOnly("whileEffect", c[109])) used.whileEffect.add(c[109])
             if (fieldsOf("whileTrigger", c[97]).trigger_puller) used.whileWho.add(c[98])
             pairs.whileWho.add(`${c[97]}|${c[98]}`); pairs.trigEffect.add(`1|${c[97]}|${c[109]}`); pairs.effectTarget.add(`1|${c[109]}|${c[110]}`)
             count("whileTrigger", c[97], c.slice(85, 109)); count("whileEffect", c[109], c.slice(109, ABILITY_COLUMNS))
@@ -297,6 +305,7 @@ function checkLine(c, cat, mode) {
             for (const [f, d] of Object.entries(fields)) if (d.pair && !d.cols.every(i => isNum(c[i]))) errors.push(`${label(f)} must be a number`)
         }
         if (!CODES[effPart][eff]) errors.push(`effect code ${eff} isn't one the game knows`)
+        else if (multiballOnly(effPart, eff)) errors.push(`the effect "${name(effPart, eff)}" only works in a multiball's own ability; on a unit it stops the game (U_573686)`)
         else {
             const fields = fieldsOf(effPart, eff)
             if (!cat.used[effPart].includes(eff) && !unrestricted) errors.push(`the effect "${name(effPart, eff)}" isn't used in the game (unrestricted mode)`)
@@ -606,7 +615,8 @@ async function importKits(data) {
         const unit = await getUnit(id), check = await checkEdit(unit, true)
         if (!check.ok) {
             if (before) fs.writeFileSync(file, before); else fs.unlinkSync(file)
-            no("some lines can't be read by the game or contradict themselves")
+            const first = [...check.abilities.flatMap((a, i) => a.map((r, j) => [`ability ${i + 1}, line ${j + 1}`, r])), ...check.leader.map((r, j) => [`leader skill, line ${j + 1}`, r])].find(([, r]) => r.errors.length)
+            no(first ? `${first[0]}: ${first[1].errors[0]}` : "some lines can't be read by the game or contradict themselves")
             continue
         }
         imported.push(id)
