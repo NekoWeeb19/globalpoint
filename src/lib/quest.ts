@@ -50,7 +50,7 @@ export function elementDropItemId(tier: number, element: number | undefined): nu
 export function givePlayerScoreRewardsSync(
     playerId: number,
     groupId?: number,
-    scoreRewards?: ScoreReward[],
+    scoreRewards?: ScoreReward[] | null,
     boostPointUsed: boolean = false,
     /** A reward campaign's item rate (1 without one); see src/lib/rewardCampaign.ts. */
     itemCampaignRate: number = 1,
@@ -73,7 +73,8 @@ export function givePlayerScoreRewardsSync(
     let equipmentList: Object[] = []
     let items: Record<string, number> = {}
 
-    if (scoreRewards !== undefined && groupId !== undefined) {
+    // a quest with no score drops (group 0, e.g. CN-only challenge battles) gets null here
+    if (scoreRewards && groupId !== undefined) {
         let rewardIndex = 0
         for (const scoreReward of scoreRewards) {
             rewardIndex += 1;

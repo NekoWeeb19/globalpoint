@@ -90,6 +90,51 @@ const key = p => p.replace(/^production\/[a-z_]+\//, "production/upload/")
         }
     }
 
+    // 3. boss models whose name no longer matches the boss table. Before some boss battles the game checks that the
+    // boss group's name (standard_boss, column "name") equals the name inside the boss's model file
+    // (<model>.esdl.amf3.deflate, field bx[1].a), else it stops with F0 ("ボスグループ名...が一致しません"; main
+    // story chapter 12 "Cursed Sword", a player's log, 2026-11-12). The translation renamed both
+    // (scripts/gen_cn_boss_models.cjs, update 1.4.83), but one Chinese name had two English names (女帝歼灭者:
+    // "Modified Purger" in the table, "Purger Empress" in the model), and a later table update (1.4.136) renamed
+    // Sticky King Polu in the table only. Bosses whose two names already differ in CN's own files are left alone
+    // (the game doesn't check those). Read as the game has them after StarPoint's translation updates (up to
+    // 1.4.800, the data pack's; later ones are schedule builds that carry these fixes, so they never feed back).
+    {
+        const patchDir = path.join(ROOT, ".cdn", "cn_patches")
+        const num = v => v.split(".").map(Number).reduce((a, b) => a * 10000 + b, 0)
+        const files = new Map([...cn].map(([k, f]) => [k, { entry: f.entry, stored: f.stored }]))
+        for (const p of JSON.parse(fs.readFileSync(path.join(patchDir, "patches.json"), "utf8"))) {
+            if (num(p.version) > num("1.4.800")) continue
+            for (const a of p.archives) for (const e of (await unzipper.Open.file(path.join(patchDir, a.file))).files) {
+                if (e.type !== "File") continue
+                const stored = e.path.split("\\").join("/")
+                files.set(key(stored), { entry: e, stored })
+            }
+        }
+        const BOSS_TABLE = hashed("master/battle/boss/standard_boss.orderedmap")
+        const rowsOf = async e => new Map(R.leaves(R.decodeFile(await e.buffer())).map(l => [l.path.join("/"), R.splitCsv(l.leaf.text)]))
+        const cnTable = await rowsOf(cn.get(BOSS_TABLE).entry), table = await rowsOf(files.get(BOSS_TABLE).entry)
+        const nameIn = data => { const o = readAmf3(data); return Array.isArray(o?.bx) ? o.bx[1]?.a : undefined }
+        const literal = s => { const b = Buffer.from(s, "utf8"), n = (b.length << 1) | 1; return Buffer.concat([Buffer.from([0x06]), n < 0x80 ? Buffer.from([n]) : Buffer.from([(n >> 7) | 0x80, n & 0x7f]), b]) }
+        const done = new Map() // model -> the name it was given
+        for (const [row, c] of table) {
+            const modelKey = hashed(c[1] + ".esdl.amf3.deflate"), file = files.get(modelKey), cnFile = cn.get(modelKey)
+            if (!file || !cnFile) continue
+            if (cnTable.get(row)?.[0] !== nameIn(inflate(await cnFile.entry.buffer()))) continue
+            const data = inflate(await file.entry.buffer()), now = nameIn(data)
+            if (now === c[0] || typeof now !== "string") continue
+            if (done.has(c[1])) { if (done.get(c[1]) !== c[0]) console.log(`boss ${row}: model ${c[1]} already named "${done.get(c[1])}", table says "${c[0]}"`); continue }
+            const from = literal(now), parts = []
+            let at = 0, i
+            while ((i = data.indexOf(from, at)) !== -1) { parts.push(data.subarray(at, i), literal(c[0])); at = i + from.length }
+            parts.push(data.subarray(at))
+            const fixed = Buffer.concat(parts)
+            if (nameIn(fixed) !== c[0]) { console.log(`boss ${row}: renaming ${c[1]} failed; left alone`); continue }
+            done.set(c[1], c[0])
+            fixes.push({ path: file.stored, data: zlib.deflateRawSync(fixed, { level: 9 }), from: `${c[1]}.esdl.amf3.deflate`, why: `boss name "${now}" -> "${c[0]}", as standard_boss ${row}` })
+        }
+    }
+
     fs.rmSync(DIR, { recursive: true, force: true })
     for (const fix of fixes) {
         const out = path.join(DIR, fix.path)

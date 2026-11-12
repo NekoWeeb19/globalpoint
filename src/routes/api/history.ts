@@ -3,13 +3,15 @@
 // (src/nya/scoreAttack.ts). Not recorded on global: the request ({ event_id }) and the reply
 // (data.history[i].*) are the global client's own, and the Chinese fork answers the same way
 // (routes/api/history.ts).
+// history/practice_battle: the CN app's practice battles, newest first (same record; a missing route stopped the
+// game with U0000, a player's log 2026-11-12).
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import scoreAttackJson from "../../../assets/score_attack.json"
 import { getAccountPlayers, getPlayerSync, getSession } from "../../data/wdfpData";
 import { generateDataHeaders } from "../../utils";
 import { ScoreAttackData } from "../../lib/scoreAttack";
-import { getScoreAttackHistorySync } from "../../nya/scoreAttack";
+import { getScoreAttackHistorySync, PRACTICE_HISTORY_EVENT } from "../../nya/scoreAttack";
 import { receiveHistoryPageSync } from "../../nya/receiveHistory";
 
 const scoreAttackData = scoreAttackJson as unknown as ScoreAttackData
@@ -36,6 +38,17 @@ const routes = async (fastify: FastifyInstance) => {
         return reply.status(200).send({
             "data_headers": generateDataHeaders({ viewer_id: body.viewer_id }),
             "data": { "history": getScoreAttackHistorySync(playerId, eventId) },
+        })
+    })
+
+    fastify.post("/practice_battle", async (request: FastifyRequest, reply: FastifyReply) => {
+        const body = request.body as { viewer_id: number }
+        const playerId = await viewerPlayer(body?.viewer_id)
+        if (playerId === null) return bad(reply)
+        reply.header("content-type", "application/x-msgpack")
+        return reply.status(200).send({
+            "data_headers": generateDataHeaders({ viewer_id: body.viewer_id }),
+            "data": { "history": getScoreAttackHistorySync(playerId, PRACTICE_HISTORY_EVENT) },
         })
     })
 

@@ -15,7 +15,7 @@ const envFile = fs.existsSync(path.join(ROOT, ".env")) ? ".env" : ".env.example"
 const tests = fs.readdirSync(__dirname).filter(f => /^test_.*\.mjs$/.test(f) && !NEEDS_SERVER.has(f) && f.includes(filter)).sort()
 let failed = 0
 for (const test of tests) {
-    const run = spawnSync(process.execPath, [`--env-file=${envFile}`, path.join("scripts", test)], { cwd: ROOT, encoding: "utf8" })
+    const run = spawnSync(process.execPath, [`--env-file=${envFile}`, path.join("scripts", test)], { cwd: ROOT, encoding: "utf8", env: { ...process.env, STARPOINT_NO_CN_REBUILD: "1" } })
     const lastLine = `${run.stdout}${run.stderr}`.trim().split(/\r?\n/).pop()
     if (run.status !== 0) failed++
     console.log(`${run.status === 0 ? "pass" : "FAIL"}  ${test.padEnd(36)} ${lastLine}`)

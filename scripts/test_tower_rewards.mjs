@@ -27,6 +27,7 @@ try {
     const T = require(path.join(root, "out", "lib", "towerRotation.js"))
     const Q = require(path.join(root, "out", "lib", "quest.js"))
     const A = require(path.join(root, "out", "lib", "assets.js"))
+    const U = require(path.join(root, "out", "utils.js"))
     const D = require(path.join(root, "out", "data", "wdfpData.js"))
     const { runInCnContext } = require(path.join(root, "out", "lib", "cnClient.js"))
     const HAUNT = 20
@@ -62,6 +63,8 @@ try {
     for (let year = 2019; year <= 2040; year++) for (let month = 1; month <= 12; month++) {
         if (!T.isTowerCopyMonth(year, month)) continue
         const set = T.towerSetForMonth(year, month)
+        // a copy's keys come round again 51 months later: the server reads them for the month nearest the game clock
+        U.setServerTimeSource(() => new Date(Date.UTC(year, month - 1, 15)))
         for (let floor = 1; floor <= 10; floor++) {
             const copy = T.towerCopyQuestId(year, month, floor), original = T.towerQuestId(set, floor)
             copies++
@@ -69,13 +72,21 @@ try {
             if (!qc || qc.scoreRewardGroupId !== qo?.scoreRewardGroupId || Q.questElement(HAUNT, copy) !== Q.questElement(HAUNT, original)) copyWrong.push({ year, month, floor, copy, original })
         }
     }
+    U.setServerTimeSource(null)
     check(`every copied floor 2020-2040 (${copies}) has its original's element and rewards`, copies > 0 && copyWrong.length === 0, copyWrong.slice(0, 5))
     check("the first copied month (2021-05) is set 37, 2026-05 set 1 again", T.towerSetForMonth(2021, 5) === 37 && T.towerSetForMonth(2026, 5) === 1)
     check("The Haunt opens 2020-01 (set 21); nothing before it", T.isTowerCopyMonth(2020, 1) && !T.isTowerCopyMonth(2019, 12) && T.towerSetForMonth(2020, 1) === 21)
-    // 2020-01 to 2021-04 got their own keys later: every key is still unique, and the older months' keys didn't move
-    const keys = []
-    for (let year = 2020; year <= 2040; year++) for (let month = 1; month <= 12; month++) if (T.isTowerCopyMonth(year, month)) for (let f = 1; f <= 10; f++) keys.push(T.towerCopyKey(year, month, f))
-    check("every copy month has its own keys", new Set(keys).size === keys.length, keys.length)
+    // keys go round 51 copy months (all under 1000, builder revision 26): within any 51 months in a row every key is
+    // unique, and the older months' keys didn't move
+    const months = []
+    for (let year = 2020; year <= 2040; year++) for (let month = 1; month <= 12; month++) if (T.isTowerCopyMonth(year, month)) months.push([year, month])
+    const clash = []
+    for (let i = 0; i + 51 <= months.length; i++) {
+        const keys = months.slice(i, i + 51).flatMap(([y, m]) => Array.from({ length: 10 }, (_, f) => T.towerCopyKey(y, m, f + 1)))
+        if (new Set(keys).size !== keys.length) clash.push(months[i].join("-"))
+    }
+    check("no two copy months within 51 months share keys", months.length > 51 && clash.length === 0, clash.slice(0, 5))
+    check("every key is under 1000 (keys 1000+ became another event, C8601)", months.every(([y, m]) => T.towerCopyKey(y, m, 10) < 1000))
     check("2021-05 and 2026-05 keep their keys (481, 601)", T.towerCopyKey(2021, 5, 1) === 481 && T.towerCopyKey(2026, 5, 1) === 601)
 
     // ---- a clear on a throwaway save: what the server really gives ----

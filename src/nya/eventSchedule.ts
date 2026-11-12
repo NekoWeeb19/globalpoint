@@ -90,6 +90,9 @@ function unitsOnBoard2(): string[] {
 
 function rebuildCnSchedule() {
     if (!existsSync(cnCdnRoot())) return
+    // tests run on a throwaway save folder, but the builder writes into the server's real .cdn/cn_patches: a test
+    // that saved summon rates added a schedule-less update to the real list every run (1.4.3002-1.4.3004)
+    if (process.env.STARPOINT_NO_CN_REBUILD === "1") return
     if (cnRunning) { cnAgain = true; return }
     cnRunning = true
     console.log("[cn] rebuilding the CN game update (wait before opening the game)...")

@@ -138,5 +138,50 @@
   "path": "production/medium_upload/67/9a3c3af29b75ae48a1b2b36a3fb2d455fd28ec",
   "from": "character/white_tiger_2anv/ui/square_1.png",
   "why": "character/white_tiger_2anv_assist/ui/square_1.png: missing; the normal version's icon"
+ },
+ {
+  "path": "production/upload/5a/a41dc986ee49e7178d267391384d9f895faa72",
+  "from": "battle/enemy/boss/epuration_boss_highest_main.esdl.amf3.deflate",
+  "why": "boss name \"Purger Empress\" -> \"Modified Purger\", as standard_boss epuration_boss_highest_main/100"
+ },
+ {
+  "path": "production/upload/18/0078fa5c9d9af11b7a9a213936887bb051986a",
+  "from": "battle/enemy/boss/big_slime_boss_multi1.esdl.amf3.deflate",
+  "why": "boss name \"黏黏波露王\" -> \"Sticky King Polu\", as standard_boss big_slime_boss_multi/20"
+ },
+ {
+  "path": "production/upload/d1/0bfbfefbb0042b14a054549bffc585178b271c",
+  "from": "battle/enemy/boss/big_slime_boss_multi2.esdl.amf3.deflate",
+  "why": "boss name \"黏黏波露王\" -> \"Sticky King Polu\", as standard_boss big_slime_boss_multi/50"
+ },
+ {
+  "path": "production/upload/fb/0d98bb105016b589a6dfda5aabaad4f1dc3aec",
+  "from": "battle/enemy/boss/big_slime_boss_multi3.esdl.amf3.deflate",
+  "why": "boss name \"黏黏波露王\" -> \"Sticky King Polu\", as standard_boss big_slime_boss_multi/70"
+ },
+ {
+  "path": "production/upload/c3/765fc7eb99e3aae0b06eac1c89438f30f8c759",
+  "from": "battle/enemy/boss/big_slime_boss_multi4.esdl.amf3.deflate",
+  "why": "boss name \"黏黏波露王\" -> \"Sticky King Polu\", as standard_boss big_slime_boss_multi/80"
+ },
+ {
+  "path": "production/upload/d8/2f43aca0529af824d5fe15965dc3f96fbb513d",
+  "from": "battle/enemy/boss/big_slime_boss_single1.esdl.amf3.deflate",
+  "why": "boss name \"黏黏波露王\" -> \"Sticky King Polu\", as standard_boss big_slime_boss_single/20"
+ },
+ {
+  "path": "production/upload/13/8eaacd9884692c40c06d3bbcba2af315c202a9",
+  "from": "battle/enemy/boss/big_slime_boss_single2.esdl.amf3.deflate",
+  "why": "boss name \"黏黏波露王\" -> \"Sticky King Polu\", as standard_boss big_slime_boss_single/50"
+ },
+ {
+  "path": "production/upload/7b/1190a7184a5a585446783693d7695ed7a4293a",
+  "from": "battle/enemy/boss/big_slime_boss_single3.esdl.amf3.deflate",
+  "why": "boss name \"黏黏波露王\" -> \"Sticky King Polu\", as standard_boss big_slime_boss_single/70"
+ },
+ {
+  "path": "production/upload/ed/1fb7ddc68786bda7c0d9400029a0c2fd36c523",
+  "from": "battle/enemy/boss/big_slime_boss_single4.esdl.amf3.deflate",
+  "why": "boss name \"黏黏波露王\" -> \"Sticky King Polu\", as standard_boss big_slime_boss_single/80"
  }
 ]

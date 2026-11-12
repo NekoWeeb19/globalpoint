@@ -201,7 +201,7 @@ export interface BattleQuest {
     clearReward?: Reward,
     sPlusReward?: Reward,
     scoreRewardGroupId?: number,
-    scoreRewardGroup?: ScoreReward[],
+    scoreRewardGroup?: ScoreReward[] | null,
     bRankTime: number,
     aRankTime: number,
     sRankTime: number,

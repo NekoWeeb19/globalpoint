@@ -6,7 +6,7 @@ import { realStaminaOn } from "../nya/serverSettings"
 import { ClientPlayerData, DailyChallengePointListEntry, MergedPlayerData, PartyCategory, Player, PlayerBoxGacha, PlayerCharacter, PlayerCharacterBondToken, PlayerDrawnQuest, PlayerEquipment, PlayerGachaCampaign, PlayerGachaInfo, PlayerMultiSpecialExchangeCampaign, PlayerParty, PlayerPartyGroup, PlayerQuestProgress, PlayerRushEvent, PlayerRushEventPlayedParty, PlayerStartDashExchangeCampaign, RushEventBattleType, UserBoxGacha, UserCharacter, UserCharacterBondTokenStatus, UserEquipment, UserGachaCampaign, UserPartyGroup, UserPartyGroupTeam, UserQuestProgress, UserRushEvent, UserRushEventPlayedParty, UserRushEventPlayedPartyList, UserTutorial } from "./types"
 
 import { getAvailableAssetVersion } from "../routes/api/asset"
-import { deserializePlayerRushEventPlayedParty, deserializeRushEvent, getPlayerActiveMissionsSync, getPlayerBoxGachasSync, getPlayerCharactersManaNodesSync, getPlayerCharactersSync, getPlayerClearedRegularMissionListSync, getPlayerDailyChallengePointListSync, getPlayerDrawnQuestsSync, getPlayerEquipmentListSync, getPlayerGachaCampaignListSync, getPlayerGachaInfoListSync, getPlayerItemsSync, getPlayerMultiSpecialExchangeCampaignsSync, getPlayerOptionsSync, getPlayerPartyGroupListSync, getPlayerPeriodicRewardPointsSync, getPlayerQuestProgressSync, getPlayerRushEventListClearedFoldersSync, getPlayerRushEventListPlayedPartiesSync, getPlayerRushEventListSync, getPlayerStartDashExchangeCampaignsSync, getPlayerSync, getPlayerTriggeredTutorialsSync, serializePlayerRushEventPlayedParty } from "./wdfpData"
+import { deserializePlayerRushEventPlayedParty, deserializeRushEvent, getPlayerActiveMissionsSync, getPlayerBoxGachasSync, getPlayerCharactersManaNodesSync, getPlayerCharactersSync, getPlayerClearedRegularMissionListSync, getPlayerDailyChallengePointListSync, getPlayerDrawnQuestsSync, getPlayerEquipmentListSync, getPlayerGachaCampaignListSync, getPlayerGachaInfoListSync, getPlayerItemsSync, getPlayerMultiSpecialExchangeCampaignsSync, getPlayerOptionsSync, getPlayerPartyGroupListSync, getPlayerPeriodicRewardPointsSync, getPlayerQuestProgressSync, getPlayerQuestUnlocksSync, withQuestUnlocks, getPlayerRushEventListClearedFoldersSync, getPlayerRushEventListPlayedPartiesSync, getPlayerRushEventListSync, getPlayerStartDashExchangeCampaignsSync, getPlayerSync, getPlayerTriggeredTutorialsSync, serializePlayerRushEventPlayedParty } from "./wdfpData"
 
 export interface SerializePlayerDataOptions {
     viewerId?: number
@@ -230,6 +230,12 @@ export function serializePlayerData(
             // list (C3212 "no clear rank for a cleared battle quest"): it's sent as the lowest rank (1, below B)
             const missingRank = progress.finished && (progress.clearRank === undefined || progress.clearRank === null)
                 && isBattleQuest(Number(section), progress.questId)
+            // a battle only unlocked, never played (withQuestUnlocks): "finished" left out, as the game's own unlock
+            // does ("finished": false there stopped the load with R1)
+            if (progress.unlocked && !progress.finished && !progress.highScore && !progress.clearRank) {
+                list.push({ "quest_id": progress.questId, "unlocked": true } as UserQuestProgress)
+                continue
+            }
             list.push({
                 "best_elapsed_time_ms": progress.bestElapsedTimeMs,
                 "clear_rank": missingRank ? 1 : progress.clearRank,
@@ -237,7 +243,9 @@ export function serializePlayerData(
                 "high_score": progress.highScore,
                 "quest_id": progress.questId,
                 // only for stages where it is tracked (The Purge), so other entries are unchanged
-                ...(progress.hostFinished === undefined ? {} : { "host_finished": progress.hostFinished })
+                ...(progress.hostFinished === undefined ? {} : { "host_finished": progress.hostFinished }),
+                // paid to unlock (quest/unlock); without it the game asks for the item again
+                ...(progress.unlocked ? { "unlocked": true } : {})
             })
         }
         userQuestProgress[section] = list
@@ -718,7 +726,8 @@ export function deserializePlayerData(
         for (const [section, progresses] of Object.entries(userQuestProgress)) {
             const list: PlayerQuestProgress[] = []
             for (const progress of progresses) {
-                const finished = progress['finished']
+                // an unlocked battle never played has no "finished" (serialize above)
+                const finished = progress['finished'] ?? (progress['unlocked'] === true ? false : undefined)
                 const questId = progress['quest_id']
                 if (isNaN(questId) || finished === undefined) throw new Error(`Invalid quest progress in section "${section}"`);
 
@@ -727,7 +736,8 @@ export function deserializePlayerData(
                     clearRank: progress['clear_rank'],
                     finished: finished,
                     highScore: progress['high_score'],
-                    questId: questId
+                    questId: questId,
+                    ...(progress['unlocked'] === true ? { unlocked: true } : {})
                 })
             }
             questProgress[section] = list
@@ -987,7 +997,7 @@ export function getClientSerializedData(
         partyGroupList: getPlayerPartyGroupListSync(playerId),
         itemList: getPlayerItemsSync(playerId),
         equipmentList: getPlayerEquipmentListSync(playerId),
-        questProgress: getPlayerQuestProgressSync(playerId),
+        questProgress: withQuestUnlocks(getPlayerQuestProgressSync(playerId), getPlayerQuestUnlocksSync(playerId)),
         gachaInfoList: getPlayerGachaInfoListSync(playerId),
         gachaCampaignList: getPlayerGachaCampaignListSync(playerId),
         drawnQuestList: getPlayerDrawnQuestsSync(playerId),

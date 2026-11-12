@@ -33,7 +33,7 @@ import { cnCoinSwap } from "../../lib/cnCoinSwaps";
 import { rescueRewardsOn } from "../../nya/serverSettings";
 import scoreAttackJson from "../../../assets/score_attack.json";
 import { borderRewardItems, mainCharacterIds, newlyPassedBorders, ScoreAttackData, scoreAttackCleared, scoreAttackGrade } from "../../lib/scoreAttack";
-import { recordScoreAttackBattleSync } from "../../nya/scoreAttack";
+import { PRACTICE_HISTORY_EVENT, recordScoreAttackBattleSync } from "../../nya/scoreAttack";
 const scoreAttackData = scoreAttackJson as unknown as ScoreAttackData
 const eventDropRules = eventDropData as unknown as EventDropData
 // the CN client's own treasure hunts (CN's events, items and dates)
@@ -223,6 +223,11 @@ const routes = async (fastify: FastifyInstance) => {
         // time pay their rewards (read before the new high score is saved below)
         let scoreAttackEvent: { main_character_ids: Record<number, number>, reward_ids: number[] } | null = null
         let scoreAttackRewards: PlayerRewardResult | null = null
+        // practice battles go into their own history (history/practice_battle)
+        if (questCategory === QuestCategory.PRACTICE) recordScoreAttackBattleSync(playerId, PRACTICE_HISTORY_EVENT, {
+            categoryId: questCategory, questId, elapsedTimeMs: clearTime, score: body.score, clearRank,
+            party: body.statistics?.party, zones: (body.statistics as { zones?: unknown } | undefined)?.zones,
+        })
         if (scoreAttack !== undefined) {
             recordScoreAttackBattleSync(playerId, scoreAttack.eventId, {
                 categoryId: questCategory, questId, elapsedTimeMs: clearTime, score: body.score, clearRank,

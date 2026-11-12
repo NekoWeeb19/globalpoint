@@ -226,6 +226,8 @@ export interface PlayerQuestProgress {
     bestElapsedTimeMs?: number
     /** Cleared as the room host (undefined when not tracked). */
     hostFinished?: boolean
+    /** Paid to unlock (quest/unlock); only in the progress sent to the game and in save files. */
+    unlocked?: boolean
 }
 
 export interface RawPlayerGachaInfo {
@@ -609,6 +611,7 @@ export interface UserQuestProgress {
     best_elapsed_time_ms?: number
     clear_rank?: number
     host_finished?: boolean
+    unlocked?: boolean
 }
 
 export interface UserGachaInfo {

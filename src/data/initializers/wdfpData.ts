@@ -222,6 +222,17 @@ export default function init(
         database.prepare(`ALTER TABLE players_quest_progress ADD COLUMN host_finished INTEGER`).run()
     }
 
+    // battles the player paid to unlock (quest/unlock: CN's world story event big bosses, unlocked once with a
+    // Proficiency Certificate). Kept apart from players_quest_progress: a progress row means "played before" to
+    // the battle-finish code, which would then skip the first-clear rewards.
+    database.prepare(`CREATE TABLE IF NOT EXISTS players_quest_unlocks (
+        section INTEGER NOT NULL,
+        quest_id INTEGER NOT NULL,
+        player_id INTEGER NOT NULL,
+        PRIMARY KEY (section, quest_id, player_id),
+        FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+    )`).run();
+
     database.prepare(`CREATE TABLE IF NOT EXISTS players_gacha_info (
         gacha_id INTEGER NOT NULL,
         is_daily_first INTEGER NOT NULL,

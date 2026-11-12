@@ -407,10 +407,21 @@
                     $("share-message").textContent = "Error: " + error.message
                 } finally { busy = false; pending = null; $("import-file").value = "" }
             }
+            // a picked file as JSON: a byte-order mark or UTF-16 (Windows editors) is fine; null and a short reason when it isn't JSON
+            async function readJsonFile(file) {
+                const bytes = new Uint8Array(await file.arrayBuffer())
+                if (bytes.length === 0) return { error: "the file is empty (0 bytes)" }
+                const utf16 = (bytes[0] === 0xff && bytes[1] === 0xfe) || (bytes.length > 1 && bytes[1] === 0 && bytes[0] !== 0) ? "utf-16le"
+                    : (bytes[0] === 0xfe && bytes[1] === 0xff) || (bytes.length > 1 && bytes[0] === 0 && bytes[1] !== 0) ? "utf-16be" : "utf-8"
+                const text = new TextDecoder(utf16).decode(bytes).replace(/^\uFEFF/, "").trim()
+                try { return { data: JSON.parse(text) } } catch { return { error: `it starts with "${text.slice(0, 30).replace(/[^\x20-\x7e]/g, "?")}"` } }
+            }
             $("import-file").addEventListener("change", async () => {
                 const file = $("import-file").files[0]
                 if (!file) return
-                try { pending = JSON.parse(await file.text()) } catch { $("share-message").textContent = "That file isn't a mail schedule (not JSON)."; $("import-file").value = ""; return }
+                const read = await readJsonFile(file)
+                if (read.error) { $("share-message").textContent = `That file isn't a mail schedule (not JSON: ${read.error}).`; $("import-file").value = ""; return }
+                pending = read.data
                 const mails = Array.isArray(pending?.mails) ? pending.mails : []
                 const past = mails.filter(m => Date.parse(m.start) < Date.parse(data.serverTime) - 60000).length
                 if (past === 0) return importNow("now")

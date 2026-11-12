@@ -104,7 +104,12 @@ public class DashboardActivity extends Activity {
                 if (pendingUpload != null) pendingUpload.onReceiveValue(null);
                 pendingUpload = callback;
                 try {
-                    startActivityForResult(params.createIntent(), PICK_FILE);
+                    // any file: the page's accept=".json" becomes a type filter, and Android often doesn't type a .json
+                    // file as JSON, so the kit and mail files showed greyed out and couldn't be picked (player report)
+                    Intent pick = params.createIntent();
+                    pick.setType("*/*");
+                    pick.removeExtra(Intent.EXTRA_MIME_TYPES);
+                    startActivityForResult(pick, PICK_FILE);
                 } catch (Exception e) {
                     pendingUpload = null;
                     return false;
@@ -172,7 +177,8 @@ public class DashboardActivity extends Activity {
                 String message;
                 try {
                     HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
-                    try (InputStream in = c.getInputStream(); OutputStream out = getContentResolver().openOutputStream(target)) {
+                    try (InputStream in = c.getInputStream(); OutputStream out = getContentResolver().openOutputStream(target, "wt")) {
+                        // "wt": saving over an older file replaces it ("w" can leave the old file's tail behind)
                         byte[] b = new byte[64 * 1024];
                         int n;
                         while ((n = in.read(b)) > 0) out.write(b, 0, n);

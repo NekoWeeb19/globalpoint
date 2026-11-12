@@ -374,10 +374,21 @@
                 location.href = "/api/unit-editor" + EP.kits() + "?ids=" + ids.join(",")
             }
             $("kit-download-all").onclick = () => { location.href = "/api/unit-editor" + EP.kits() }
+            // a picked file as JSON: a byte-order mark or UTF-16 (Windows editors) is fine; null and a short reason when it isn't JSON
+            async function readJsonFile(file) {
+                const bytes = new Uint8Array(await file.arrayBuffer())
+                if (bytes.length === 0) return { error: "the file is empty (0 bytes)" }
+                const utf16 = (bytes[0] === 0xff && bytes[1] === 0xfe) || (bytes.length > 1 && bytes[1] === 0 && bytes[0] !== 0) ? "utf-16le"
+                    : (bytes[0] === 0xfe && bytes[1] === 0xff) || (bytes.length > 1 && bytes[0] === 0 && bytes[1] !== 0) ? "utf-16be" : "utf-8"
+                const text = new TextDecoder(utf16).decode(bytes).replace(/^\uFEFF/, "").trim()
+                try { return { data: JSON.parse(text) } } catch { return { error: `it starts with "${text.slice(0, 30).replace(/[^\x20-\x7e]/g, "?")}"` } }
+            }
             $("kit-upload").onchange = async () => {
                 const file = $("kit-upload").files[0]; if (!file) return
                 let data
-                try { data = JSON.parse(await file.text()) } catch { $("kit-message").textContent = "That file isn't a kit file (not JSON)."; return }
+                const read = await readJsonFile(file)
+                if (read.error) { $("kit-message").textContent = `That file isn't a kit file (not JSON: ${read.error}).`; $("kit-upload").value = ""; return }
+                data = read.data
                 const r = await api(EP.kits(), data).catch((e) => ({ imported: [], refused: [{ id: "", why: e.message }] }))
                 const name = (id) => (units.find((u) => u.id === id)?.name ?? id)
                 $("kit-message").textContent = (r.imported.length ? `Imported: ${r.imported.map(name).join(", ")}. The CN game update is rebuilding. ` : "Nothing imported. ")

@@ -18,6 +18,8 @@ const check = (label, ok, detail) => {
 }
 
 // the settings file lives in the folder the server runs in: a throwaway one, before the modules load
+// saving rates rebuilds the CN game update, which would write into the real .cdn/cn_patches: not in a test
+process.env.STARPOINT_NO_CN_REBUILD = "1"
 const temp = mkdtempSync(path.join(os.tmpdir(), "gacha-rates-"))
 const cwd = process.cwd()
 process.chdir(temp)

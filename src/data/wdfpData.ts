@@ -1921,10 +1921,48 @@ function insertPlayerQuestProgressListSync(
     db.transaction(() => {
         for (const [section, progresses] of Object.entries(progressList)) {
             for (const progress of progresses) {
+                if (progress.unlocked) insertPlayerQuestUnlockSync(playerId, section, progress.questId)
+                // an entry that only says "unlocked" (withQuestUnlocks) isn't a played battle
+                if (progress.unlocked && !progress.finished && !progress.highScore && !progress.clearRank) continue
                 insertPlayerQuestProgressSync(playerId, section, progress)
             }
         }
     })()
+}
+
+/** The battles a player paid to unlock (quest/unlock), by section. */
+export function getPlayerQuestUnlocksSync(playerId: number): Record<string, number[]> {
+    const rows = db.prepare(`SELECT section, quest_id FROM players_quest_unlocks WHERE player_id = ?`).all(playerId) as { section: number, quest_id: number }[]
+    const out: Record<string, number[]> = {}
+    for (const row of rows) (out[String(row.section)] ??= []).push(row.quest_id)
+    return out
+}
+
+/** Saves a battle as unlocked (quest/unlock). */
+export function insertPlayerQuestUnlockSync(playerId: number, section: number | string, questId: number | string) {
+    db.prepare(`INSERT OR IGNORE INTO players_quest_unlocks (section, quest_id, player_id) VALUES (?, ?, ?)`)
+        .run(Number(section), Number(questId), playerId)
+}
+
+/**
+ * The quest progress with the player's unlocked battles marked (`unlocked`), for the game and save files. A battle
+ * unlocked but never played gets an entry of its own (not finished).
+ */
+export function withQuestUnlocks(
+    progress: Record<string, PlayerQuestProgress[]>,
+    unlocks: Record<string, number[]>
+): Record<string, PlayerQuestProgress[]> {
+    const out: Record<string, PlayerQuestProgress[]> = {}
+    for (const [section, list] of Object.entries(progress)) out[section] = [...list]
+    for (const [section, questIds] of Object.entries(unlocks)) {
+        const list = out[section] ??= []
+        for (const questId of questIds) {
+            const i = list.findIndex(p => p.questId === questId)
+            if (i >= 0) list[i] = { ...list[i], unlocked: true }
+            else list.push({ questId, finished: false, unlocked: true })
+        }
+    }
+    return out
 }
 
 /**
