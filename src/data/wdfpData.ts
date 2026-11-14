@@ -2757,6 +2757,28 @@ export function updatePlayerBoxGachaDrawnRewardSync(
 }
 
 /**
+ * Deletes all of the drawn rewards of one box of a box gacha (a box reset).
+ *
+ * @param playerId The ID of the player.
+ * @param gachaId The id of the box gacha.
+ * @param boxId The box's ID.
+ */
+export function deletePlayerBoxGachaDrawnRewardsSync(
+    playerId: number,
+    gachaId: number,
+    boxId: string | number
+) {
+    db.prepare(`
+    DELETE FROM players_box_gacha_drawn_rewards
+    WHERE player_id = ? AND gacha_id = ? AND box_id = ?
+    `).run(
+        playerId,
+        gachaId,
+        Number(boxId)
+    )
+}
+
+/**
  * Gets the progress of a player's start dash exchange campaigns.
  * 
  * @param playerId The player's ID.

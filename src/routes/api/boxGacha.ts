@@ -1,7 +1,7 @@
 // Handles the insertion of mana into characters.
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { getAccountPlayers, getPlayerBoxGachaDrawnRewardsSync, getPlayerBoxGachaSync, getPlayerItemSync, getPlayerSync, getSession, insertPlayerBoxGachaDrawnRewardSync, insertPlayerBoxGachaSync, updatePlayerBoxGachaDrawnRewardSync, updatePlayerBoxGachaSync, updatePlayerItemSync } from "../../data/wdfpData";
+import { getAccountPlayers, deletePlayerBoxGachaDrawnRewardsSync, getPlayerBoxGachaDrawnRewardsSync, getPlayerBoxGachaSync, getPlayerItemSync, getPlayerSync, getSession, insertPlayerBoxGachaDrawnRewardSync, insertPlayerBoxGachaSync, updatePlayerBoxGachaDrawnRewardSync, updatePlayerBoxGachaSync, updatePlayerItemSync } from "../../data/wdfpData";
 import { generateDataHeaders, epochOf } from "../../utils";
 import { getBoxGachaSync } from "../../lib/assets";
 import { drawBoxGachaSync, rewardPlayerBoxGachaResultSync } from "../../lib/gacha";
@@ -325,6 +325,72 @@ const routes = async (fastify: FastifyInstance) => {
                     ...(rewardResult?.items ?? {})
                 },
                 "mail_arrived": false
+            }
+        })
+    })
+
+    // A box reset (the resettable last box of an event's box gacha): its drawn rewards are cleared so it's full
+    // again, its reset count goes up and it's open. The client wants every box back, as get_box_list.
+    fastify.post("/reset", async (request: FastifyRequest, reply: FastifyReply) => {
+        const body = request.body as CloseBody
+
+        const viewerId = body.viewer_id
+        const boxGachaId = body.box_gacha_id
+        const boxId = body.box_id
+        if (isNaN(viewerId) || isNaN(boxGachaId) || isNaN(boxId)) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Invalid request body."
+        })
+
+        const viewerIdSession = await getSession(viewerId.toString())
+        if (!viewerIdSession) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Invalid viewer id."
+        })
+
+        const playerIds = await getAccountPlayers(viewerIdSession.accountId)
+        const playerId = playerIds[0]
+        if (isNaN(playerId)) return reply.status(500).send({
+            "error": "Internal Server Error",
+            "message": "No players bound to account."
+        })
+
+        const boxGachaData = getBoxGachaSync(boxGachaId)
+        if (boxGachaData === null) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Invalid box gacha id."
+        })
+        if (boxGachaData.boxes[boxId] === undefined) return reply.status(400).send({
+            "error": "Bad Request",
+            "message": "Invalid box ID."
+        })
+
+        const playerBoxData = getPlayerBoxGachaSync(playerId, boxGachaId, boxId)
+        deletePlayerBoxGachaDrawnRewardsSync(playerId, boxGachaId, boxId)
+        const remaining = boxGachaData.availableCounts[boxId] ?? 0
+        if (playerBoxData === null) {
+            insertPlayerBoxGachaSync(playerId, boxGachaId, {
+                boxId: boxId,
+                isClosed: false,
+                remainingNumber: remaining,
+                resetTimes: 1
+            })
+        } else {
+            updatePlayerBoxGachaSync(playerId, boxGachaId, {
+                boxId: boxId,
+                isClosed: false,
+                remainingNumber: remaining,
+                resetTimes: (playerBoxData.resetTimes ?? 0) + 1
+            })
+        }
+
+        reply.header("content-type", "application/x-msgpack")
+        return reply.status(200).send({
+            "data_headers": generateDataHeaders({
+                viewer_id: viewerId
+            }),
+            "data": {
+                "all_box_info": getAllBoxList(playerId, boxGachaId, boxGachaData.boxes)
             }
         })
     })
