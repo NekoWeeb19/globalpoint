@@ -44,7 +44,11 @@ missions follow the real day, not the server's). Each also shows in your own tim
   uses the real time of day, so the server's day turns over with the daily reset.
 
 Close and reopen the game after changing the date. A jump doesn't give a login bonus or reset the dailies:
-those follow the real day. New installs start on 2019-12-01, just before the CN game's first banners and
+those follow the real day. To get them without waiting, press **Start the next day now**, then close and
+reopen the game. That login is a new day for every save: the next login bonus (with the daily beads), daily
+missions and login-day missions, Boss Boost, daily first summons and free pulls, solo boss event tickets
+and today's shop limits. The server's date stays as it is, and pressing it twice before logging in still
+counts as one day. New installs start on 2019-12-01, just before the CN game's first banners and
 events.
 
 ## What's on now
@@ -101,7 +105,7 @@ beads** or **Free beads**, find it with **Search by name** (or type its ID), typ
 **Send Mail (in session)**. It arrives in the in-game mailbox. These mails last only while the server
 runs, so claim them before restarting it; the **Mail** tab's are saved.
 
-The player page also has **Unlock** / **Reset** a mission's reward, **Give login bonus again**, **Remove
+The player page also has **Unlock** / **Reset** a mission's reward, **Remove
 a unit** (close the game first; it can't be undone, see
 [CUSTOM_UNITS.md](CUSTOM_UNITS.md#removing-a-unit-safely)), and **Link my reinstalled game to this
 player** (press it, then open the reinstalled game within 30 minutes).

@@ -58,7 +58,12 @@ function findSource(route, group) {
     const quoted = [`"${sub}"`, `'${sub}'`, `\`${sub}\``]
     // a file that registers the path itself wins over one that only mentions it (src/nya files are read too)
     const registers = s => quoted.some(q => s.text.includes(`(${q}`))
-    candidates.sort((a, b) => Number(registers(b)) - Number(registers(a)))
+    // when several files register the same sub-path ("/reset"), the one named after the prefix wins
+    // ("/event/rush" -> rushEvent.ts, "/box_gacha" -> boxGacha.ts)
+    const last = route.prefix.split("/").filter(Boolean).pop()?.replace(/_/g, "").toLowerCase() ?? ""
+    const named = s => last !== "" && path.basename(s.file, ".ts").toLowerCase().includes(last)
+    const score = s => Number(registers(s)) * 2 + Number(named(s))
+    candidates.sort((a, b) => score(b) - score(a))
     for (const s of candidates) {
         const at = Math.max(...quoted.map(q => s.text.indexOf(q)))
         if (at < 0) continue

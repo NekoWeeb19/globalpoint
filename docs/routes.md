@@ -20,7 +20,7 @@ For the global app's captured official traffic and upstream's 2024 status list, 
 - **Seen from CN app:** the CN app called it in this PC's request log (`logs/cn_requests.log`).
   Blank doesn't mean unused: only what was played on this PC is logged.
 
-## Game API (146 endpoints)
+## Game API (151 endpoints)
 
 The global app calls `/latest/api/index.php/<endpoint>`. The CN app calls `/cn/api/index.php/<endpoint>`, which
 the server rewrites to the same path, so both apps share these handlers. Replies to the CN app are
@@ -37,6 +37,7 @@ also converted to its format (`adaptCnReply` in `src/lib/cnClient.ts`).
 | `/box_gacha/close` | POST | both | [api/boxGacha.ts](../src/routes/api/boxGacha.ts) |  |  |
 | `/box_gacha/exec` | POST | both | [api/boxGacha.ts](../src/routes/api/boxGacha.ts) |  | yes |
 | `/box_gacha/get_box_list` | POST | both | [api/boxGacha.ts](../src/routes/api/boxGacha.ts) |  | yes |
+| `/box_gacha/reset` | POST | both | [api/boxGacha.ts](../src/routes/api/boxGacha.ts) |  |  |
 | `/carnival_event/get_party` | POST | both | [api/carnivalEvent.ts](../src/routes/api/carnivalEvent.ts) |  | yes |
 | `/carnival_event/index` | POST | both | [api/carnivalEvent.ts](../src/routes/api/carnivalEvent.ts) |  | yes |
 | `/channels/channel_leiting_pay/query_purcharge` | POST | CN | [api/cn.ts](../src/routes/api/cn.ts) | fixed reply (placeholder) |  |
@@ -50,7 +51,7 @@ also converted to its format (`adaptCnReply` in `src/lib/cnClient.ts`).
 | `/character/add_character_from_town` | POST | both | [api/character.ts](../src/routes/api/character.ts) |  |  |
 | `/character/awake_mana_node` | POST | both | [api/character.ts](../src/routes/api/character.ts) |  | yes |
 | `/character/bulk_over_limit` | POST | both | [api/character.ts](../src/routes/api/character.ts) |  |  |
-| `/character/learn_mana_node` | POST | both | [api/character.ts](../src/routes/api/character.ts) |  | yes |
+| `/character/learn_mana_node` | POST | both | [api/character.ts](../src/routes/api/character.ts) | CN-specific reply | yes |
 | `/character/open_mana_board` | POST | both | [api/character.ts](../src/routes/api/character.ts) |  | yes |
 | `/character/over_limit` | POST | both | [api/character.ts](../src/routes/api/character.ts) |  | yes |
 | `/character/receive_bond_token` | POST | both | [api/character.ts](../src/routes/api/character.ts) |  | yes |
@@ -58,7 +59,7 @@ also converted to its format (`adaptCnReply` in `src/lib/cnClient.ts`).
 | `/comic/get_list` | POST | both | [api/comic.ts](../src/routes/api/comic.ts) |  | yes |
 | `/comic/image` | GET | both | [api/comic.ts](../src/routes/api/comic.ts) |  | yes |
 | `/contents_guide/start` | POST | CN | [api/cn.ts](../src/routes/api/cn.ts) |  | yes |
-| `/encyclopedia/index` | POST | both | [api/carnivalEvent.ts](../src/routes/api/carnivalEvent.ts) |  | yes |
+| `/encyclopedia/index` | POST | both | [api/encyclopedia.ts](../src/routes/api/encyclopedia.ts) | CN-specific reply | yes |
 | `/encyclopedia/read_keyword` | POST | both | [api/encyclopedia.ts](../src/routes/api/encyclopedia.ts) |  |  |
 | `/episode_trial_reading/finish` | POST | CN | [api/cn.ts](../src/routes/api/cn.ts) | fixed reply (placeholder) | yes |
 | `/equipment/bulk_sell_stack` | POST | both | [api/equipment.ts](../src/routes/api/equipment.ts) |  | yes |
@@ -72,13 +73,13 @@ also converted to its format (`adaptCnReply` in `src/lib/cnClient.ts`).
 | `/event/raid/party` | POST | both | [api/raidEvent.ts](../src/routes/api/raidEvent.ts) |  | yes |
 | `/event/raid/summary` | POST | both | [api/raidEvent.ts](../src/routes/api/raidEvent.ts) |  | yes |
 | `/event/rush/aggregated_time` | POST | both | [api/rushEvent.ts](../src/routes/api/rushEvent.ts) |  |  |
-| `/event/rush/battle/start` | POST | both | [api/raidEvent.ts](../src/routes/api/raidEvent.ts) |  | yes |
-| `/event/rush/party` | POST | both | [api/raidEvent.ts](../src/routes/api/raidEvent.ts) |  | yes |
+| `/event/rush/battle/start` | POST | both | [api/rushEvent.ts](../src/routes/api/rushEvent.ts) |  | yes |
+| `/event/rush/party` | POST | both | [api/rushEvent.ts](../src/routes/api/rushEvent.ts) |  | yes |
 | `/event/rush/ranking` | POST | both | [api/rushEvent.ts](../src/routes/api/rushEvent.ts) |  |  |
 | `/event/rush/ranking/played_party` | POST | both | [api/rushEvent.ts](../src/routes/api/rushEvent.ts) |  |  |
 | `/event/rush/reset` | POST | both | [api/rushEvent.ts](../src/routes/api/rushEvent.ts) |  |  |
 | `/event/rush/select_folder` | POST | both | [api/rushEvent.ts](../src/routes/api/rushEvent.ts) |  | yes |
-| `/event/rush/summary` | POST | both | [api/raidEvent.ts](../src/routes/api/raidEvent.ts) |  | yes |
+| `/event/rush/summary` | POST | both | [api/rushEvent.ts](../src/routes/api/rushEvent.ts) |  | yes |
 | `/ex_boost/draw` | POST | both | [api/exBoost.ts](../src/routes/api/exBoost.ts) |  | yes |
 | `/ex_boost/first_draw` | POST | both | [api/exBoost.ts](../src/routes/api/exBoost.ts) |  | yes |
 | `/ex_boost/select` | POST | both | [api/exBoost.ts](../src/routes/api/exBoost.ts) |  | yes |
@@ -93,15 +94,16 @@ also converted to its format (`adaptCnReply` in `src/lib/cnClient.ts`).
 | `/gacha/exchange_equipment` | POST | both | [api/gacha.ts](../src/routes/api/gacha.ts) |  |  |
 | `/gacha/exec` | POST | both | [api/boxGacha.ts](../src/routes/api/boxGacha.ts) |  | yes |
 | `/growth_fund/receive_fund_bonus` | POST | both | [api/growthFund.ts](../src/routes/api/growthFund.ts) |  | yes |
-| `/history/receive` | POST | both | [api/activeMission.ts](../src/routes/api/activeMission.ts) |  | yes |
+| `/history/practice_battle` | POST | both | [api/history.ts](../src/routes/api/history.ts) |  |  |
+| `/history/receive` | POST | both | [api/history.ts](../src/routes/api/history.ts) |  | yes |
 | `/history/score_attack_event_battle` | POST | both | [api/history.ts](../src/routes/api/history.ts) |  |  |
 | `/how_to_get/get_list` | POST | both | [api/shop.ts](../src/routes/api/shop.ts) |  | yes |
 | `/item/sell` | POST | both | [api/item.ts](../src/routes/api/item.ts) |  | yes |
 | `/item/use_item` | POST | both | [api/item.ts](../src/routes/api/item.ts) |  | yes |
 | `/load` | POST | both | [api/index.ts](../src/routes/api/index.ts) | CN-specific reply | yes |
 | `/lounge/get_list` | POST | both | [api/stubs.ts](../src/routes/api/stubs.ts) | fixed reply (placeholder) |  |
-| `/mail/index` | POST | both | [api/carnivalEvent.ts](../src/routes/api/carnivalEvent.ts) |  | yes |
-| `/mail/receive` | POST | both | [api/activeMission.ts](../src/routes/api/activeMission.ts) |  | yes |
+| `/mail/index` | POST | both | [api/mail.ts](../src/routes/api/mail.ts) |  | yes |
+| `/mail/receive` | POST | both | [api/mail.ts](../src/routes/api/mail.ts) |  | yes |
 | `/mail/receive_all` | POST | both | [api/mail.ts](../src/routes/api/mail.ts) |  |  |
 | `/mission/get_mission_progress` | POST | both | [api/mission.ts](../src/routes/api/mission.ts) |  | yes |
 | `/mission/update_mission_progress` | POST | both | [api/mission.ts](../src/routes/api/mission.ts) |  | yes |
@@ -123,12 +125,12 @@ also converted to its format (`adaptCnReply` in `src/lib/cnClient.ts`).
 | `/news/system_index` | POST | CN | [api/cn.ts](../src/routes/api/cn.ts) |  |  |
 | `/option/update` | POST | both | [api/option.ts](../src/routes/api/option.ts) |  | yes |
 | `/option/update_in_battle` | POST | both | [api/option.ts](../src/routes/api/option.ts) |  |  |
-| `/party_group/edit` | POST | both | [api/party.ts](../src/routes/api/party.ts) |  |  |
+| `/party_group/edit` | POST | both | [api/partyGroup.ts](../src/routes/api/partyGroup.ts) |  |  |
 | `/party/check_word` | POST | both | [api/party.ts](../src/routes/api/party.ts) |  |  |
 | `/party/edit` | POST | both | [api/party.ts](../src/routes/api/party.ts) |  | yes |
 | `/party/publish` | POST | both | [api/party.ts](../src/routes/api/party.ts) |  | yes |
 | `/Pass_card/get_pass_card` | POST | both | [api/passCard.ts](../src/routes/api/passCard.ts) |  | yes |
-| `/Pass_card/receive_all` | POST | both | [api/mail.ts](../src/routes/api/mail.ts) |  | yes |
+| `/Pass_card/receive_all` | POST | both | [api/passCard.ts](../src/routes/api/passCard.ts) |  | yes |
 | `/payment/detail_items` | POST | both | [api/payment.ts](../src/routes/api/payment.ts) |  | yes |
 | `/payment/item_list` | POST | both | [api/payment.ts](../src/routes/api/payment.ts) |  |  |
 | `/profile/get_degree_list` | POST | both | [api/profile.ts](../src/routes/api/profile.ts) |  | yes |
@@ -140,15 +142,18 @@ also converted to its format (`adaptCnReply` in `src/lib/cnClient.ts`).
 | `/profile/update_degree` | POST | both | [api/profile.ts](../src/routes/api/profile.ts) |  | yes |
 | `/profile/update_profile_settings` | POST | both | [api/profile.ts](../src/routes/api/profile.ts) |  |  |
 | `/quest/get_recent_other_player_party` | POST | both | [api/quest.ts](../src/routes/api/quest.ts) |  |  |
+| `/quest/unlock` | POST | both | [api/quest.ts](../src/routes/api/quest.ts) |  | yes |
 | `/ranking_event/get_summary` | POST | both | [api/rankingEvent.ts](../src/routes/api/rankingEvent.ts) |  | yes |
 | `/ranking_event/receive_reward` | POST | both | [api/rankingEvent.ts](../src/routes/api/rankingEvent.ts) |  |  |
 | `/reproduce/post` | POST | both | [api/reproduce.ts](../src/routes/api/reproduce.ts) |  |  |
+| `/shop/bulk_buy` | POST | both | [api/shop.ts](../src/routes/api/shop.ts) | CN-specific reply | yes |
 | `/shop/buy` | POST | both | [api/shop.ts](../src/routes/api/shop.ts) | CN-specific reply | yes |
 | `/shop/get_sales_list` | POST | both | [api/shop.ts](../src/routes/api/shop.ts) |  | yes |
-| `/single_battle_quest/abort` | POST | both | [api/multiBattleQuest.ts](../src/routes/api/multiBattleQuest.ts) |  | yes |
-| `/single_battle_quest/finish` | POST | both | [api/multiBattleQuest.ts](../src/routes/api/multiBattleQuest.ts) |  | yes |
-| `/single_battle_quest/play_continue` | POST | both | [api/multiBattleQuest.ts](../src/routes/api/multiBattleQuest.ts) |  |  |
-| `/single_battle_quest/start` | POST | both | [api/multiBattleQuest.ts](../src/routes/api/multiBattleQuest.ts) |  | yes |
+| `/shop/recover_stamina` | POST | both | [api/shop.ts](../src/routes/api/shop.ts) |  | yes |
+| `/single_battle_quest/abort` | POST | both | [api/singleBattleQuest.ts](../src/routes/api/singleBattleQuest.ts) |  | yes |
+| `/single_battle_quest/finish` | POST | both | [api/singleBattleQuest.ts](../src/routes/api/singleBattleQuest.ts) | CN-specific reply | yes |
+| `/single_battle_quest/play_continue` | POST | both | [api/singleBattleQuest.ts](../src/routes/api/singleBattleQuest.ts) |  | yes |
+| `/single_battle_quest/start` | POST | both | [api/singleBattleQuest.ts](../src/routes/api/singleBattleQuest.ts) |  | yes |
 | `/sns/get` | POST | both | [api/stubs.ts](../src/routes/api/stubs.ts) | fixed reply (placeholder) | yes |
 | `/special_exchange/buy_ticket` | POST | both | [src/nya/exchangeCampaigns.ts](../src/nya/exchangeCampaigns.ts) |  |  |
 | `/special_exchange/enter_campaign` | POST | both | [src/nya/exchangeCampaigns.ts](../src/nya/exchangeCampaigns.ts) |  |  |
@@ -218,7 +223,7 @@ Static downloads.
 | `/patch/Live/2.0.0/*` | global game files and mods (`CDN_DIR`) |
 | `/public/*` | the dashboard's stylesheet, fonts and images |
 
-## Dashboard pages (10)
+## Dashboard pages (11)
 
 | Endpoint | Method | Source | Notes |
 |---|---|---|---|
@@ -228,12 +233,13 @@ Static downloads.
 | `/mail` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 | `/news` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 | `/news/board` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
-| `/player` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
+| `/player` | GET | [web/player.ts](../src/routes/web/player.ts) |  |
 | `/player/:playerId` | GET | [web/player.ts](../src/routes/web/player.ts) |  |
+| `/settings` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 | `/summons` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 | `/unit-editor` | GET | [web/index.ts](../src/routes/web/index.ts) |  |
 
-## Dashboard API (66)
+## Dashboard API (73)
 
 What the dashboard pages call. These change the server's state and have no login. With
 `LISTEN_HOST` at `127.0.0.1` (the default, also on the phone companion) only the same device
@@ -243,6 +249,11 @@ network use the dashboard too, so do that only on a network you trust, such as y
 | Endpoint | Method | Source | Notes |
 |---|---|---|---|
 | `/api/player` | GET | [web_api/player.ts](../src/routes/web_api/player.ts) |  |
+| `/api/player/clear-mailbox` | POST | [web_api/player.ts](../src/routes/web_api/player.ts) |  |
+| `/api/player/clone` | POST | [web_api/player.ts](../src/routes/web_api/player.ts) |  |
+| `/api/player/delete` | POST | [web_api/player.ts](../src/routes/web_api/player.ts) |  |
+| `/api/player/reset-account` | POST | [web_api/player.ts](../src/routes/web_api/player.ts) |  |
+| `/api/player/reset-parties` | POST | [web_api/player.ts](../src/routes/web_api/player.ts) |  |
 | `/api/player/save` | GET | [web_api/player.ts](../src/routes/web_api/player.ts) |  |
 | `/api/player/save` | POST | [web_api/player.ts](../src/routes/web_api/player.ts) |  |
 | `/api/server/account/active` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
@@ -267,7 +278,6 @@ network use the dashboard too, so do that only on a network you trust, such as y
 | `/api/server/gacha-rates` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/gacha-rates` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/give` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
-| `/api/server/loginBonus/again` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/mail` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/mail` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/mail/delete` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
@@ -276,6 +286,7 @@ network use the dashboard too, so do that only on a network you trust, such as y
 | `/api/server/news` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/news` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/news/delete` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/server/nextDay` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/phone-connection` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/phone-connection/server.txt` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/removeCharacter` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
@@ -285,6 +296,8 @@ network use the dashboard too, so do that only on a network you trust, such as y
 | `/api/server/rotation/next` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/rotation/previous` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/rotation/resume` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/server/save/rank` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
+| `/api/server/save/unlockChapters` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/settings` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/settings` | POST | [web_api/server.ts](../src/routes/web_api/server.ts) |  |
 | `/api/server/status` | GET | [web_api/server.ts](../src/routes/web_api/server.ts) |  |

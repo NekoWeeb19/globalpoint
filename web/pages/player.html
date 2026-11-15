@@ -319,39 +319,6 @@
             </form>
             <section
                 class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5">
-                <h3 class="text-xl text-on-background font-semibold mt-2">Daily login bonus (testing)</h3>
-                <p class="text-on-surface-variant text-center">The login bonus comes once a real day (reset 05:00 UTC), whatever the server date. This lets you collect it again now: press it, then close and reopen the game.</p>
-                <button type="button" id="loginBonusAgain" data-player-id="{{playerId}}"
-                    class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">
-                    Give login bonus again
-                </button>
-                <p id="loginBonusMessage" class="text-sm text-on-surface-variant text-center" role="status"></p>
-            </section>
-            <script>
-                (function () {
-                    const button = document.getElementById("loginBonusAgain")
-                    const message = document.getElementById("loginBonusMessage")
-                    button.addEventListener("click", async () => {
-                        button.disabled = true
-                        message.textContent = "Working..."
-                        try {
-                            const response = await fetch("/api/server/loginBonus/again", {
-                                method: "POST", headers: { "content-type": "application/json" },
-                                body: JSON.stringify({ playerId: Number(button.dataset.playerId) })
-                            })
-                            const reply = await response.json().catch(() => ({}))
-                            if (!response.ok) throw new Error(reply.message || response.statusText)
-                            message.textContent = reply.message
-                        } catch (error) {
-                            message.textContent = "Error: " + error.message
-                        } finally {
-                            button.disabled = false
-                        }
-                    })
-                })()
-            </script>
-            <section
-                class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5">
                 <h3 class="text-xl text-on-background font-semibold mt-2">Story and rank</h3>
                 <p class="text-on-surface-variant text-center">Close the game first, then reopen it after. <b>Unlock all chapters</b> marks every main story stage cleared (no clear rewards; units that join in the story arrive at the next login). <b>Set rank</b> moves the player rank up or down (no rank-up rewards). Neither can be undone, so back up the save first if unsure.</p>
                 <button type="button" id="unlockChapters" data-player-id="{{playerId}}"

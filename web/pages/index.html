@@ -126,6 +126,13 @@
                     </div>
                 </div>
                 <p id="clock-note" class="text-sm text-on-surface-variant"></p>
+                <div class="flex flex-col gap-2 p-4 rounded-2xl bg-surface-container">
+                    <div class="flex gap-3 flex-wrap items-center">
+                        <button type="button" id="next-day" class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">Start the next day now</button>
+                    </div>
+                    <span class="text-sm text-on-surface-variant">Don't want to wait for 05:00 UTC? Press this, then close and reopen the game: its next login is a new day (the next login bonus with its daily beads, daily missions, Boss Boost, daily first summons and free pulls, solo boss tickets, today's shop limits). The server's date doesn't change. Pressing it again before logging in still counts as one day.</span>
+                    <p id="next-day-message" class="text-sm text-on-surface-variant" role="status"></p>
+                </div>
                 <form id="set-time" class="flex gap-3 flex-wrap items-center">
                     <label for="time" class="sr-only">Server date and time (UTC)</label>
                     <input id="time" name="time" type="datetime-local" step="1" value="{{currentServerTime}}" class="bg-surface-container rounded-2xl border border-outline-variant p-3" required />
@@ -369,6 +376,21 @@
                 const ms = Date.parse($("time").value + "Z")
                 if (isNaN(ms)) { $("time-message").textContent = "Pick a date and time."; return }
                 setServerTime(ms, "Set to " + utc(ms) + " UTC.")
+            })
+            $("next-day").addEventListener("click", async () => {
+                const button = $("next-day"), message = $("next-day-message")
+                button.disabled = true
+                message.textContent = "Working..."
+                try {
+                    const response = await fetch("/api/server/nextDay", { method: "POST", headers: { "content-type": "application/json" }, body: "{}" })
+                    const reply = await response.json().catch(() => ({}))
+                    if (!response.ok) throw new Error(reply.message || response.statusText)
+                    message.textContent = reply.message
+                } catch (error) {
+                    message.textContent = "Error: " + error.message
+                } finally {
+                    button.disabled = false
+                }
             })
             $("jump-day").addEventListener("click", () => jumpTo(serverNow() + DAY, "one day later"))
             $("jump-week").addEventListener("click", () => jumpTo(serverNow() + 7 * DAY, "one week later"))

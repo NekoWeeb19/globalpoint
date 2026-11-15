@@ -100,7 +100,8 @@ server runs, or tap **Dashboard** in StarPoint Companion. How to use each one is
 - **Custom units:** add a new unit made from game data and art
   ([CUSTOM_UNITS.md](docs/CUSTOM_UNITS.md); an involved process).
 - **And more:** several accounts on one device, a button that syncs the daily reset with real time,
-  removing a unit from a save, and collecting the daily login bonus again right away.
+  removing a unit from a save, starting the next day (login bonus, dailies) right away, and unlocking
+  all story chapters or setting the rank.
 
 ## What works
 

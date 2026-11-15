@@ -14,7 +14,7 @@ import activeMissionData from "../../../assets/active_missions.json";
 import { getCampaignOverview, setCampaignSchedule } from "../../nya/campaignSchedule";
 import { checkCnClockDependents, cnUpdateBusy, eventImagePath, getEventOverview, removeEventSchedule, removeEventSchedules, setEventSchedule, setEventSchedules } from "../../nya/eventSchedule";
 import { createReadStream } from "fs";
-import { allowLoginBonusAgainSync } from "../../nya/loginBonus";
+import { startNextDaySync } from "../../nya/nextDay";
 import { MAX_PLAYER_RANK, setPlayerRankSync, unlockAllChaptersSync } from "../../nya/saveSetup";
 import { withRealTimeOfDay } from "../../lib/serverClock";
 import { deleteNews, listNews, NEWS_CATEGORIES, saveNews } from "../../nya/news";
@@ -360,14 +360,10 @@ const routes = async (fastify: FastifyInstance) => {
         return status === null ? rotationOffReply(reply) : reply.send(status)
     })
 
-    // testing tool: lets a player collect today's login bonus again at their next login: { playerId }
-    fastify.post("/loginBonus/again", async (request: FastifyRequest, reply: FastifyReply) => {
-        const playerId = Number(((request.body ?? {}) as { playerId?: unknown }).playerId)
-        if (!Number.isInteger(playerId)) return reply.status(400).send({ "error": "Bad Request", "message": "Invalid player." })
-        const reset = allowLoginBonusAgainSync(playerId)
-        return reply.send({ reset, message: reset
-            ? "Done. Close and reopen the game to get the next day of your login bonuses."
-            : "No login bonus was collected today yet, so the next login gives one anyway." })
+    // Overview "Start the next day": the next login of every save starts a new day (src/nya/nextDay.ts)
+    fastify.post("/nextDay", async (_: FastifyRequest, reply: FastifyReply) => {
+        const { players } = startNextDaySync()
+        return reply.send({ players, message: `Done. Close and reopen the game: its next login starts a new day (login bonus, daily missions and the other daily resets) for ${players === 1 ? "your save" : `all ${players} saves`}.` })
     })
 
     // save tools: clear every main story stage (all chapters open): { playerId }
