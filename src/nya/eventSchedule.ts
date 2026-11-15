@@ -29,6 +29,8 @@ import { reloadMods } from "../routes/api/asset"
 // global's events, plus the events only the CN client has (assets/event_catalog_cn.json, from
 // scripts/gen_event_catalog.cjs --cn): scheduling one of those changes only the CN game files
 // (scripts/gen_cn_event_schedule.cjs); global's event mod skips it
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const nameFixes = require(path.join(__dirname, "..", "..", "scripts", "cn_name_fixes.cjs")) as Record<string, Record<string, [number, string, string]>>
 const catalog = withCnEvents(catalogData as unknown as EventCatalog)
 
 function withCnEvents(global: EventCatalog): EventCatalog {
@@ -39,7 +41,13 @@ function withCnEvents(global: EventCatalog): EventCatalog {
         // global's entries the CN files also have (same id and internal name) are in both apps
         const shared = new Set(cn.shared ?? [])
         const known = new Set(global.events.map(e => e.key))
-        const tagged = global.events.map(e => ({ ...e, servers: shared.has(e.key) ? ["global", "cn"] : ["global"] } as CatalogEvent))
+        // a shared event whose English name the translation took from another event shows CN's right one
+        // (scripts/cn_name_fixes.cjs, the same fixes the CN game files get), e.g. story event 200024
+        const fixedName = (e: CatalogEvent): string => {
+            const fix = nameFixes[`master/quest/event/${e.family}.orderedmap`]?.[String(e.id)]
+            return shared.has(e.key) && fix && e.name === fix[1] ? fix[2] : e.name
+        }
+        const tagged = global.events.map(e => ({ ...e, name: fixedName(e), servers: shared.has(e.key) ? ["global", "cn"] : ["global"] } as CatalogEvent))
         const extra = cn.events.filter(e => !known.has(e.key)).map(e => ({ ...e, servers: ["cn"] } as CatalogEvent))
         return { ...global, families: { ...cn.families, ...global.families }, tables: { ...cn.tables, ...global.tables }, events: [...tagged, ...extra] }
     } catch (error) {

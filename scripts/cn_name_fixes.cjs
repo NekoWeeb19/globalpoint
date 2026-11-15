@@ -3,6 +3,12 @@
 // (the in-game name) and scripts/gen_event_catalog.cjs --cn (the dashboard's).
 //   table -> row -> [column, the wrong English, the right one]
 module.exports = {
+    "master/quest/event/story_event.orderedmap": {
+        // CN: 新春正月纪念关卡 (New Year 2022, New Flipper art); global reused 200024 for an autumn event
+        "200024": [2, "Autumnal Event Quests", "New Year Celebration Quests"],
+        // CN: 开服850日纪念关卡, whose banner is Mushroom Madness 8 (200025, the 800-day one, is Mushroom Madness 7)
+        "200026": [2, "Mushroom Madness 7 Quests", "Mushroom Madness 8 Quests"],
+    },
     "master/quest/event/advent_event.orderedmap": {
         // CN: 凉宫春日的跳跃 (the Haruhi Suzumiya collab); global's 100006 is the Re:Zero rerun
         "100006": [2, "Wanderers from Another World", "The Leap of Haruhi Suzumiya"],
