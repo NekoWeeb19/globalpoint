@@ -15,6 +15,7 @@ import { getCampaignOverview, setCampaignSchedule } from "../../nya/campaignSche
 import { checkCnClockDependents, cnUpdateBusy, eventImagePath, getEventOverview, removeEventSchedule, removeEventSchedules, setEventSchedule, setEventSchedules } from "../../nya/eventSchedule";
 import { createReadStream } from "fs";
 import { allowLoginBonusAgainSync } from "../../nya/loginBonus";
+import { MAX_PLAYER_RANK, setPlayerRankSync, unlockAllChaptersSync } from "../../nya/saveSetup";
 import { withRealTimeOfDay } from "../../lib/serverClock";
 import { deleteNews, listNews, NEWS_CATEGORIES, saveNews } from "../../nya/news";
 import { DROP_MULTIPLIER_MAX, DROP_MULTIPLIER_MIN, getDropMultiplier, setDropMultiplier } from "../../nya/dropSettings";
@@ -367,6 +368,26 @@ const routes = async (fastify: FastifyInstance) => {
         return reply.send({ reset, message: reset
             ? "Done. Close and reopen the game to get the next day of your login bonuses."
             : "No login bonus was collected today yet, so the next login gives one anyway." })
+    })
+
+    // save tools: clear every main story stage (all chapters open): { playerId }
+    fastify.post("/save/unlockChapters", async (request: FastifyRequest, reply: FastifyReply) => {
+        const playerId = Number(((request.body ?? {}) as { playerId?: unknown }).playerId)
+        if (!Number.isInteger(playerId) || getPlayerSync(playerId) === null) return reply.status(400).send({ "error": "Bad Request", "message": "Invalid player." })
+        const { newlyCleared, total } = unlockAllChaptersSync(playerId)
+        return reply.send({ message: newlyCleared === 0
+            ? `All ${total} story stages were already cleared.`
+            : `Done: ${newlyCleared} story stages cleared (no clear rewards). Close and reopen the game.` })
+    })
+
+    // save tools: set the player rank (1-max): { playerId, rank }
+    fastify.post("/save/rank", async (request: FastifyRequest, reply: FastifyReply) => {
+        const body = (request.body ?? {}) as { playerId?: unknown, rank?: unknown }
+        const playerId = Number(body.playerId), rank = Number(body.rank)
+        if (!Number.isInteger(rank) || rank < 1 || rank > MAX_PLAYER_RANK) return reply.status(400).send({ "error": "Bad Request", "message": `The rank must be a whole number from 1 to ${MAX_PLAYER_RANK}.` })
+        const result = Number.isInteger(playerId) ? setPlayerRankSync(playerId, rank) : null
+        if (result === null) return reply.status(400).send({ "error": "Bad Request", "message": "Invalid player." })
+        return reply.send({ message: `Done: rank ${result.from} -> ${result.to} (no rank-up rewards). Close and reopen the game.` })
     })
 
     // reinstalled game: the next NEW guest login takes over this player's account: { playerId }

@@ -143,14 +143,37 @@ export interface SavedParty {
     strength: number
 }
 
+// Element words in a party name (0 fire ... 5 dark, as in Element and assets/quest_elements.json). English words
+// are whole words ("Light" isn't found in "Lightning"); the CN/JP characters anywhere in the name.
+const ELEMENT_WORDS: Record<string, number> = { fire: 0, water: 1, thunder: 2, lightning: 2, wind: 3, light: 4, dark: 5 }
+const ELEMENT_CHARACTERS: Record<string, number> = { "火": 0, "水": 1, "雷": 2, "风": 3, "風": 3, "光": 4, "暗": 5 }
+
+/**
+ * The element a party's name gives it ("Thunder NPC", "[Water NPC]", "火 NPC"), or undefined when it names
+ * none, or more than one.
+ */
+export function partyNameElement(name: string): number | undefined {
+    const found = new Set<number>()
+    for (const word of name.toLowerCase().split(/[^a-z]+/)) if (word in ELEMENT_WORDS) found.add(ELEMENT_WORDS[word])
+    for (const character of name) if (character in ELEMENT_CHARACTERS) found.add(ELEMENT_CHARACTERS[character])
+    return found.size === 1 ? [...found][0] : undefined
+}
+
 /**
  * The two parties that partner the player: parties named with "NPC" first (as in the fork), then the
  * player's other strongest parties, never the party the player is using; if there aren't enough, the
- * player's own party fills in.
+ * player's own party fills in. When the stage's recommended element is known, the "NPC" parties named
+ * with that element ("Thunder NPC") come first, then "NPC" parties with no element, then the others.
  */
-export function pickPartnerParties(parties: SavedParty[], currentPartyId: number): number[] {
+export function pickPartnerParties(parties: SavedParty[], currentPartyId: number, stageElement?: number): number[] {
     const usable = parties.filter(p => p.partyId !== currentPartyId && p.characterIds.some(id => id !== null))
+    const rank = (p: SavedParty) => {
+        if (stageElement === undefined) return 0
+        const element = partyNameElement(p.name)
+        return element === stageElement ? 0 : element === undefined ? 1 : 2
+    }
     const named = usable.filter(p => p.name.toUpperCase().includes("NPC"))
+        .map((p, order) => ({ p, order })).sort((a, b) => rank(a.p) - rank(b.p) || a.order - b.order).map(x => x.p)
     const rest = usable.filter(p => !named.includes(p)).sort((a, b) => b.strength - a.strength || a.partyId - b.partyId)
     const picked = [...named, ...rest].slice(0, 2).map(p => p.partyId)
     while (picked.length < 2) picked.push(currentPartyId)

@@ -14,6 +14,7 @@ import {
 import { PartyCategory } from "../data/types"
 import { CoopCharacter, CoopParty, CoopPlayerInfo, ManaNodeFormat, SavedParty, newRoomNumber, partyGroupSlot, pickPartnerParties } from "../lib/coop"
 import { getRankByPt } from "./player"
+import { questElement } from "../lib/quest"
 
 export interface CoopRoom {
     roomNumber: string
@@ -193,12 +194,17 @@ export function strongestUnitsParty(playerId: number): CoopParty | null {
  * so when those can't be loaded the slots are filled from any other saved party with units, then the party in use, then
  * the player's strongest units (party id 0): the room always gets two.
  */
-export function partnerParties(playerId: number, currentPartyId: number): { partyId: number, party: CoopParty }[] {
+export function roomPartnerParties(room: CoopRoom): { partyId: number, party: CoopParty }[] {
+    // the stage's recommended element (undefined for stages without one, e.g. raids: the old order)
+    return partnerParties(room.hostPlayerId, room.partyId, questElement(room.category, room.questId))
+}
+
+export function partnerParties(playerId: number, currentPartyId: number, stageElement?: number): { partyId: number, party: CoopParty }[] {
     const saved = savedParties(playerId)
     const load = (partyId: number) => ({ partyId, party: loadCoopParty(playerId, partyId) })
     const loaded = (p: { partyId: number, party: CoopParty | null }): p is { partyId: number, party: CoopParty } =>
         p.party !== null && p.party.characters.some(c => c !== null)
-    const partners = pickPartnerParties(saved, currentPartyId).map(load).filter(loaded)
+    const partners = pickPartnerParties(saved, currentPartyId, stageElement).map(load).filter(loaded)
     if (partners.length >= 2) return partners
     const others = saved
         .filter(p => p.partyId !== currentPartyId && !partners.some(q => q.partyId === p.partyId))

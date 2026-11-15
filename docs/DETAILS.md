@@ -51,6 +51,18 @@ co-op "Back to Room" and connections, and the tutorial skip.
 against unmodified StarPoint. Co-op can run below 1x on slow devices, because the battle simulates your
 COM partners' battles too.
 
+## Co-op partners
+
+Your two COM partners in co-op are your own saved parties (any party group), never the party you play with:
+1. Parties whose name contains **NPC** come first. When the stage has a recommended element, NPC parties named
+   with that element come before the others: name a party, for example, `Thunder NPC` or `[Water NPC]`. The words
+   are Fire, Water, Thunder (or Lightning), Wind, Light and Dark, in any letter case, or 火 水 雷 风/風 光 暗. Then
+   come NPC parties with no element in the name, then NPC parties of another element. Stages without a
+   recommended element (raids, for example) take NPC parties in party order.
+2. If there aren't two NPC parties, your strongest other parties fill in (by their units' total EXP).
+
+The pick is made each time you recruit COM partners, so renaming a party takes effect in the next room.
+
 ## Translation
 
 The CN app's text was translated into English from scratch where global didn't have it, and taken

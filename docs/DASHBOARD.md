@@ -106,6 +106,12 @@ a unit** (close the game first; it can't be undone, see
 [CUSTOM_UNITS.md](CUSTOM_UNITS.md#removing-a-unit-safely)), and **Link my reinstalled game to this
 player** (press it, then open the reinstalled game within 30 minutes).
 
+**Story and rank** on the player page (close the game first, then reopen it; neither can be undone):
+- **Unlock all chapters:** marks every main story stage cleared, so all chapters are open. Stages already
+  cleared keep their score; no clear rewards are given. Units that join during the story arrive at the next
+  login.
+- **Set rank:** moves the player rank to any rank from 1 to 250, up or down. Rank-up rewards aren't given.
+
 **Save tools** on the player page (close the game first, then reopen it):
 - **Clone save:** a full copy as a new player, everything included. Play it by picking it under **Active
   account**; handy for testing something, or keeping a save as it is.

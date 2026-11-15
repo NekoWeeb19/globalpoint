@@ -352,6 +352,57 @@
             </script>
             <section
                 class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5">
+                <h3 class="text-xl text-on-background font-semibold mt-2">Story and rank</h3>
+                <p class="text-on-surface-variant text-center">Close the game first, then reopen it after. <b>Unlock all chapters</b> marks every main story stage cleared (no clear rewards; units that join in the story arrive at the next login). <b>Set rank</b> moves the player rank up or down (no rank-up rewards). Neither can be undone, so back up the save first if unsure.</p>
+                <button type="button" id="unlockChapters" data-player-id="{{playerId}}"
+                    class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">
+                    Unlock all chapters
+                </button>
+                <div class="flex gap-3 flex-wrap justify-center items-center">
+                    <label for="rankValue" class="text-on-surface">Rank</label>
+                    <input id="rankValue" type="number" min="1" max="250" step="1" placeholder="1-250"
+                        class="w-[110px] h-[40px] px-3 rounded-xl border border-outline-variant bg-surface text-on-surface">
+                    <button type="button" id="setRank" data-player-id="{{playerId}}"
+                        class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">
+                        Set rank
+                    </button>
+                </div>
+                <p id="saveSetupMessage" class="text-sm text-on-surface-variant text-center" role="status"></p>
+            </section>
+            <script>
+                (function () {
+                    const message = document.getElementById("saveSetupMessage")
+                    const unlock = document.getElementById("unlockChapters")
+                    const setRank = document.getElementById("setRank")
+                    const rankInput = document.getElementById("rankValue")
+                    async function send(button, url, body, question) {
+                        if (!confirm(question)) return
+                        button.disabled = true
+                        message.textContent = "Working..."
+                        try {
+                            const response = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
+                            const reply = await response.json().catch(() => ({}))
+                            if (!response.ok) throw new Error(reply.message || response.statusText)
+                            message.textContent = reply.message
+                        } catch (error) {
+                            message.textContent = "Error: " + error.message
+                        } finally {
+                            button.disabled = false
+                        }
+                    }
+                    unlock.addEventListener("click", () => send(unlock, "/api/server/save/unlockChapters",
+                        { playerId: Number(unlock.dataset.playerId) },
+                        "Mark every main story stage cleared? This can't be undone."))
+                    setRank.addEventListener("click", () => {
+                        const rank = Number(rankInput.value)
+                        if (!Number.isInteger(rank) || rank < 1 || rank > 250) { message.textContent = "Enter a rank from 1 to 250."; return }
+                        send(setRank, "/api/server/save/rank", { playerId: Number(setRank.dataset.playerId), rank },
+                            `Set this player's rank to ${rank}? Rank-up rewards aren't given.`)
+                    })
+                })()
+            </script>
+            <section
+                class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5">
                 <h3 class="text-xl text-on-background font-semibold mt-2">Reinstalled game</h3>
                 <p class="text-on-surface-variant text-center">After reinstalling the game (for example the StarPoint-patched app), it logs in as a new guest. Press this first: the next new guest login within 30 minutes loads this player instead of starting over.</p>
                 <button type="button" id="accountClaim" data-player-id="{{playerId}}"

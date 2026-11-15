@@ -10,7 +10,7 @@ import { unpack } from "msgpackr";
 import { getAccountPlayers, getSession } from "../../data/wdfpData";
 import { generateDataHeaders } from "../../utils";
 import { summonParty } from "../../lib/coop";
-import { coopHost, coopPlayerInfo, coopPort, coopSummonSeconds, createCoopRoom, deleteCoopRoom, getCoopRoom, getHostRoom, partnerParties } from "../../nya/coop";
+import { coopHost, coopPlayerInfo, coopPort, coopSummonSeconds, createCoopRoom, deleteCoopRoom, getCoopRoom, getHostRoom, roomPartnerParties } from "../../nya/coop";
 import { logHttp, notifyRoomDisbanded } from "../../coop/tcp";
 import { markActiveQuestCoop } from "./singleBattleQuest";
 import { CN_INTERNAL_HEADER, inCnRequest } from "../../lib/cnClient";
@@ -152,7 +152,7 @@ const routes = async (fastify: FastifyInstance) => {
         if (!room || room.hostViewerId !== Number(body.viewer_id)) return bad(reply, "Room not found.")
         const info = coopPlayerInfo(playerId, Number(body.viewer_id))
         if (info === null) return bad(reply)
-        const partners = partnerParties(playerId, room.partyId)
+        const partners = roomPartnerParties(room)
         const mate = (index: number) => {
             const partner = partners[index]
             if (!partner) return null

@@ -12,7 +12,7 @@ import * as net from "net"
 import * as fs from "fs"
 import * as path from "path"
 import { memberEntry, splitFrames } from "../lib/coop"
-import { coopManaNodeFormat, coopPlayerInfo, getCoopRoom, CoopRoom, loadCoopParty, partnerParties } from "../nya/coop"
+import { coopManaNodeFormat, coopPlayerInfo, getCoopRoom, CoopRoom, loadCoopParty, roomPartnerParties } from "../nya/coop"
 
 interface Client {
     socket: net.Socket
@@ -201,7 +201,7 @@ function enterComs(room: CoopRoom): void {
     const host = hostMate(room)
     const info = coopPlayerInfo(room.hostPlayerId, room.hostViewerId)
     if (!host || info === null) return
-    const partners = partnerParties(room.hostPlayerId, room.partyId)
+    const partners = roomPartnerParties(room)
     // the partners copy the host's rank and title as the game shows them
     const shown = { ...info, rank: Number(host.rank) || info.rank, degreeId: Number(host.degreeId) || info.degreeId }
     const coms = partners.slice(0, 2).map((partner, index) => memberEntry(shown, partner.party, `${room.roomNumber}-npc-${index + 1}`, {

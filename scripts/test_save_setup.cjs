@@ -14,8 +14,8 @@
 // --rank N (1-250): the rank points are set to where that rank starts (assets/player_rank.json). This also works
 //   downwards.
 //
-// (A community member made these two as dashboard buttons, 2026-11-12. They stay a testing tool until a player asks
-// for them.)
+// (A community member made these two as dashboard buttons, 2026-11-12. Since 2026-11-15 they are on the dashboard
+// too: player page, Story and rank, src/nya/saveSetup.ts.)
 const fs = require("fs")
 const path = require("path")
 
