@@ -88,6 +88,61 @@ flies.
 
 A borrowed skill brings all these settings along. A new skill (written from scratch) chooses them per effect.
 
+## Blueprint: a skill for a new unit
+
+What a working skill is made of, and what each way of getting one needs. "Borrowed" = point the new unit at an
+existing skill's script (how the test unit in [new-units.md](new-units.md) was made); "new" = a script written for it.
+
+| Piece | Where | Borrowed skill | New skill |
+|---|---|---|---|
+| Script: skill `_1` and Skill+ `_2` | `battle/action/skill/action/<rarity>/<unit>$<unit>_1` / `_2` (`.action.dsl`) | reused as it is | written: gameplay, effects and their placement (below) |
+| Effect art | shared (`skill_general`, every element ready) or the unit's own (`skill_unique`) | comes along | shared: free; own: new art (4 files per colour, see above) |
+| Skill rows (skill and Skill+) | `master/skill/action_skill` | copied, then renamed | name, description, skill icon type (column 2, e.g. `dynamic/skill/atk_surround`), gauge cost (columns 4, 5), script path (column 7) |
+| Description | column 1 of the skill row | hand-written: the game doesn't build it from the script | must say what the script does |
+| Wind-up pose | the unit's `pixelart` timeline, sequence `skill_ready` | the new unit needs its own | same |
+| Skill cut-in | the unit's `ui/skill_cutin_0/1` (`.png`, plus `.atf` for battle) | the new unit needs its own | same |
+| Skill voice | the unit's `voice/battle/skill_*` | optional (no script plays sounds) | optional |
+| `pixelart/special` animation | the unit's pixelart | only if the source unit has one | only if wanted |
+| Skill preview | the unit's `battle/character_detail_skill_preview` and `character_info_skill_preview` (`.battle`, a recorded input) | copy the source unit's | reuse one (it then shows that recording's movement) or record one; with none the unit page reports a missing file |
+| Skill+ upgrade | the unit's Mana Board evolution node | points at `_2` | same |
+
+**Writing a new script** is the real work. The script is mostly gameplay; the effects are the paint on it:
+
+- **Attack areas** (`CreateHitArea`, `MoveHitArea`, `RotateHitArea`): shape (circle, arc, donut...), size, alignment,
+  how long they last, how many hits, and what they do when they hit (`CreateNormalAttack` = damage).
+- **Buffs, debuffs, heals** (`CreateCondition`, `DeleteCondition`, `CreateRatioHeal`, `CreateBarrier`...) and who
+  gets them (`FindAllSubjects`, `FindNearSubjects`, `TargetMate`).
+- **The ball** (`StopBall`, `MoveBall`, `HideCharacter`, `StartPiercing`) and the camera (`ShakeCamera`).
+- **Branches** (`ConditionalsHealthPointRatio` = Clara's "60% HP or more", `ConditionalsFeverMode`,
+  `ConditionalsMultiballNumber`, `IfThisCharacterIsLeader`...).
+- **Effects** (`ShowEffect`, `HideEffect`) with the placement settings above.
+- **Skill level scaling**: almost every number is a `{min, max}` pair, skill level 1 to max (Clara's attack-up is
+  `{720, 720}`: it doesn't scale). Skill+ is usually the same script with better numbers.
+
+The commands CN's unit skills use, by how many skills use each (from the scan):
+
+| Command | Skills | Command | Skills |
+|---|---|---|---|
+| `ShowEffect` | 952 | `CreateRatioHeal` | 143 |
+| `CreateCondition` | 775 | `DeleteCondition` | 126 |
+| `CreateHitArea` | 773 | `HideCharacter` | 109 |
+| `CreateNormalAttack` | 755 | `ConditionalsChangeSkillFlag` | 54 |
+| `ShakeCamera` | 668 | `HideEffect`, `AddFeverPoint` | 49 each |
+| `StopBall` | 658 | `RemoveEvent` | 40 |
+| `FindAllSubjects` | 564 | `CreateRatioAttack` | 33 |
+| `CreateReferencePoint` | 322 | `CreateSummonsMultiball` | 29 |
+| `FindNearSubjects` | 255 | `ConditionalsFeverMode` | 26 |
+| `MoveHitArea` | 175 | `CreateBarrier` | 21 |
+| `MoveBall` | 154 | `AddSkillPoint` | 16 |
+
+Rarer ones (under 16 skills each): `ConditionalsHealthPointRatio`, `AddCombo`, `DecreaseCoffinCount`,
+`IfThisCharacterIsBoss`, `ConditionalsRelativePositionVertical`, `CreateReferencePointAtSpecifiedPosition`,
+`CreateBombMultiball`, `StartPiercing`, `ConditionalsHealthPointRatioOf`, `TargetMate`, `ConditionalsMultiballNumber`,
+`RemoveMultiball`, `BindCoffinRevivalCountVariable(Of)`, `CreateCollider`, `SuppressBallActivity`,
+`ConditionalsProbability`, `ProbabilityWeight`, `BindConditionAccumulationVariable`, `IfThisCharacterIsLeader`,
+`RotateHitArea`, `ConditionalsSkillPoint200Percent`, `ConditionalsNumCoffins`, `StartModifierField`, `CreateFixedAttack`.
+Each command's settings are in the client's `ActionDslCommand` (one function per command, with its parameter types).
+
 ## Counts
 
 1063 skill scripts were read (7 more couldn't be read). Of the 983 that belong to playable units:
