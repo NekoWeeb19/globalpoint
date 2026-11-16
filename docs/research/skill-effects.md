@@ -23,6 +23,70 @@ is to borrow one that already exists, and whether that needs new art depends on 
 - **The unit's own sprite** comes in through the game, not the script: its `skill_ready` sequence (the wind-up,
   Clara: 4 drawings held over 48 frames), the skill cut-in picture (`ui/skill_cutin_0/1`, plus an `.atf` copy
   for battle) and the skill voice. Some units also have a separate `pixelart/special` animation; Clara has none.
+- A skill can show **several effects**, each at its own moment: of the skills with only shared effects, 35 show 1,
+  36 show 2, 12 show 3 and one shows 4 (typically a glow on the unit, then the attack: Folus = charge, thrown ball,
+  blast where it lands). 29 skills mix shared effects with their own unit-only art.
+
+## Where an effect's files are
+
+"In the element's colour" isn't a tint: every shared effect has a **ready-made copy per element**. The client
+(`EffectTools.resolveEffectByElement` / `createPathFromElementSuffix`) builds the path as
+
+```
+<effect>/<name>_<colour>/<name>_<colour>      e.g. battle/effect/skill_general/area/whirlwind_slash/whirlwind_slash_green/whirlwind_slash_green
+```
+
+with `<colour>` = `red` (Fire), `blue` (Water), `yellow` (Thunder), `green` (Wind), `white` (Light), `black` (Dark)
+or `colorless`. A fixed-colour effect (`SpecifyEffectDirectly`) is used at its own path. Each copy is 4 files:
+
+| File | What it is |
+|---|---|
+| `.png` | the sprite sheet: the effect's art pieces (the game stores it with a scrambled signature, `\x89png`: put `PNG` back to open it) |
+| `.atlas.amf3.deflate` | where each piece is on the sheet |
+| `.parts.amf3.deflate` | the pieces that make up the effect |
+| `.timeline.amf3.deflate` | how the pieces move, scale and fade over time |
+
+Unit-only effects (`skill_unique/...`) are found the same way at their own path (Hidden Blader's throw:
+`.timeline` and `.parts`). Because file names are hashed, a folder can't be listed: a file is found by its exact
+name only.
+
+## How an effect is placed (`ShowEffect`)
+
+The skill script places every effect itself. `ShowEffect` has 12 settings (client: `ActionDslCommand.ShowEffect`,
+used in `ActionEvaluator` and `ActionEffect`):
+
+| # | Setting | What it does |
+|---|---|---|
+| 1 | label | a name for the effect (Japanese, e.g. 斬撃大 "big slash"); the script can hide it again by this name |
+| 2 | effect | the file (`ResolveByElement` + path, or `SpecifyEffectDirectly` + path) |
+| 3 | attached to | a subject number from the script: the unit, an attack area the skill made, a shot, an enemy... |
+| 4 | layer | drawn in front of or behind the units (e.g. `ForesideOfCharacter`) |
+| 5 | lifetime | how long it shows (e.g. `UntilTargetTerminates`: until what it's attached to is gone) |
+| 6 | coordinate system | which way is "forward" for the effect (below) |
+| 7, 8 | offset X, Y | moves it away from what it's attached to, along that "forward" (the offset turns with the direction) |
+| 9 | rotation | turns it a bit more, on top of the direction |
+| 10 | follow position | keeps following the target as it moves (or stays where it appeared) |
+| 11 | follow direction | keeps turning with the target |
+| 12 | scale | how big it's drawn (optional) |
+
+The coordinate systems (`ActionEffect.calcDir`; the script's rotation is added on top):
+
+| | "Forward" is |
+|---|---|
+| `AB` | straight up on the screen: the effect never turns (round effects) |
+| `EF` | the way the target is moving: a unit's ball's flying direction, an attack area's travel |
+| `CD` | an attack area's own rotation (attack areas only: on a unit or a ball the game stops with an error) |
+| `GH(other)` | from the target toward another subject, e.g. from the unit at the nearest enemy |
+
+Position = what it's attached to + the offset turned by that direction (`ActionEffect.stepPos`).
+
+**Example, Clara's whirlwind slash** (`junior_yearngirl_1`, at 60% HP or more): the script makes a round attack
+area (radius 200, centred, 80 frames) and shows `area/whirlwind_slash` on it: attached to that area, `AB` (round, so
+it doesn't turn), offset 0, 0, rotation 0, follow position and direction on (it moves with her ball), scale 4, in
+front of the units, until the area ends. A slash in front or a dash aura would use `EF`, to point the way the ball
+flies.
+
+A borrowed skill brings all these settings along. A new skill (written from scratch) chooses them per effect.
 
 ## Counts
 
