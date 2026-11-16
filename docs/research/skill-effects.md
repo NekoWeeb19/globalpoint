@@ -34,7 +34,7 @@ is to borrow one that already exists, and whether that needs new art depends on 
 | only shared effects | 136 | yes (recoloured by element) |
 | at least one unit-only effect | 774 | no: shows the other unit's art |
 
-## The 35 shared effects
+## The 35 shared effects (used by unit skills)
 
 All under `battle/effect/skill_general/`. "Units" counts the units whose skill or Skill+ shows it.
 
@@ -75,6 +75,58 @@ All under `battle/effect/skill_general/`. "Units" counts the units whose skill o
 | `long_range_unique/arrow/arrow` | arrow (fixed colour) | fixed | 1 |
 | `long_range_unique/cakram/cakram` | chakram (fixed colour) | fixed | 1 |
 | `long_range_unique/knife/knife` | knife (fixed colour) | fixed | 1 |
+
+## Effects outside unit skills
+
+The 35 above are the shared effects **unit skills** use. The game has more:
+
+- **The client itself** shows 4 more from `skill_general/multiball/` (the multiball helper appearing, getting ready
+  and leaving, and a general multiball effect). No skill script names them.
+- **Enemies** have their own sets. All 4,268 enemy action scripts named in the enemy tables (`general_boss`,
+  `general_zako`, `general_funnel`, `standard_boss`... and their `_state` / `_variable` tables) were read too.
+  Enemies never use the units' `skill_general` effects; they use:
+  - `battle/effect/enemy_general/`: **32 shared enemy effects**, all drawn in element colour (table below);
+  - `battle/effect/enemy_unique/`: **89 effects** made for one boss or a few (fixed colours, e.g. a laser
+    warning line, the Wind Sphere's attacks, big coloured screen-wide blasts).
+- Regular enemies' plain shots don't use these at all: the enemy harpy's scripts show no effect.
+
+Whether a **unit** skill can show an enemy effect isn't known: no CN unit does, and these effects are made to fly
+at the party. Untested.
+
+| Enemy effect (`enemy_general/`) | What it is | Enemies | Scripts |
+|---|---|---|---|
+| `enemy_shot_burst_heavy_cannon` | burst of heavy shells | 43 | 247 |
+| `enemy_shot_explosion_large` | large explosion | 42 | 895 |
+| `enemy_shot_cannon` | cannon shot | 38 | 579 |
+| `enemy_shot_laser_s` | thin laser | 37 | 532 |
+| `enemy_shot_explosion_medium` | medium explosion | 33 | 344 |
+| `enemy_shot_laser_m` | medium laser | 31 | 178 |
+| `enemy_shot_laser_l` | wide laser | 29 | 74 |
+| `enemy_shot_burst_middle_cannon` | burst of medium shells | 28 | 143 |
+| `enemy_shot_big` | big shot | 25 | 185 |
+| `enemy_shot_middle_cannon` | medium cannon shot | 21 | 76 |
+| `enemy_shot_laser_ll` | very wide laser | 21 | 32 |
+| `enemy_shot_burst_cannon` | burst of shells | 20 | 123 |
+| `enemy_shot_circle` | round shot | 19 | 65 |
+| `enemy_shot_fine` | small shots | 17 | 91 |
+| `enemy_shot_craw_large` | large claw | 14 | 178 |
+| `enemy_shot_heavy_cannon` | heavy cannon shot | 13 | 79 |
+| `enemy_shot_laser_lll` | screen-wide laser | 13 | 14 |
+| `enemy_shot_slip_damage` | damage-over-time hit | 13 | 102 |
+| `enemy_shot_retension_cannon` | lingering cannon shot | 12 | 100 |
+| `enemy_shot_overall_attack` | whole-field attack | 12 | 18 |
+| `enemy_shot_craw_small` | small claw | 11 | 60 |
+| `enemy_shot_pierce_cannon` | piercing cannon shot | 11 | 211 |
+| `enemy_shot_wiry` | wire / thread | 10 | 40 |
+| `enemy_shot_pierce_middle_cannon` | piercing medium shot | 9 | 82 |
+| `enemy_shot_pierce_fine` | small piercing shots | 9 | 169 |
+| `enemy_shot_slash_large` | large slash | 9 | 279 |
+| `enemy_shot_retension_fine` | lingering small shots | 8 | 87 |
+| `enemy_shot_explosion_small` | small explosion | 7 | 24 |
+| `enemy_shot_slash_middle` | medium slash | 3 | 24 |
+| `enemy_shot_slash_wave` | slash wave | 3 | 6 |
+| `enemy_shot_all_miasma` | miasma over the field | 1 | 3 |
+| `enemy_shot_target` | target marker | 1 | 1 |
 
 ## Skills with only shared effects (66 units)
 
@@ -194,7 +246,8 @@ Buffs, heals, gauge and the like: nothing is drawn but the game's generic marker
 
 ## How this list was made
 
-A scan of `master/skill/action_skill` (column 7 = the script) and each script's `ShowEffect` commands; the names and
+A scan of `master/skill/action_skill` (column 7 = the script) and each script's `ShowEffect` commands (and the same for
+the enemy action scripts the enemy tables name); the names and
 descriptions are the English (translated) tables. The scan script isn't in the repo; it is a few lines over
 `scripts/cn_read.cjs` and `scripts/amf3.cjs` (open each CN archive once: `readCn` reopens one per file, which is slow
 for a thousand files).
