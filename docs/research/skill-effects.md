@@ -143,6 +143,40 @@ Rarer ones (under 16 skills each): `ConditionalsHealthPointRatio`, `AddCombo`, `
 `RotateHitArea`, `ConditionalsSkillPoint200Percent`, `ConditionalsNumCoffins`, `StartModifierField`, `CreateFixedAttack`.
 Each command's settings are in the client's `ActionDslCommand` (one function per command, with its parameter types).
 
+## Tested: a skill script of our own (2026-11-16, emulator)
+
+Research only (not a GlobalPoint feature). A skill script written by us ran in battle.
+
+**The test skill** (`scripts/research/make_test_skill.cjs`): Clara's script (`junior_yearngirl_1`) with her HP branch
+removed, her self attack-up kept (+40 % for 720 frames), the party Power Flip buff removed, and her one round attack
+area (radius 200, whirlwind slash shown on it) moved below her: `CreateHitArea` offset Y 120, then 500.
+
+**How it got into the game** (StarPointTest emulator, companion server; the PC's files untouched):
+1. The script was written with `scripts/amf3.cjs` (`writeAmf3`, then raw deflate) at a **new** path,
+   `battle/action/skill/action/rare3/gp_test_harpy$gp_test_harpy_2`, so no game file was replaced.
+2. It was shipped as a CN update numbered above every build on that device (1.4.5000, then 1.4.6000):
+   `scripts/build_cn_patch.cjs` with `CDN_DIR` pointing at a scratch folder holding a copy of the device's
+   `cn_patches/patches.json`; the zip and the new list entry were then copied onto the device.
+3. A change file in the device's `custom_units/changes/` pointed Clara's skill rows (`master/skill/action_skill`
+   `junior_yearngirl/1` and `/2`, column 7 `program_path`) at the new script and renamed them ("Test: Harpy Slash").
+   The server rebuilt its update on start.
+4. Undo: delete the change file (Clara's own rows come back on the next rebuild); the unused script file stays in the
+   game's storage and does nothing.
+
+**Results:**
+- The unit page showed the new name, and **in battle the whirlwind slash appeared 500 below her** and her attack-up
+  icon showed: battles run the script the skill row names (column 7), and a script written by `writeAmf3` (no
+  shared references, anonymous objects, so not byte-identical to the game's own packing) is accepted.
+- **Positive Y offset = down the screen** (direction `AB`).
+- The effect showed in **blue** (Clara is Water): the element copy of the effect is picked by the unit's element.
+- Subjects, from the client (`ActionEvaluationResolver`): **`-17` = the unit using the skill**, **`-18` = its ball**,
+  `-33` = the party, `-1` / `-2` = the battlefield's centre / top-left.
+- The 120 offset was too small to tell apart from her own skill by eye (the area is 200 across and follows the ball);
+  500 was unmistakable.
+- **Not explained:** the unit page's skill **Preview** still showed her own skill, with both rows changed. The
+  preview's recording (`character_*_skill_preview.battle`) is only 180 bytes of input and names no script, so the
+  preview gets the skill some other way; not looked into further.
+
 ## Counts
 
 1063 skill scripts were read (7 more couldn't be read). Of the 983 that belong to playable units:
