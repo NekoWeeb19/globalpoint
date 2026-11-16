@@ -170,8 +170,8 @@ How sure each part is:
   the animation sequence names: what Haruhi's files are, not tested limits.
 - **Not tested:** whether the "required by screens" tables are all really required (everything Haruhi has was
   copied; none was left out to see); whether screens not opened in the test (Town, home-screen character, codex) ask
-  for more files (the log would name them); whether plain PNG / plain MP3 / a `png2atf` cut-in are accepted for new
-  art; the `character.json` element numbering beyond Fire. "Optional" items were
+  for more files (the log would name them); whether plain PNG / plain MP3 are accepted for new art (a `png2atf`
+  cut-in is: tested 2026-11-16, below); the `character.json` element numbering beyond Fire. "Optional" items were
   tested only where said (titles, the Rates list).
 
 ### 1. Ids (pick first; everything else derives from them)
@@ -213,7 +213,7 @@ AMF3 files are raw-deflated except where noted.
 | `pixelart/special_sprite_sheet.png` + `.atlas`, `special.frame` + `.timeline` | upload | PNG 128×512 | skill pose: sequences `special_land`, `special_pose` |
 | `ui/full_shot_1440_1920_0/1.png` | medium | ~1400×1700 / ~1560×1500 | portrait, `_1` = awakened |
 | `ui/skill_cutin_0/1.png` | medium | 1024×512 | |
-| `ui/skill_cutin_0/1.atf.deflate` | **android** | ATF texture (`ATF` header), zlib | battle cut-in; needs an ATF encoder (Adobe AIR SDK `png2atf`) for new art |
+| `ui/skill_cutin_0/1.atf.deflate` | **android** | ATF texture (`ATF` header), raw deflate | battle cut-in; new art: Adobe's `png2atf -c e`, see [Making a battle cut-in](#making-a-battle-cut-in-atf) (tested) |
 | `ui/square_0/1`, `square_132_132_*`, `square_round_136_136_*`, `square_round_95_95_*` | medium | 212², 132², 136², 95² | icons |
 | `ui/thumb_party_main_*`, `thumb_party_unison_*`, `thumb_level_up_*` | medium | 186×392, 144×188, 252×329 | |
 | `ui/battle_control_board_*`, `battle_member_status_*`, `cutin_skill_chain_*` | medium | 104×268, 58×58, 276×319 | battle HUD |
@@ -316,7 +316,38 @@ Rules, from this research:
   original animation). Shakari's working folder holds the single-frame PNGs and GIF previews behind it.
 - **The battle cut-in is two files.** `ui/skill_cutin_N.png` (menus) and `ui/skill_cutin_N.atf.deflate`
   (Android folder) both exist; the battle asked for the `.atf.deflate`. V1.0.0 replaced only the PNGs, so its
-  battle cut-in very likely still showed the original. A full reskin needs an ATF encoder (not tested).
+  battle cut-in very likely still showed the original. A full reskin needs the `.atf.deflate` too: see
+  [Making a battle cut-in](#making-a-battle-cut-in-atf) (tested).
+
+## Making a battle cut-in (ATF)
+
+Tested 2026-11-16 on the StarPointTest emulator: a cut-in made this way showed in battle (Clara's cut-in replaced by
+one cropped from the cut unit harpy's full art, in a skill chain next to another unit's).
+
+**What the game's cut-ins are:** `ui/skill_cutin_0/1.png` (menus, medium folder, scrambled `\x89png` signature) and
+`ui/skill_cutin_0/1.atf.deflate` (battle, Android folder, **raw deflate**). The ATF is version 3, **format 5** (raw
+block-compressed with alpha), 1024×512, 11 mip levels, 699,280 bytes, and of its four per-GPU sections only
+**ETC1 + alpha** is filled (DXT5, PVRTC and ETC2 are empty). The picture is a head-and-shoulders crop of the unit's
+art in the top left of a transparent 1024×512 canvas (Clara's fills about the left 520 × 420). The client loads it with
+Starling's `Texture.fromAtfData`, which takes ATF formats 0-5, 12, 13 and makes whatever texture the file says.
+
+**The encoder:** Adobe's `png2atf` V0.8 (2010-2012), a command-line tool from Adobe's old Gaming SDK ("Utilities / ATF
+Tools"). Adobe no longer offers it; a copy (with the Visual C++ 2010 runtime DLLs it needs) is inside the
+[PNG-to-ATFConverter](https://github.com/HeizerGe5/PNG-to-ATFConverter) repo, at `ATFConverter/Properties/png2atf.exe`.
+That copy carries a valid **Adobe Systems** code signature (checked with `Get-AuthenticodeSignature`). Only
+`png2atf.exe`, `msvcp100.dll` and `msvcr100.dll` are needed.
+
+**Recipe:**
+1. Make the 1024×512 PNG with transparency (crop, place top left).
+2. `png2atf -c e -i skill_cutin_0.png -o skill_cutin_0.atf`
+   (`-c` alone embeds all four GPU sections: 2.4 MB instead of 0.7 MB, and not what the game ships).
+3. Set byte 5 of the `.atf` to `0x01` (the game's files have it; `png2atf` writes `0x00`; meaning unknown, kept to
+   match). Everything else of the header then equals the game's.
+4. Raw-deflate it (`zlib.deflateRawSync`) to `skill_cutin_0.atf.deflate`; ship it at the Android-folder path
+   (`uploadPath(logical, "android_upload")`) and the PNG (signature set to `\x89png`) at the medium-folder path.
+
+Checked: converting Clara's own cut-in PNG this way gives a file of exactly the same size and layout as the game's
+(83.5 % identical bytes; the rest is ordinary encoder variation in the compressed pixels).
 - **Portraits with a different framing** also need their crop rows changed (`trimmed_image`, `character_image`,
   `full_shot_image_attribute`), which are table rows, not files.
 - **Voices:** the game's own MP3s have the frame sync byte stored as `7F`, but the Shakari swap used plain MP3s
