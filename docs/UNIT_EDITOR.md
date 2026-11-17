@@ -52,6 +52,8 @@ it always matches), element and rarity (the server keeps its own copy), Mana Boa
 
 ## Skill tab
 
+New to it? [SKILL_GUIDE.md](SKILL_GUIDE.md) is a short guide: what a skill needs at minimum, what can break, recipes.
+
 A skill is a script (a file the skill row names), a list of **commands** run top to bottom. Each card is one command;
 indented cards run inside the one above: after a **Wait**, when an **Attack area** appears, on each of its hits, for
 each unit a **Find** picked, in either branch of an **If**. The most used:
