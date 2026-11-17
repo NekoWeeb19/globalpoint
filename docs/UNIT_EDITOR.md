@@ -77,6 +77,15 @@ each unit a **Find** picked, in either branch of an **If**. The most used:
   game** puts the unit's own back.
 - The skill's own animations and pictures that aren't in the script stay the game's: the unit's skill pose, the
   cut-in, the voice. Effects are the game's own files (any shared effect, or another unit's own).
+- **What hits vs what's drawn**: an Attack area is invisible; what you see is the Effect drawn on it, and the two are
+  sized separately. CN draws each shared effect at a fixed size per scale (measured from CN's own skills: e.g.
+  *spread* is a circle of radius 42 at scale 1, *air blast* 50, *laser* a 133 × 1333 beam, *claw horizontal* 200 × 80),
+  so under an Attack area the editor shows what its effect draws ("Drawn: spread at scale 6 ≈ a circle of radius 252")
+  and warns when it doesn't match: a round picture on a rectangle, a picture 20 % or more bigger or smaller than what
+  hits, or a fan (no shared effect is fan-shaped; CN's fans use units' own art). **Keep effects in step with their
+  attack areas** (on by default, at the top of the tab) sets the effect's scale whenever the area's size or the effect
+  on it changes, and the effect suggestions list the ones that fit the area's shape first. Units' own effects have no
+  measured size ("size not known").
 
 **Guard rails** (the same Mode picker): every CN skill script passes them.
 - **Default**: only commands and choices CN's skills use, effects CN's skills show, and at most 60 commands, 8 attack

@@ -88,6 +88,7 @@ const shapeOf = v => v === null || v === undefined ? "none" : typeof v === "bool
 
     const seen = {} // command -> { skills: Set, whole: Map(json -> n), params: [{ shapes: Map, values: Map(json -> n), options: Map(head -> {n, examples: Map}) }] }
     const effects = new Map() // "<how>|<path>" -> Set of skills showing it
+    const drawnOn = new Map() // effect path -> [{ shape, a, b, scale }]: an effect shown on an attack area as it appears
     const skills = await readCnTable("master/skill/action_skill.orderedmap")
     let scripts = 0
     for (const [key, row] of Object.entries(skills)) {
@@ -114,6 +115,17 @@ const shapeOf = v => v === null || v === undefined ? "none" : typeof v === "bool
                         const j = JSON.stringify(e); o.examples.set(j, (o.examples.get(j) ?? 0) + 1); q.options.set(e[0], o)
                     }
                 })
+            }
+            // an attack area and the effects drawn on it when it appears: how big CN draws each effect for an area's size
+            if (v[0] === "Command" && v[1][0] === "CreateHitArea") {
+                const p = v[1], shape = p[9], id = p[19], block = Array.isArray(p[20]) && p[20][0] === "Block" ? p[20][1] : []
+                const top = r => Array.isArray(r) && r[0] && typeof r[0].max === "number" ? r[0].max : null
+                for (const it of block) if (it[0] === "Command" && it[1][0] === "ShowEffect" && it[1][3] === id && Array.isArray(it[1][2]) && typeof it[1][2][1] === "string") {
+                    const sc = it[1][12], scale = Array.isArray(sc) && sc[0] === "Some" ? top(sc[1]) : 1
+                    if (!scale || !Array.isArray(shape)) continue
+                    const k = it[1][2][1]; if (!drawnOn.has(k)) drawnOn.set(k, [])
+                    drawnOn.get(k).push({ shape: shape[0], a: top(shape[1]), b: top(shape[2]), scale })
+                }
             }
             if ((v[0] === "ResolveByElement" || v[0] === "SpecifyEffectDirectly") && typeof v[1] === "string") {
                 const k = v[0] + "|" + v[1]; if (!effects.has(k)) effects.set(k, new Set()); effects.get(k).add(key.split("/")[0])
@@ -143,6 +155,17 @@ const shapeOf = v => v === null || v === undefined ? "none" : typeof v === "bool
     }
     // effects CN's skills show: how (in the unit's element / that file), path, how many skills
     out.effects = [...effects].map(([k, set]) => { const [how, p] = k.split("|"); return { how, path: p, skills: set.size } }).sort((a, b) => b.skills - a.skills)
+    // each shared effect's size at scale 1, from the areas CN draws it on (the shape CN uses most; medians):
+    // Circle: radius; Rectangle: width x height. The editor sizes an effect to its area with these.
+    const median = xs => { const s = [...xs].sort((a, b) => a - b); return s[Math.floor(s.length / 2)] }
+    out.effectSizes = {}
+    for (const [k, list] of drawnOn) {
+        if (!k.includes("/skill_general/")) continue
+        const shape = top(new Map(Object.entries(list.reduce((m, x) => (m[x.shape] = (m[x.shape] ?? 0) + 1, m), {}))), 1)[0][0]
+        const same = list.filter(x => x.shape === shape && x.a)
+        if (shape === "Circle") out.effectSizes[k] = { shape, radius: Math.round(median(same.map(x => x.a / x.scale))), areas: same.length }
+        else if (shape === "Rectangle" && same.every(x => x.b)) out.effectSizes[k] = { shape, width: Math.round(median(same.map(x => x.a / x.scale))), height: Math.round(median(same.map(x => x.b / x.scale))), areas: same.length }
+    }
     fs.mkdirSync(path.dirname(OUT), { recursive: true })
     fs.writeFileSync(OUT, JSON.stringify(out, null, 1) + "\n")
     console.log(`${scripts} scripts read; ${Object.keys(out.commands).length} commands (${Object.values(out.commands).filter(c => c.skills).length} used), ${Object.keys(out.events).length} events (${Object.values(out.events).filter(c => c.skills).length} used) -> ${OUT}`)

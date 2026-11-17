@@ -23332,5 +23332,147 @@
    "path": "battle/effect/skill_unique/mercenary/mercenary_tornado",
    "skills": 1
   }
- ]
+ ],
+ "effectSizes": {
+  "battle/effect/skill_general/long_range_general/ball": {
+   "shape": "Circle",
+   "radius": 40,
+   "areas": 18
+  },
+  "battle/effect/skill_general/area/laser": {
+   "shape": "Rectangle",
+   "width": 133,
+   "height": 1333,
+   "areas": 7
+  },
+  "battle/effect/skill_general/area/spread": {
+   "shape": "Circle",
+   "radius": 42,
+   "areas": 25
+  },
+  "battle/effect/skill_general/area/whirlwind_slash": {
+   "shape": "Circle",
+   "radius": 50,
+   "areas": 14
+  },
+  "battle/effect/skill_general/long_range_general/acute": {
+   "shape": "Rectangle",
+   "width": 50,
+   "height": 100,
+   "areas": 4
+  },
+  "battle/effect/skill_general/area/bit_circle": {
+   "shape": "Circle",
+   "radius": 50,
+   "areas": 8
+  },
+  "battle/effect/skill_general/long_range_general/circle": {
+   "shape": "Circle",
+   "radius": 53,
+   "areas": 20
+  },
+  "battle/effect/skill_general/long_range_unique/bullet/bullet": {
+   "shape": "Circle",
+   "radius": 114,
+   "areas": 14
+  },
+  "battle/effect/skill_general/decoration/long_range_aura": {
+   "shape": "Circle",
+   "radius": 45,
+   "areas": 37
+  },
+  "battle/effect/skill_general/area/miasma": {
+   "shape": "Circle",
+   "radius": 50,
+   "areas": 4
+  },
+  "battle/effect/skill_general/area/cutting_left": {
+   "shape": "Rectangle",
+   "width": 100,
+   "height": 67,
+   "areas": 4
+  },
+  "battle/effect/skill_general/area/cutting_right": {
+   "shape": "Rectangle",
+   "width": 100,
+   "height": 67,
+   "areas": 4
+  },
+  "battle/effect/skill_general/area/air_blast": {
+   "shape": "Circle",
+   "radius": 50,
+   "areas": 30
+  },
+  "battle/effect/skill_general/area/cutting_front": {
+   "shape": "Circle",
+   "radius": 50,
+   "areas": 2
+  },
+  "battle/effect/skill_general/area/claw_horizontal": {
+   "shape": "Rectangle",
+   "width": 200,
+   "height": 80,
+   "areas": 12
+  },
+  "battle/effect/skill_general/area/claw_vertical": {
+   "shape": "Rectangle",
+   "width": 80,
+   "height": 200,
+   "areas": 10
+  },
+  "battle/effect/skill_general/long_range_general/magic": {
+   "shape": "Circle",
+   "radius": 45,
+   "areas": 12
+  },
+  "battle/effect/skill_general/decoration/entire_attack": {
+   "shape": "Rectangle",
+   "width": 750,
+   "height": 1000,
+   "areas": 2
+  },
+  "battle/effect/skill_general/area/screw_short": {
+   "shape": "Rectangle",
+   "width": 75,
+   "height": 248,
+   "areas": 2
+  },
+  "battle/effect/skill_general/area/spin_sword_smash": {
+   "shape": "Circle",
+   "radius": 50,
+   "areas": 6
+  },
+  "battle/effect/skill_general/decoration/all_miasma": {
+   "shape": "Rectangle",
+   "width": 1500,
+   "height": 2000,
+   "areas": 4
+  },
+  "battle/effect/skill_general/long_range_unique/arrow/arrow": {
+   "shape": "Circle",
+   "radius": 76,
+   "areas": 2
+  },
+  "battle/effect/skill_general/area/whirlwind_slash_front": {
+   "shape": "Circle",
+   "radius": 43,
+   "areas": 3
+  },
+  "battle/effect/skill_general/area/screw_long": {
+   "shape": "Rectangle",
+   "width": 100,
+   "height": 333,
+   "areas": 2
+  },
+  "battle/effect/skill_general/long_range_unique/cakram/cakram": {
+   "shape": "Circle",
+   "radius": 50,
+   "areas": 3
+  },
+  "battle/effect/skill_general/long_range_unique/knife/knife": {
+   "shape": "Circle",
+   "radius": 38,
+   "areas": 2
+  }
+ }
 }

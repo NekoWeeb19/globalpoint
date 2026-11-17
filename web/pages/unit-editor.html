@@ -917,15 +917,15 @@
             const codeSelect = (list, holder, i, label) => select(list, String(holder[i]), (x) => { holder[i] = Number(x); changed() }, label)
             // formations (inferred from CN's values): Circle = ring, NWay = fan, Line = row
             const FORMATION = { Circle: ["areas", "ring radius"], NWay: ["areas", "angle between"], Line: ["areas", "spacing"], AShaped: ["areas", "angle", "distance"] }
-            function rangeBoxes(list, label) {
+            function rangeBoxes(list, label, onSet) {
                 const wrap = el("span", "flex flex-wrap gap-2 items-center")
                 const scale = isAngle(label) ? DEG : 1
                 list.forEach((r, j) => {
                     if (j) wrap.appendChild(el("span", "text-on-surface-variant", "/"))
                     const [lo, hi] = rangeKeys(r)
-                    wrap.appendChild(numberBox(r, lo, false, `${label} at skill level 1`, undefined, scale))
+                    wrap.appendChild(numberBox(r, lo, false, `${label} at skill level 1`, onSet, scale))
                     wrap.appendChild(el("span", "text-on-surface", "→"))
-                    wrap.appendChild(numberBox(r, hi, false, `${label} at the top skill level`, undefined, scale))
+                    wrap.appendChild(numberBox(r, hi, false, `${label} at the top skill level`, onSet, scale))
                     if (scale !== 1) wrap.appendChild(el("span", "text-sm text-on-surface-variant", "°"))
                 })
                 return wrap
@@ -933,25 +933,26 @@
             // a setting's value as an editor; meta: the parameter (label, type, kind, options); rerender: after a change of shape
             function valueEditor(holder, i, meta, scope, rerender, ctx = {}) {
                 const v = holder[i], label = meta.label || "setting"
+                const done = () => (ctx.onSet ?? changed)()
                 const wrap = el("span", "flex flex-wrap gap-2 items-center")
                 if (unrestricted() && !ctx.inner && typeof v === "object" && v !== null) {
                     const raw = el("button", BTN, "{ }"); raw.type = "button"; raw.title = "Edit as text (Unrestricted)"
                     raw.onclick = () => {
                         const t = prompt(`${label}, as the script stores it:`, JSON.stringify(holder[i]))
                         if (t === null) return
-                        try { holder[i] = JSON.parse(t); changed(); rerender() } catch { alert("That isn't valid JSON.") }
+                        try { holder[i] = JSON.parse(t); done(); rerender() } catch { alert("That isn't valid JSON.") }
                     }
                     wrap.appendChild(raw)
                 }
                 if (v === null || v === undefined) {
                     const opts = Object.keys(meta.options ?? {})
                     wrap.appendChild(el("span", "text-on-surface-variant", "none"))
-                    if (opts.length) { const s = select([["", "(set...)"], ...opts.map((o) => [o, o])], "", (x) => { if (x) { holder[i] = clone(meta.options[x].example); changed(); rerender() } }, label); wrap.appendChild(s) }
+                    if (opts.length) { const s = select([["", "(set...)"], ...opts.map((o) => [o, o])], "", (x) => { if (x) { holder[i] = clone(meta.options[x].example); done(); rerender() } }, label); wrap.appendChild(s) }
                     return wrap
                 }
                 if (typeof v === "boolean") {
                     const box = el("input"); box.type = "checkbox"; box.checked = v; box.setAttribute("aria-label", label)
-                    box.onchange = () => { holder[i] = box.checked; changed() }
+                    box.onchange = () => { holder[i] = box.checked; done() }
                     wrap.appendChild(box); return wrap
                 }
                 if (typeof v === "number" && (/^element/.test(label) || label === "element") && ELEMENTS.some(([k]) => k === String(v))) { wrap.appendChild(codeSelect(ELEMENTS, holder, i, label)); return wrap }
@@ -959,21 +960,21 @@
                 if (typeof v === "number" && meta.kind === "group") { wrap.appendChild(codeSelect(GROUPS, holder, i, label)); return wrap }
                 if (typeof v === "number") {
                     const angle = meta.kind !== "subject" && meta.type !== "int" && isAngle(label)
-                    wrap.appendChild(meta.kind === "subject" ? subjectSelect(holder, i, scope) : numberBox(holder, i, !angle && (meta.type === "int" || Number.isInteger(v) && ctx.inner), label, undefined, angle ? DEG : 1))
+                    wrap.appendChild(meta.kind === "subject" ? subjectSelect(holder, i, scope) : numberBox(holder, i, !angle && (meta.type === "int" || Number.isInteger(v) && ctx.inner), label, ctx.onSet, angle ? DEG : 1))
                     if (angle) wrap.appendChild(el("span", "text-sm text-on-surface-variant", "°"))
                     if (/frames/.test(label) && v > 0 && v < 99999) wrap.appendChild(el("span", "text-sm text-on-surface-variant", `≈ ${num(v / 60)} s`))
                     return wrap
                 }
                 if (typeof v === "string") {
                     const box = el("input", INPUT + (ctx.effect ? " w-full max-w-[640px]" : " w-[120px]")); box.value = v; box.setAttribute("aria-label", label)
-                    if (ctx.effect) box.setAttribute("list", "skill-effects")
-                    box.onchange = () => { holder[i] = box.value.replace(/[\r\n]+/g, " "); changed() }
+                    if (ctx.effect) box.setAttribute("list", ctx.list ?? "skill-effects")
+                    box.onchange = () => { holder[i] = box.value.replace(/[\r\n]+/g, " "); done() }
                     wrap.appendChild(box); return wrap
                 }
-                if (isRangeV(v)) { wrap.appendChild(rangeBoxes(v, label)); return wrap }
+                if (isRangeV(v)) { wrap.appendChild(rangeBoxes(v, label, ctx.onSet)); return wrap }
                 if (isEnumV(v)) {
                     const opts = Object.keys(meta.options ?? {})
-                    if (opts.length && !ctx.inner) wrap.appendChild(select(opts.map((o) => [o, CHOICE_WORDS[o] ? `${o}: ${CHOICE_WORDS[o]}` : o]), v[0], (x) => { holder[i] = clone(meta.options[x].example); changed(); rerender() }, label))
+                    if (opts.length && !ctx.inner) wrap.appendChild(select(opts.map((o) => [o, CHOICE_WORDS[o] ? `${o}: ${CHOICE_WORDS[o]}` : o]), v[0], (x) => { holder[i] = clone(meta.options[x].example); done(); rerender() }, label))
                     else wrap.appendChild(el("span", "text-on-surface", v[0]))
                     const effect = v[0] === "ResolveByElement" || v[0] === "SpecifyEffectDirectly"
                     for (let k = 1; k < v.length; k++) {
@@ -984,7 +985,7 @@
                         // a value with its name, kept together on one line
                         const pair = el("span", "flex gap-2 items-center" + (effect && k === 1 ? " w-full" : ""))
                         if (name && !effect) pair.appendChild(el("span", "text-sm text-on-surface-variant", name))
-                        pair.appendChild(valueEditor(v, k, { label: name ?? `${label} (${k})` }, scope, rerender, { inner: true, effect: effect && k === 1 }))
+                        pair.appendChild(valueEditor(v, k, { label: name ?? `${label} (${k})` }, scope, rerender, { inner: true, effect: effect && k === 1, onSet: ctx.onSet, list: ctx.list }))
                         wrap.appendChild(pair)
                     }
                     return wrap
@@ -996,31 +997,94 @@
                         const col = el("span", "flex flex-col gap-1")
                         v.forEach((x, j) => {
                             const r = el("span", "flex flex-wrap gap-2 items-center")
-                            r.appendChild(valueEditor(v, j, { ...meta, label: `${label} ${j + 1}` }, scope, rerender))
-                            const rm = el("button", BTN, "Remove"); rm.type = "button"; rm.onclick = () => { v.splice(j, 1); changed(); rerender() }
+                            r.appendChild(valueEditor(v, j, { ...meta, label: `${label} ${j + 1}` }, scope, rerender, { onSet: ctx.onSet }))
+                            const rm = el("button", BTN, "Remove"); rm.type = "button"; rm.onclick = () => { v.splice(j, 1); done(); rerender() }
                             r.appendChild(rm); col.appendChild(r)
                         })
-                        if (opts.length) col.appendChild(select([["", "+ Add..."], ...opts.map((o) => [o, o])], "", (x) => { if (x) { v.push(clone(meta.options[x].example)); changed(); rerender() } }, `Add to ${label}`))
+                        if (opts.length) col.appendChild(select([["", "+ Add..."], ...opts.map((o) => [o, o])], "", (x) => { if (x) { v.push(clone(meta.options[x].example)); done(); rerender() } }, `Add to ${label}`))
                         else if (!v.length) col.appendChild(el("span", "text-on-surface-variant", "(empty)"))
                         wrap.appendChild(col); return wrap
                     }
                     if (!v.length) { wrap.appendChild(el("span", "text-on-surface-variant", "(empty)")); return wrap }
-                    v.forEach((x, j) => wrap.appendChild(valueEditor(v, j, { label: `${label} ${j + 1}` }, scope, rerender, { inner: true })))
+                    v.forEach((x, j) => wrap.appendChild(valueEditor(v, j, { label: `${label} ${j + 1}` }, scope, rerender, { inner: true, onSet: ctx.onSet })))
                     return wrap
                 }
                 wrap.appendChild(el("span", "text-sm text-on-surface", JSON.stringify(v)))
                 return wrap
             }
+            // ---- effects drawn on attack areas: CN draws each shared effect at a fixed size per scale (effectSizes, measured
+            // from CN's own areas: e.g. spread = radius 42 at scale 1), so the editor can size an effect to its area ----
+            let keepFit = prefs.get("skill-editor-fit") !== "0"
+            const effectPath = (fx) => Array.isArray(fx) && typeof fx[1] === "string" ? fx[1] : null
+            const r2 = (n) => Math.round(n * 100) / 100
+            const areaEnds = (shape, end) => ({ kind: shape?.[0], a: shape?.[1]?.[0]?.[end], b: shape?.[2]?.[0]?.[end] })
+            // the scale that draws an effect as big as an area (one end of skill levels); null when its size isn't known
+            function fitScale(size, area) {
+                if (!size || !(area.a > 0)) return null
+                const round = area.kind === "Circle" || area.kind === "Sector"
+                if (size.shape === "Circle") return round ? area.a / size.radius : Math.min(area.a, area.b) / 2 / size.radius
+                return round ? Math.sqrt((2 * area.a / size.width) * (2 * area.a / size.height)) : Math.sqrt((area.a / size.width) * (area.b / size.height))
+            }
+            // the effects drawn on this attack area as it appears ("when it appears", attached to the new area)
+            const effectsOnArea = (p) => {
+                const blk = isBlockV(p[20]) ? p[20][1] : isItemV(p[20]) ? [p[20]] : []
+                return blk.filter((c) => isItemV(c) && c[1][0] === "ShowEffect" && c[1][3] === p[19]).map((c) => c[1])
+            }
+            const scaleOf = (fx) => Array.isArray(fx[12]) && fx[12][0] === "Some" ? (isRangeV(fx[12][1]) ? fx[12][1][0] : { min: fx[12][1], max: fx[12][1] }) : { min: 1, max: 1 }
+            // sets every known effect on the area to the area's size (both ends of skill levels)
+            function fitArea(p) {
+                for (const fx of effectsOnArea(p)) {
+                    const size = S.effectSizes?.[effectPath(fx[2])]
+                    const lo = fitScale(size, areaEnds(p[9], "min")), hi = fitScale(size, areaEnds(p[9], "max"))
+                    if (lo && hi) fx[12] = ["Some", [{ min: r2(lo), max: r2(hi) }]]
+                }
+            }
+            const shapeWords = (k) => ({ Circle: "a circle", Sector: "a fan", Rectangle: "a rectangle" })[k] ?? k
+            // what each effect on an area draws, and where that differs from what hits
+            function drawnNotes(p) {
+                const out = [], area = areaEnds(p[9], "max")
+                for (const fx of effectsOnArea(p)) {
+                    const path = effectPath(fx[2]), size = S.effectSizes?.[path], sc = scaleOf(fx).max, name = (path ?? "?").split("/").pop().replace(/_/g, " ")
+                    if (!size) { out.push({ text: `Drawn: ${name}, size not known (not one of the shared effects CN draws on areas)` }); continue }
+                    const drawn = size.shape === "Circle" ? `a circle of radius ${Math.round(size.radius * sc)}` : `a ${Math.round(size.width * sc)} × ${Math.round(size.height * sc)} rectangle`
+                    let warn = ""
+                    const round = area.kind === "Circle" || area.kind === "Sector"
+                    if (area.kind === "Sector") warn = "the picture is round but only the fan hits: no shared effect is fan-shaped (CN's fans use units' own art)"
+                    else if ((size.shape === "Circle") !== round) warn = `the picture is ${shapeWords(size.shape)}, the area is ${shapeWords(area.kind)}`
+                    else {
+                        const want = fitScale(size, area)
+                        if (want && Math.abs(sc / want - 1) > 0.2) warn = `the picture is ${Math.round(Math.abs(sc / want - 1) * 100)} % ${sc > want ? "bigger" : "smaller"} than what hits (scale ${r2(want)} fits)`
+                    }
+                    out.push({ text: `Drawn: ${name} at scale ${sc} ≈ ${drawn}`, warn })
+                }
+                return out
+            }
+            // effect suggestions: the shared effects that fit an area's shape first
+            function effectList(kind) {
+                const want = kind === "Rectangle" ? "Rectangle" : "Circle", id = "skill-effects-" + want
+                if (!document.getElementById(id)) {
+                    const list = el("datalist"); list.id = id
+                    const sized = S.effects.filter((e) => S.effectSizes?.[e.path]?.shape === want), rest = S.effects.filter((e) => !sized.includes(e))
+                    for (const e of [...sized, ...rest]) {
+                        const o = el("option"), z = S.effectSizes?.[e.path]; o.value = e.path
+                        o.label = sized.includes(e) ? `fits ${shapeWords(want)} · scale 1 = ${want === "Circle" ? "radius " + z.radius : z.width + " × " + z.height}` : `${e.path.includes("/skill_general/") ? "shared" : "unit's own"}, size not known`
+                        list.appendChild(o)
+                    }
+                    document.body.appendChild(list)
+                }
+                return id
+            }
+
             // ---- blocks: cards with their settings; add, move, copy, remove ----
             // getBlock/setBlock: a block slot may hold a block, one command or nothing; it becomes a block when changed
-            function blockEditor(slot, outer, depth, rerender) {
+            function blockEditor(slot, outer, depth, rerender, area = null) {
                 const cur = slot.get(), block = isBlockV(cur) ? cur : ["Block", cur ? [cur] : []]
                 const commit = () => { if (block !== cur) slot.set(block); changed(); rerender() }
                 const list = el("div", "flex flex-col gap-2" + (depth ? " border-outline-variant" : ""))
                 if (depth) list.style.cssText = "padding-left: 16px; border-left-width: 2px; border-left-style: solid"
                 const scope = new Map(outer)
                 block[1].forEach((it, j) => {
-                    if (isBlockV(it)) { list.appendChild(blockEditor({ get: () => block[1][j], set: (b) => { block[1][j] = b } }, scope, depth + 1, rerender)); return }
+                    if (isBlockV(it)) { list.appendChild(blockEditor({ get: () => block[1][j], set: (b) => { block[1][j] = b } }, scope, depth + 1, rerender, area)); return }
                     if (!isItemV(it)) { list.appendChild(el("p", "text-sm", JSON.stringify(it))); return }
                     const [name, ...ps] = it[1], info = infoOf(it)
                     const card = el("div", "flex flex-col gap-1 p-3 rounded-2xl bg-surface-container-low")
@@ -1046,18 +1110,26 @@
                         if (meta.type === "ActionDslExpression") {
                             const sub = el("div", "flex flex-col gap-1 mt-1")
                             sub.appendChild(el("span", "text-sm text-on-surface-variant", label + ":"))
-                            sub.appendChild(blockEditor({ get: () => it[1][i + 1], set: (b) => { it[1][i + 1] = b } }, inner, depth + 1, rerender))
+                            sub.appendChild(blockEditor({ get: () => it[1][i + 1], set: (b) => { it[1][i + 1] = b } }, inner, depth + 1, rerender, name === "CreateHitArea" && i === 19 ? it[1] : null))
                             blocks.push(sub); return
                         }
                         const line = el("div", "flex flex-wrap gap-2 items-center"), name_ = el("span", "text-on-surface-variant", label.replace("(radians)", "(degrees)"))
                         name_.style.minWidth = "200px"; line.appendChild(name_)
-                        line.appendChild(valueEditor(it[1], i + 1, meta, meta.kind === "binds" ? new Map() : scope, rerender))
+                        // an attack area's shape, or an effect on an area: kept in step (refit, then redrawn)
+                        const onArea = name === "ShowEffect" && area && (i === 1 || i === 2)
+                        const fits = (name === "CreateHitArea" && i === 8) || onArea
+                        const ctx = fits ? { onSet: () => { if (keepFit) fitArea(name === "CreateHitArea" ? it[1] : area); changed(); rerender() } } : {}
+                        if (name === "ShowEffect" && area && i === 1) ctx.list = effectList(area[9]?.[0])
+                        line.appendChild(valueEditor(it[1], i + 1, meta, meta.kind === "binds" ? new Map() : scope, rerender, ctx))
                         // ids a command names (the new area, the hit target...): hidden in Default, under "more" otherwise
                         if (meta.kind === "binds") { if (checkMode() !== "default") usual.push(line); return }
                         const typical = meta.common?.[0] && JSON.stringify(meta.common[0][0]) === JSON.stringify(p)
                         if (typical && (!meta.label || meta.label.startsWith("(inferred)"))) usual.push(line); else main.appendChild(line)
                     })
                     card.appendChild(main)
+                    if (name === "CreateHitArea") for (const n of drawnNotes(it[1])) {
+                        card.appendChild(el("p", "text-sm px-3 py-1 rounded-lg " + (n.warn ? "bg-tertiary-container text-on-tertiary-container" : "text-on-surface-variant"), n.text + (n.warn ? ` — ${n.warn}` : "")))
+                    }
                     if (usual.length) {
                         const det = el("details", "text-sm"); det.appendChild(el("summary", "text-on-surface-variant cursor-pointer", `${usual.length} more (ids, and settings most of CN's skills leave as they are)`))
                         for (const l of usual) det.appendChild(l)
@@ -1076,6 +1148,10 @@
                 if (tab !== "skill") return
                 if (!edit.skills.length) { box.appendChild(el("p", "text-on-surface-variant", "This unit has no skill rows.")); return }
                 box.appendChild(el("p", "text-sm text-on-surface-variant", "What the unit's skill does, from its script: each card is one command, run top to bottom; indented cards run inside the one above (after a wait, when an attack area appears, on each hit...). Change a setting, add, move or remove commands, or start from another unit's skill. Saving writes the script as a new file and points the skill at it; the skill's art (effects, cut-in) is the game's own."))
+                const fit = el("label", "flex gap-2 items-center text-sm text-on-surface"), fitBox = el("input"); fitBox.type = "checkbox"; fitBox.checked = keepFit
+                fitBox.onchange = () => { keepFit = fitBox.checked; prefs.set("skill-editor-fit", keepFit ? "1" : "0"); renderSkill() }
+                fit.append(fitBox, document.createTextNode("Keep effects in step with their attack areas (changing an area's size, or the effect on it, sets the effect's scale to fit)"))
+                box.appendChild(fit)
                 edit.skills.forEach((s, n) => {
                     const sec = el("section", "flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3")
                     box.appendChild(sec)

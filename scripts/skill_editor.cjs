@@ -42,7 +42,7 @@ async function readScript(logical) {
 
 /** What the page needs: commands and events (Wait, Repeat...) with labels, parameter kinds, the values CN uses; effects; subjects; limits. */
 function skillData() {
-    return { commands: COMMANDS.commands, events: COMMANDS.events, effects: COMMANDS.effects, scripts: COMMANDS.scripts, subjects: SUBJECTS, limits: LIMITS }
+    return { commands: COMMANDS.commands, events: COMMANDS.events, effects: COMMANDS.effects, effectSizes: COMMANDS.effectSizes, scripts: COMMANDS.scripts, subjects: SUBJECTS, limits: LIMITS }
 }
 
 // ---- checking -----------------------------------------------------------------------------------------------
