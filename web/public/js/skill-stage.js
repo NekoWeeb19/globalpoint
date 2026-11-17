@@ -2,14 +2,19 @@
 // What the game does when a skill fires (CN 1.8.1 client: MemberImpl.startSkillCutinAnimation, BallImpl.startToSkillCutin):
 // the unit's sprite plays its "skill_ready" sequence with a skill flash and the cut-in, the ball holds for 60 frames,
 // then the script runs. Units are drawn x 6 (BattleConstants.SCALE_RENDERER); effects and areas use battle units.
+// Hits: an attack area hits the pretend target while it's inside, at the area's hit interval (its "time between hits",
+// up to its max hits), running "on each hit" each time; a Damage there shows its hit effect on the target
+// (ActionDslAssetResolver.resolveNormalAttackHitEffect: battle/effect/hit/normal_damage/...). The skill flash
+// (battle/common/layer1/hud_skill_flash, EffectManagerImpl) plays at the unit when the skill fires.
 // An approximation for the dashboard, not the battle: no enemies (a pretend target stands in for "the one hit", groups
-// of enemies and anything the stage can't place), the ball stands still unless Move the ball moves it (moving up),
-// and a branch (If ...) shows its first block. Needs parts-player.js (window.PartsPlayer) for effects.
+// of enemies and anything the stage can't place; it's put where the first attack area reaches), the ball stands still
+// unless Move the ball moves it (moving up), and a branch (If ...) shows its first block. Fine and Coarse hit effects
+// aren't in the game's update files, so a drawn stand-in shows them. Needs parts-player.js (window.PartsPlayer).
 ;(function (root) {
     const CUTIN = 60 // frames before the script runs
     const UNIT_SCALE = 6
     const BALL = { x: 0, y: 300 } // where the unit's ball is on the stage
-    const TARGET = { x: 0, y: -150 } // the pretend enemy
+    const TARGET = { x: 0, y: -150 } // the pretend enemy, when the skill has no attack area
     const FIELD = { w: 1500, h: 2000 } // CN's whole-field areas are 1500 x 2000 around the centre (-1)
     const MAX_FRAMES = 1800
 
@@ -19,17 +24,58 @@
     const top = (v) => typeof v === "number" ? v : Array.isArray(v) && v[0] && typeof v[0] === "object" ? (v[0].max ?? v[0].alv_max ?? null) : null
     const rot = (x, y, a) => ({ x: x * Math.cos(a) - y * Math.sin(a), y: x * Math.sin(a) + y * Math.cos(a) })
     const angleTo = (from, to) => Math.atan2(to.x - from.x, -(to.y - from.y)) // 0 = up the screen, clockwise
+    const COLOURS = ["red", "blue", "yellow", "green", "white", "black"] // the scripts' elements 1-6 (Fire...Dark)
+    const SKILL_FLASH = "battle/common/layer1/hud_skill_flash"
+    // a Damage's hit effect: the effect file, or a stand-in for the two the game's update files don't have
+    function hitEffect(v, element, unitColour) {
+        if (!Array.isArray(v)) return null
+        const colour = element === 255 ? unitColour : COLOURS[element - 1] ?? unitColour
+        const H = "battle/effect/hit/normal_damage/"
+        switch (v[0]) {
+            case "Fine": case "Coarse": return { path: `standin:${v[0].toLowerCase()}:${colour}`, standin: true }
+            case "Slash": return { path: `${H}slash/slash_${colour}/slash_${colour}` }
+            case "CriticalSlash": return { path: `${H}slash_strong/slash_strong_${colour}/slash_strong_${colour}` }
+            case "Dark": case "Explosion": case "Fire": case "Frozen": case "Shine": case "Splash": case "Tornado": { const n = v[0].toLowerCase(); return { path: `${H}${n}/${n}` } }
+            case "ThunderLight": return { path: `${H}thunder_light/thunder_light` }
+            case "ThunderSmall": return { path: `${H}thunder_small/thunder_small` }
+            case "SpecifyHitEffectDirectly": return Array.isArray(v[1]) && typeof v[1][1] === "string" ? { path: v[1][1], shared: v[1][0] === "ResolveByElement" } : null
+            default: return null
+        }
+    }
+    // is a point inside an attack area (its shape, centred, turned by its rotation)
+    function inside(a, pt) {
+        const d = rot(pt.x - a.x, pt.y - a.y, -(a.rot || 0)), k = a.shape?.[0], r1 = top(a.shape?.[1]) ?? 0, r2 = top(a.shape?.[2]) ?? 0
+        if (k === "Rectangle") return Math.abs(d.x) <= r1 / 2 && Math.abs(d.y) <= r2 / 2
+        const dist = Math.hypot(d.x, d.y)
+        if (k === "Sector") return dist <= r1 && Math.abs(Math.atan2(d.x, -d.y)) <= r2 / 2
+        return dist <= r1
+    }
 
     // runs the script; frames counts from the button press (the script starts at CUTIN). effectFrames: path -> { first, total, sequences }
-    function simulate(program, effectFrames = {}) {
+    // opts.colour: the unit's element colour (for "the unit's own" hit effects)
+    function simulate(program, effectFrames = {}, opts = {}) {
+        const first = simulateOnce(program, effectFrames, opts, TARGET)
+        const a = first.firstArea
+        if (!a) return first
+        // the pretend target: halfway out from the first attack area's centre, the way it faces
+        const k = a.shape?.[0], r1 = top(a.shape?.[1]) ?? 100, r2 = top(a.shape?.[2]) ?? 100
+        const o = rot(0, -(k === "Rectangle" ? r2 / 4 : r1 / 2), a.rot || 0)
+        // kept on the field
+        const clamp = (v, h) => Math.max(-h + 100, Math.min(h - 100, v))
+        return simulateOnce(program, effectFrames, opts, { x: clamp(a.x + o.x, FIELD.w / 2), y: clamp(a.y + o.y, FIELD.h / 2) })
+    }
+    function simulateOnce(program, effectFrames, opts, targetAt) {
         const queue = new Map() // frame -> [fn]
-        const at = (f, fn) => { if (f > MAX_FRAMES) return; if (!queue.has(f)) queue.set(f, []); queue.get(f).push(fn) }
+        let now = -1
+        const at = (f, fn) => { if (f <= now) f = now + 1; if (f > MAX_FRAMES) return; if (!queue.has(f)) queue.set(f, []); queue.get(f).push(fn) }
         const ball = { kind: "ball", x: BALL.x, y: BALL.y, angle: 0, alive: () => true, moves: [] }
-        const target = { kind: "target", x: TARGET.x, y: TARGET.y, alive: () => true }
+        const target = { kind: "target", x: targetAt.x, y: targetAt.y, alive: () => true }
         const centre = { kind: "centre", x: 0, y: 0, alive: () => true }
         const corner = { kind: "corner", x: -FIELD.w / 2, y: -FIELD.h / 2, alive: () => true }
         const areas = [], points = [], effects = [], hides = [], shakes = [], notes = new Set()
-        let lastEnd = CUTIN
+        let lastEnd = CUTIN, firstArea = null
+        // the skill flash, at the unit when the skill fires
+        effects.push({ kind: "effect", path: SKILL_FLASH, shared: false, start: 0, end: 62, once: false, x: ball.x, y: ball.y, rot: 0, scale: 1, layer: "" })
         const subject = (id, scope) => id === -17 || id === -18 || id === -33 ? ball : id === -1 ? centre : id === -2 ? corner : scope.get(id) ?? target
         // a direction system's angle for something attached to `of`
         const dirAngle = (dir, of, scope) => {
@@ -71,13 +117,19 @@
                         const life = (Array.isArray(p[13]) && /^SpecifyHitAreaLifetime/.test(p[13][0]) ? top(p[13][1]) : null) ?? 60
                         const area = { kind: "area", shape: p[9], start: t, end: t + life, x: pl.x, y: pl.y, rot: pl.rot, angle: pl.angle, follow: p[7] ? { of, ox: p[4], oy: p[5], dir: p[3], r: p[6] } : null, moves: [], alive: (f) => f < area.end }
                         areas.push(area); lastEnd = Math.max(lastEnd, area.end)
+                        firstArea ??= area
                         const inner = new Map(local)
                         if (Number.isInteger(p[19])) inner.set(p[19], area)
                         if (Number.isInteger(p[21])) inner.set(p[21], area)
                         if (Number.isInteger(p[22])) inner.set(p[22], target)
                         run(p[20], t, inner)
-                        // "on each hit": once, a frame later, on the pretend target
-                        at(t + 1, (tt) => run(p[23], tt, inner))
+                        // "on each hit": while the pretend target is inside, every hit interval, up to the max hits
+                        const iv = p[14], max = Array.isArray(p[15]) && p[15][0] === "Some" ? top(p[15][1]) : null
+                        const every = Array.isArray(iv) && iv[0] === "CalculatedUsingMaxNumOfHits" ? Math.max(1, Math.round(life / Math.max(1, top(iv[1]) ?? 1)))
+                            : Array.isArray(iv) && iv[0] === "SpecifyMinHitIntervalDirectly" ? Math.max(1, top(iv[1]) ?? 1) : life
+                        // "calculated from max hits": that many at most
+                        const cap = Array.isArray(iv) && iv[0] === "CalculatedUsingMaxNumOfHits" ? Math.max(1, top(iv[1]) ?? 1) : Infinity
+                        area.onHit = { block: p[23], inner, every, max: Math.min(max ?? Infinity, cap), next: t + 1, count: 0, once: p[16] === true }
                         break
                     }
                     case "ShowEffect": {
@@ -133,6 +185,14 @@
                         if (area.kind === "area") area.moves.push({ start: t, angle: dirAngle(p[2], area, local) + (p[3] || 0), speed: p[4] || 0 })
                         break
                     }
+                    case "CreateNormalAttack": {
+                        const hit = hitEffect(p[15], p[2], opts.colour ?? "blue")
+                        if (!hit) break
+                        const of = subject(p[1], local)
+                        if (hit.standin) notes.add("Fine and Coarse hit effects aren't in the game's update files: a drawn burst stands in for them.")
+                        effects.push({ kind: "effect", path: hit.path, shared: !!hit.shared, standin: !!hit.standin, start: t, end: t + (effectFrames[hit.path]?.total ?? 24), once: false, x: of.x, y: of.y, rot: 0, scale: 1, layer: "" })
+                        break
+                    }
                     case "HideCharacter": hides.push([t, t + (p[2] || 0)]); break
                     case "ShakeCamera": shakes.push({ start: t, end: t + 18, size: p[1] || 1 }); break
                     case "StopBall": lastEnd = Math.max(lastEnd, t + (p[2] || 0)); break
@@ -154,19 +214,28 @@
         const horizon = () => Math.min(MAX_FRAMES, Math.max(lastEnd, ...queue.keys(), ...effects.map((e) => e.end), ...areas.map((a) => a.end), ...points.map((q) => q.end)) + 20)
         const frames = []
         for (let f = 0; f <= horizon(); f++) {
+            now = f
             for (const fn of queue.get(f) ?? []) fn(f)
+            // attack areas hitting the pretend target
+            for (const a of areas) {
+                const h = a.onHit
+                if (!h || f < h.next || f >= a.end || h.count >= h.max || !inside(a, target)) continue
+                h.count++; h.next = f + h.every
+                run(h.block, f, h.inner)
+                if (h.once) a.end = f + 1
+            }
             for (const m of ball.moves) if (f > m.start && f <= m.end) { ball.x += Math.sin(m.angle) * m.speed; ball.y -= Math.cos(m.angle) * m.speed; ball.angle = m.angle }
             for (const a of areas) for (const m of a.moves) if (f > m.start && f < a.end) { a.x += Math.sin(m.angle) * m.speed; a.y -= Math.cos(m.angle) * m.speed }
             const follow = (o) => { if (!o.follow) return; const pl = place(o.follow.of, o.follow.dir, o.follow.ox, o.follow.oy, o.follow.r, new Map()); o.x = pl.x; o.y = pl.y; if (o.follow.turn !== false) o.rot = pl.rot }
             const snap = { frame: f, ball: { x: ball.x, y: ball.y, hidden: hides.some(([a, b]) => f >= a && f < b) }, shake: 0, areas: [], effects: [], points: [] }
             for (const a of areas) if (f >= a.start && f < a.end) { follow(a); snap.areas.push({ shape: a.shape, x: a.x, y: a.y, rot: a.rot }) }
             for (const p of points) if (f >= p.start && f < p.end) { follow(p); snap.points.push({ x: p.x, y: p.y }) }
-            for (const e of effects) if (f >= e.start && f < e.end) { follow(e); snap.effects.push({ path: e.path, shared: e.shared, local: f - e.start, once: e.once, x: e.x, y: e.y, rot: e.rot, scale: e.scale, layer: e.layer }) }
+            for (const e of effects) if (f >= e.start && f < e.end) { follow(e); snap.effects.push({ path: e.path, shared: e.shared, standin: e.standin, local: f - e.start, once: e.once, x: e.x, y: e.y, rot: e.rot, scale: e.scale, layer: e.layer }) }
             for (const s of shakes) if (f >= s.start && f < s.end) snap.shake = Math.max(snap.shake, s.size * 6 * (1 - (f - s.start) / 18))
             frames.push(snap)
         }
         if (effects.length || areas.length) notes.add("Enemies aren't shown: “the one hit” and enemy groups stand on a pretend target (the cross above the unit).")
-        return { frames, notes: [...notes], cutin: CUTIN, target: TARGET }
+        return { frames, notes: [...notes], cutin: CUTIN, target: { x: target.x, y: target.y }, firstArea }
     }
 
     // an effect's frame at `local` frames after it appears: through its sequences, looping the loop ones
@@ -189,7 +258,7 @@
         constructor(canvas, sim, sprite, loadEffect, effectFrames) {
             this.canvas = canvas; this.sim = sim; this.sprite = sprite; this.effectFrames = effectFrames
             this.players = new Map()
-            for (const f of sim.frames) for (const e of f.effects) if (!this.players.has(e.path)) {
+            for (const f of sim.frames) for (const e of f.effects) if (!e.standin && !this.players.has(e.path)) {
                 this.players.set(e.path, null)
                 loadEffect(e.path, e.shared).then((pl) => this.players.set(e.path, pl)).catch(() => { })
             }
@@ -201,7 +270,7 @@
                 this.ready = seq("skill_ready"); this.neutral = seq("neutral")
             }
             // the view: everything the skill reaches, at least 700 wide
-            let minX = BALL.x - 350, maxX = BALL.x + 350, minY = Math.min(BALL.y, TARGET.y) - 200, maxY = BALL.y + 200
+            let minX = BALL.x - 350, maxX = BALL.x + 350, minY = Math.min(BALL.y, sim.target.y) - 200, maxY = Math.max(BALL.y, sim.target.y) + 200
             for (const f of sim.frames) {
                 for (const a of f.areas) { const r = a.shape?.[0] === "Rectangle" ? Math.max(top(a.shape[1]), top(a.shape[2])) / 2 : top(a.shape?.[1]) ?? 100; minX = Math.min(minX, a.x - r); maxX = Math.max(maxX, a.x + r); minY = Math.min(minY, a.y - r); maxY = Math.max(maxY, a.y + r) }
                 for (const e of f.effects) { minX = Math.min(minX, e.x - 100); maxX = Math.max(maxX, e.x + 100); minY = Math.min(minY, e.y - 100); maxY = Math.max(maxY, e.y + 100) }
@@ -218,16 +287,26 @@
             // the field's edge, when in view
             ctx.strokeStyle = "rgba(255,255,255,0.15)"; ctx.strokeRect(W(-FIELD.w / 2), H(-FIELD.h / 2), FIELD.w * v.zoom, FIELD.h * v.zoom)
             // the pretend target
-            ctx.strokeStyle = "rgba(255,120,120,0.7)"; ctx.beginPath(); const tx = W(TARGET.x), ty = H(TARGET.y); ctx.moveTo(tx - 8, ty - 8); ctx.lineTo(tx + 8, ty + 8); ctx.moveTo(tx + 8, ty - 8); ctx.lineTo(tx - 8, ty + 8); ctx.stroke()
+            ctx.strokeStyle = "rgba(255,120,120,0.7)"; ctx.beginPath(); const tx = W(this.sim.target.x), ty = H(this.sim.target.y); ctx.moveTo(tx - 8, ty - 8); ctx.lineTo(tx + 8, ty + 8); ctx.moveTo(tx + 8, ty - 8); ctx.lineTo(tx - 8, ty + 8); ctx.stroke()
             const drawEffects = (behind) => {
                 for (const e of snap.effects) {
                     if ((e.layer === "BacksideOfCharacter") !== behind) continue
+                    if (e.standin) { if (!behind) standin(e); continue }
                     const pl = this.players.get(e.path); if (!pl) continue
                     const lf = effectFrame(this.effectFrames[e.path], pl.total, e.local, e.once)
                     ctx.save(); ctx.translate(W(e.x), H(e.y)); ctx.rotate(e.rot || 0)
                     pl.draw(ctx, lf, 0, 0, v.zoom * e.scale)
                     ctx.restore()
                 }
+            }
+            // Fine / Coarse: streaks bursting out in the element's colour, fading over 24 frames
+            const STAND = { red: "255,90,70", blue: "80,200,255", yellow: "255,230,90", green: "120,255,120", white: "255,255,230", black: "190,120,255" }
+            const standin = (e) => {
+                const [, kind, colour] = e.path.split(":"), t = e.local / 24, n = kind === "coarse" ? 14 : 9, len = (kind === "coarse" ? 90 : 55) * v.zoom
+                ctx.save(); ctx.translate(W(e.x), H(e.y)); ctx.globalCompositeOperation = "lighter"
+                ctx.strokeStyle = `rgba(${STAND[colour] ?? STAND.blue},${Math.max(0, 1 - t)})`; ctx.lineWidth = Math.max(1, 3 * v.zoom * (1 - t))
+                for (let k = 0; k < n; k++) { const a = (k / n) * Math.PI * 2 + e.x * 0.01, r0 = len * (0.2 + t * 0.6), r1 = len * (0.5 + t); ctx.beginPath(); ctx.moveTo(Math.sin(a) * r0, -Math.cos(a) * r0); ctx.lineTo(Math.sin(a) * r1, -Math.cos(a) * r1); ctx.stroke() }
+                ctx.restore()
             }
             drawEffects(true)
             // the unit: skill_ready during the cut-in, then neutral

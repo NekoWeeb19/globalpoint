@@ -220,7 +220,8 @@ function importScript(unitId, logical, base64) {
 // ---- effects, for the dashboard's effect viewer (web/public/js/parts-player.js plays them) ----
 
 const COLOURS = ["red", "blue", "yellow", "green", "white", "black", "colorless"]
-const isEffectPath = p => typeof p === "string" && /^battle\/effect\/[\w\/.-]+$/.test(p) && !p.includes("..")
+// effects (battle/effect/...) and the battle's common pieces (battle/common/..., e.g. the skill flash)
+const isEffectPath = p => typeof p === "string" && /^battle\/(effect|common)\/[\w\/.-]+$/.test(p) && !p.includes("..")
 const amfFile = buf => { let raw; try { raw = zlib.inflateRawSync(buf) } catch { raw = zlib.inflateSync(buf) } return readAmf3(raw) }
 // an effect's files: a shared effect (ResolveByElement) has a copy per colour, <path>/<name>_<colour>/<name>_<colour>
 const effectBase = (p, colour) => { const name = p.split("/").pop(); return colour ? `${p}/${name}_${colour}/${name}_${colour}` : p }
@@ -239,7 +240,11 @@ async function effectFiles(p, colour) {
     let sheet = base, atlas = ownAtlas
     if (!atlas) {
         const dir = String(parts.i?.[0]?.p ?? "").split("/.gen/")[0]
-        if (isEffectPath(dir)) { sheet = `${dir}/${dir.split("/").pop()}`; atlas = await readCn(sheet + ".atlas.amf3.deflate") }
+        // <folder>/<folder name> (units' own effects), or the folder itself (battle/common/layer1)
+        for (const cand of isEffectPath(dir) ? [`${dir}/${dir.split("/").pop()}`, dir] : []) {
+            atlas = await readCn(cand + ".atlas.amf3.deflate")
+            if (atlas) { sheet = cand; break }
+        }
     }
     if (!atlas) return null
     return { base, sheet, colours, parts, atlas: amfFile(atlas), timeline: timeline ? amfFile(timeline) : null }

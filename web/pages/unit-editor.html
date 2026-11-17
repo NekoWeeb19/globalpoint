@@ -1244,8 +1244,8 @@
                 canvas.style.cssText = "width: 100%; max-width: 360px; background: #101418; border-radius: 12px"
                 const controls = el("div", "flex flex-wrap gap-2 items-center"), status = el("p", "text-sm text-on-surface-variant", "Getting the unit and effects...")
                 box.append(canvas, controls, status)
-                const sim = SkillPreview.simulate(s.program, S.effectFrames ?? {})
                 const colour = ELEMENT_COLOUR[unit?.element] ?? "blue"
+                const sim = SkillPreview.simulate(s.program, S.effectFrames ?? {}, { colour })
                 const effect = (path, shared) => loadEffect(path, shared ? colour : null).then(({ files, img }) => new PartsPlayer(files.parts, files.atlas, img))
                 loadSprite().then((sprite) => {
                     const stage = new SkillPreview.SkillStage(canvas, sim, sprite, effect, S.effectFrames ?? {})
