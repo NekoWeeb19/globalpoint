@@ -42,6 +42,8 @@ const MEANINGS = {
     HideEffect: { label: "Hide an effect", what: "Stop an effect early, by its label.", p: [["label", "string"]] },
     DeleteCondition: { label: "Remove buffs", what: "Remove buffs or debuffs from a target.", p: [["target", "subject"], ["which"], ["at most how many"], ["(inferred) which can be removed"], ["only this label", "string"], ["sync mode"]] },
     AddCombo: { label: "Combo", what: "Add combo (inferred).", p: [] },
+    ConditionalsProbability: { label: "Random pick", what: "Run one option, picked at random by weight; each option is a Weight and the commands to run (client: evalCommand 105).", p: [["options", "block"]] },
+    ProbabilityWeight: { label: "Weight", what: "This option's weight in a Random pick (e.g. 1 and 1 = half each; 5 and 95 = 5 % and 95 %).", p: [["weight"]] },
     StartPiercing: { label: "Pierce", what: "The ball goes through enemies for a while.", p: [["ball / unit", "subject"], ["frames"]] },
     CreateRatioAttack: { label: "Damage (% of HP)", what: "Damage as a share of the target's HP.", p: [["target", "subject"], ["of (1 current HP, 2 max HP)"], ["ratio (0.1 = 10 %)"]] },
 }

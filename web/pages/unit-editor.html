@@ -1281,7 +1281,22 @@
                 if (depth) list.style.cssText = "padding-left: 16px; border-left-width: 2px; border-left-style: solid"
                 const scope = new Map(outer)
                 block[1].forEach((it, j) => {
-                    if (isBlockV(it)) { list.appendChild(blockEditor({ get: () => block[1][j], set: (b) => { block[1][j] = b } }, scope, depth + 1, rerender, area, hitArea)); return }
+                    if (isBlockV(it)) {
+                        // a group of commands inside a block (e.g. one option of a random pick): move, copy, remove it whole
+                        const g = el("div", "flex flex-col gap-1")
+                        const head = el("div", "flex flex-wrap gap-2 items-center")
+                        const w = it[1]?.[0]?.[1]?.[0] === "ProbabilityWeight" ? ` (weight ${it[1][0][1][1]})` : ""
+                        head.appendChild(el("span", "text-sm text-on-surface-variant", (w ? "Option" : "Group") + w))
+                        const tools = el("span", "flex gap-1 ml-auto")
+                        const tool = (text, title, fn, off) => { const b = el("button", BTN, text); b.type = "button"; b.title = title; b.setAttribute("aria-label", title); b.disabled = off; b.onclick = () => { fn(); commit() }; tools.appendChild(b) }
+                        tool("↑", "Move up", () => { [block[1][j - 1], block[1][j]] = [block[1][j], block[1][j - 1]] }, j === 0)
+                        tool("↓", "Move down", () => { [block[1][j + 1], block[1][j]] = [block[1][j], block[1][j + 1]] }, j === block[1].length - 1)
+                        tool("Copy", "Copy it below", () => { block[1].splice(j + 1, 0, clone(it)) })
+                        tool("Remove", "Remove (with what's inside it)", () => { block[1].splice(j, 1) })
+                        head.appendChild(tools); g.appendChild(head)
+                        g.appendChild(blockEditor({ get: () => block[1][j], set: (b) => { block[1][j] = b } }, scope, depth + 1, rerender, area, hitArea))
+                        list.appendChild(g); return
+                    }
                     if (!isItemV(it)) { list.appendChild(el("p", "text-sm", JSON.stringify(it))); return }
                     const [name, ...ps] = it[1], info = infoOf(it)
                     const card = el("div", "flex flex-col gap-1 p-3 rounded-2xl bg-surface-container-low")

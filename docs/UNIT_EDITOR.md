@@ -63,7 +63,8 @@ each unit a **Find** picked, in either branch of an **If**. The most used:
 | **Damage** | inside an area's "on each hit": the hit target, element, multiplier, break-gauge damage, Fever gained |
 | **Buff / debuff** | on the unit, the party or a found group: kind (attack, skill damage, element resistance...), frames, amount, max stacks |
 | **Stop the ball**, **Move the ball** | the ball's movement while the skill plays |
-| **Wait**, **Repeat** | timing: what's inside runs after N frames / again and again |
+| **Wait**, **Repeat** | timing: what's inside runs after N frames / right away, then every N frames, M times in all |
+| **Random pick** | runs one of its options at random, by each option's **Weight** (1 and 1 = half each). Inside a Repeat, every run picks again: e.g. four copies of an Effect at 0°, 90°, 180°, 270° give a random rotation each time. Options are groups with ↑ ↓ Copy Remove |
 | **Find a group**, **Find the nearest** | pick the party, all enemies, the nearest enemy...; the commands inside act on them |
 | **Camera shake**, **Heal**, **Remove buffs**, **Fever / skill gauge** | as named |
 

@@ -2447,8 +2447,8 @@
   },
   "ConditionalsProbability": {
    "index": 105,
-   "label": "ConditionalsProbability",
-   "what": "",
+   "label": "Random pick",
+   "what": "Run one option, picked at random by weight; each option is a Weight and the commands to run (client: evalCommand 105).",
    "skills": 1,
    "template": [
     "Command",
@@ -2539,7 +2539,7 @@
    "params": [
     {
      "type": "ActionDslExpression",
-     "label": "",
+     "label": "options",
      "kind": "block",
      "shapes": [
       "block"
@@ -13388,8 +13388,8 @@
   },
   "ProbabilityWeight": {
    "index": 106,
-   "label": "ProbabilityWeight",
-   "what": "",
+   "label": "Weight",
+   "what": "This option's weight in a Random pick (e.g. 1 and 1 = half each; 5 and 95 = 5 % and 95 %).",
    "skills": 1,
    "template": [
     "Command",
@@ -13401,7 +13401,7 @@
    "params": [
     {
      "type": "Number",
-     "label": "",
+     "label": "weight",
      "kind": "number",
      "shapes": [
       "number"

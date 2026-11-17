@@ -195,6 +195,18 @@
                         effects.push({ kind: "effect", path: hit.path, shared: !!hit.shared, fallback: hit.fallback, hit: true, start: t, end: t + (effectFrames[hit.path]?.total ?? 60), once: false, x: of.x, y: of.y, rot: 0, scale: 1, layer: "" })
                         break
                     }
+                    case "ConditionalsProbability": {
+                        // a random pick: each option is [ProbabilityWeight(w), block]; one is run, by weight (the
+                        // client's own random; here a fixed one per frame, so every run of a Repeat can differ)
+                        const opts = items(p[1]).filter(isBlock).map((o) => ({ w: Number(o[1]?.[0]?.[1]?.[1]) || 0, body: o[1]?.[1] }))
+                        const total = opts.reduce((n, o) => n + Math.max(0, o.w), 0)
+                        if (!opts.length || total <= 0) break
+                        let r = ((Math.sin((t + 1) * 12.9898 + opts.length * 78.233) * 43758.5453) % 1 + 1) % 1 * total
+                        const pick = opts.find((o) => (r -= Math.max(0, o.w)) < 0) ?? opts[opts.length - 1]
+                        notes.add("A random pick (ConditionalsProbability) shows one option per run, picked at random.")
+                        run(pick.body, t, local)
+                        break
+                    }
                     case "HideCharacter": hides.push([t, t + (p[2] || 0)]); break
                     case "ShakeCamera": shakes.push({ start: t, end: t + 18, size: p[1] || 1 }); break
                     case "StopBall": lastEnd = Math.max(lastEnd, t + (p[2] || 0)); break
