@@ -45,9 +45,55 @@ level 1 to the highest. Numbers are shown in plain units (%, seconds, points, co
 × 100,000, and the editor converts both ways. An effect whose unit isn't known shows its stored number,
 "(game value)".
 
-Not editable here: what a skill does (its damage is in the skill's script, a file), skill text (the game writes
-ability text itself from the rows, so it always matches), element and rarity (the server keeps its own copy), Mana
-Board costs.
+- **Skill tab**: what the skill and Skill+ do, from their scripts (below).
+
+Not editable here: the skill's name and description text, ability text (the game writes it itself from the rows, so
+it always matches), element and rarity (the server keeps its own copy), Mana Board costs.
+
+## Skill tab
+
+A skill is a script (a file the skill row names), a list of **commands** run top to bottom. Each card is one command;
+indented cards run inside the one above: after a **Wait**, when an **Attack area** appears, on each of its hits, for
+each unit a **Find** picked, in either branch of an **If**. The most used:
+
+| Command | Does |
+|---|---|
+| **Attack area** | the zone that hits: shape (circle, rectangle, fan), size, where (attached to the unit or ball, offset, direction), how long, how often it hits |
+| **Effect** | an animation: a shared effect (drawn in the unit's element) or a unit's own, placed like an area |
+| **Damage** | inside an area's "on each hit": the hit target, element, multiplier, break-gauge damage, Fever gained |
+| **Buff / debuff** | on the unit, the party or a found group: kind (attack, skill damage, element resistance...), frames, amount, max stacks |
+| **Stop the ball**, **Move the ball** | the ball's movement while the skill plays |
+| **Wait**, **Repeat** | timing: what's inside runs after N frames / again and again |
+| **Find a group**, **Find the nearest** | pick the party, all enemies, the nearest enemy...; the commands inside act on them |
+| **Camera shake**, **Heal**, **Remove buffs**, **Fever / skill gauge** | as named |
+
+- **Change** any setting in place. Choices fill in CN's most common version when picked; elements, groups, "who it
+  may go to" and what an area or effect is attached to are named dropdowns; angles are in degrees; numbers that grow
+  with skill level are two boxes (skill level 1 → the top level). Settings most of CN's skills leave as they are sit
+  under "more".
+- **+ Add...** at the end of every block puts in CN's most common form of a command (a new Attack area comes with
+  its effect and damage inside); **↑ ↓ Copy Remove** on every card.
+- **Start from another unit's skill** loads another unit's skill or Skill+ script to change from there; **Reset to
+  game** puts the unit's own back.
+- The skill's own animations and pictures that aren't in the script stay the game's: the unit's skill pose, the
+  cut-in, the voice. Effects are the game's own files (any shared effect, or another unit's own).
+
+**Guard rails** (the same Mode picker): every CN skill script passes them.
+- **Default**: only commands and choices CN's skills use, effects CN's skills show, and at most 60 commands, 8 attack
+  areas and 10 levels of blocks (a script you started from may stay as big as it was: the biggest CN skill has 149
+  commands and 16 areas). Ids (the names commands give an area, a hit target, a group) are hidden: what uses them
+  lists them by name.
+- **Advanced**: larger limits (200 / 20 / 16); ids shown under "more".
+- **Unrestricted**: also commands and choices CN never uses (marked untested), any effect path, any value as text
+  ("{ }"), limits 1000 / 100 / 40.
+- **Always refused**: anything the game can't read (a wrong type, an unknown command), and a command that acts on an id
+  nothing above it has named.
+
+**Saving** writes the script as a new file, `skills/battle/action/skill/action/custom/<unit>_<1|2>_<hash>` in the custom
+units folder (a new name whenever it changes, so the game never keeps an old copy), and points the skill row at it.
+The CN update ships every saved script a change file uses; **Download from PC** copies them to phones; a **kit**
+carries its unit's scripts inside it, and importing one writes them back (a kit whose skill script is missing is
+refused). Older script files of the unit that nothing uses any more are deleted when it's saved.
 
 ## Sharing kits
 

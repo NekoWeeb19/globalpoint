@@ -110,8 +110,9 @@ function readCustomUnits(dir = customUnitsDir()) {
  */
 function readUnitChanges(dir = customUnitsDir()) {
     const folder = path.join(dir, "changes")
-    const rows = new Map(), problems = [], units = []
-    if (!fs.existsSync(folder)) return { rows, problems, units, fingerprint: "" }
+    // scripts: edited skill scripts a kit file carries (logical path -> base64 of the stored file, scripts/skill_editor.cjs)
+    const rows = new Map(), problems = [], units = [], scripts = new Map()
+    if (!fs.existsSync(folder)) return { rows, problems, units, scripts, fingerprint: "" }
     const hash = crypto.createHash("sha1")
     for (const name of fs.readdirSync(folder).filter(f => f.endsWith(".json") && !f.startsWith("_")).sort()) {
         let data
@@ -124,6 +125,7 @@ function readUnitChanges(dir = customUnitsDir()) {
             if (unit.startsWith("_")) continue
             if (!entry || typeof entry.rows !== "object") { problems.push(`changes/${name}: ${unit} has no rows`); continue }
             units.push(`${unit}${entry.name ? ` ${entry.name}` : ""}`)
+            if (entry.scripts && typeof entry.scripts === "object") for (const [p, b] of Object.entries(entry.scripts)) if (typeof b === "string") scripts.set(p, b)
             for (const [ref, value] of Object.entries(entry.rows)) {
                 const at = ref.indexOf("#")
                 const ok = at > 0 && (typeof value === "string" || (value && typeof value.cols === "object"))
@@ -134,7 +136,7 @@ function readUnitChanges(dir = customUnitsDir()) {
             }
         }
     }
-    return { rows, problems, units, fingerprint: rows.size || problems.length ? hash.digest("hex") : "" }
+    return { rows, problems, units, scripts, fingerprint: rows.size || problems.length ? hash.digest("hex") : "" }
 }
 
 /** The stored paths of the tables a list of units adds rows to. */

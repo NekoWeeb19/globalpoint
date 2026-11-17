@@ -186,6 +186,37 @@ function pruneScripts(unitId, keep) {
     }
 }
 
+// ---- kits: a unit's edited scripts travel inside its kit file (base64 of the stored file) ----
+
+const SCRIPT_RE = /battle\/action\/skill\/action\/custom\/[\w$.-]+/g
+/** The edited-script paths some rows point at (any text: row values, a change file). */
+const scriptsIn = text => [...new Set(String(text).match(SCRIPT_RE) ?? [])]
+
+/** The stored file of an edited script as base64, or null when this PC doesn't have it. */
+function exportScript(logical) {
+    const file = customFile(logical)
+    return isScriptPath(logical) && fs.existsSync(file) ? fs.readFileSync(file).toString("base64") : null
+}
+
+/**
+ * Writes an edited script from a kit file, after checking it: the unit's own path, a script the game can read,
+ * no errors in Unrestricted mode (the person who made it chose the mode). Returns null, or why it was refused.
+ */
+function importScript(unitId, logical, base64) {
+    if (!isScriptPath(logical) || !logical.startsWith(`${CUSTOM_PREFIX}${unitId}_`)) return `${logical} isn't one of this unit's skill scripts`
+    let buf, program
+    try {
+        buf = Buffer.from(String(base64), "base64")
+        program = readAmf3(zlib.inflateRawSync(buf))
+    } catch { return `${logical} can't be read` }
+    const check = checkScript(program, "unrestricted", null)
+    if (check.errors.length) return `${logical}: ${check.errors[0]}`
+    const file = customFile(logical)
+    fs.mkdirSync(path.dirname(file), { recursive: true })
+    fs.writeFileSync(file, buf)
+    return null
+}
+
 /** Every edited script file (logical path -> file), for the CN update. */
 function customScripts() {
     const dir = path.join(CU.customUnitsDir(), "skills")
@@ -201,4 +232,4 @@ function customScripts() {
     return out
 }
 
-module.exports = { readScript, skillData, isScriptPath, checkScript, scriptStats, writeScript, customScripts, pruneScripts, SUBJECTS, LIMITS, CUSTOM_PREFIX }
+module.exports = { readScript, skillData, isScriptPath, checkScript, scriptStats, writeScript, customScripts, pruneScripts, scriptsIn, exportScript, importScript, SUBJECTS, LIMITS, CUSTOM_PREFIX }

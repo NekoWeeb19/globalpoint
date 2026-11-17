@@ -603,7 +603,15 @@ function exportKits(ids = []) {
     const out = { _format: KIT_FORMAT, _note: "Unit editor kits (GlobalPoint). Import on the dashboard's Unit editor page, or put this file in the custom units folder's changes/." }
     for (const { id, file } of editorFiles()) {
         if (want.size && !want.has(id)) continue
-        try { Object.assign(out, JSON.parse(fs.readFileSync(file, "utf8"))) } catch { }
+        try {
+            const kit = JSON.parse(fs.readFileSync(file, "utf8"))
+            // the unit's edited skill scripts come along inside its entry (scripts: { path: base64 })
+            for (const entry of Object.values(kit)) {
+                const scripts = Object.fromEntries(SE.scriptsIn(JSON.stringify(entry.rows ?? {})).map(p => [p, SE.exportScript(p)]).filter(([, b]) => b))
+                if (Object.keys(scripts).length) entry.scripts = scripts
+            }
+            Object.assign(out, kit)
+        } catch { }
     }
     return out
 }
@@ -626,6 +634,13 @@ async function importKits(data) {
         const mine = key => key === id || key.startsWith(id + "/") || /^\d+$/.test(key) && key.length === id.length + 1 && key.startsWith(id) || key === `${skillName}/1` || key === `${skillName}/2`
         const bad = Object.keys(kit.rows).filter(ref => { const at = ref.indexOf("#"); return at < 0 || !Object.values(T).includes(ref.slice(0, at)) || !mine(ref.slice(at + 1)) })
         if (bad.length) { no(`rows that aren't this unit's or that the editor doesn't handle: ${bad.slice(0, 3).join(", ")}`); continue }
+        // edited skill scripts: the ones the rows point at come in the kit (scripts: { path: base64 }) or are here already
+        const wanted = SE.scriptsIn(JSON.stringify(kit.rows))
+        const sent = kit.scripts && typeof kit.scripts === "object" ? kit.scripts : {}
+        const missing = wanted.filter(p => sent[p] === undefined && SE.exportScript(p) === null)
+        if (missing.length) { no(`its skill script isn't in the file (${missing[0]})`); continue }
+        const badScript = wanted.filter(p => sent[p] !== undefined).map(p => SE.importScript(id, p, sent[p])).find(Boolean)
+        if (badScript) { no(badScript); continue }
         const file = editorFile(id), before = fs.existsSync(file) ? fs.readFileSync(file) : null
         fs.mkdirSync(path.dirname(file), { recursive: true })
         fs.writeFileSync(file, JSON.stringify({ [id]: { name: kit.name ?? `Unit editor: ${id}`, rows: kit.rows } }, null, 1) + "\n")

@@ -1012,6 +1012,29 @@ async function main() {
             if (fs.existsSync(from) && !list.some(f => f.path === fix.path)) list.push({ path: fix.path, from })
         }
     }
+    // skill scripts saved by the unit editor's Skill tab (scripts/skill_editor.cjs, <custom units folder>/skills/): every
+    // one a change file or a custom unit points at, in every update (small; a phone may have missed an earlier one)
+    {
+        const SE = require("./skill_editor.cjs")
+        const used = JSON.stringify([...changes.rows.values()].map(m => [...m.values()])) + JSON.stringify(custom.units.map(u => u.rows ?? u))
+        let shipped = 0
+        for (const [logical, from] of SE.customScripts()) {
+            if (!used.includes(logical)) continue
+            const file = fileOf(logical + ".action.dsl.amf3.deflate")
+            if (!list.some(f => f.path === file)) { list.push({ path: file, from }); shipped++ }
+        }
+        // and the ones a kit file in changes/ carries itself (dropped in there rather than imported on the page)
+        for (const [logical, base64] of changes.scripts) {
+            if (!SE.isScriptPath(logical) || !used.includes(logical)) continue
+            const file = fileOf(logical + ".action.dsl.amf3.deflate")
+            if (list.some(f => f.path === file)) continue
+            const out = path.join(outDir, file)
+            fs.mkdirSync(path.dirname(out), { recursive: true })
+            fs.writeFileSync(out, Buffer.from(base64, "base64"))
+            list.push({ path: file, from: out }); shipped++
+        }
+        if (shipped) console.log(`edited skill scripts: ${shipped}`)
+    }
     await build(version, last, list)
     fs.writeFileSync(path.join(dataDir(), "cn_schedule_built.json"), JSON.stringify({ fingerprint, version, freePullCopyIds: builtFreePullCopyIds.sort((a, b) => a - b), kitState, customUnits: customUnits.map(u => u.id),
         // units left out only because their files weren't there yet: the server rebuilds once a newer update is listed

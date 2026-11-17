@@ -14,7 +14,7 @@
 // game/, in /sdcard/StarPoint/game/ (game/info.json, the version record, is written last).
 // Custom units (docs/CUSTOM_UNITS.md) always come along: the PC's unit files go to .cdn/custom_units/ (the
 // phone's CUSTOM_UNITS_DIR), and changes to existing units to .cdn/custom_units/changes/, with _units.json naming
-// them all, so the phone removes the ones the PC no longer has.
+// them all, so the phone removes the ones the PC no longer has; edited skill scripts go to .cdn/custom_units/skills/.
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import { closeSync, createReadStream, existsSync, openSync, readdirSync, readFileSync, readSync, rmSync, statSync, writeFileSync } from "fs"
@@ -79,6 +79,8 @@ function entries(options: Options, snapshot: boolean, notes: string[] = []): Ent
     const changeDir = path.join(unitDir, "changes")
     const changes = existsSync(changeDir) ? readdirSync(changeDir).filter(f => f.endsWith(".json") && !f.startsWith("_")).sort() : []
     for (const name of changes) add(list, `.cdn/custom_units/changes/${name}`, path.join(changeDir, name))
+    // skill scripts the unit editor's Skill tab saved (skills/<path>.action.dsl.amf3.deflate), for the phone's update builds
+    addTree(list, ".cdn/custom_units/skills", path.join(unitDir, "skills"))
     writeFileSync(CUSTOM_UNITS_INDEX, JSON.stringify({ units, changes }))
     add(list, ".cdn/custom_units/_units.json", CUSTOM_UNITS_INDEX)
     if (options.save) {
