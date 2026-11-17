@@ -7,7 +7,7 @@ interface Edit {
     abilities?: { key: string, lines: string[][] }[]
     leader?: { key: string, lines: string[][] } | null
     stats?: { level: string, hp: number, atk: number }[]
-    skills?: { key: string, gaugeMin: number, gaugeMax: number }[]
+    skills?: { key: string, gaugeMin: number, gaugeMax: number, script?: string, program?: unknown, from?: string }[]
     details?: { name?: string, title?: string, description?: string, class?: string, role?: string, leaderName?: string }
 }
 const UE = require(path.join(__dirname, "..", "..", "..", "scripts", "unit_editor.cjs")) as {

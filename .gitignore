@@ -31,6 +31,7 @@ download_cdn.bat
 /apk/
 *.apk
 *.obb
-# the Unit editor's saves on this PC (your own edits, like a save file)
+# the Unit editor's saves on this PC (your own edits and skill scripts, like a save file)
 assets/custom_units/changes/
+assets/custom_units/skills/
 scripts/gacha_seeds/physics.js

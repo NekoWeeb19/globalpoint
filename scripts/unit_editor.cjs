@@ -11,6 +11,7 @@ const path = require("path")
 const R = require("./cdn_rows.cjs")
 const CU = require("./custom_units.cjs")
 const TEXT = require("./unit_editor_text.cjs")
+const SE = require("./skill_editor.cjs")
 const { uploadPath } = require("./cdn_hash.cjs")
 
 const CODES = require(path.join(__dirname, "..", "assets", "unit_editor", "ability_codes.json"))
@@ -457,7 +458,18 @@ async function checkEdit(edit, advanced = false) {
         if (d.role !== undefined && !ROLES.includes(String(d.role))) e.push(`role "${d.role}" isn't one the game knows`)
         out.details = e
     } else out.details = []
-    for (const s of edit.skills ?? []) out.skills.push(Number.isInteger(s.gaugeMin) && Number.isInteger(s.gaugeMax) && s.gaugeMin > 0 && s.gaugeMax > 0 ? [] : ["the skill gauge must be whole numbers above 0"])
+    // a skill's script, when the Skill tab changed it (program: the whole script; from: the script it was opened from)
+    out.scripts = []
+    for (const s of edit.skills ?? []) {
+        const e = Number.isInteger(s.gaugeMin) && Number.isInteger(s.gaugeMax) && s.gaugeMin > 0 && s.gaugeMax > 0 ? [] : ["the skill gauge must be whole numbers above 0"]
+        let script = null
+        if (s.program !== undefined && s.program !== null) {
+            const original = SE.isScriptPath(s.from) ? await SE.readScript(s.from).catch(() => null) : null
+            script = SE.checkScript(s.program, modeOf(advanced), original)
+            e.push(...script.errors)
+        }
+        out.skills.push(e); out.scripts.push(script)
+    }
     // at most MAX_LINES lines per ability and leader skill (CN's own most: 6 per ability, 8 per leader skill)
     out.tooMany = [...(edit.abilities ?? []).map((a, i) => [`Ability ${i + 1}`, a.lines.length]), ["Leader skill", edit.leader?.lines.length ?? 0]]
         .filter(([, n]) => n > MAX_LINES).map(([what, n]) => `${what} has ${n} lines; the most is ${MAX_LINES}`)
@@ -502,6 +514,9 @@ async function saveUnit(id, edit, advanced = false) {
         const cols = {}
         if (String(s.gaugeMin) !== g[4]) cols[4] = String(s.gaugeMin)
         if (String(s.gaugeMax) !== g[5]) cols[5] = String(s.gaugeMax)
+        // an edited script: written under the custom units folder (a new name per content), the row pointed at it
+        const script = s.program ? SE.writeScript(id, s.key.endsWith("/2"), s.program) : s.script
+        if (typeof script === "string" && SE.isScriptPath(script) && script !== g[7]) cols[7] = script
         if (Object.keys(cols).length) rows[`${T.skill}#${s.key}`] = { cols }
     }
     if (edit.details) {
@@ -518,6 +533,8 @@ async function saveUnit(id, edit, advanced = false) {
         const cols = colsOf(r.own.character[id], { 6: d.class, 18: d.leaderName, 26: d.role })
         if (Object.keys(cols).length) rows[`${T.character}#${id}`] = { cols }
     }
+    // the unit's own edited scripts that no skill row points at any more go
+    SE.pruneScripts(id, Object.values(rows).map(v => v?.cols?.[7]).filter(Boolean))
     if (r.custom) return saveCustom(r.custom, rows, edit)
     const file = editorFile(id)
     if (Object.keys(rows).length === 0) { if (fs.existsSync(file)) fs.unlinkSync(file); return { file: null, rows: 0 } }

@@ -22,16 +22,16 @@ const OUT = path.join(__dirname, "..", "..", "assets", "skill_editor", "commands
 // tested in game; "(inferred)" = from the values the game's scripts use. kind "subject" = an id of a unit, ball, area...
 const MEANINGS = {
     ShowEffect: { label: "Effect", what: "Show an effect.", p: [["label", "string"], ["effect"], ["attached to", "subject"], ["layer"], ["how long it shows"], ["direction"], ["offset X"], ["offset Y (positive = down)"], ["rotation (radians)"], ["follows position"], ["follows direction"], ["scale"]] },
-    CreateHitArea: { label: "Attack area", what: "Create an attack area: the zone that hits.", p: [["label", "string"], ["attached to", "subject"], ["direction"], ["offset X"], ["offset Y (positive = down)"], ["rotation (radians)"], ["follows position"], ["follows direction"], ["shape"], ["horizontal alignment"], ["vertical alignment"], ["formation (several areas at once)"], ["how long it lasts"], ["time between hits"], ["max hits"], ["(inferred) flag"], ["breaks weak points"], ["(inferred) option"], ["id of the new area", "binds"], ["when it appears", "block"], ["id of the area (on hit)", "binds"], ["id of the hit target (on hit)", "binds"], ["on each hit", "block"], ["(inferred) number"], ["(inferred) number"], ["guard mode"]] },
-    CreateCondition: { label: "Buff / debuff", what: "Give a buff or debuff (a condition).", p: [["target", "subject"], ["conditions"], ["chance it lands (1 = 100 %)"], ["marker shown"], ["can be removed (cleansed / dispelled)"], ["given again even if it's already on"], ["label", "string"], ["linked hit check"], ["(inferred) passed on to each condition"], ["who it may go to (1 a unit, 2 the party, 3 either)"], ["(inferred) number by skill level, passed on to each condition"], ["applies even when blocked (force)"]] },
-    CreateNormalAttack: { label: "Damage", what: "Normal damage to a target (usually inside an area's on-hit).", p: [["target", "subject"], ["element (255 = the unit's own)"], ["(inferred) list"], ["(inferred) list"], ["(inferred) number"], ["damage multiplier"], ["(inferred) list"], ["(inferred) flag"], ["(inferred) flag"], ["(inferred) flag"], ["(inferred) flag"], ["(inferred) flag"], ["(inferred) list"], ["(inferred) list"], ["hit effect"], ["(inferred) flag"]] },
+    CreateHitArea: { label: "Attack area", what: "Create an attack area: the zone that hits.", p: [["label", "string"], ["attached to", "subject"], ["direction"], ["offset X"], ["offset Y (positive = down)"], ["rotation (radians)"], ["follows position"], ["follows direction"], ["shape"], ["horizontal alignment"], ["vertical alignment"], ["formation (several areas at once)"], ["how long it lasts"], ["time between hits"], ["max hits"], ["disappears when it hits"], ["breaks weak points"], ["disappears after N hits"], ["id of the new area", "binds"], ["when it appears", "block"], ["id of the area (on hit)", "binds"], ["id of the hit target (on hit)", "binds"], ["on each hit", "block"], ["(inferred) local id"], ["hit timing shared by the formation (0 each area, 1 all)"], ["guard mode"]] },
+    CreateCondition: { label: "Buff / debuff", what: "Give a buff or debuff (a condition).", p: [["target", "subject"], ["conditions"], ["chance it lands (1 = 100 %)"], ["marker shown"], ["can be removed (cleansed / dispelled)"], ["given again even if it's already on"], ["label", "string"], ["linked hit check"], ["hidden (no icon)"], ["who it may go to"], ["strength multiplier"], ["applies even when blocked (force)"]] },
+    CreateNormalAttack: { label: "Damage", what: "Normal damage to a target (usually inside an area's on-hit).", p: [["target", "subject"], ["element"], ["slayer: bonus against unit kinds (codes)"], ["bonus against enemies with these debuffs"], ["damage (the game's base number)"], ["damage multiplier"], ["slayer multiplier"], ["combo bonus applies"], ["revived-coffins bonus applies"], ["buff-count bonus applies"], ["debuff-count bonus applies"], ["range bonus applies"], ["break-gauge damage"], ["Fever gauge gained"], ["hit effect"], ["counts toward the combo"]] },
     StopBall: { label: "Stop the ball", what: "Stop or slow the unit's ball for a while.", p: [["ball", "subject"], ["frames"], ["afterwards"], ["direction"], ["angle"]] },
     MoveBall: { label: "Move the ball", what: "Move the unit's ball (dashes, charges).", p: [["ball", "subject"], ["direction"], ["angle (radians)"], ["frames"], ["speed"], ["afterwards"], ["(inferred) flag"]] },
-    FindAllSubjects: { label: "Find a group", what: "Pick a group (the party, all enemies...) and run a block with it.", p: [["id of the group", "binds"], ["which group"], ["(inferred) filter"], ["(inferred) filter"], ["(inferred) filter"], ["(inferred) filter"], ["(inferred) filter"], ["if nobody is found"], ["for the group", "block"]] },
-    FindNearSubjects: { label: "Find the nearest", what: "Pick the nearest subjects and run a block with them.", p: [["from", "subject"], ["(inferred) how many"], ["(inferred) kind"], ["if nobody is found"], ["id of the ones found", "binds"], ["for them", "block"]] },
-    CreateReferencePoint: { label: "Reference point", what: "A point (at a subject, with an offset) areas and effects can attach to or aim at.", p: [["at", "subject"], ["direction"], ["offset X"], ["offset Y"], ["rotation"], ["(inferred) follows position"], ["(inferred) follows direction"], ["(inferred) formation"], ["(inferred) number"], ["id of the point", "binds"], ["with the point", "block"]] },
-    MoveHitArea: { label: "Move an area", what: "Move an attack area (a slash that travels).", p: [["area", "subject"], ["direction"], ["angle"], ["speed"], ["(inferred) option"]] },
-    CreateRatioHeal: { label: "Heal", what: "Heal a share of max HP.", p: [["target", "subject"], ["(inferred) kind"], ["ratio (0.05 = 5 %)"], ["(inferred) list"], ["(inferred) factor"], ["marker shown"]] },
+    FindAllSubjects: { label: "Find a group", what: "Pick a group (the party, all enemies...) and run a block with each one.", p: [["id of the group", "binds"], ["which group", "group"], ["kinds filter 1 (codes, any of)"], ["kinds filter 2 (codes, any of)"], ["kinds filter 3 (codes, any of)"], ["kinds filter 4 (codes, any of)"], ["only these ids"], ["if nobody is found"], ["for the group", "block"]] },
+    FindNearSubjects: { label: "Find the nearest", what: "Pick the nearest of a group and run a block with them.", p: [["from", "subject"], ["how many"], ["which group", "group"], ["if nobody is found"], ["id of the ones found", "binds"], ["for them", "block"]] },
+    CreateReferencePoint: { label: "Reference point", what: "A point (at a subject, with an offset) areas and effects can attach to or aim at.", p: [["at", "subject"], ["direction"], ["offset X"], ["offset Y"], ["rotation"], ["follows position"], ["follows direction"], ["formation (several points at once)"], ["how long it lasts (frames)"], ["id of the point", "binds"], ["with the point", "block"]] },
+    MoveHitArea: { label: "Move an area", what: "Move an attack area (a slash that travels).", p: [["area", "subject"], ["direction"], ["angle"], ["speed"], ["speed curve (easing)"]] },
+    CreateRatioHeal: { label: "Heal", what: "Heal a share of HP.", p: [["target", "subject"], ["of (1 current HP, 2 max HP)"], ["ratio (0.05 = 5 %)"], ["bonus for unit kinds (codes)"], ["bonus multiplier"], ["marker shown"]] },
     ShakeCamera: { label: "Camera shake", what: "Camera shake.", p: [["size (1 small, 2 medium, 3 large)"]] },
     HideCharacter: { label: "Hide the unit", what: "Hide the unit's sprite for a while.", p: [["unit", "subject"], ["frames"]] },
     AddFeverPoint: { label: "Fever gauge", what: "Add Fever gauge.", p: [["amount"]] },
@@ -40,10 +40,10 @@ const MEANINGS = {
     ConditionalsHealthPointRatio: { label: "If HP ≥ X %", what: "Branch on the unit's HP: at or above X % runs the first block, else the second.", p: [["X (percent)"], ["if at or above", "block"], ["if below", "block"]] },
     ConditionalsFeverMode: { label: "If in Fever", what: "Branch on Fever (inferred: first block in Fever, second not).", p: [["in Fever", "block"], ["not in Fever", "block"]] },
     HideEffect: { label: "Hide an effect", what: "Stop an effect early, by its label.", p: [["label", "string"]] },
-    DeleteCondition: { label: "Remove buffs", what: "Remove buffs/debuffs from a target (inferred).", p: [] },
+    DeleteCondition: { label: "Remove buffs", what: "Remove buffs or debuffs from a target.", p: [["target", "subject"], ["which"], ["at most how many"], ["(inferred) which can be removed"], ["only this label", "string"], ["sync mode"]] },
     AddCombo: { label: "Combo", what: "Add combo (inferred).", p: [] },
-    StartPiercing: { label: "Pierce", what: "The ball goes through enemies (inferred).", p: [] },
-    CreateRatioAttack: { label: "Damage (% of HP)", what: "Damage as a share of the target's HP (inferred).", p: [] },
+    StartPiercing: { label: "Pierce", what: "The ball goes through enemies for a while.", p: [["ball / unit", "subject"], ["frames"]] },
+    CreateRatioAttack: { label: "Damage (% of HP)", what: "Damage as a share of the target's HP.", p: [["target", "subject"], ["of (1 current HP, 2 max HP)"], ["ratio (0.1 = 10 %)"]] },
 }
 
 // events: commands that hold a block run later (after a wait, again and again, when the ball hits...)
@@ -86,7 +86,8 @@ const shapeOf = v => v === null || v === undefined ? "none" : typeof v === "bool
         for (let m; (m = re.exec(text));) sigs[kind][m[1]] = { index: Number(m[4]), types: m[2].trim() ? m[2].split(",").map(p => p.trim().split("=")[0].trim().split(":")[1]) : [] }
     }
 
-    const seen = {} // command -> { skills: Set, params: [{ shapes: Map, values: Map(json -> n), options: Map(head -> {n, examples: Map}) }] }
+    const seen = {} // command -> { skills: Set, whole: Map(json -> n), params: [{ shapes: Map, values: Map(json -> n), options: Map(head -> {n, examples: Map}) }] }
+    const effects = new Map() // "<how>|<path>" -> Set of skills showing it
     const skills = await readCnTable("master/skill/action_skill.orderedmap")
     let scripts = 0
     for (const [key, row] of Object.entries(skills)) {
@@ -99,8 +100,10 @@ const shapeOf = v => v === null || v === undefined ? "none" : typeof v === "bool
             if (!Array.isArray(v)) { if (v && typeof v === "object") for (const x of Object.values(v)) walk(x); return }
             if ((v[0] === "Command" || v[0] === "Event") && Array.isArray(v[1])) {
                 const [name, ...ps] = v[1]
-                const s = (seen[v[0] + ":" + name] ??= { skills: new Set(), params: [] })
+                const s = (seen[v[0] + ":" + name] ??= { skills: new Set(), whole: new Map(), params: [] })
                 s.skills.add(key.split("/")[0])
+                // the whole command as CN writes it: the most common one is what "add" puts in
+                const whole = JSON.stringify(v); if (whole.length < 4000) s.whole.set(whole, (s.whole.get(whole) ?? 0) + 1)
                 ps.forEach((p, i) => {
                     const q = (s.params[i] ??= { shapes: new Map(), values: new Map(), options: new Map() })
                     const sh = shapeOf(p); q.shapes.set(sh, (q.shapes.get(sh) ?? 0) + 1)
@@ -112,6 +115,9 @@ const shapeOf = v => v === null || v === undefined ? "none" : typeof v === "bool
                     }
                 })
             }
+            if ((v[0] === "ResolveByElement" || v[0] === "SpecifyEffectDirectly") && typeof v[1] === "string") {
+                const k = v[0] + "|" + v[1]; if (!effects.has(k)) effects.set(k, new Set()); effects.get(k).add(key.split("/")[0])
+            }
             for (const x of v) walk(x)
         })(d)
     }
@@ -121,11 +127,12 @@ const shapeOf = v => v === null || v === undefined ? "none" : typeof v === "bool
         const s = seen[kind + ":" + name], m = (kind === "Event" ? EVENT_MEANINGS : MEANINGS)[name]
         out[kind === "Event" ? "events" : "commands"][name] = {
             index: sig.index, label: m?.label ?? name, what: m?.what ?? "", skills: s ? s.skills.size : 0,
+            template: s && s.whole.size ? JSON.parse(top(s.whole, 1)[0][0]) : null,
             params: sig.types.map((type, i) => {
                 const q = s?.params[i], hint = m?.p?.[i] ?? []
                 const shape = q ? top(q.shapes, 1)[0][0] : (type === "Boolean" ? "bool" : type === "ActionDslExpression" ? "block" : type === "String" ? "string" : /int|Number/.test(type) ? "number" : "value")
                 return {
-                    type, label: hint[0] ?? "", kind: hint[1] ?? shape,
+                    type, label: hint[0] ?? "", kind: hint[1] ?? shape, shapes: q ? [...q.shapes.keys()] : [],
                     common: q ? top(q.values, 8).map(([j, n]) => [JSON.parse(j), n]) : [],
                     options: q ? Object.fromEntries(top(new Map([...q.options].map(([h, o]) => [h, o.n])), 200).map(([h]) => {
                         const o = q.options.get(h); return [h, { n: o.n, example: JSON.parse(top(o.examples, 1)[0][0]) }]
@@ -134,6 +141,8 @@ const shapeOf = v => v === null || v === undefined ? "none" : typeof v === "bool
             }),
         }
     }
+    // effects CN's skills show: how (in the unit's element / that file), path, how many skills
+    out.effects = [...effects].map(([k, set]) => { const [how, p] = k.split("|"); return { how, path: p, skills: set.size } }).sort((a, b) => b.skills - a.skills)
     fs.mkdirSync(path.dirname(OUT), { recursive: true })
     fs.writeFileSync(OUT, JSON.stringify(out, null, 1) + "\n")
     console.log(`${scripts} scripts read; ${Object.keys(out.commands).length} commands (${Object.values(out.commands).filter(c => c.skills).length} used), ${Object.keys(out.events).length} events (${Object.values(out.events).filter(c => c.skills).length} used) -> ${OUT}`)

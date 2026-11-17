@@ -419,7 +419,7 @@
                 }).catch((e) => { $("load-status").textContent = e.message })
             }
             const payload = () => ({ id: unit.id, abilities: edit.abilities.map((a) => ({ key: a.key, lines: a.lines })), leader: edit.leader ? { key: edit.leader.key, lines: edit.leader.lines } : null,
-                stats: edit.stats.map((s) => ({ level: s.level, hp: s.hp, atk: s.atk })), skills: edit.skills.map((s) => ({ key: s.key, gaugeMin: s.gaugeMin, gaugeMax: s.gaugeMax })),
+                stats: edit.stats.map((s) => ({ level: s.level, hp: s.hp, atk: s.atk })), skills: edit.skills.map((s) => ({ key: s.key, gaugeMin: s.gaugeMin, gaugeMax: s.gaugeMax, ...skillScriptPart(s) })),
                 details: (({ name, title, description, class: cls, role, leaderName }) => ({ name, title, description, class: cls, role, leaderName }))(edit.details) })
             const dirty = () => edit && JSON.stringify(payload()) !== saved
 
@@ -773,139 +773,376 @@
                 box.appendChild(ab)
             }
 
-            // ---- skill tab: the unit's skill scripts as blocks of commands (scripts/skill_editor.cjs) ----
+            // ---- skill tab: the unit's skill scripts as blocks of commands, editable (scripts/skill_editor.cjs) ----
+            // Each skill: s.program = the script being edited (loaded when the tab opens), s.from = the script it came from.
+            // payload() sends the program only when it differs from what the skill row has now.
             let S = null, skillLoading = null
-            const scriptCache = new Map()
-            const skillData = () => S ? Promise.resolve(S) : (skillLoading ??= api("/skill-data").then((d) => (S = d)))
-            const loadScript = (p) => scriptCache.has(p) ? Promise.resolve(scriptCache.get(p))
-                : api("/skill-script?path=" + encodeURIComponent(p)).then((r) => { scriptCache.set(p, r.script); return r.script })
+            const scriptCache = new Map(), programBase = {}, gameBase = {}
+            const skillData = () => S ? Promise.resolve(S) : (skillLoading ??= api("/skill-data").then((d) => {
+                S = d
+                const list = el("datalist"); list.id = "skill-effects"
+                for (const e of d.effects) { const o = el("option"); o.value = e.path; o.label = `${e.path.includes("/skill_general/") ? "shared" : "unit's own"}, ${e.skills} skill${e.skills === 1 ? "" : "s"}`; list.appendChild(o) }
+                document.body.appendChild(list)
+                return S
+            }))
+            // a script's text by path, fetched once (the promise is kept, so two asks share one fetch)
+            const loadScript = (p) => {
+                if (!scriptCache.has(p)) scriptCache.set(p, api("/skill-script?path=" + encodeURIComponent(p)).then((r) => JSON.stringify(r.script)).catch((e) => { scriptCache.delete(p); throw e }))
+                return scriptCache.get(p)
+            }
+            const clone = (v) => JSON.parse(JSON.stringify(v))
             const isEnumV = (v) => Array.isArray(v) && typeof v[0] === "string" && /^[A-Z]/.test(v[0]) && v[0] !== "Block"
-            const isRangeV = (v) => Array.isArray(v) && v.length > 0 && v.every((x) => x && typeof x === "object" && !Array.isArray(x) && "min" in x)
+            // numbers by skill level: [{min, max}] (one buff uses {alv_min, alv_max})
+            const rangeKeys = (x) => x && typeof x === "object" && !Array.isArray(x) ? ("min" in x ? ["min", "max"] : "alv_min" in x ? ["alv_min", "alv_max"] : null) : null
+            const isRangeV = (v) => Array.isArray(v) && v.length > 0 && v.every((x) => rangeKeys(x))
             const isBlockV = (v) => Array.isArray(v) && v[0] === "Block" && Array.isArray(v[1])
+            const isItemV = (v) => Array.isArray(v) && (v[0] === "Command" || v[0] === "Event") && Array.isArray(v[1])
+            const infoOf = (it) => (it[0] === "Event" ? S.events : S.commands)[it[1][0]]
+            // settings that may be ids: named ids, and whole numbers whose meaning isn't known (as the server checks)
+            const mayBeId = (meta, v) => Number.isInteger(v) && (meta.kind === "binds" || (meta.kind !== "subject" && (!meta.label || meta.label.startsWith("(inferred)"))))
             const num = (n) => typeof n === "number" ? String(Math.round(n * 1000) / 1000) : String(n)
-            const rangeText = (v) => v.map((x) => x.min === x.max ? num(x.min) : `${num(x.min)} → ${num(x.max)}`).join(" / ")
-            const FRAMED = /Frame|Lifetime|Directly|Interval/
-            // an effect path: its name, and whether it is shared (any unit can show it) or a unit's own
-            function effectText(kind, p) {
-                const parts = String(p).split("/"), name = parts[parts.length - 1]
-                const where = p.includes("/skill_general/") ? "shared" : p.includes("/skill_unique/") ? "unit's own" : parts.slice(2, 3).join("")
-                return `${name.replace(/_/g, " ")} (${where}${kind === "ResolveByElement" ? ", in the unit's element" : ""})`
+            const skillChanged = (s) => s.program !== undefined && JSON.stringify(s.program) !== programBase[s.key]
+            // what the payload says about a skill's script
+            function skillScriptPart(s) {
+                if (!skillChanged(s)) return { script: s.script }
+                if (gameBase[s.key] && JSON.stringify(s.program) === gameBase[s.key]) return { script: s.game.script } // back to the game's own
+                return { script: s.script, program: s.program, from: s.from }
             }
-            // a parameter value in plain text; subjects by name (fixed ones, or what a command bound them to)
-            function valueText(v, kind, scope) {
-                if (v === null || v === undefined) return "none"
-                if (typeof v === "boolean") return v ? "yes" : "no"
-                if (kind === "subject" && typeof v === "number") return scope.get(v) ?? S.subjects[String(v)] ?? `#${v}`
-                if (typeof v === "number") return num(v)
-                if (typeof v === "string") return v === "" ? "(none)" : `"${v}"`
-                if (isRangeV(v)) return rangeText(v)
-                if (isEnumV(v)) {
-                    const [name, ...inner] = v
-                    if ((name === "ResolveByElement" || name === "SpecifyEffectDirectly") && typeof inner[0] === "string") return effectText(name, inner[0])
-                    if (name === "GH" && typeof inner[0] === "number") return `GH (toward ${scope.get(inner[0]) ?? S.subjects[String(inner[0])] ?? "#" + inner[0]})`
-                    if (!inner.length) return name
-                    let t = `${name}(${inner.map((x) => valueText(x, "", scope)).join(", ")})`
-                    if (FRAMED.test(name) && inner.length === 1 && (typeof inner[0] === "number" || isRangeV(inner[0]))) {
-                        const f = typeof inner[0] === "number" ? inner[0] : inner[0][0].max
-                        if (f > 0 && f < 99999) t += ` ≈ ${num(f / 60)} s`
-                    }
-                    return t
-                }
-                if (Array.isArray(v)) return v.length ? v.map((x) => valueText(x, "", scope)).join("; ") : "(empty)"
-                return JSON.stringify(v)
-            }
-            // what a script holds, against the default caps (40 commands, 6 attack areas, depth 6)
             function scriptStats(root) {
                 const st = { commands: 0, areas: 0, effects: 0, depth: 0 }
                 ;(function walk(block, d) {
                     st.depth = Math.max(st.depth, d)
-                    for (const cmd of block[1]) {
-                        if (isBlockV(cmd)) { walk(cmd, d); continue } // a bare block inside a block: same level
-                        if (!Array.isArray(cmd) || (cmd[0] !== "Command" && cmd[0] !== "Event")) continue
+                    for (const it of block[1]) {
+                        if (isBlockV(it)) { walk(it, d); continue }
+                        if (!isItemV(it)) continue
                         st.commands++
-                        if (cmd[1][0] === "CreateHitArea") st.areas++
-                        if (cmd[1][0] === "ShowEffect") st.effects++
-                        for (const p of cmd[1].slice(1)) if (isBlockV(p)) walk(p, d + 1)
+                        if (it[1][0] === "CreateHitArea") st.areas++
+                        if (it[1][0] === "ShowEffect") st.effects++
+                        for (const p of it[1].slice(1)) if (isBlockV(p) || isItemV(p)) walk(isBlockV(p) ? p : ["Block", [p]], d + 1)
                     }
                 })(root, 1)
                 return st
             }
-            // one block: its commands, each a card; nested blocks indented under the parameter that holds them
-            function blockView(block, scope, depth) {
+            // a new command: CN's most common one (its blocks as CN has them), else blank settings of the right types
+            function newItem(kind, name, scope) {
+                const info = (kind === "Event" ? S.events : S.commands)[name]
+                let it = info.template ? clone(info.template) : [kind, [name, ...info.params.map((p) => {
+                    if (p.type === "ActionDslExpression") return ["Block", []]
+                    const o = Object.values(p.options ?? {})[0]
+                    if (o) return clone(o.example)
+                    if (p.common?.[0]) return clone(p.common[0][0])
+                    return p.type === "Boolean" ? false : p.type === "String" ? "*" : p.type === "Array" ? [] : /int|Number/.test(p.type) ? 0 : null
+                })]]
+                // who it acts on: the unit or its ball when the template's id isn't one named here
+                info.params.forEach((p, i) => {
+                    const v = it[1][i + 1]
+                    if (p.kind === "subject" && Number.isInteger(v) && !(String(v) in S.subjects) && !scope.has(v)) it[1][i + 1] = /ball|attached/.test(p.label) ? -18 : -17
+                })
+                return it
+            }
+            function addPicker(onPick) {
+                const pick = el("select", INPUT + " text-sm"); pick.setAttribute("aria-label", "Add a command")
+                const opt = (v, t) => { const o = el("option", "", t); o.value = v; return o }
+                pick.appendChild(opt("", "+ Add..."))
+                for (const [kind, list, title] of [["Event", S.events, "Timing"], ["Command", S.commands, "Commands"]]) {
+                    const g = el("optgroup"); g.label = title
+                    Object.entries(list).filter(([, c]) => c.skills || unrestricted()).sort((a, b) => b[1].skills - a[1].skills)
+                        .forEach(([name, c]) => g.appendChild(opt(kind + ":" + name, `${c.label}${c.label !== name ? " (" + name + ")" : ""}${c.skills ? ` · ${c.skills} skills` : " · untested"}`)))
+                    pick.appendChild(g)
+                }
+                pick.onchange = () => { if (pick.value) { const [k, n] = pick.value.split(":"); onPick(k, n) } }
+                return pick
+            }
+            // ---- value editors: one per kind of setting ----
+            function subjectSelect(holder, i, scope) {
+                const v = holder[i], opts = [...Object.entries(S.subjects).map(([k, t]) => [k, t]), ...[...scope].map(([k, t]) => [String(k), t])]
+                return select(opts, String(v), (x) => { holder[i] = Number(x); changed() })
+            }
+            // angles: typed in degrees, stored in radians (as the game reads them)
+            const isAngle = (label) => /angle|rotation/.test(label)
+            const DEG = 180 / Math.PI
+            const shown = (v, scale) => scale === 1 ? v : Math.round(v * scale * 1000) / 1000
+            function numberBox(holder, i, isInt, label, onSet, scale = 1) {
+                const box = el("input", INPUT + " w-[96px]"); box.type = "number"; box.step = isInt ? "1" : "any"; box.value = shown(holder[i], scale); box.setAttribute("aria-label", label + (scale !== 1 ? " (degrees)" : ""))
+                box.onchange = () => {
+                    const n = Number(box.value); if (box.value === "" || !Number.isFinite(n)) { box.value = shown(holder[i], scale); return }
+                    holder[i] = isInt ? Math.round(n) : scale === 1 ? n : n / scale
+                    box.value = shown(holder[i], scale); (onSet ?? changed)()
+                }
+                return box
+            }
+            // the values inside a choice, by name (from the client's battle code and CN's values)
+            const INNER = {
+                Circle: ["radius"], Rectangle: ["width", "height"], Sector: ["radius", "angle"],
+                SpecifyHitAreaLifetimeDirectly: ["frames"], SpecifyHitAreaLifetimeSLv: ["frames"], SpecificFrame: ["frames"], SpecifyEffectLifetimeDirectly: ["frames"],
+                CalculatedUsingMaxNumOfHits: ["hits"], SpecifyMinHitIntervalDirectly: ["frames between hits"], Some: ["value"],
+                ResolveByElement: ["effect"], SpecifyEffectDirectly: ["effect"],
+            }
+            // a buff's values (the client's AdditionalConditionKindTools: time, content, max stacks); amount: 0.4 = +40 %
+            const AC3 = ["frames", "amount", "max stacks"]
+            for (const k of ["ACAttackPoint", "ACSkillDamage", "ACAbilityDamage", "ACAbilityDamageResistance", "ACDirectAttackDamageResistance", "ACPowerFlipDamageResistance",
+                "ACSkillDamageResistance", "ACFeverPoint", "ACStun", "ACOiuchi", "ACToleranceOfDebuff", "ACPowerFlipDamage", "ACDirectDamage", "ACSpeedup", "ACSkillGaugeCharging",
+                "ACSeparatedTermPowerFlipDamage", "ACSeparatedTermDirectDamage"]) INNER[k] = AC3
+            for (const k of ["ACInvincible", "ACPiercing", "ACFlying", "ACSilence", "ACSwift", "ACBuffRejection", "ACHealRejection"]) INNER[k] = ["frames"]
+            Object.assign(INNER, {
+                ACPoison: ["frames", "damage", "max stacks"], ACRegeneration: ["frames", "amount"],
+                ACToleranceOfElement: ["frames", "element", "amount", "max stacks"], ACDamageOfElement: ["frames", "element", "amount", "max stacks"],
+                ACDamageOfElementPercent: ["frames", "element", "value 1", "value 2", "value 3", "max stacks"],
+                ACSpecialEfficacy: ["frames", "against unit kinds (codes)", "amount", "max stacks"],
+                ACParalysis: ["frames", "one shared timer"], ACFrozen: ["frames", "one shared timer"],
+                ACAdditionalDirectAttack: ["frames", "extra hits", "damage", "max stacks"],
+                ACAdversity: ["frames", "value 1", "value 2", "max stacks"], ACFixedSpeed: ["frames", "value 1", "value 2", "max stacks"],
+                ACBipolar: ["frames", "value 1", "value 2", "setting", "max stacks"], ACGeneralBipolar: ["frames", "value", "list"],
+                ACGuts: ["times"], ACUnique: ["unique buff id", "value"], ACComboBoost: ["ball flips it lasts", "amount"],
+                ACComboRestriction: ["frames", "amount"], ACPowerFlipComboCountDown: ["frames", "amount", "max stacks", "Power Flips it lasts"],
+                DCToleranceOfElementDetail: ["1 buffs, 2 debuffs, 3 both", "element"], Some$Tween: ["frames", "easing"],
+                GH: ["toward"], CreateImaginaryTarget: ["(inferred) offset"],
+            })
+            // what a choice means, beside its name (directions: tested in game, docs/research/skill-effects.md)
+            const CHOICE_WORDS = {
+                AB: "fixed, up the screen (never turns)", EF: "the way it is moving", CD: "the attack area's own rotation", GH: "toward something (pick it)",
+                ForesideOfCharacter: "in front of units", BacksideOfCharacter: "behind units", SameAsCharacter: "same layer as units", SuperForesideOfCharacter: "in front of everything",
+                UntilTargetTerminates: "until what it's on ends", PlayOnlyFirstSequence: "play once", SpecificFrame: "for N frames", SpecifyEffectLifetimeDirectly: "for N frames",
+                ResolveByElement: "shared effect, in the unit's element", SpecifyEffectDirectly: "this exact effect file",
+            }
+            const isRemoval = (h) => /^DC/.test(h) && h !== "DCToleranceOfElementDetail"
+            // elements as the scripts number them (1 Fire ... 6 Dark; Clara's 1 = Fire resistance)
+            const ELEMENTS = [["1", "Fire"], ["2", "Water"], ["3", "Thunder"], ["4", "Wind"], ["5", "Light"], ["6", "Dark"], ["254", "none"], ["255", "the unit's own"]]
+            // groups to find (the client's SearchingCondition)
+            const GROUPS = [["1", "the unit"], ["33", "the party"], ["34", "the leader"], ["35", "the party, not the unit"], ["36", "lowest HP (amount)"], ["37", "lowest HP (%)"],
+                ["38", "highest attack"], ["39", "highest skill damage"], ["49", "all enemies"], ["50", "small enemies"], ["51", "the boss"], ["52", "funnels"], ["65", "coffins"],
+                ["81", "the unit's multiballs"], ["82", "units without multiballs"], ["83", "1st unit"], ["84", "2nd unit"], ["85", "3rd unit"], ["86", "all multiballs"],
+                ["87", "summoned multiballs"], ["97", "the main squad"], ["113", "main squad members"], ["114", "main squad, not the unit"], ["129", "all sub squads"],
+                ["130", "the unit's sub squads"], ["131", "summoned sub squads"], ["145", "all sub squad members"], ["146", "the unit's sub squad members"], ["147", "summoned sub squad members"]]
+            const codeSelect = (list, holder, i, label) => select(list, String(holder[i]), (x) => { holder[i] = Number(x); changed() }, label)
+            // formations (inferred from CN's values): Circle = ring, NWay = fan, Line = row
+            const FORMATION = { Circle: ["areas", "ring radius"], NWay: ["areas", "angle between"], Line: ["areas", "spacing"], AShaped: ["areas", "angle", "distance"] }
+            function rangeBoxes(list, label) {
+                const wrap = el("span", "flex flex-wrap gap-2 items-center")
+                const scale = isAngle(label) ? DEG : 1
+                list.forEach((r, j) => {
+                    if (j) wrap.appendChild(el("span", "text-on-surface-variant", "/"))
+                    const [lo, hi] = rangeKeys(r)
+                    wrap.appendChild(numberBox(r, lo, false, `${label} at skill level 1`, undefined, scale))
+                    wrap.appendChild(el("span", "text-on-surface", "→"))
+                    wrap.appendChild(numberBox(r, hi, false, `${label} at the top skill level`, undefined, scale))
+                    if (scale !== 1) wrap.appendChild(el("span", "text-sm text-on-surface-variant", "°"))
+                })
+                return wrap
+            }
+            // a setting's value as an editor; meta: the parameter (label, type, kind, options); rerender: after a change of shape
+            function valueEditor(holder, i, meta, scope, rerender, ctx = {}) {
+                const v = holder[i], label = meta.label || "setting"
+                const wrap = el("span", "flex flex-wrap gap-2 items-center")
+                if (unrestricted() && !ctx.inner && typeof v === "object" && v !== null) {
+                    const raw = el("button", BTN, "{ }"); raw.type = "button"; raw.title = "Edit as text (Unrestricted)"
+                    raw.onclick = () => {
+                        const t = prompt(`${label}, as the script stores it:`, JSON.stringify(holder[i]))
+                        if (t === null) return
+                        try { holder[i] = JSON.parse(t); changed(); rerender() } catch { alert("That isn't valid JSON.") }
+                    }
+                    wrap.appendChild(raw)
+                }
+                if (v === null || v === undefined) {
+                    const opts = Object.keys(meta.options ?? {})
+                    wrap.appendChild(el("span", "text-on-surface-variant", "none"))
+                    if (opts.length) { const s = select([["", "(set...)"], ...opts.map((o) => [o, o])], "", (x) => { if (x) { holder[i] = clone(meta.options[x].example); changed(); rerender() } }, label); wrap.appendChild(s) }
+                    return wrap
+                }
+                if (typeof v === "boolean") {
+                    const box = el("input"); box.type = "checkbox"; box.checked = v; box.setAttribute("aria-label", label)
+                    box.onchange = () => { holder[i] = box.checked; changed() }
+                    wrap.appendChild(box); return wrap
+                }
+                if (typeof v === "number" && (/^element/.test(label) || label === "element") && ELEMENTS.some(([k]) => k === String(v))) { wrap.appendChild(codeSelect(ELEMENTS, holder, i, label)); return wrap }
+                if (typeof v === "number" && /^who it may go to/.test(label)) { wrap.appendChild(codeSelect([["1", "a unit"], ["2", "the party"], ["3", "either"]], holder, i, label)); return wrap }
+                if (typeof v === "number" && meta.kind === "group") { wrap.appendChild(codeSelect(GROUPS, holder, i, label)); return wrap }
+                if (typeof v === "number") {
+                    const angle = meta.kind !== "subject" && meta.type !== "int" && isAngle(label)
+                    wrap.appendChild(meta.kind === "subject" ? subjectSelect(holder, i, scope) : numberBox(holder, i, !angle && (meta.type === "int" || Number.isInteger(v) && ctx.inner), label, undefined, angle ? DEG : 1))
+                    if (angle) wrap.appendChild(el("span", "text-sm text-on-surface-variant", "°"))
+                    if (/frames/.test(label) && v > 0 && v < 99999) wrap.appendChild(el("span", "text-sm text-on-surface-variant", `≈ ${num(v / 60)} s`))
+                    return wrap
+                }
+                if (typeof v === "string") {
+                    const box = el("input", INPUT + (ctx.effect ? " w-full max-w-[640px]" : " w-[120px]")); box.value = v; box.setAttribute("aria-label", label)
+                    if (ctx.effect) box.setAttribute("list", "skill-effects")
+                    box.onchange = () => { holder[i] = box.value.replace(/[\r\n]+/g, " "); changed() }
+                    wrap.appendChild(box); return wrap
+                }
+                if (isRangeV(v)) { wrap.appendChild(rangeBoxes(v, label)); return wrap }
+                if (isEnumV(v)) {
+                    const opts = Object.keys(meta.options ?? {})
+                    if (opts.length && !ctx.inner) wrap.appendChild(select(opts.map((o) => [o, CHOICE_WORDS[o] ? `${o}: ${CHOICE_WORDS[o]}` : o]), v[0], (x) => { holder[i] = clone(meta.options[x].example); changed(); rerender() }, label))
+                    else wrap.appendChild(el("span", "text-on-surface", v[0]))
+                    const effect = v[0] === "ResolveByElement" || v[0] === "SpecifyEffectDirectly"
+                    for (let k = 1; k < v.length; k++) {
+                        if (effect && k === 2 && v[k] === 255) continue // 255 = the unit's element
+                        const names = /formation/.test(label) ? FORMATION[v[0]] : isRemoval(v[0]) ? ["1 buffs, 2 debuffs, 3 both"] : v[0] === "Some" && /curve/.test(label) ? INNER.Some$Tween : INNER[v[0]]
+                        const name = names?.[k - 1]
+                        if (v[0] === "GH" && k === 1 && typeof v[1] === "number") { wrap.appendChild(el("span", "text-sm text-on-surface-variant", "toward")); wrap.appendChild(subjectSelect(v, 1, scope)); continue }
+                        // a value with its name, kept together on one line
+                        const pair = el("span", "flex gap-2 items-center" + (effect && k === 1 ? " w-full" : ""))
+                        if (name && !effect) pair.appendChild(el("span", "text-sm text-on-surface-variant", name))
+                        pair.appendChild(valueEditor(v, k, { label: name ?? `${label} (${k})` }, scope, rerender, { inner: true, effect: effect && k === 1 }))
+                        wrap.appendChild(pair)
+                    }
+                    return wrap
+                }
+                if (Array.isArray(v)) {
+                    // a list of choices (a buff's conditions...): each editable, add and remove
+                    const opts = Object.keys(meta.options ?? {})
+                    if (v.every(isEnumV) && (opts.length || v.length)) {
+                        const col = el("span", "flex flex-col gap-1")
+                        v.forEach((x, j) => {
+                            const r = el("span", "flex flex-wrap gap-2 items-center")
+                            r.appendChild(valueEditor(v, j, { ...meta, label: `${label} ${j + 1}` }, scope, rerender))
+                            const rm = el("button", BTN, "Remove"); rm.type = "button"; rm.onclick = () => { v.splice(j, 1); changed(); rerender() }
+                            r.appendChild(rm); col.appendChild(r)
+                        })
+                        if (opts.length) col.appendChild(select([["", "+ Add..."], ...opts.map((o) => [o, o])], "", (x) => { if (x) { v.push(clone(meta.options[x].example)); changed(); rerender() } }, `Add to ${label}`))
+                        else if (!v.length) col.appendChild(el("span", "text-on-surface-variant", "(empty)"))
+                        wrap.appendChild(col); return wrap
+                    }
+                    if (!v.length) { wrap.appendChild(el("span", "text-on-surface-variant", "(empty)")); return wrap }
+                    v.forEach((x, j) => wrap.appendChild(valueEditor(v, j, { label: `${label} ${j + 1}` }, scope, rerender, { inner: true })))
+                    return wrap
+                }
+                wrap.appendChild(el("span", "text-sm text-on-surface", JSON.stringify(v)))
+                return wrap
+            }
+            // ---- blocks: cards with their settings; add, move, copy, remove ----
+            // getBlock/setBlock: a block slot may hold a block, one command or nothing; it becomes a block when changed
+            function blockEditor(slot, outer, depth, rerender) {
+                const cur = slot.get(), block = isBlockV(cur) ? cur : ["Block", cur ? [cur] : []]
+                const commit = () => { if (block !== cur) slot.set(block); changed(); rerender() }
                 const list = el("div", "flex flex-col gap-2" + (depth ? " border-outline-variant" : ""))
                 if (depth) list.style.cssText = "padding-left: 16px; border-left-width: 2px; border-left-style: solid"
-                if (!block[1].length) list.appendChild(el("p", "text-sm text-on-surface-variant", "(nothing)"))
-                for (const cmd of block[1]) {
-                    if (isBlockV(cmd)) { list.appendChild(blockView(cmd, scope, depth + 1)); continue }
-                    if (!Array.isArray(cmd) || (cmd[0] !== "Command" && cmd[0] !== "Event")) { list.appendChild(el("p", "text-sm", JSON.stringify(cmd))); continue }
-                    // events (Wait, Repeat, ball hits) hold a block that runs later
-                    const [name, ...ps] = cmd[1], info = (cmd[0] === "Event" ? S.events : S.commands)[name]
+                const scope = new Map(outer)
+                block[1].forEach((it, j) => {
+                    if (isBlockV(it)) { list.appendChild(blockEditor({ get: () => block[1][j], set: (b) => { block[1][j] = b } }, scope, depth + 1, rerender)); return }
+                    if (!isItemV(it)) { list.appendChild(el("p", "text-sm", JSON.stringify(it))); return }
+                    const [name, ...ps] = it[1], info = infoOf(it)
                     const card = el("div", "flex flex-col gap-1 p-3 rounded-2xl bg-surface-container-low")
                     const head = el("div", "flex flex-wrap gap-2 items-baseline")
                     head.appendChild(el("span", "font-semibold text-on-surface", info?.label ?? name))
-                    head.appendChild(el("span", "text-sm text-on-surface-variant", name))
+                    head.appendChild(el("span", "text-sm text-on-surface-variant", name + (info && !info.skills ? " · untested" : "")))
                     if (info?.what) head.appendChild(el("span", "text-sm text-on-surface-variant", info.what))
-                    card.appendChild(head)
-                    // ids this command binds are named for the blocks inside it
-                    const inner = new Map(scope)
-                    ps.forEach((p, i) => {
-                        const meta = info?.params[i]
-                        if (meta?.kind === "binds" && typeof p === "number") inner.set(p, `the ${meta.label.replace(/^id of (the )?/, "").replace(/ \(on hit\)$/, "")} (#${p})`)
-                    })
+                    const tools = el("span", "flex gap-1 ml-auto")
+                    const tool = (text, title, fn, off) => { const b = el("button", BTN, text); b.type = "button"; b.title = title; b.setAttribute("aria-label", title); b.disabled = off; b.onclick = () => { fn(); commit() }; tools.appendChild(b) }
+                    tool("↑", "Move up", () => { [block[1][j - 1], block[1][j]] = [block[1][j], block[1][j - 1]] }, j === 0)
+                    tool("↓", "Move down", () => { [block[1][j + 1], block[1][j]] = [block[1][j], block[1][j + 1]] }, j === block[1].length - 1)
+                    tool("Copy", "Copy it below", () => { block[1].splice(j + 1, 0, clone(it)) })
+                    tool("Remove", "Remove (with what's inside it)", () => { block[1].splice(j, 1) })
+                    head.appendChild(tools); card.appendChild(head)
+                    if (!info) { card.appendChild(el("p", "text-sm text-error", "The game has no such command.")); list.appendChild(card); return }
+                    // ids it names: for its blocks, and for the commands after it in this block
+                    const named = []
+                    ps.forEach((p, i) => { const m = info.params[i]; if (m && mayBeId(m, p)) named.push([p, m.kind === "binds" ? `the ${m.label.replace(/^id of (the )?/, "").replace(/ \(on hit\)$/, "")} (#${p})` : `#${p} (${info.label})`]) })
+                    const inner = new Map([...scope, ...named])
                     const main = el("div", "flex flex-col gap-1 text-sm"), usual = [], blocks = []
                     ps.forEach((p, i) => {
-                        const meta = info?.params[i] ?? { label: `parameter ${i + 1}`, kind: "", common: [] }
-                        if (isBlockV(p)) {
+                        const meta = info.params[i], label = meta.label || `setting ${i + 1}`
+                        if (meta.type === "ActionDslExpression") {
                             const sub = el("div", "flex flex-col gap-1 mt-1")
-                            sub.appendChild(el("span", "text-sm text-on-surface-variant", (meta.label || `block ${i + 1}`) + ":"))
-                            sub.appendChild(blockView(p, inner, depth + 1)); blocks.push(sub); return
+                            sub.appendChild(el("span", "text-sm text-on-surface-variant", label + ":"))
+                            sub.appendChild(blockEditor({ get: () => it[1][i + 1], set: (b) => { it[1][i + 1] = b } }, inner, depth + 1, rerender))
+                            blocks.push(sub); return
                         }
-                        const label = meta.label || `parameter ${i + 1}`
-                        const line = el("div", "flex flex-wrap gap-2"), name_ = el("span", "text-on-surface-variant", label)
+                        const line = el("div", "flex flex-wrap gap-2 items-center"), name_ = el("span", "text-on-surface-variant", label.replace("(radians)", "(degrees)"))
                         name_.style.minWidth = "200px"; line.appendChild(name_)
-                        line.appendChild(el("span", "text-on-surface", valueText(p, meta.kind, meta.kind === "binds" ? new Map() : inner)))
-                        // a value most of CN's scripts have here, on an inferred parameter: tucked away
+                        line.appendChild(valueEditor(it[1], i + 1, meta, meta.kind === "binds" ? new Map() : scope, rerender))
+                        // ids a command names (the new area, the hit target...): hidden in Default, under "more" otherwise
+                        if (meta.kind === "binds") { if (checkMode() !== "default") usual.push(line); return }
                         const typical = meta.common?.[0] && JSON.stringify(meta.common[0][0]) === JSON.stringify(p)
-                        if (typical && (label.startsWith("(inferred)") || label.startsWith("parameter"))) usual.push(line); else main.appendChild(line)
+                        if (typical && (!meta.label || meta.label.startsWith("(inferred)"))) usual.push(line); else main.appendChild(line)
                     })
                     card.appendChild(main)
                     if (usual.length) {
-                        const det = el("details", "text-sm"); det.appendChild(el("summary", "text-on-surface-variant cursor-pointer", `${usual.length} more, as most of CN's skills have them`))
+                        const det = el("details", "text-sm"); det.appendChild(el("summary", "text-on-surface-variant cursor-pointer", `${usual.length} more (ids, and settings most of CN's skills leave as they are)`))
                         for (const l of usual) det.appendChild(l)
                         card.appendChild(det)
                     }
                     for (const b of blocks) card.appendChild(b)
                     list.appendChild(card)
-                }
+                    for (const [k, t] of named) scope.set(k, t)
+                })
+                if (!block[1].length) list.appendChild(el("p", "text-sm text-on-surface-variant", "(nothing)"))
+                list.appendChild(addPicker((kind, name) => { block[1].push(newItem(kind, name, scope)); commit() }))
                 return list
             }
             function renderSkill() {
                 const box = $("tab-skill"); box.innerHTML = ""
                 if (tab !== "skill") return
                 if (!edit.skills.length) { box.appendChild(el("p", "text-on-surface-variant", "This unit has no skill rows.")); return }
-                box.appendChild(el("p", "text-sm text-on-surface-variant", "What the unit's skill does, read from its script: each card is one command, run top to bottom; indented cards run inside the one above (after a wait, when an attack area appears, on each hit...). Read only for now."))
-                for (const s of edit.skills) {
+                box.appendChild(el("p", "text-sm text-on-surface-variant", "What the unit's skill does, from its script: each card is one command, run top to bottom; indented cards run inside the one above (after a wait, when an attack area appears, on each hit...). Change a setting, add, move or remove commands, or start from another unit's skill. Saving writes the script as a new file and points the skill at it; the skill's art (effects, cut-in) is the game's own."))
+                edit.skills.forEach((s, n) => {
                     const sec = el("section", "flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3")
-                    const head = el("div", "flex flex-wrap gap-3 items-baseline")
-                    head.appendChild(el("h3", "text-xl text-on-background font-semibold", (s.plus ? "Skill+: " : "Skill: ") + s.name))
-                    head.appendChild(el("span", "text-sm text-on-surface-variant", s.script || "(no script)"))
-                    sec.appendChild(head)
-                    if (s.description) sec.appendChild(el("p", "text-sm text-on-surface", s.description))
-                    const body = el("div", "flex flex-col gap-2"); body.appendChild(el("p", "text-sm text-on-surface-variant", "Reading the script..."))
-                    sec.appendChild(body); box.appendChild(sec)
-                    if (!s.script) { body.innerHTML = ""; body.appendChild(el("p", "text-on-surface-variant", "No script in the skill row.")); continue }
-                    Promise.all([skillData(), loadScript(s.script)]).then(([, script]) => {
-                        body.innerHTML = ""
-                        const root = Array.isArray(script) ? script.find(isBlockV) : null
-                        if (!root) { body.appendChild(el("p", "text-on-surface-variant", "The script has no command block.")); return }
-                        const st = scriptStats(root)
-                        const over = [st.commands > 40 && "commands", st.areas > 6 && "attack areas", st.depth > 6 && "depth"].filter(Boolean)
-                        body.appendChild(el("p", "text-sm text-on-surface-variant",
-                            `${st.commands} commands · ${st.areas} attack area${st.areas === 1 ? "" : "s"} · ${st.effects} effect${st.effects === 1 ? "" : "s"} · ${st.depth} levels deep` +
-                            (over.length ? ` (above the Default mode's limits in ${over.join(", ")}: 40 commands, 6 areas, 6 levels)` : "")))
-                        body.appendChild(blockView(root, new Map(), 0))
-                    }).catch((e) => { body.innerHTML = ""; body.appendChild(el("p", "text-error", "Couldn't read the script: " + e.message)) })
+                    box.appendChild(sec)
+                    sec.appendChild(el("p", "text-sm text-on-surface-variant", "Reading the script..."))
+                    const from = s.program !== undefined ? Promise.resolve() : (s.script ? loadScript(s.script) : Promise.reject(new Error("no script in the skill row"))).then((text) => {
+                        programBase[s.key] = text; s.program = JSON.parse(text); s.from = s.script
+                    })
+                    const game = s.game?.script ? loadScript(s.game.script).then((t) => { gameBase[s.key] = t }).catch(() => { }) : Promise.resolve()
+                    Promise.all([skillData(), from, game]).then(() => drawSkill(sec, s, n)).catch((e) => { sec.innerHTML = ""; sec.appendChild(el("p", "text-error", "Couldn't read the script: " + e.message)) })
+                })
+            }
+            function drawSkill(sec, s, n) {
+                const redraw = () => drawSkill(sec, s, n)
+                sec.innerHTML = ""
+                const head = el("div", "flex flex-wrap gap-3 items-baseline")
+                head.appendChild(el("h3", "text-xl text-on-background font-semibold", (s.plus ? "Skill+: " : "Skill: ") + s.name))
+                if (skillChanged(s)) head.appendChild(el("span", "px-3 py-1 rounded-full text-sm bg-primary-container text-on-primary-container", "changed"))
+                const tools = el("div", "flex flex-wrap gap-2 ml-auto")
+                const borrow = el("button", BTN, "Start from another unit's skill"); borrow.type = "button"
+                const copyRow = el("div", "hidden")
+                borrow.onclick = () => openSkillCopy(s, redraw, copyRow)
+                const back = el("button", BTN, "Reset to game"); back.type = "button"
+                back.disabled = !gameBase[s.key] || JSON.stringify(s.program) === gameBase[s.key]
+                back.onclick = () => { s.program = JSON.parse(gameBase[s.key]); s.from = s.game.script; changed(); redraw() }
+                tools.append(borrow, back); head.appendChild(tools); sec.appendChild(head); sec.appendChild(copyRow)
+                if (s.description) sec.appendChild(el("p", "text-sm text-on-surface", s.description))
+                sec.appendChild(el("p", "text-sm text-on-surface-variant", `Script: ${s.from}${s.from !== s.script ? ` (the skill uses ${s.script} until saved)` : ""}`))
+                const root = Array.isArray(s.program) && isBlockV(s.program[11]) ? s.program[11] : null
+                if (!root) { sec.appendChild(el("p", "text-on-surface-variant", "The script has no command block.")); return }
+                const st = scriptStats(root), lim = S.limits[checkMode()] ?? S.limits.default
+                sec.appendChild(el("p", "text-sm text-on-surface-variant", `${st.commands} commands · ${st.areas} attack area${st.areas === 1 ? "" : "s"} · ${st.effects} effect${st.effects === 1 ? "" : "s"} · ${st.depth} levels deep (the most in this mode: ${lim.commands} commands, ${lim.areas} areas, ${lim.depth} levels, or as big as the script you started from)`))
+                const msgs = el("ul", "flex flex-col gap-1 text-sm"); msgs.dataset.skillMsgs = String(n); sec.appendChild(msgs)
+                sec.appendChild(blockEditor({ get: () => s.program[11], set: (b) => { s.program[11] = b } }, new Map(), 0, redraw))
+                showSkillMsgs()
+            }
+            function showSkillMsgs() {
+                for (const ul of document.querySelectorAll("[data-skill-msgs]")) {
+                    const r = lastCheck?.scripts?.[Number(ul.dataset.skillMsgs)], g = lastCheck?.skills?.[Number(ul.dataset.skillMsgs)] ?? []
+                    ul.innerHTML = ""
+                    const errs = r ? r.errors : g
+                    for (const e of errs.slice(0, 12)) ul.appendChild(el("li", "px-3 py-1 rounded-lg bg-error-container text-on-error-container", "Can't save: " + e))
+                    if (errs.length > 12) ul.appendChild(el("li", "px-3 py-1 rounded-lg bg-error-container text-on-error-container", `...and ${errs.length - 12} more`))
+                    for (const w of (r?.warnings ?? []).slice(0, 12)) ul.appendChild(el("li", "px-3 py-1 rounded-lg bg-tertiary-container text-on-tertiary-container", w))
                 }
+            }
+            // start from another unit's skill (or Skill+): its whole script, to change from there
+            function openSkillCopy(s, redraw, row) {
+                row.innerHTML = ""; row.className = "flex flex-wrap gap-2 items-center p-3 rounded-2xl bg-surface-container-high"
+                row.appendChild(el("span", "text-sm text-on-surface-variant", "From unit"))
+                const q = el("input", INPUT + " min-w-[260px]"); q.setAttribute("list", "unit-list"); q.placeholder = "Name or id"; q.setAttribute("aria-label", "Unit to start from")
+                const picks = el("span", "flex flex-wrap gap-2"), close = el("button", BTN, "Close"); close.type = "button"
+                close.onclick = () => { row.innerHTML = ""; row.className = "hidden" }
+                q.onchange = () => {
+                    const id = idFrom(q.value) ?? units.find((u) => u.name.toLowerCase() === q.value.trim().toLowerCase())?.id
+                    picks.innerHTML = ""
+                    if (!id) return
+                    api("/unit/" + id).then((u) => {
+                        const choices = u.skills.filter((k) => k.script)
+                        if (!choices.length) picks.appendChild(el("span", "text-sm text-on-surface-variant", `${u.name} has no skill script.`))
+                        for (const k of choices) {
+                            const b = el("button", BTN, `${k.plus ? "Skill+" : "Skill"}: ${k.name}`); b.type = "button"; b.title = k.description || k.script
+                            b.onclick = () => loadScript(k.script).then((text) => { s.program = JSON.parse(text); s.from = k.script; changed(); redraw() })
+                            picks.appendChild(b)
+                        }
+                    }).catch((e) => picks.appendChild(el("span", "text-sm text-error", e.message)))
+                }
+                row.append(q, picks, close); q.focus()
             }
 
             // ---- copy a line ----
@@ -985,6 +1222,7 @@
                         for (const e of r.errors) ul.appendChild(el("li", "px-3 py-1 rounded-lg bg-error-container text-on-error-container", "Can't save: " + e))
                         for (const w of r.warnings) ul.appendChild(el("li", "px-3 py-1 rounded-lg " + (w.level === "strong" ? "bg-tertiary-container text-on-tertiary-container" : "bg-secondary-container text-on-secondary-container"), w.text))
                     }
+                    showSkillMsgs()
                     const dm = $("details-msgs")
                     if (dm) { dm.innerHTML = ""; for (const e of res.details ?? []) dm.appendChild(el("li", "px-3 py-1 rounded-lg bg-error-container text-on-error-container", "Can't save: " + e)) }
                     renderButtons()
