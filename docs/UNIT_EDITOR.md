@@ -86,6 +86,9 @@ each unit a **Find** picked, in either branch of an **If**. The most used:
   attack areas** (on by default, at the top of the tab) sets the effect's scale whenever the area's size or the effect
   on it changes, and the effect suggestions list the ones that fit the area's shape first. Units' own effects have no
   measured size ("size not known").
+- **▶ View effect** on an Effect card plays the effect right there (the game's own animation files, played the way
+  the client plays them, at 60 frames a second): play/pause, a frame slider, the element colours it comes in (the unit's
+  own first), its sequences, and, when it's drawn on an attack area, a dashed outline of what the area hits.
 - **Timing**: each effect's animation length is read from its timeline file (e.g. *spread* plays 40 frames, then its
   "end" to frame 68), so the "Drawn" line says how long the picture shows ("for 40 frames", or "for as long as the area
   lasts") and warns when the picture ends well before the area stops hitting, or plays on well after.

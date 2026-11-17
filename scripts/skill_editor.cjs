@@ -217,6 +217,36 @@ function importScript(unitId, logical, base64) {
     return null
 }
 
+// ---- effects, for the dashboard's effect viewer (web/public/js/parts-player.js plays them) ----
+
+const COLOURS = ["red", "blue", "yellow", "green", "white", "black", "colorless"]
+const isEffectPath = p => typeof p === "string" && /^battle\/effect\/[\w\/.-]+$/.test(p) && !p.includes("..")
+const amfFile = buf => { let raw; try { raw = zlib.inflateRawSync(buf) } catch { raw = zlib.inflateSync(buf) } return readAmf3(raw) }
+// an effect's files: a shared effect (ResolveByElement) has a copy per colour, <path>/<name>_<colour>/<name>_<colour>
+const effectBase = (p, colour) => { const name = p.split("/").pop(); return colour ? `${p}/${name}_${colour}/${name}_${colour}` : p }
+const hasCnFile = logical => { const R = require("./cn_read.cjs"); return R.cnIndex().has(R.hashed(logical)) }
+
+/** An effect's animation (parts, atlas, timeline) and the colours it comes in; null when the game has no such effect. */
+async function effectFiles(p, colour) {
+    if (!isEffectPath(p) || (colour && !COLOURS.includes(colour))) throw new Error("not an effect path")
+    const { readCn } = require("./cn_read.cjs")
+    const colours = COLOURS.filter(c => hasCnFile(effectBase(p, c) + ".parts.amf3.deflate"))
+    const base = effectBase(p, colour ?? (hasCnFile(p + ".parts.amf3.deflate") ? null : colours[0]))
+    const [parts, atlas, timeline] = await Promise.all([".parts", ".atlas", ".timeline"].map(e => readCn(base + e + ".amf3.deflate")))
+    if (!parts || !atlas) return null
+    return { base, colours, parts: amfFile(parts), atlas: amfFile(atlas), timeline: timeline ? amfFile(timeline) : null }
+}
+
+/** An effect's sheet as a PNG (the game stores it with a lowercase "png" signature). */
+async function effectImage(p, colour) {
+    if (!isEffectPath(p) || (colour && !COLOURS.includes(colour))) throw new Error("not an effect path")
+    const buf = await require("./cn_read.cjs").readCn(effectBase(p, colour) + ".png")
+    if (!buf) return null
+    const out = Buffer.from(buf)
+    if (out[1] === 0x70 && out[2] === 0x6e && out[3] === 0x67) out.write("PNG", 1, "latin1")
+    return out
+}
+
 /** Every edited script file (logical path -> file), for the CN update. */
 function customScripts() {
     const dir = path.join(CU.customUnitsDir(), "skills")
@@ -232,4 +262,4 @@ function customScripts() {
     return out
 }
 
-module.exports = { readScript, skillData, isScriptPath, checkScript, scriptStats, writeScript, customScripts, pruneScripts, scriptsIn, exportScript, importScript, SUBJECTS, LIMITS, CUSTOM_PREFIX }
+module.exports = { effectFiles, effectImage, readScript, skillData, isScriptPath, checkScript, scriptStats, writeScript, customScripts, pruneScripts, scriptsIn, exportScript, importScript, SUBJECTS, LIMITS, CUSTOM_PREFIX }

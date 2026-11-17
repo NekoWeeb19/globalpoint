@@ -40,6 +40,8 @@ const SE = require(path.join(__dirname, "..", "..", "..", "scripts", "skill_edit
     readScript: (logical: string) => Promise<unknown | null>
     skillData: () => unknown
     isScriptPath: (p: unknown) => boolean
+    effectFiles: (path: string, colour?: string) => Promise<unknown | null>
+    effectImage: (path: string, colour?: string) => Promise<Buffer | null>
 }
 
 type Mode = string | boolean
@@ -95,6 +97,23 @@ const routes = async (fastify: FastifyInstance) => {
             const script = await SE.readScript(String(logical))
             return script === null ? reply.status(404).send({ error: "Not Found", message: `No script ${logical}` }) : reply.send({ path: logical, script })
         } catch (e) { return failed(reply, e) }
+    })
+    // an effect's animation and its sheet, for the effect viewer (?path= an effect path, &colour= for a shared effect)
+    fastify.get("/effect", async (request: FastifyRequest, reply: FastifyReply) => {
+        const { path: p, colour } = request.query as { path?: string, colour?: string }
+        try {
+            const files = await SE.effectFiles(String(p ?? ""), colour || undefined)
+            return files === null ? reply.status(404).send({ error: "Not Found", message: `No effect ${p}` }) : reply.send(files)
+        } catch (e) { return reply.status(400).send({ error: "Bad Request", message: e instanceof Error ? e.message : String(e) }) }
+    })
+    fastify.get("/effect-image", async (request: FastifyRequest, reply: FastifyReply) => {
+        const { path: p, colour } = request.query as { path?: string, colour?: string }
+        try {
+            const png = await SE.effectImage(String(p ?? ""), colour || undefined)
+            if (png === null) return reply.status(404).send({ error: "Not Found", message: `No image for ${p}` })
+            reply.header("cache-control", "max-age=86400")
+            return reply.type("image/png").send(png)
+        } catch (e) { return reply.status(400).send({ error: "Bad Request", message: e instanceof Error ? e.message : String(e) }) }
     })
     fastify.get("/unit/:id", async (request: FastifyRequest, reply: FastifyReply) => {
         const { id } = request.params as { id: string }

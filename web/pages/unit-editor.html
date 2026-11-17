@@ -1150,6 +1150,82 @@
             }
             const ELEMENT_NAMES = Object.fromEntries(ELEMENTS)
 
+            // ---- effect viewer: plays an Effect card's effect (web/public/js/parts-player.js, the client's own parts player) ----
+            const viewerOpen = new WeakSet() // the ShowEffect commands whose viewer is open (kept across redraws)
+            const ELEMENT_COLOUR = { Fire: "red", Water: "blue", Thunder: "yellow", Wind: "green", Light: "white", Dark: "black" }
+            const effectCache = new Map()
+            const loadEffect = (path, colour) => {
+                const key = path + "|" + (colour ?? "")
+                if (!effectCache.has(key)) effectCache.set(key, api("/effect?path=" + encodeURIComponent(path) + (colour ? "&colour=" + colour : "")).then((files) => new Promise((ok) => {
+                    const img = new Image(); img.onload = () => ok({ files, img }); img.onerror = () => ok({ files, img: null })
+                    img.src = "/api/unit-editor/effect-image?path=" + encodeURIComponent(path) + (files.base !== path ? "&colour=" + files.base.split("_").pop() : "")
+                })).catch((e) => { effectCache.delete(key); throw e }))
+                return effectCache.get(key)
+            }
+            // fx: the ShowEffect command (its settings); area: the attack area it's drawn on, if any
+            function effectViewer(fx, area) {
+                const box = el("div", "flex flex-col gap-2 p-3 rounded-2xl bg-surface-container-high")
+                const path = effectPath(fx[2]), shared = fx[2]?.[0] === "ResolveByElement"
+                if (!path) { box.appendChild(el("p", "text-sm text-on-surface-variant", "No effect path to show.")); return box }
+                const canvas = el("canvas"); canvas.width = 360; canvas.height = 300
+                canvas.style.cssText = "width: 100%; max-width: 360px; background: #101418; border-radius: 12px; image-rendering: pixelated"
+                const status = el("p", "text-sm text-on-surface-variant", "Loading the effect...")
+                const controls = el("div", "flex flex-wrap gap-2 items-center")
+                box.append(canvas, controls, status)
+                let colour = shared ? (ELEMENT_COLOUR[unit?.element] ?? "blue") : null
+                const scaleOfFx = scaleOf(fx).max || 1
+                const start = () => loadEffect(path, colour).then(({ files, img }) => {
+                    const player = new PartsPlayer(files.parts, files.atlas, img)
+                    // fit most frames (and the hit area) in the canvas: a short burst bigger than the rest may spill over
+                    const radii = []
+                    for (let f = 0; f < player.total; f++) { const b = player.bounds(f); if (b) radii.push(Math.max(-b.minX, b.maxX, -b.minY, b.maxY)) }
+                    radii.sort((x, y) => x - y)
+                    let r = (radii[Math.floor((radii.length - 1) * 0.8)] ?? 0) * scaleOfFx
+                    const hit = area ? areaEnds(area[9], "max") : null
+                    if (hit?.a) r = Math.max(r, hit.kind === "Rectangle" ? Math.max(hit.a, hit.b) / 2 : hit.a)
+                    const zoom = r > 0 ? Math.min(canvas.width, canvas.height) / 2 / (r * 1.08) : 1
+                    let frame = 0, playing = true, last = 0
+                    controls.innerHTML = ""
+                    const play = el("button", BTN, "Pause"); play.type = "button"
+                    play.onclick = () => { playing = !playing; play.textContent = playing ? "Pause" : "Play" }
+                    const slider = el("input"); slider.type = "range"; slider.min = "0"; slider.max = String(Math.max(0, player.total - 1)); slider.value = "0"; slider.setAttribute("aria-label", "Frame")
+                    slider.oninput = () => { playing = false; play.textContent = "Play"; frame = Number(slider.value) }
+                    const label = el("span", "text-sm text-on-surface-variant")
+                    controls.append(play, slider, label)
+                    if (files.colours.length > 1) controls.appendChild(select(files.colours.map((c) => [c, c]), colour, (c) => { colour = c; start() }, "Colour"))
+                    const seqs = (files.timeline?.sequences ?? []).map((q) => `${q.name} ${q.begin}-${q.end} (${q.kind})`).join(" · ")
+                    status.textContent = `${path.split("/").pop().replace(/_/g, " ")} at scale ${scaleOfFx}: ${player.total} frames${seqs ? " · " + seqs : ""}` +
+                        (hit?.a ? `. Outline: what the attack area hits (${hit.kind === "Rectangle" ? hit.a + " × " + hit.b : "radius " + hit.a}).` : ".") + " Plays at 60 frames a second, as in battle."
+                    const ctx = canvas.getContext("2d")
+                    const draw = () => {
+                        ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over"
+                        ctx.fillStyle = "#101418"; ctx.fillRect(0, 0, canvas.width, canvas.height)
+                        const cx = canvas.width / 2, cy = canvas.height / 2
+                        ctx.strokeStyle = "rgba(255,255,255,0.12)"; ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, canvas.height); ctx.moveTo(0, cy); ctx.lineTo(canvas.width, cy); ctx.stroke()
+                        ctx.imageSmoothingEnabled = false
+                        player.draw(ctx, frame, cx, cy, zoom * scaleOfFx)
+                        ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over"
+                        if (hit?.a) {
+                            ctx.strokeStyle = "rgba(255,210,80,0.9)"; ctx.setLineDash([6, 4]); ctx.beginPath()
+                            if (hit.kind === "Rectangle") ctx.rect(cx - hit.a / 2 * zoom, cy - hit.b / 2 * zoom, hit.a * zoom, hit.b * zoom)
+                            else if (hit.kind === "Sector") { ctx.moveTo(cx, cy); ctx.arc(cx, cy, hit.a * zoom, -Math.PI / 2 - (hit.b ?? 0) / 2, -Math.PI / 2 + (hit.b ?? 0) / 2); ctx.closePath() }
+                            else ctx.arc(cx, cy, hit.a * zoom, 0, Math.PI * 2)
+                            ctx.stroke(); ctx.setLineDash([])
+                        }
+                        label.textContent = `frame ${frame + 1} / ${player.total}`
+                        slider.value = String(frame)
+                    }
+                    const tick = (time) => {
+                        if (!canvas.isConnected) return
+                        if (playing && time - last >= 1000 / 60) { last = time; frame = (frame + 1) % Math.max(1, player.total) }
+                        draw(); requestAnimationFrame(tick)
+                    }
+                    requestAnimationFrame(tick)
+                }).catch((e) => { status.textContent = "Couldn't load the effect: " + e.message })
+                start()
+                return box
+            }
+
             // ---- blocks: cards with their settings; add, move, copy, remove ----
             // getBlock/setBlock: a block slot may hold a block, one command or nothing; it becomes a block when changed
             function blockEditor(slot, outer, depth, rerender, area = null, hitArea = null) {
@@ -1217,6 +1293,17 @@
                         if (typeof elem === "number" && elem !== 255 && JSON.stringify(currentProgram ?? []).includes('"ResolveByElement"'))
                             notes.push({ text: `Hits as ${ELEMENT_NAMES[String(elem)] ?? "element " + elem}`, warn: "the skill's shared effects are drawn in the unit's own element, so it may look like another element than it hits as" })
                         for (const n of notes) card.appendChild(el("p", "text-sm px-3 py-1 rounded-lg " + (n.warn ? "bg-tertiary-container text-on-tertiary-container" : "text-on-surface-variant"), n.text + (n.warn ? ` — ${n.warn}` : "")))
+                    }
+                    if (name === "ShowEffect") {
+                        const onArea = area && it[1][3] === area[19] ? area : null
+                        const view = el("button", BTN, viewerOpen.has(it[1]) ? "Hide effect" : "▶ View effect"); view.type = "button"
+                        const slotV = el("div", "flex flex-col")
+                        view.onclick = () => {
+                            if (viewerOpen.has(it[1])) { viewerOpen.delete(it[1]); slotV.innerHTML = ""; view.textContent = "▶ View effect" }
+                            else { viewerOpen.add(it[1]); slotV.appendChild(effectViewer(it[1], onArea)); view.textContent = "Hide effect" }
+                        }
+                        if (viewerOpen.has(it[1])) slotV.appendChild(effectViewer(it[1], onArea))
+                        card.append(view, slotV)
                     }
                     if (name === "CreateHitArea") for (const n of drawnNotes(it[1])) {
                         card.appendChild(el("p", "text-sm px-3 py-1 rounded-lg " + (n.warn ? "bg-tertiary-container text-on-tertiary-container" : "text-on-surface-variant"), n.text + (n.warn ? ` — ${n.warn}` : "")))
@@ -1429,6 +1516,7 @@
             window.addEventListener("beforeunload", (e) => { if (dirty()) { e.preventDefault(); e.returnValue = "" } })
         })()
     </script>
+    <script src="/public/js/parts-player.js"></script>
     <script src="/public/js/sidebar-status.js" defer></script>
 </body>
 
