@@ -152,12 +152,14 @@
                     <button type="button" role="tab" data-tab="abilities" class="px-4 py-2 rounded-full">Abilities</button>
                     <button type="button" role="tab" data-tab="numbers" class="px-4 py-2 rounded-full">Numbers</button>
                     <button type="button" role="tab" data-tab="details" class="px-4 py-2 rounded-full">Details</button>
+                    <button type="button" role="tab" data-tab="skill" class="px-4 py-2 rounded-full">Skill</button>
                 </div>
             </section>
 
             <div id="tab-abilities" class="hidden flex-col gap-5 w-full"></div>
             <div id="tab-numbers" class="hidden flex-col gap-5 w-full"></div>
             <div id="tab-details" class="hidden flex-col gap-5 w-full"></div>
+            <div id="tab-skill" class="hidden flex-col gap-5 w-full"></div>
 
             <section id="copy-panel" class="hidden flex-col p-5 border border-primary rounded-3xl w-full gap-3">
                 <div class="flex flex-wrap gap-3 items-center">
@@ -336,7 +338,7 @@
                 if (edit && dirty() && !confirm("Leave without saving?")) return
                 mode = b.dataset.mode; unit = null; edit = null; saved = null; tab = "abilities"
                 for (const id of ["unit-head", "save-bar"]) $(id).classList.replace("flex", "hidden")
-                for (const id of ["tab-abilities", "tab-numbers", "tab-details"]) $(id).className = "hidden"
+                for (const id of ["tab-abilities", "tab-numbers", "tab-details", "tab-skill"]) $(id).className = "hidden"
                 $("unit-search").value = ""; $("message").textContent = ""
                 history.replaceState(null, "", "/unit-editor" + (A() ? "?armament" : ""))
                 api(EP.list()).then((list) => { units = list; fillList(); renderKits() })
@@ -438,11 +440,13 @@
                     b.className = "px-4 py-2 rounded-full " + (on ? "bg-primary text-on-primary font-bold" : "bg-surface-container-high text-on-surface")
                     b.setAttribute("aria-selected", String(on))
                     b.onclick = () => { tab = b.dataset.tab; render() }
+                    if (b.dataset.tab === "skill") b.hidden = A() // armaments have no skill
                 }
                 $("tab-abilities").className = tab === "abilities" ? "flex flex-col gap-5 w-full" : "hidden"
                 $("tab-numbers").className = tab === "numbers" ? "flex flex-col gap-5 w-full" : "hidden"
                 $("tab-details").className = tab === "details" ? "flex flex-col gap-5 w-full" : "hidden"
-                renderAbilities(); renderNumbers(); renderDetails(); renderButtons()
+                $("tab-skill").className = tab === "skill" ? "flex flex-col gap-5 w-full" : "hidden"
+                renderAbilities(); renderNumbers(); renderDetails(); renderSkill(); renderButtons()
             }
 
             // ---- details tab: text and class/role columns of the unit's rows ----
@@ -767,6 +771,141 @@
                     ab.appendChild(r)
                 })
                 box.appendChild(ab)
+            }
+
+            // ---- skill tab: the unit's skill scripts as blocks of commands (scripts/skill_editor.cjs) ----
+            let S = null, skillLoading = null
+            const scriptCache = new Map()
+            const skillData = () => S ? Promise.resolve(S) : (skillLoading ??= api("/skill-data").then((d) => (S = d)))
+            const loadScript = (p) => scriptCache.has(p) ? Promise.resolve(scriptCache.get(p))
+                : api("/skill-script?path=" + encodeURIComponent(p)).then((r) => { scriptCache.set(p, r.script); return r.script })
+            const isEnumV = (v) => Array.isArray(v) && typeof v[0] === "string" && /^[A-Z]/.test(v[0]) && v[0] !== "Block"
+            const isRangeV = (v) => Array.isArray(v) && v.length > 0 && v.every((x) => x && typeof x === "object" && !Array.isArray(x) && "min" in x)
+            const isBlockV = (v) => Array.isArray(v) && v[0] === "Block" && Array.isArray(v[1])
+            const num = (n) => typeof n === "number" ? String(Math.round(n * 1000) / 1000) : String(n)
+            const rangeText = (v) => v.map((x) => x.min === x.max ? num(x.min) : `${num(x.min)} → ${num(x.max)}`).join(" / ")
+            const FRAMED = /Frame|Lifetime|Directly|Interval/
+            // an effect path: its name, and whether it is shared (any unit can show it) or a unit's own
+            function effectText(kind, p) {
+                const parts = String(p).split("/"), name = parts[parts.length - 1]
+                const where = p.includes("/skill_general/") ? "shared" : p.includes("/skill_unique/") ? "unit's own" : parts.slice(2, 3).join("")
+                return `${name.replace(/_/g, " ")} (${where}${kind === "ResolveByElement" ? ", in the unit's element" : ""})`
+            }
+            // a parameter value in plain text; subjects by name (fixed ones, or what a command bound them to)
+            function valueText(v, kind, scope) {
+                if (v === null || v === undefined) return "none"
+                if (typeof v === "boolean") return v ? "yes" : "no"
+                if (kind === "subject" && typeof v === "number") return scope.get(v) ?? S.subjects[String(v)] ?? `#${v}`
+                if (typeof v === "number") return num(v)
+                if (typeof v === "string") return v === "" ? "(none)" : `"${v}"`
+                if (isRangeV(v)) return rangeText(v)
+                if (isEnumV(v)) {
+                    const [name, ...inner] = v
+                    if ((name === "ResolveByElement" || name === "SpecifyEffectDirectly") && typeof inner[0] === "string") return effectText(name, inner[0])
+                    if (name === "GH" && typeof inner[0] === "number") return `GH (toward ${scope.get(inner[0]) ?? S.subjects[String(inner[0])] ?? "#" + inner[0]})`
+                    if (!inner.length) return name
+                    let t = `${name}(${inner.map((x) => valueText(x, "", scope)).join(", ")})`
+                    if (FRAMED.test(name) && inner.length === 1 && (typeof inner[0] === "number" || isRangeV(inner[0]))) {
+                        const f = typeof inner[0] === "number" ? inner[0] : inner[0][0].max
+                        if (f > 0 && f < 99999) t += ` ≈ ${num(f / 60)} s`
+                    }
+                    return t
+                }
+                if (Array.isArray(v)) return v.length ? v.map((x) => valueText(x, "", scope)).join("; ") : "(empty)"
+                return JSON.stringify(v)
+            }
+            // what a script holds, against the default caps (40 commands, 6 attack areas, depth 6)
+            function scriptStats(root) {
+                const st = { commands: 0, areas: 0, effects: 0, depth: 0 }
+                ;(function walk(block, d) {
+                    st.depth = Math.max(st.depth, d)
+                    for (const cmd of block[1]) {
+                        if (isBlockV(cmd)) { walk(cmd, d); continue } // a bare block inside a block: same level
+                        if (!Array.isArray(cmd) || (cmd[0] !== "Command" && cmd[0] !== "Event")) continue
+                        st.commands++
+                        if (cmd[1][0] === "CreateHitArea") st.areas++
+                        if (cmd[1][0] === "ShowEffect") st.effects++
+                        for (const p of cmd[1].slice(1)) if (isBlockV(p)) walk(p, d + 1)
+                    }
+                })(root, 1)
+                return st
+            }
+            // one block: its commands, each a card; nested blocks indented under the parameter that holds them
+            function blockView(block, scope, depth) {
+                const list = el("div", "flex flex-col gap-2" + (depth ? " border-outline-variant" : ""))
+                if (depth) list.style.cssText = "padding-left: 16px; border-left-width: 2px; border-left-style: solid"
+                if (!block[1].length) list.appendChild(el("p", "text-sm text-on-surface-variant", "(nothing)"))
+                for (const cmd of block[1]) {
+                    if (isBlockV(cmd)) { list.appendChild(blockView(cmd, scope, depth + 1)); continue }
+                    if (!Array.isArray(cmd) || (cmd[0] !== "Command" && cmd[0] !== "Event")) { list.appendChild(el("p", "text-sm", JSON.stringify(cmd))); continue }
+                    // events (Wait, Repeat, ball hits) hold a block that runs later
+                    const [name, ...ps] = cmd[1], info = (cmd[0] === "Event" ? S.events : S.commands)[name]
+                    const card = el("div", "flex flex-col gap-1 p-3 rounded-2xl bg-surface-container-low")
+                    const head = el("div", "flex flex-wrap gap-2 items-baseline")
+                    head.appendChild(el("span", "font-semibold text-on-surface", info?.label ?? name))
+                    head.appendChild(el("span", "text-sm text-on-surface-variant", name))
+                    if (info?.what) head.appendChild(el("span", "text-sm text-on-surface-variant", info.what))
+                    card.appendChild(head)
+                    // ids this command binds are named for the blocks inside it
+                    const inner = new Map(scope)
+                    ps.forEach((p, i) => {
+                        const meta = info?.params[i]
+                        if (meta?.kind === "binds" && typeof p === "number") inner.set(p, `the ${meta.label.replace(/^id of (the )?/, "").replace(/ \(on hit\)$/, "")} (#${p})`)
+                    })
+                    const main = el("div", "flex flex-col gap-1 text-sm"), usual = [], blocks = []
+                    ps.forEach((p, i) => {
+                        const meta = info?.params[i] ?? { label: `parameter ${i + 1}`, kind: "", common: [] }
+                        if (isBlockV(p)) {
+                            const sub = el("div", "flex flex-col gap-1 mt-1")
+                            sub.appendChild(el("span", "text-sm text-on-surface-variant", (meta.label || `block ${i + 1}`) + ":"))
+                            sub.appendChild(blockView(p, inner, depth + 1)); blocks.push(sub); return
+                        }
+                        const label = meta.label || `parameter ${i + 1}`
+                        const line = el("div", "flex flex-wrap gap-2"), name_ = el("span", "text-on-surface-variant", label)
+                        name_.style.minWidth = "200px"; line.appendChild(name_)
+                        line.appendChild(el("span", "text-on-surface", valueText(p, meta.kind, meta.kind === "binds" ? new Map() : inner)))
+                        // a value most of CN's scripts have here, on an inferred parameter: tucked away
+                        const typical = meta.common?.[0] && JSON.stringify(meta.common[0][0]) === JSON.stringify(p)
+                        if (typical && (label.startsWith("(inferred)") || label.startsWith("parameter"))) usual.push(line); else main.appendChild(line)
+                    })
+                    card.appendChild(main)
+                    if (usual.length) {
+                        const det = el("details", "text-sm"); det.appendChild(el("summary", "text-on-surface-variant cursor-pointer", `${usual.length} more, as most of CN's skills have them`))
+                        for (const l of usual) det.appendChild(l)
+                        card.appendChild(det)
+                    }
+                    for (const b of blocks) card.appendChild(b)
+                    list.appendChild(card)
+                }
+                return list
+            }
+            function renderSkill() {
+                const box = $("tab-skill"); box.innerHTML = ""
+                if (tab !== "skill") return
+                if (!edit.skills.length) { box.appendChild(el("p", "text-on-surface-variant", "This unit has no skill rows.")); return }
+                box.appendChild(el("p", "text-sm text-on-surface-variant", "What the unit's skill does, read from its script: each card is one command, run top to bottom; indented cards run inside the one above (after a wait, when an attack area appears, on each hit...). Read only for now."))
+                for (const s of edit.skills) {
+                    const sec = el("section", "flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3")
+                    const head = el("div", "flex flex-wrap gap-3 items-baseline")
+                    head.appendChild(el("h3", "text-xl text-on-background font-semibold", (s.plus ? "Skill+: " : "Skill: ") + s.name))
+                    head.appendChild(el("span", "text-sm text-on-surface-variant", s.script || "(no script)"))
+                    sec.appendChild(head)
+                    if (s.description) sec.appendChild(el("p", "text-sm text-on-surface", s.description))
+                    const body = el("div", "flex flex-col gap-2"); body.appendChild(el("p", "text-sm text-on-surface-variant", "Reading the script..."))
+                    sec.appendChild(body); box.appendChild(sec)
+                    if (!s.script) { body.innerHTML = ""; body.appendChild(el("p", "text-on-surface-variant", "No script in the skill row.")); continue }
+                    Promise.all([skillData(), loadScript(s.script)]).then(([, script]) => {
+                        body.innerHTML = ""
+                        const root = Array.isArray(script) ? script.find(isBlockV) : null
+                        if (!root) { body.appendChild(el("p", "text-on-surface-variant", "The script has no command block.")); return }
+                        const st = scriptStats(root)
+                        const over = [st.commands > 40 && "commands", st.areas > 6 && "attack areas", st.depth > 6 && "depth"].filter(Boolean)
+                        body.appendChild(el("p", "text-sm text-on-surface-variant",
+                            `${st.commands} commands · ${st.areas} attack area${st.areas === 1 ? "" : "s"} · ${st.effects} effect${st.effects === 1 ? "" : "s"} · ${st.depth} levels deep` +
+                            (over.length ? ` (above the Default mode's limits in ${over.join(", ")}: 40 commands, 6 areas, 6 levels)` : "")))
+                        body.appendChild(blockView(root, new Map(), 0))
+                    }).catch((e) => { body.innerHTML = ""; body.appendChild(el("p", "text-error", "Couldn't read the script: " + e.message)) })
+                }
             }
 
             // ---- copy a line ----

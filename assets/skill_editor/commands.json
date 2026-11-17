@@ -1,0 +1,11577 @@
+{
+ "_source": "CN 1.8.1 client ActionDslCommand/ActionDslEvent + CN's skill scripts (scripts/research/skill_commands_from_pcode.cjs)",
+ "scripts": 1091,
+ "commands": {
+  "AddCombo": {
+   "index": 82,
+   "label": "Combo",
+   "what": "Add combo (inferred).",
+   "skills": 7,
+   "params": [
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 6,
+         "max": 6
+        }
+       ],
+       2
+      ],
+      [
+       [
+        {
+         "min": 9,
+         "max": 15
+        }
+       ],
+       2
+      ],
+      [
+       [
+        {
+         "min": 4,
+         "max": 4
+        }
+       ],
+       2
+      ],
+      [
+       [
+        {
+         "min": 6,
+         "max": 10
+        }
+       ],
+       2
+      ],
+      [
+       [
+        {
+         "min": 9,
+         "max": 9
+        }
+       ],
+       1
+      ],
+      [
+       [
+        {
+         "min": 12,
+         "max": 20
+        }
+       ],
+       1
+      ],
+      [
+       [
+        {
+         "min": 8,
+         "max": 8
+        }
+       ],
+       1
+      ],
+      [
+       [
+        {
+         "min": 12,
+         "max": 15
+        }
+       ],
+       1
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "AddFeverPoint": {
+   "index": 8,
+   "label": "Fever gauge",
+   "what": "Add Fever gauge.",
+   "skills": 27,
+   "params": [
+    {
+     "type": "Array",
+     "label": "amount",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 25,
+         "max": 30
+        }
+       ],
+       5
+      ],
+      [
+       [
+        {
+         "min": 65,
+         "max": 75
+        }
+       ],
+       3
+      ],
+      [
+       [
+        {
+         "min": 30,
+         "max": 30
+        }
+       ],
+       3
+      ],
+      [
+       [
+        {
+         "min": 40,
+         "max": 50
+        }
+       ],
+       3
+      ],
+      [
+       [
+        {
+         "min": 25,
+         "max": 25
+        }
+       ],
+       3
+      ],
+      [
+       [
+        {
+         "min": 35,
+         "max": 40
+        }
+       ],
+       3
+      ],
+      [
+       [
+        {
+         "min": 20,
+         "max": 20
+        }
+       ],
+       3
+      ],
+      [
+       [
+        {
+         "min": 50,
+         "max": 50
+        }
+       ],
+       2
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "AddSkillPoint": {
+   "index": 6,
+   "label": "Skill gauge",
+   "what": "Add skill gauge.",
+   "skills": 10,
+   "params": [
+    {
+     "type": "int",
+     "label": "target",
+     "kind": "subject",
+     "common": [
+      [
+       0,
+       6
+      ],
+      [
+       1,
+       4
+      ],
+      [
+       4,
+       2
+      ],
+      [
+       -17,
+       2
+      ],
+      [
+       9,
+       2
+      ],
+      [
+       3,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "amount",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 0.05,
+         "max": 0.05
+        }
+       ],
+       2
+      ],
+      [
+       [
+        {
+         "alv_min": 0.15,
+         "alv_max": 0.2
+        }
+       ],
+       2
+      ],
+      [
+       [
+        {
+         "min": 0.5,
+         "max": 0.5
+        }
+       ],
+       2
+      ],
+      [
+       [
+        {
+         "min": 0.075,
+         "max": 0.1
+        }
+       ],
+       1
+      ],
+      [
+       [
+        {
+         "min": 1,
+         "max": 1
+        }
+       ],
+       1
+      ],
+      [
+       [
+        {
+         "min": 0.1,
+         "max": 0.15
+        }
+       ],
+       1
+      ],
+      [
+       [
+        {
+         "min": 0.06,
+         "max": 0.06
+        }
+       ],
+       1
+      ],
+      [
+       [
+        {
+         "min": 0.08,
+         "max": 0.1
+        }
+       ],
+       1
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "BindCoffinRevivalCountVariable": {
+   "index": 103,
+   "label": "BindCoffinRevivalCountVariable",
+   "what": "",
+   "skills": 2,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       113,
+       6
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       4
+      ],
+      [
+       [
+        6
+       ],
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       6
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       6
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       6
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       6
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       4,
+       2
+      ],
+      [
+       5,
+       2
+      ],
+      [
+       7,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       6
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       4,
+       4
+      ],
+      [
+       10,
+       2
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "BindCoffinRevivalCountVariableOf": {
+   "index": 102,
+   "label": "BindCoffinRevivalCountVariableOf",
+   "what": "",
+   "skills": 1,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       -17,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       4,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       4,
+       2
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "BindConditionAccumulationVariable": {
+   "index": 101,
+   "label": "BindConditionAccumulationVariable",
+   "what": "",
+   "skills": 1,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       -17,
+       4
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       2
+      ],
+      [
+       2,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "DeletionalConditionKind",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "DCUnique",
+        11
+       ],
+       4
+      ]
+     ],
+     "options": {
+      "DCUnique": {
+       "n": 4,
+       "example": [
+        "DCUnique",
+        11
+       ]
+      }
+     }
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       4
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       10,
+       4
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "ChangeBgm": {
+   "index": 110,
+   "label": "ChangeBgm",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "BgmFadeKind",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ChangeFieldAnimation": {
+   "index": 74,
+   "label": "ChangeFieldAnimation",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ChangeFieldAssets": {
+   "index": 109,
+   "label": "ChangeFieldAssets",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsChangeSkillFlag": {
+   "index": 86,
+   "label": "ConditionalsChangeSkillFlag",
+   "what": "",
+   "skills": 28,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       62
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsCoffinCountFilter": {
+   "index": 92,
+   "label": "ConditionalsCoffinCountFilter",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsCoffinCountSubject": {
+   "index": 91,
+   "label": "ConditionalsCoffinCountSubject",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsCombo": {
+   "index": 59,
+   "label": "ConditionalsCombo",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "Number",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsConditionAccumulationNumber": {
+   "index": 72,
+   "label": "ConditionalsConditionAccumulationNumber",
+   "what": "",
+   "skills": 1,
+   "params": [
+    {
+     "type": "DeletionalConditionKind",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "DCUnique",
+        10
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "DCUnique": {
+       "n": 2,
+       "example": [
+        "DCUnique",
+        10
+       ]
+      }
+     }
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsConditionExist": {
+   "index": 73,
+   "label": "ConditionalsConditionExist",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "DeletionalConditionKind",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsFeverMode": {
+   "index": 57,
+   "label": "If in Fever",
+   "what": "Branch on Fever (inferred: first block in Fever, second not).",
+   "skills": 14,
+   "params": [
+    {
+     "type": "ActionDslExpression",
+     "label": "in Fever",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "not in Fever",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsHealthPointRatio": {
+   "index": 54,
+   "label": "If HP ≥ X %",
+   "what": "Branch on the unit's HP: at or above X % runs the first block, else the second.",
+   "skills": 8,
+   "params": [
+    {
+     "type": "int",
+     "label": "X (percent)",
+     "kind": "number",
+     "common": [
+      [
+       50,
+       10
+      ],
+      [
+       45,
+       2
+      ],
+      [
+       30,
+       2
+      ],
+      [
+       60,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "if at or above",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "if below",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsHealthPointRatioOf": {
+   "index": 55,
+   "label": "ConditionalsHealthPointRatioOf",
+   "what": "",
+   "skills": 3,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       -17,
+       2
+      ],
+      [
+       4,
+       2
+      ],
+      [
+       2,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       50,
+       4
+      ],
+      [
+       40,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsHitAreaHitCount": {
+   "index": 31,
+   "label": "ConditionalsHitAreaHitCount",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsMainOrUnison": {
+   "index": 98,
+   "label": "ConditionalsMainOrUnison",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsMultiballNumber": {
+   "index": 76,
+   "label": "ConditionalsMultiballNumber",
+   "what": "",
+   "skills": 10,
+   "params": [
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "list",
+     "common": [
+      [
+       [
+        1611951,
+        1611952
+       ],
+       2
+      ],
+      [
+       [
+        1111711,
+        1111712
+       ],
+       2
+      ],
+      [
+       [
+        1611891,
+        1611892
+       ],
+       2
+      ],
+      [
+       [
+        1611771,
+        1611772
+       ],
+       2
+      ],
+      [
+       [
+        1610871,
+        1610872
+       ],
+       2
+      ],
+      [
+       [
+        1110811,
+        1110812
+       ],
+       2
+      ],
+      [
+       [
+        2610651,
+        2610652
+       ],
+       2
+      ],
+      [
+       [
+        1610511,
+        1610512
+       ],
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       20
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       20
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsNumCoffins": {
+   "index": 60,
+   "label": "ConditionalsNumCoffins",
+   "what": "",
+   "skills": 1,
+   "params": [
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsNumExecutions2": {
+   "index": 68,
+   "label": "ConditionalsNumExecutions2",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsNumExecutions3": {
+   "index": 69,
+   "label": "ConditionalsNumExecutions3",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsNumExecutions4": {
+   "index": 70,
+   "label": "ConditionalsNumExecutions4",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsNumExecutions5": {
+   "index": 71,
+   "label": "ConditionalsNumExecutions5",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsNumExecutionsOddOrEven": {
+   "index": 67,
+   "label": "ConditionalsNumExecutionsOddOrEven",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsProbability": {
+   "index": 105,
+   "label": "ConditionalsProbability",
+   "what": "",
+   "skills": 1,
+   "params": [
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsRelativePositionVertical": {
+   "index": 104,
+   "label": "ConditionalsRelativePositionVertical",
+   "what": "",
+   "skills": 5,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       10
+      ],
+      [
+       -18,
+       4
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       12
+      ],
+      [
+       1,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsSkillPoint200Percent": {
+   "index": 56,
+   "label": "ConditionalsSkillPoint200Percent",
+   "what": "",
+   "skills": 1,
+   "params": [
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [
+      [
+       true,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConditionalsUnifyElement": {
+   "index": 79,
+   "label": "ConditionalsUnifyElement",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ConsumeUniqueCondition": {
+   "index": 93,
+   "label": "ConsumeUniqueCondition",
+   "what": "",
+   "skills": 1,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       -17,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       10,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "Some",
+        1
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "Some": {
+       "n": 2,
+       "example": [
+        "Some",
+        1
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "CreateBarrier": {
+   "index": 58,
+   "label": "Barrier",
+   "what": "A barrier.",
+   "skills": 12,
+   "params": [
+    {
+     "type": "int",
+     "label": "target",
+     "kind": "subject",
+     "common": [
+      [
+       0,
+       9
+      ],
+      [
+       1,
+       6
+      ],
+      [
+       -17,
+       4
+      ],
+      [
+       3,
+       2
+      ],
+      [
+       5,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "strength",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 0.03,
+         "max": 0.03
+        }
+       ],
+       4
+      ],
+      [
+       [
+        {
+         "min": 0.045,
+         "max": 0.06
+        }
+       ],
+       3
+      ],
+      [
+       [
+        {
+         "min": 0.06,
+         "max": 0.06
+        }
+       ],
+       3
+      ],
+      [
+       [
+        {
+         "alv_min": 0.0375,
+         "alv_max": 0.075
+        }
+       ],
+       2
+      ],
+      [
+       [
+        {
+         "min": 0.08,
+         "max": 0.1
+        }
+       ],
+       2
+      ],
+      [
+       [
+        {
+         "min": 0.05,
+         "max": 0.05
+        }
+       ],
+       2
+      ],
+      [
+       [
+        {
+         "min": 0.048,
+         "max": 0.048
+        }
+       ],
+       1
+      ],
+      [
+       [
+        {
+         "min": 0.055999999999999994,
+         "max": 0.08
+        }
+       ],
+       1
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "BarrierHitEffect",
+     "label": "hit effect",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "GenericBarrierHitEffect"
+       ],
+       23
+      ]
+     ],
+     "options": {
+      "GenericBarrierHitEffect": {
+       "n": 23,
+       "example": [
+        "GenericBarrierHitEffect"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "CreateBombMultiball": {
+   "index": 35,
+   "label": "CreateBombMultiball",
+   "what": "",
+   "skills": 4,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       2,
+       2
+      ],
+      [
+       6,
+       2
+      ],
+      [
+       3,
+       2
+      ],
+      [
+       4,
+       1
+      ],
+      [
+       5,
+       1
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [
+      [
+       "character/illusionist_ball/pixelart/pixelart",
+       2
+      ],
+      [
+       "character/docking_beast_xm19_multiball/pixelart/pixelart",
+       2
+      ],
+      [
+       "character/bomb/pixelart/pixelart",
+       2
+      ],
+      [
+       "character/ruin_girl_meteor/pixelart/pixelart",
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "MultiballReadyEffect",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "E2",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/illusionist/illusionist_ready_generation"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/illusionist/illusionist_ready_left"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/illusionist/illusionist_ready_right"
+        ]
+       ],
+       2
+      ],
+      [
+       [
+        "E1",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/docking_beast_xm19/multiball_docking_beast_xm19_effect_ready"
+        ]
+       ],
+       2
+      ],
+      [
+       [
+        "E1",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/kunoichi/multiball_kunoichi_effect_ready"
+        ]
+       ],
+       2
+      ],
+      [
+       [
+        "E2",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/ruin_girl/multiball_ruin_girl_effect_ready_generation"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/ruin_girl/multiball_ruin_girl_effect_ready_left"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/ruin_girl/multiball_ruin_girl_effect_ready_right"
+        ]
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "E2": {
+       "n": 4,
+       "example": [
+        "E2",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/illusionist/illusionist_ready_generation"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/illusionist/illusionist_ready_left"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/illusionist/illusionist_ready_right"
+        ]
+       ]
+      },
+      "E1": {
+       "n": 4,
+       "example": [
+        "E1",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/docking_beast_xm19/multiball_docking_beast_xm19_effect_ready"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "type": "Effect",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/illusionist/illusionist_appear"
+       ],
+       2
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/docking_beast_xm19/multiball_docking_beast_xm19_effect_appear"
+       ],
+       2
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/kunoichi/multiball_kunoichi_effect_appear"
+       ],
+       2
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/ruin_girl/multiball_ruin_girl_effect_appear"
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "SpecifyEffectDirectly": {
+       "n": 8,
+       "example": [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/illusionist/illusionist_appear"
+       ]
+      }
+     }
+    },
+    {
+     "type": "Effect",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_general/multiball/multiball_general_effect/multiball_general_effect_disappear"
+       ],
+       4
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/illusionist/illusionist_disappear"
+       ],
+       2
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/docking_beast_xm19/docking_beast_xm19"
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "SpecifyEffectDirectly": {
+       "n": 8,
+       "example": [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_general/multiball/multiball_general_effect/multiball_general_effect_disappear"
+       ]
+      }
+     }
+    },
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [
+      [
+       "battle/action/skill/action/rare4/illusionist_multiball_1",
+       1
+      ],
+      [
+       "battle/action/skill/action/rare4/illusionist_multiball_2",
+       1
+      ],
+      [
+       "battle/action/skill/action/rare4/docking_beast_xm19_multiball_1",
+       1
+      ],
+      [
+       "battle/action/skill/action/rare4/docking_beast_xm19_multiball_2",
+       1
+      ],
+      [
+       "battle/action/skill/action/rare4/kunoichi_multiball_1",
+       1
+      ],
+      [
+       "battle/action/skill/action/rare4/kunoichi_multiball_2",
+       1
+      ],
+      [
+       "battle/action/skill/action/rare5/ruin_girl_multiball_1",
+       1
+      ],
+      [
+       "battle/action/skill/action/rare5/ruin_girl_multiball_2",
+       1
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       8
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       8
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "CreateCollider": {
+   "index": 95,
+   "label": "CreateCollider",
+   "what": "",
+   "skills": 1,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       2,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [
+      [
+       "剛体",
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ColliderShape",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "Rectangle",
+        [
+         {
+          "min": 600,
+          "max": 600
+         }
+        ],
+        [
+         {
+          "min": 70,
+          "max": 70
+         }
+        ]
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "Rectangle": {
+       "n": 2,
+       "example": [
+        "Rectangle",
+        [
+         {
+          "min": 600,
+          "max": 600
+         }
+        ],
+        [
+         {
+          "min": 70,
+          "max": 70
+         }
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "type": "ColliderLifetime",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "SpecificFrameSLv",
+        [
+         {
+          "min": 310,
+          "max": 310
+         }
+        ]
+       ],
+       1
+      ],
+      [
+       [
+        "SpecificFrameSLv",
+        [
+         {
+          "min": 340,
+          "max": 370
+         }
+        ]
+       ],
+       1
+      ]
+     ],
+     "options": {
+      "SpecificFrameSLv": {
+       "n": 2,
+       "example": [
+        "SpecificFrameSLv",
+        [
+         {
+          "min": 310,
+          "max": 310
+         }
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "type": "CoordSysSource",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "AB"
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "AB": {
+       "n": 2,
+       "example": [
+        "AB"
+       ]
+      }
+     }
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [
+      [
+       true,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       2
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "CreateCondition": {
+   "index": 21,
+   "label": "Buff / debuff",
+   "what": "Give a buff or debuff (a condition).",
+   "skills": 396,
+   "params": [
+    {
+     "type": "int",
+     "label": "target",
+     "kind": "subject",
+     "common": [
+      [
+       -17,
+       277
+      ],
+      [
+       0,
+       267
+      ],
+      [
+       3,
+       171
+      ],
+      [
+       2,
+       157
+      ],
+      [
+       1,
+       101
+      ],
+      [
+       4,
+       99
+      ],
+      [
+       -33,
+       61
+      ],
+      [
+       5,
+       61
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "conditions",
+     "kind": "list",
+     "common": [
+      [
+       [
+        [
+         "ACAttackPoint",
+         [
+          {
+           "min": 900,
+           "max": 900
+          }
+         ],
+         [
+          {
+           "min": 0.4,
+           "max": 0.5
+          }
+         ],
+         [
+          {
+           "min": 1,
+           "max": 1
+          }
+         ]
+        ]
+       ],
+       33
+      ],
+      [
+       [
+        [
+         "ACAttackPoint",
+         [
+          {
+           "min": 720,
+           "max": 720
+          }
+         ],
+         [
+          {
+           "min": 0.3,
+           "max": 0.3
+          }
+         ],
+         [
+          {
+           "min": 1,
+           "max": 1
+          }
+         ]
+        ]
+       ],
+       31
+      ],
+      [
+       [
+        [
+         "ACAttackPoint",
+         [
+          {
+           "min": 900,
+           "max": 900
+          }
+         ],
+         [
+          {
+           "min": 0.85,
+           "max": 1
+          }
+         ],
+         [
+          {
+           "min": 1,
+           "max": 1
+          }
+         ]
+        ]
+       ],
+       14
+      ],
+      [
+       [
+        [
+         "ACParalysis",
+         [
+          {
+           "min": 360,
+           "max": 360
+          }
+         ],
+         true
+        ]
+       ],
+       14
+      ],
+      [
+       [
+        [
+         "ACPowerFlipDamage",
+         [
+          {
+           "min": 900,
+           "max": 900
+          }
+         ],
+         [
+          {
+           "min": 0.4,
+           "max": 0.5
+          }
+         ],
+         [
+          {
+           "min": 1,
+           "max": 1
+          }
+         ]
+        ]
+       ],
+       13
+      ],
+      [
+       [
+        [
+         "ACAttackPoint",
+         [
+          {
+           "min": 720,
+           "max": 720
+          }
+         ],
+         [
+          {
+           "min": 0.65,
+           "max": 0.65
+          }
+         ],
+         [
+          {
+           "min": 1,
+           "max": 1
+          }
+         ]
+        ]
+       ],
+       12
+      ],
+      [
+       [
+        [
+         "ACAttackPoint",
+         [
+          {
+           "min": 720,
+           "max": 720
+          }
+         ],
+         [
+          {
+           "min": 0.5,
+           "max": 0.5
+          }
+         ],
+         [
+          {
+           "min": 1,
+           "max": 1
+          }
+         ]
+        ]
+       ],
+       12
+      ],
+      [
+       [
+        [
+         "ACPowerFlipDamage",
+         [
+          {
+           "min": 720,
+           "max": 720
+          }
+         ],
+         [
+          {
+           "min": 0.3,
+           "max": 0.3
+          }
+         ],
+         [
+          {
+           "min": 1,
+           "max": 1
+          }
+         ]
+        ]
+       ],
+       12
+      ]
+     ],
+     "options": {
+      "ACAttackPoint": {
+       "n": 502,
+       "example": [
+        "ACAttackPoint",
+        [
+         {
+          "min": 900,
+          "max": 900
+         }
+        ],
+        [
+         {
+          "min": 0.4,
+          "max": 0.5
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      },
+      "ACToleranceOfElement": {
+       "n": 235,
+       "example": [
+        "ACToleranceOfElement",
+        [
+         {
+          "min": 960,
+          "max": 960
+         }
+        ],
+        255,
+        [
+         {
+          "min": -0.15,
+          "max": -0.15
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      },
+      "ACPowerFlipDamage": {
+       "n": 138,
+       "example": [
+        "ACPowerFlipDamage",
+        [
+         {
+          "min": 900,
+          "max": 900
+         }
+        ],
+        [
+         {
+          "min": 0.4,
+          "max": 0.5
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      },
+      "ACSkillDamage": {
+       "n": 132,
+       "example": [
+        "ACSkillDamage",
+        [
+         {
+          "min": 1200,
+          "max": 1200
+         }
+        ],
+        [
+         {
+          "min": 0.85,
+          "max": 1
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      },
+      "ACPiercing": {
+       "n": 74,
+       "example": [
+        "ACPiercing",
+        [
+         {
+          "min": 630,
+          "max": 630
+         }
+        ]
+       ]
+      },
+      "ACFlying": {
+       "n": 53,
+       "example": [
+        "ACFlying",
+        [
+         {
+          "min": 720,
+          "max": 810
+         }
+        ]
+       ]
+      },
+      "ACParalysis": {
+       "n": 53,
+       "example": [
+        "ACParalysis",
+        [
+         {
+          "min": 360,
+          "max": 360
+         }
+        ],
+        true
+       ]
+      },
+      "ACRegeneration": {
+       "n": 45,
+       "example": [
+        "ACRegeneration",
+        [
+         {
+          "min": 600,
+          "max": 600
+         }
+        ],
+        [
+         {
+          "min": 60,
+          "max": 60
+         }
+        ]
+       ]
+      },
+      "ACFrozen": {
+       "n": 33,
+       "example": [
+        "ACFrozen",
+        [
+         {
+          "min": 1050,
+          "max": 1200
+         }
+        ],
+        true
+       ]
+      },
+      "ACPoison": {
+       "n": 31,
+       "example": [
+        "ACPoison",
+        [
+         {
+          "min": 1800,
+          "max": 1800
+         }
+        ],
+        [
+         {
+          "min": 3000,
+          "max": 6000
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      },
+      "ACDirectDamage": {
+       "n": 27,
+       "example": [
+        "ACDirectDamage",
+        [
+         {
+          "min": 960,
+          "max": 960
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      },
+      "ACFixedSpeed": {
+       "n": 20,
+       "example": [
+        "ACFixedSpeed",
+        [
+         {
+          "min": 720,
+          "max": 720
+         }
+        ],
+        [
+         {
+          "min": 0.4,
+          "max": 0.4
+         }
+        ],
+        [
+         {
+          "min": -0.12,
+          "max": -0.12
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      },
+      "ACAdditionalDirectAttack": {
+       "n": 20,
+       "example": [
+        "ACAdditionalDirectAttack",
+        [
+         {
+          "alv_min": 450,
+          "alv_max": 900
+         }
+        ],
+        [
+         {
+          "alv_min": 2,
+          "alv_max": 2
+         }
+        ],
+        [
+         {
+          "alv_min": 0,
+          "alv_max": 0
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      },
+      "ACOiuchi": {
+       "n": 17,
+       "example": [
+        "ACOiuchi",
+        [
+         {
+          "min": 720,
+          "max": 720
+         }
+        ],
+        [
+         {
+          "min": 0.35,
+          "max": 0.35
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      },
+      "ACUnique": {
+       "n": 14,
+       "example": [
+        "ACUnique",
+        9,
+        [
+         {
+          "min": 99,
+          "max": 99
+         }
+        ]
+       ]
+      },
+      "ACComboBoost": {
+       "n": 14,
+       "example": [
+        "ACComboBoost",
+        [
+         {
+          "min": 5,
+          "max": 5
+         }
+        ],
+        [
+         {
+          "min": 3,
+          "max": 3
+         }
+        ]
+       ]
+      },
+      "ACAbilityDamage": {
+       "n": 12,
+       "example": [
+        "ACAbilityDamage",
+        [
+         {
+          "min": 720,
+          "max": 720
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      },
+      "ACSpeedup": {
+       "n": 10,
+       "example": [
+        "ACSpeedup",
+        [
+         {
+          "min": 480,
+          "max": 480
+         }
+        ],
+        [
+         {
+          "min": 0.1,
+          "max": 0.1
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      },
+      "ACDamageOfElement": {
+       "n": 6,
+       "example": [
+        "ACDamageOfElement",
+        [
+         {
+          "min": 960,
+          "max": 960
+         }
+        ],
+        1,
+        [
+         {
+          "min": 25,
+          "max": 25
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      },
+      "ACInvincible": {
+       "n": 6,
+       "example": [
+        "ACInvincible",
+        [
+         {
+          "min": 210,
+          "max": 210
+         }
+        ]
+       ]
+      },
+      "ACAdversity": {
+       "n": 4,
+       "example": [
+        "ACAdversity",
+        [
+         {
+          "min": 600,
+          "max": 600
+         }
+        ],
+        [
+         {
+          "min": 0,
+          "max": 0
+         }
+        ],
+        [
+         {
+          "min": 0.1,
+          "max": 0.1
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      },
+      "ACToleranceOfDebuff": {
+       "n": 4,
+       "example": [
+        "ACToleranceOfDebuff",
+        [
+         {
+          "min": 180,
+          "max": 180
+         }
+        ],
+        [
+         {
+          "min": 0.75,
+          "max": 0.75
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      },
+      "ACFeverPoint": {
+       "n": 2,
+       "example": [
+        "ACFeverPoint",
+        [
+         {
+          "min": 960,
+          "max": 960
+         }
+        ],
+        [
+         {
+          "min": 0.65,
+          "max": 0.65
+         }
+        ],
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "type": "Array",
+     "label": "chance it lands (1 = 100 %)",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 1,
+         "max": 1
+        }
+       ],
+       1422
+      ],
+      [
+       [
+        {
+         "min": 0.5,
+         "max": 0.5
+        }
+       ],
+       13
+      ],
+      [
+       [
+        {
+         "alv_min": 1,
+         "alv_max": 1
+        }
+       ],
+       8
+      ],
+      [
+       [
+        {
+         "min": 0.25,
+         "max": 0.25
+        }
+       ],
+       4
+      ],
+      [
+       [
+        {
+         "min": 0.55,
+         "max": 0.6
+        }
+       ],
+       3
+      ],
+      [
+       [
+        {
+         "alv2_min": 1,
+         "alv2_max": 1
+        }
+       ],
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ConditionHitEffect",
+     "label": "marker shown",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "GenericConditionHitEffect"
+       ],
+       1379
+      ],
+      [
+       [
+        "None"
+       ],
+       71
+      ],
+      [
+       [
+        "SpecifyConditionHitEffectDirectly",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/kokkoro/kokkoro_hit"
+        ]
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "GenericConditionHitEffect": {
+       "n": 1379,
+       "example": [
+        "GenericConditionHitEffect"
+       ]
+      },
+      "None": {
+       "n": 71,
+       "example": [
+        "None"
+       ]
+      },
+      "SpecifyConditionHitEffectDirectly": {
+       "n": 2,
+       "example": [
+        "SpecifyConditionHitEffectDirectly",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/kokkoro/kokkoro_hit"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "type": "Boolean",
+     "label": "can be removed (cleansed / dispelled)",
+     "kind": "bool",
+     "common": [
+      [
+       true,
+       1430
+      ],
+      [
+       false,
+       22
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "given again even if it's already on",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       1435
+      ],
+      [
+       true,
+       17
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "label",
+     "kind": "string",
+     "common": [
+      [
+       "",
+       1396
+      ],
+      [
+       "スペシャルウィーク最大速度固定",
+       4
+      ],
+      [
+       "スペシャルウィーク攻撃力",
+       4
+      ],
+      [
+       "一個目",
+       4
+      ],
+      [
+       "二個目",
+       4
+      ],
+      [
+       "攻撃力アップ1",
+       4
+      ],
+      [
+       "攻撃力アップ2",
+       4
+      ],
+      [
+       "リーダーバフ",
+       4
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "HitCountCheckTargetKind",
+     "label": "linked hit check",
+     "kind": "none",
+     "common": [
+      [
+       null,
+       1452
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "(inferred) passed on to each condition",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       1452
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "who it may go to (1 a unit, 2 the party, 3 either)",
+     "kind": "number",
+     "common": [
+      [
+       3,
+       1228
+      ],
+      [
+       1,
+       138
+      ],
+      [
+       2,
+       86
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "(inferred) number by skill level, passed on to each condition",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 1,
+         "max": 1
+        }
+       ],
+       1452
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "applies even when blocked (force)",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       1442
+      ],
+      [
+       true,
+       10
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "CreateFixedAttack": {
+   "index": 17,
+   "label": "CreateFixedAttack",
+   "what": "",
+   "skills": 1,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       2,
+       1
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 2020,
+         "max": 2020
+        }
+       ],
+       1
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "FixedAttackHitEffect",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "Generic"
+       ],
+       1
+      ]
+     ],
+     "options": {
+      "Generic": {
+       "n": 1,
+       "example": [
+        "Generic"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "CreateFlood": {
+   "index": 65,
+   "label": "CreateFlood",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CreateGravitationalField": {
+   "index": 41,
+   "label": "CreateGravitationalField",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "HAlign",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "VAlign",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CreateHitArea": {
+   "index": 24,
+   "label": "Attack area",
+   "what": "Create an attack area: the zone that hits.",
+   "skills": 401,
+   "params": [
+    {
+     "type": "String",
+     "label": "label",
+     "kind": "string",
+     "common": [
+      [
+       "*",
+       1687
+      ],
+      [
+       "チャクラム",
+       3
+      ],
+      [
+       "銃弾",
+       2
+      ],
+      [
+       "ナイフ",
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "attached to",
+     "kind": "subject",
+     "common": [
+      [
+       -18,
+       855
+      ],
+      [
+       0,
+       270
+      ],
+      [
+       1,
+       194
+      ],
+      [
+       -1,
+       143
+      ],
+      [
+       2,
+       62
+      ],
+      [
+       4,
+       47
+      ],
+      [
+       5,
+       27
+      ],
+      [
+       -17,
+       21
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "CoordSysSource",
+     "label": "direction",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "AB"
+       ],
+       1142
+      ],
+      [
+       [
+        "EF"
+       ],
+       236
+      ],
+      [
+       [
+        "CD"
+       ],
+       119
+      ],
+      [
+       [
+        "GH",
+        0
+       ],
+       93
+      ],
+      [
+       [
+        "GH",
+        1
+       ],
+       18
+      ],
+      [
+       [
+        "GH",
+        3
+       ],
+       10
+      ],
+      [
+       [
+        "GH",
+        2
+       ],
+       10
+      ],
+      [
+       [
+        "GH",
+        11
+       ],
+       8
+      ]
+     ],
+     "options": {
+      "AB": {
+       "n": 1142,
+       "example": [
+        "AB"
+       ]
+      },
+      "EF": {
+       "n": 236,
+       "example": [
+        "EF"
+       ]
+      },
+      "GH": {
+       "n": 197,
+       "example": [
+        "GH",
+        0
+       ]
+      },
+      "CD": {
+       "n": 119,
+       "example": [
+        "CD"
+       ]
+      }
+     }
+    },
+    {
+     "type": "int",
+     "label": "offset X",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       1514
+      ],
+      [
+       -60,
+       26
+      ],
+      [
+       60,
+       24
+      ],
+      [
+       -500,
+       9
+      ],
+      [
+       500,
+       9
+      ],
+      [
+       -150,
+       6
+      ],
+      [
+       -30,
+       6
+      ],
+      [
+       -25,
+       6
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "offset Y (positive = down)",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       1174
+      ],
+      [
+       -150,
+       98
+      ],
+      [
+       -200,
+       66
+      ],
+      [
+       -80,
+       40
+      ],
+      [
+       -50,
+       35
+      ],
+      [
+       -90,
+       34
+      ],
+      [
+       -100,
+       23
+      ],
+      [
+       -30,
+       18
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "rotation (radians)",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       1530
+      ],
+      [
+       0.17453292519943295,
+       10
+      ],
+      [
+       1.0471975511965976,
+       10
+      ],
+      [
+       3.577924966588375,
+       10
+      ],
+      [
+       0.7853981633974483,
+       9
+      ],
+      [
+       -0.17453292519943295,
+       9
+      ],
+      [
+       1.7453292519943295,
+       9
+      ],
+      [
+       4.537856055185257,
+       9
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "follows position",
+     "kind": "bool",
+     "common": [
+      [
+       true,
+       869
+      ],
+      [
+       false,
+       825
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "follows direction",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       1361
+      ],
+      [
+       true,
+       333
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Shape",
+     "label": "shape",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "Circle",
+        [
+         {
+          "min": 200,
+          "max": 200
+         }
+        ]
+       ],
+       186
+      ],
+      [
+       [
+        "Circle",
+        [
+         {
+          "min": 250,
+          "max": 250
+         }
+        ]
+       ],
+       123
+      ],
+      [
+       [
+        "Rectangle",
+        [
+         {
+          "min": 1500,
+          "max": 1500
+         }
+        ],
+        [
+         {
+          "min": 2000,
+          "max": 2000
+         }
+        ]
+       ],
+       117
+      ],
+      [
+       [
+        "Circle",
+        [
+         {
+          "min": 150,
+          "max": 150
+         }
+        ]
+       ],
+       104
+      ],
+      [
+       [
+        "Circle",
+        [
+         {
+          "min": 30,
+          "max": 30
+         }
+        ]
+       ],
+       102
+      ],
+      [
+       [
+        "Circle",
+        [
+         {
+          "min": 100,
+          "max": 100
+         }
+        ]
+       ],
+       68
+      ],
+      [
+       [
+        "Rectangle",
+        [
+         {
+          "min": 100,
+          "max": 100
+         }
+        ],
+        [
+         {
+          "min": 200,
+          "max": 200
+         }
+        ]
+       ],
+       64
+      ],
+      [
+       [
+        "Circle",
+        [
+         {
+          "min": 80,
+          "max": 80
+         }
+        ]
+       ],
+       45
+      ]
+     ],
+     "options": {
+      "Circle": {
+       "n": 1012,
+       "example": [
+        "Circle",
+        [
+         {
+          "min": 200,
+          "max": 200
+         }
+        ]
+       ]
+      },
+      "Rectangle": {
+       "n": 652,
+       "example": [
+        "Rectangle",
+        [
+         {
+          "min": 1500,
+          "max": 1500
+         }
+        ],
+        [
+         {
+          "min": 2000,
+          "max": 2000
+         }
+        ]
+       ]
+      },
+      "Sector": {
+       "n": 30,
+       "example": [
+        "Sector",
+        [
+         {
+          "min": 400,
+          "max": 400
+         }
+        ],
+        [
+         {
+          "min": 1.5707963267948966,
+          "max": 1.5707963267948966
+         }
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "type": "HAlign",
+     "label": "horizontal alignment",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "Center"
+       ],
+       1694
+      ]
+     ],
+     "options": {
+      "Center": {
+       "n": 1694,
+       "example": [
+        "Center"
+       ]
+      }
+     }
+    },
+    {
+     "type": "VAlign",
+     "label": "vertical alignment",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "Center"
+       ],
+       1352
+      ],
+      [
+       [
+        "Bottom"
+       ],
+       254
+      ],
+      [
+       [
+        "Top"
+       ],
+       88
+      ]
+     ],
+     "options": {
+      "Center": {
+       "n": 1352,
+       "example": [
+        "Center"
+       ]
+      },
+      "Bottom": {
+       "n": 254,
+       "example": [
+        "Bottom"
+       ]
+      },
+      "Top": {
+       "n": 88,
+       "example": [
+        "Top"
+       ]
+      }
+     }
+    },
+    {
+     "type": "Formation",
+     "label": "formation (several areas at once)",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "Single"
+       ],
+       1627
+      ],
+      [
+       [
+        "NWay",
+        9,
+        0.13962634015954636
+       ],
+       8
+      ],
+      [
+       [
+        "NWay",
+        6,
+        1.0471975511965976
+       ],
+       6
+      ],
+      [
+       [
+        "Circle",
+        5,
+        120
+       ],
+       6
+      ],
+      [
+       [
+        "AShaped",
+        2,
+        2.8797932657906435,
+        180,
+        true
+       ],
+       4
+      ],
+      [
+       [
+        "NWay",
+        2,
+        1.5707963267948966
+       ],
+       4
+      ],
+      [
+       [
+        "NWay",
+        2,
+        2.356194490192345
+       ],
+       4
+      ],
+      [
+       [
+        "Circle",
+        2,
+        1
+       ],
+       4
+      ]
+     ],
+     "options": {
+      "Single": {
+       "n": 1627,
+       "example": [
+        "Single"
+       ]
+      },
+      "Circle": {
+       "n": 35,
+       "example": [
+        "Circle",
+        5,
+        120
+       ]
+      },
+      "NWay": {
+       "n": 26,
+       "example": [
+        "NWay",
+        9,
+        0.13962634015954636
+       ]
+      },
+      "AShaped": {
+       "n": 4,
+       "example": [
+        "AShaped",
+        2,
+        2.8797932657906435,
+        180,
+        true
+       ]
+      },
+      "Line": {
+       "n": 2,
+       "example": [
+        "Line",
+        2,
+        432,
+        false
+       ]
+      }
+     }
+    },
+    {
+     "type": "ActionHitAreaLifetime",
+     "label": "how long it lasts",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "SpecifyHitAreaLifetimeDirectly",
+        60
+       ],
+       181
+      ],
+      [
+       [
+        "SpecifyHitAreaLifetimeDirectly",
+        30
+       ],
+       155
+      ],
+      [
+       [
+        "SpecifyHitAreaLifetimeDirectly",
+        20
+       ],
+       154
+      ],
+      [
+       [
+        "SpecifyHitAreaLifetimeDirectly",
+        10
+       ],
+       140
+      ],
+      [
+       [
+        "SpecifyHitAreaLifetimeDirectly",
+        600
+       ],
+       115
+      ],
+      [
+       [
+        "SpecifyHitAreaLifetimeDirectly",
+        15
+       ],
+       110
+      ],
+      [
+       [
+        "SpecifyHitAreaLifetimeDirectly",
+        120
+       ],
+       94
+      ],
+      [
+       [
+        "SpecifyHitAreaLifetimeDirectly",
+        300
+       ],
+       86
+      ]
+     ],
+     "options": {
+      "SpecifyHitAreaLifetimeDirectly": {
+       "n": 1692,
+       "example": [
+        "SpecifyHitAreaLifetimeDirectly",
+        60
+       ]
+      },
+      "SpecifyHitAreaLifetimeSLv": {
+       "n": 2,
+       "example": [
+        "SpecifyHitAreaLifetimeSLv",
+        [
+         {
+          "min": 600,
+          "max": 600,
+          "alv_min": 140,
+          "alv_max": 280
+         }
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "type": "MinHitInterval",
+     "label": "time between hits",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "CalculatedUsingMaxNumOfHits",
+        1
+       ],
+       1020
+      ],
+      [
+       [
+        "CalculatedUsingMaxNumOfHits",
+        3
+       ],
+       101
+      ],
+      [
+       [
+        "CalculatedUsingMaxNumOfHits",
+        10
+       ],
+       55
+      ],
+      [
+       [
+        "SpecifyMinHitIntervalDirectly",
+        2
+       ],
+       48
+      ],
+      [
+       [
+        "CalculatedUsingMaxNumOfHits",
+        4
+       ],
+       47
+      ],
+      [
+       [
+        "CalculatedUsingMaxNumOfHits",
+        6
+       ],
+       38
+      ],
+      [
+       [
+        "CalculatedUsingMaxNumOfHits",
+        5
+       ],
+       37
+      ],
+      [
+       [
+        "CalculatedUsingMaxNumOfHits",
+        15
+       ],
+       37
+      ]
+     ],
+     "options": {
+      "CalculatedUsingMaxNumOfHits": {
+       "n": 1536,
+       "example": [
+        "CalculatedUsingMaxNumOfHits",
+        1
+       ]
+      },
+      "SpecifyMinHitIntervalDirectly": {
+       "n": 158,
+       "example": [
+        "SpecifyMinHitIntervalDirectly",
+        2
+       ]
+      }
+     }
+    },
+    {
+     "type": "Option",
+     "label": "max hits",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "None"
+       ],
+       1029
+      ],
+      [
+       [
+        "Some",
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ],
+       453
+      ],
+      [
+       [
+        "Some",
+        [
+         {
+          "min": 3,
+          "max": 3
+         }
+        ]
+       ],
+       32
+      ],
+      [
+       [
+        "Some",
+        [
+         {
+          "min": 5,
+          "max": 5
+         }
+        ]
+       ],
+       26
+      ],
+      [
+       [
+        "Some",
+        [
+         {
+          "min": 4,
+          "max": 4
+         }
+        ]
+       ],
+       24
+      ],
+      [
+       [
+        "Some",
+        [
+         {
+          "min": 12,
+          "max": 12
+         }
+        ]
+       ],
+       23
+      ],
+      [
+       [
+        "Some",
+        [
+         {
+          "min": 15,
+          "max": 15
+         }
+        ]
+       ],
+       19
+      ],
+      [
+       [
+        "Some",
+        [
+         {
+          "min": 2,
+          "max": 2
+         }
+        ]
+       ],
+       12
+      ]
+     ],
+     "options": {
+      "None": {
+       "n": 1029,
+       "example": [
+        "None"
+       ]
+      },
+      "Some": {
+       "n": 665,
+       "example": [
+        "Some",
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "type": "Boolean",
+     "label": "(inferred) flag",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       1588
+      ],
+      [
+       true,
+       106
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "breaks weak points",
+     "kind": "bool",
+     "common": [
+      [
+       true,
+       1621
+      ],
+      [
+       false,
+       73
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "(inferred) option",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "None"
+       ],
+       1692
+      ],
+      [
+       [
+        "Some",
+        9
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "None": {
+       "n": 1692,
+       "example": [
+        "None"
+       ]
+      },
+      "Some": {
+       "n": 2,
+       "example": [
+        "Some",
+        9
+       ]
+      }
+     }
+    },
+    {
+     "type": "int",
+     "label": "id of the new area",
+     "kind": "binds",
+     "common": [
+      [
+       0,
+       334
+      ],
+      [
+       1,
+       289
+      ],
+      [
+       3,
+       140
+      ],
+      [
+       2,
+       129
+      ],
+      [
+       4,
+       115
+      ],
+      [
+       5,
+       92
+      ],
+      [
+       6,
+       80
+      ],
+      [
+       7,
+       55
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "when it appears",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "id of the area (on hit)",
+     "kind": "binds",
+     "common": [
+      [
+       1,
+       334
+      ],
+      [
+       2,
+       289
+      ],
+      [
+       4,
+       140
+      ],
+      [
+       3,
+       129
+      ],
+      [
+       5,
+       115
+      ],
+      [
+       6,
+       92
+      ],
+      [
+       7,
+       80
+      ],
+      [
+       8,
+       55
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "id of the hit target (on hit)",
+     "kind": "binds",
+     "common": [
+      [
+       2,
+       334
+      ],
+      [
+       3,
+       289
+      ],
+      [
+       5,
+       140
+      ],
+      [
+       4,
+       129
+      ],
+      [
+       6,
+       115
+      ],
+      [
+       7,
+       92
+      ],
+      [
+       8,
+       80
+      ],
+      [
+       9,
+       55
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "on each hit",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "(inferred) number",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       1684
+      ],
+      [
+       4,
+       10
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "(inferred) number",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       1686
+      ],
+      [
+       1,
+       8
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "HitAreaGuardMode",
+     "label": "guard mode",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "None"
+       ],
+       1694
+      ]
+     ],
+     "options": {
+      "None": {
+       "n": 1694,
+       "example": [
+        "None"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "CreateNormalAttack": {
+   "index": 15,
+   "label": "Damage",
+   "what": "Normal damage to a target (usually inside an area's on-hit).",
+   "skills": 390,
+   "params": [
+    {
+     "type": "int",
+     "label": "target",
+     "kind": "subject",
+     "common": [
+      [
+       2,
+       285
+      ],
+      [
+       3,
+       253
+      ],
+      [
+       5,
+       130
+      ],
+      [
+       4,
+       114
+      ],
+      [
+       6,
+       102
+      ],
+      [
+       7,
+       79
+      ],
+      [
+       8,
+       79
+      ],
+      [
+       9,
+       51
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "element (255 = the unit's own)",
+     "kind": "number",
+     "common": [
+      [
+       255,
+       1527
+      ],
+      [
+       3,
+       24
+      ],
+      [
+       4,
+       6
+      ],
+      [
+       2,
+       3
+      ],
+      [
+       6,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "(inferred) list",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       1544
+      ],
+      [
+       [
+        8197
+       ],
+       10
+      ],
+      [
+       [
+        8194,
+        8199
+       ],
+       4
+      ],
+      [
+       [
+        8194,
+        8197,
+        8200
+       ],
+       2
+      ],
+      [
+       [
+        8208
+       ],
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "(inferred) list",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       1528
+      ],
+      [
+       [
+        [
+         "DCParalysis"
+        ]
+       ],
+       20
+      ],
+      [
+       [
+        [
+         "DCFrozen"
+        ]
+       ],
+       10
+      ],
+      [
+       [
+        [
+         "DCToleranceOfElement",
+         3
+        ]
+       ],
+       2
+      ],
+      [
+       [
+        [
+         "DCPoison"
+        ]
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "DCParalysis": {
+       "n": 20,
+       "example": [
+        "DCParalysis"
+       ]
+      },
+      "DCFrozen": {
+       "n": 10,
+       "example": [
+        "DCFrozen"
+       ]
+      },
+      "DCToleranceOfElement": {
+       "n": 2,
+       "example": [
+        "DCToleranceOfElement",
+        3
+       ]
+      },
+      "DCPoison": {
+       "n": 2,
+       "example": [
+        "DCPoison"
+       ]
+      }
+     }
+    },
+    {
+     "type": "int",
+     "label": "(inferred) number",
+     "kind": "number",
+     "common": [
+      [
+       8,
+       141
+      ],
+      [
+       10,
+       98
+      ],
+      [
+       5,
+       89
+      ],
+      [
+       6,
+       66
+      ],
+      [
+       3,
+       62
+      ],
+      [
+       15,
+       61
+      ],
+      [
+       13,
+       61
+      ],
+      [
+       7,
+       54
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "damage multiplier",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 1,
+         "max": 1
+        }
+       ],
+       29
+      ],
+      [
+       [
+        {
+         "min": 1.3,
+         "max": 1.5
+        }
+       ],
+       26
+      ],
+      [
+       [
+        {
+         "min": 2,
+         "max": 2
+        }
+       ],
+       22
+      ],
+      [
+       [
+        {
+         "min": 0.8,
+         "max": 0.8
+        }
+       ],
+       17
+      ],
+      [
+       [
+        {
+         "min": 1.04,
+         "max": 1.2
+        }
+       ],
+       17
+      ],
+      [
+       [
+        {
+         "min": 0.8333333333333334,
+         "max": 0.8333333333333334
+        }
+       ],
+       17
+      ],
+      [
+       [
+        {
+         "min": 1.5,
+         "max": 1.5
+        }
+       ],
+       16
+      ],
+      [
+       [
+        {
+         "min": 0.91875,
+         "max": 0.91875
+        }
+       ],
+       16
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "(inferred) list",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 0,
+         "max": 0
+        }
+       ],
+       1544
+      ],
+      [
+       [
+        {
+         "min": 0.5,
+         "max": 0.5
+        }
+       ],
+       16
+      ],
+      [
+       [
+        {
+         "min": 0.25,
+         "max": 0.25
+        }
+       ],
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "(inferred) flag",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       1506
+      ],
+      [
+       true,
+       56
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "(inferred) flag",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       1540
+      ],
+      [
+       true,
+       22
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "(inferred) flag",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       1456
+      ],
+      [
+       true,
+       106
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "(inferred) flag",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       1562
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "(inferred) flag",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       1557
+      ],
+      [
+       true,
+       5
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "(inferred) list",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 1,
+         "max": 1
+        }
+       ],
+       169
+      ],
+      [
+       [
+        {
+         "min": 2,
+         "max": 2
+        }
+       ],
+       111
+      ],
+      [
+       [
+        {
+         "min": 0.6666666666666666,
+         "max": 0.6666666666666666
+        }
+       ],
+       93
+      ],
+      [
+       [
+        {
+         "min": 10,
+         "max": 10
+        }
+       ],
+       71
+      ],
+      [
+       [
+        {
+         "min": 20,
+         "max": 20
+        }
+       ],
+       69
+      ],
+      [
+       [
+        {
+         "min": 0.5,
+         "max": 0.5
+        }
+       ],
+       67
+      ],
+      [
+       [
+        {
+         "min": 5,
+         "max": 5
+        }
+       ],
+       59
+      ],
+      [
+       [
+        {
+         "min": 0.75,
+         "max": 0.75
+        }
+       ],
+       48
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "(inferred) list",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 1,
+         "max": 1
+        }
+       ],
+       253
+      ],
+      [
+       [
+        {
+         "min": 2,
+         "max": 2
+        }
+       ],
+       136
+      ],
+      [
+       [
+        {
+         "min": 3,
+         "max": 3
+        }
+       ],
+       92
+      ],
+      [
+       [
+        {
+         "min": 5,
+         "max": 5
+        }
+       ],
+       82
+      ],
+      [
+       [
+        {
+         "min": 2.5,
+         "max": 2.5
+        }
+       ],
+       74
+      ],
+      [
+       [
+        {
+         "min": 0.5,
+         "max": 0.5
+        }
+       ],
+       74
+      ],
+      [
+       [
+        {
+         "min": 10,
+         "max": 10
+        }
+       ],
+       62
+      ],
+      [
+       [
+        {
+         "min": 0.6666666666666666,
+         "max": 0.6666666666666666
+        }
+       ],
+       59
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "AttackHitEffect",
+     "label": "hit effect",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "Fine"
+       ],
+       694
+      ],
+      [
+       [
+        "None"
+       ],
+       287
+      ],
+      [
+       [
+        "Coarse"
+       ],
+       243
+      ],
+      [
+       [
+        "Shine"
+       ],
+       44
+      ],
+      [
+       [
+        "Slash"
+       ],
+       29
+      ],
+      [
+       [
+        "ThunderSmall"
+       ],
+       25
+      ],
+      [
+       [
+        "Fire"
+       ],
+       22
+      ],
+      [
+       [
+        "Tornado"
+       ],
+       12
+      ]
+     ],
+     "options": {
+      "Fine": {
+       "n": 694,
+       "example": [
+        "Fine"
+       ]
+      },
+      "None": {
+       "n": 287,
+       "example": [
+        "None"
+       ]
+      },
+      "Coarse": {
+       "n": 243,
+       "example": [
+        "Coarse"
+       ]
+      },
+      "SpecifyHitEffectDirectly": {
+       "n": 187,
+       "example": [
+        "SpecifyHitEffectDirectly",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/white_tiger_2anv/white_tiger_2anv_slam_hit"
+        ],
+        false
+       ]
+      },
+      "Shine": {
+       "n": 44,
+       "example": [
+        "Shine"
+       ]
+      },
+      "Slash": {
+       "n": 29,
+       "example": [
+        "Slash"
+       ]
+      },
+      "ThunderSmall": {
+       "n": 25,
+       "example": [
+        "ThunderSmall"
+       ]
+      },
+      "Fire": {
+       "n": 22,
+       "example": [
+        "Fire"
+       ]
+      },
+      "Tornado": {
+       "n": 12,
+       "example": [
+        "Tornado"
+       ]
+      },
+      "Frozen": {
+       "n": 5,
+       "example": [
+        "Frozen"
+       ]
+      },
+      "Splash": {
+       "n": 5,
+       "example": [
+        "Splash"
+       ]
+      },
+      "ThunderLight": {
+       "n": 5,
+       "example": [
+        "ThunderLight"
+       ]
+      },
+      "Explosion": {
+       "n": 4,
+       "example": [
+        "Explosion"
+       ]
+      }
+     }
+    },
+    {
+     "type": "Boolean",
+     "label": "(inferred) flag",
+     "kind": "bool",
+     "common": [
+      [
+       true,
+       1562
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "CreateNormalHeal": {
+   "index": 19,
+   "label": "CreateNormalHeal",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "HealHitEffect",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CreateOneWayWallGimmick": {
+   "index": 45,
+   "label": "CreateOneWayWallGimmick",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "HAlign",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CreateOnlyHitAttack": {
+   "index": 18,
+   "label": "CreateOnlyHitAttack",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "AttackHitEffect",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CreatePointsDistanceDetector": {
+   "index": 89,
+   "label": "CreatePointsDistanceDetector",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CreateRatioAttack": {
+   "index": 16,
+   "label": "Damage (% of HP)",
+   "what": "Damage as a share of the target's HP (inferred).",
+   "skills": 17,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       -17,
+       16
+      ],
+      [
+       0,
+       10
+      ],
+      [
+       4,
+       4
+      ],
+      [
+       2,
+       2
+      ],
+      [
+       6,
+       2
+      ],
+      [
+       1,
+       2
+      ],
+      [
+       3,
+       1
+      ],
+      [
+       7,
+       1
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       2,
+       41
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 0.1,
+         "max": 0.1
+        }
+       ],
+       17
+      ],
+      [
+       [
+        {
+         "min": 0.2,
+         "max": 0.2
+        }
+       ],
+       7
+      ],
+      [
+       [
+        {
+         "min": 0.05,
+         "max": 0.05
+        }
+       ],
+       5
+      ],
+      [
+       [
+        {
+         "min": 0.15,
+         "max": 0.15
+        }
+       ],
+       4
+      ],
+      [
+       [
+        {
+         "min": 0.01,
+         "max": 0.01
+        }
+       ],
+       2
+      ],
+      [
+       [
+        {
+         "min": 0.3,
+         "max": 0.3
+        }
+       ],
+       2
+      ],
+      [
+       [
+        {
+         "alv_min": 0.1,
+         "alv_max": 0.1
+        }
+       ],
+       2
+      ],
+      [
+       [
+        {
+         "min": 0.03,
+         "max": 0.03
+        }
+       ],
+       2
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "CreateRatioHeal": {
+   "index": 20,
+   "label": "Heal",
+   "what": "Heal a share of max HP.",
+   "skills": 73,
+   "params": [
+    {
+     "type": "int",
+     "label": "target",
+     "kind": "subject",
+     "common": [
+      [
+       -33,
+       90
+      ],
+      [
+       1,
+       76
+      ],
+      [
+       2,
+       58
+      ],
+      [
+       0,
+       36
+      ],
+      [
+       -17,
+       23
+      ],
+      [
+       3,
+       14
+      ],
+      [
+       4,
+       12
+      ],
+      [
+       8,
+       6
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "(inferred) kind",
+     "kind": "number",
+     "common": [
+      [
+       2,
+       347
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "ratio (0.05 = 5 %)",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 0.06,
+         "max": 0.06
+        }
+       ],
+       77
+      ],
+      [
+       [
+        {
+         "min": 0.08,
+         "max": 0.1
+        }
+       ],
+       73
+      ],
+      [
+       [
+        {
+         "min": 0.04,
+         "max": 0.04
+        }
+       ],
+       41
+      ],
+      [
+       [
+        {
+         "min": 0.048,
+         "max": 0.048
+        }
+       ],
+       39
+      ],
+      [
+       [
+        {
+         "min": 0.05,
+         "max": 0.06
+        }
+       ],
+       32
+      ],
+      [
+       [
+        {
+         "min": 0.056,
+         "max": 0.08
+        }
+       ],
+       22
+      ],
+      [
+       [
+        {
+         "min": 0.055999999999999994,
+         "max": 0.08
+        }
+       ],
+       15
+      ],
+      [
+       [
+        {
+         "min": 0.06,
+         "max": 0.08
+        }
+       ],
+       9
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "(inferred) list",
+     "kind": "list",
+     "common": [
+      [
+       [
+        2
+       ],
+       72
+      ],
+      [
+       [
+        5
+       ],
+       70
+      ],
+      [
+       [
+        4
+       ],
+       50
+      ],
+      [
+       [
+        1
+       ],
+       48
+      ],
+      [
+       [
+        3
+       ],
+       40
+      ],
+      [
+       [],
+       30
+      ],
+      [
+       [
+        6
+       ],
+       22
+      ],
+      [
+       [
+        4097
+       ],
+       8
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "(inferred) factor",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 0.5,
+         "max": 0.5
+        }
+       ],
+       317
+      ],
+      [
+       [
+        {
+         "min": 0,
+         "max": 0
+        }
+       ],
+       28
+      ],
+      [
+       [
+        {
+         "min": 1,
+         "max": 1
+        }
+       ],
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "HealHitEffect",
+     "label": "marker shown",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "GenericHealHitEffect"
+       ],
+       300
+      ],
+      [
+       [
+        "None"
+       ],
+       22
+      ],
+      [
+       [
+        "SpecifyHealEffectDirectly",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/bishop_girl/heal_bishop_girl"
+        ]
+       ],
+       8
+      ],
+      [
+       [
+        "SpecifyHealEffectDirectly",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/fox_oracle_xm19/fox_oracle_xm19_heal"
+        ]
+       ],
+       6
+      ],
+      [
+       [
+        "SpecifyHealEffectDirectly",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/wind_oracle/heal_wind_oracle"
+        ]
+       ],
+       6
+      ],
+      [
+       [
+        "SpecifyHealEffectDirectly",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/lightbullet_wiz/lightbullet_wiz_heal"
+        ]
+       ],
+       3
+      ],
+      [
+       [
+        "SpecifyHealEffectDirectly",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/kokkoro/kokkoro_hit"
+        ]
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "GenericHealHitEffect": {
+       "n": 300,
+       "example": [
+        "GenericHealHitEffect"
+       ]
+      },
+      "SpecifyHealEffectDirectly": {
+       "n": 25,
+       "example": [
+        "SpecifyHealEffectDirectly",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/bishop_girl/heal_bishop_girl"
+        ]
+       ]
+      },
+      "None": {
+       "n": 22,
+       "example": [
+        "None"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "CreateReferencePoint": {
+   "index": 32,
+   "label": "Reference point",
+   "what": "A point (at a subject, with an offset) areas and effects can attach to or aim at.",
+   "skills": 163,
+   "params": [
+    {
+     "type": "int",
+     "label": "at",
+     "kind": "subject",
+     "common": [
+      [
+       -18,
+       260
+      ],
+      [
+       0,
+       79
+      ],
+      [
+       1,
+       33
+      ],
+      [
+       2,
+       12
+      ],
+      [
+       3,
+       11
+      ],
+      [
+       -1,
+       7
+      ],
+      [
+       -17,
+       6
+      ],
+      [
+       15,
+       4
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "CoordSysSource",
+     "label": "direction",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "AB"
+       ],
+       336
+      ],
+      [
+       [
+        "GH",
+        0
+       ],
+       45
+      ],
+      [
+       [
+        "CD"
+       ],
+       26
+      ],
+      [
+       [
+        "EF"
+       ],
+       23
+      ],
+      [
+       [
+        "GH",
+        1
+       ],
+       6
+      ],
+      [
+       [
+        "GH",
+        3
+       ],
+       4
+      ],
+      [
+       [
+        "GH",
+        4
+       ],
+       4
+      ],
+      [
+       [
+        "GH",
+        16
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "AB": {
+       "n": 336,
+       "example": [
+        "AB"
+       ]
+      },
+      "GH": {
+       "n": 61,
+       "example": [
+        "GH",
+        0
+       ]
+      },
+      "CD": {
+       "n": 26,
+       "example": [
+        "CD"
+       ]
+      },
+      "EF": {
+       "n": 23,
+       "example": [
+        "EF"
+       ]
+      }
+     }
+    },
+    {
+     "type": "int",
+     "label": "offset X",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       417
+      ],
+      [
+       40,
+       8
+      ],
+      [
+       5,
+       5
+      ],
+      [
+       -60,
+       4
+      ],
+      [
+       -40,
+       4
+      ],
+      [
+       60,
+       4
+      ],
+      [
+       1,
+       4
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "offset Y",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       265
+      ],
+      [
+       -300,
+       20
+      ],
+      [
+       -250,
+       16
+      ],
+      [
+       -100,
+       14
+      ],
+      [
+       -30,
+       12
+      ],
+      [
+       -50,
+       12
+      ],
+      [
+       -150,
+       8
+      ],
+      [
+       90,
+       8
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "rotation",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       442
+      ],
+      [
+       0.6981317007977318,
+       2
+      ],
+      [
+       -0.6981317007977318,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "(inferred) follows position",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       375
+      ],
+      [
+       true,
+       71
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "(inferred) follows direction",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       434
+      ],
+      [
+       true,
+       12
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Formation",
+     "label": "(inferred) formation",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "Single"
+       ],
+       446
+      ]
+     ],
+     "options": {
+      "Single": {
+       "n": 446,
+       "example": [
+        "Single"
+       ]
+      }
+     }
+    },
+    {
+     "type": "int",
+     "label": "(inferred) number",
+     "kind": "number",
+     "common": [
+      [
+       60,
+       69
+      ],
+      [
+       100,
+       47
+      ],
+      [
+       150,
+       42
+      ],
+      [
+       90,
+       28
+      ],
+      [
+       120,
+       27
+      ],
+      [
+       180,
+       26
+      ],
+      [
+       80,
+       24
+      ],
+      [
+       1,
+       23
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "id of the point",
+     "kind": "binds",
+     "common": [
+      [
+       0,
+       155
+      ],
+      [
+       1,
+       102
+      ],
+      [
+       2,
+       31
+      ],
+      [
+       4,
+       30
+      ],
+      [
+       3,
+       22
+      ],
+      [
+       5,
+       15
+      ],
+      [
+       6,
+       10
+      ],
+      [
+       9,
+       9
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "with the point",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CreateReferencePointAtSpecifiedPosition": {
+   "index": 33,
+   "label": "CreateReferencePointAtSpecifiedPosition",
+   "what": "",
+   "skills": 4,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       -1,
+       6
+      ],
+      [
+       -18,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       -18,
+       4
+      ],
+      [
+       -1,
+       2
+      ],
+      [
+       4,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       120,
+       2
+      ],
+      [
+       60,
+       2
+      ],
+      [
+       230,
+       2
+      ],
+      [
+       85,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       6
+      ],
+      [
+       5,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CreateShield": {
+   "index": 52,
+   "label": "CreateShield",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "Number",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ShieldLifetime",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ShieldMovementKind",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ShieldDisplayKind",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CreateShockWaveAttack": {
+   "index": 34,
+   "label": "CreateShockWaveAttack",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "CoordSysSource",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ShockWaveShape",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Effect",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "LayerZDepth",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "HitAreaGuardMode",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CreateSummonsMultiball": {
+   "index": 36,
+   "label": "CreateSummonsMultiball",
+   "what": "",
+   "skills": 23,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       36
+      ],
+      [
+       2,
+       11
+      ],
+      [
+       3,
+       4
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       1130011,
+       2
+      ],
+      [
+       1110021,
+       2
+      ],
+      [
+       2630031,
+       1
+      ],
+      [
+       2630032,
+       1
+      ],
+      [
+       1611951,
+       1
+      ],
+      [
+       1611952,
+       1
+      ],
+      [
+       1111711,
+       1
+      ],
+      [
+       1111712,
+       1
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 9000,
+         "max": 9000
+        }
+       ],
+       18
+      ],
+      [
+       [
+        {
+         "min": 1800,
+         "max": 1800
+        }
+       ],
+       17
+      ],
+      [
+       [
+        {
+         "min": 1500,
+         "max": 1500
+        }
+       ],
+       8
+      ],
+      [
+       [
+        {
+         "min": 900,
+         "max": 900
+        }
+       ],
+       3
+      ],
+      [
+       [
+        {
+         "min": 480,
+         "max": 480
+        }
+       ],
+       2
+      ],
+      [
+       [
+        {
+         "min": 1200,
+         "max": 1200
+        }
+       ],
+       2
+      ],
+      [
+       [
+        {
+         "min": 1900,
+         "max": 2100
+        }
+       ],
+       1
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "MultiballReadyEffect",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "E1",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_general/multiball/multiball_general_effect/multiball_general_effect_ready"
+        ]
+       ],
+       7
+      ],
+      [
+       [
+        "E2",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/unyielding_adventurer/unyielding_adventurer_blank"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/unyielding_adventurer/unyielding_adventurer_effect_ready"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/unyielding_adventurer/unyielding_adventurer_effect_ready"
+        ]
+       ],
+       3
+      ],
+      [
+       [
+        "E2",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/pirates_girl/multiball_pirates_girl_effect_ready_generation"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/pirates_girl/multiball_pirates_girl_effect_ready_left"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/pirates_girl/multiball_pirates_girl_effect_ready_right"
+        ]
+       ],
+       3
+      ],
+      [
+       [
+        "E2",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/yamada_tae/multiball_yamada_tae_effect_ready_generation"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/yamada_tae/multiball_yamada_tae_effect_ready_left"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/yamada_tae/multiball_yamada_tae_effect_ready_right"
+        ]
+       ],
+       2
+      ],
+      [
+       [
+        "E2",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/gold_ship/gold_ship_multiball_ready_generation"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/gold_ship/gold_ship_multiball_ready_left"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/gold_ship/gold_ship_multiball_ready_right"
+        ]
+       ],
+       2
+      ],
+      [
+       [
+        "E2",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/blindfold_agent/blindfold_agent_skill_multiball_ready_generation"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/blindfold_agent/blindfold_agent_skill_multiball_ready"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/blindfold_agent/blindfold_agent_skill_multiball_ready"
+        ]
+       ],
+       2
+      ],
+      [
+       [
+        "E2",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/summoner_little_smr23/summoner_little_smr23_multiball_ready_generation"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/summoner_little_smr23/summoner_little_smr23_multiball_ready"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/summoner_little_smr23/summoner_little_smr23_multiball_ready"
+        ]
+       ],
+       2
+      ],
+      [
+       [
+        "E2",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/priest_prince_playable/priest_prince_playable_multiball_ready_generation"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/priest_prince_playable/priest_prince_playable_multiball_ready"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/priest_prince_playable/priest_prince_playable_multiball_ready"
+        ]
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "E2": {
+       "n": 40,
+       "example": [
+        "E2",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/unyielding_adventurer/unyielding_adventurer_blank"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/unyielding_adventurer/unyielding_adventurer_effect_ready"
+        ],
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_unique/unyielding_adventurer/unyielding_adventurer_effect_ready"
+        ]
+       ]
+      },
+      "E1": {
+       "n": 11,
+       "example": [
+        "E1",
+        [
+         "SpecifyEffectDirectly",
+         "battle/effect/skill_general/multiball/multiball_general_effect/multiball_general_effect_ready"
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "type": "Effect",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_general/multiball/multiball_general_effect/multiball_general_effect_appear"
+       ],
+       7
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/shadow_redhood/shadow_redhood_multiball_appear"
+       ],
+       4
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/compliment_oiran/compliment_oiran_multiball_appear"
+       ],
+       4
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/onmyoji_boy_wt21/onmyoji_boy_wt21_noneffect"
+       ],
+       4
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/unyielding_adventurer/unyielding_adventurer_appear"
+       ],
+       3
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/pirates_girl/multiball_pirates_girl_effect_appear"
+       ],
+       3
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/yamada_tae/multiball_yamada_tae_effect_appear"
+       ],
+       2
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/gold_ship/gold_ship_multiball_appear"
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "SpecifyEffectDirectly": {
+       "n": 51,
+       "example": [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_general/multiball/multiball_general_effect/multiball_general_effect_appear"
+       ]
+      }
+     }
+    },
+    {
+     "type": "Effect",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_general/multiball/multiball_general_effect/multiball_general_effect_disappear"
+       ],
+       7
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/unyielding_adventurer/unyielding_adventurer_disappear"
+       ],
+       3
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/pirates_girl/multiball_pirates_girl_effect_disappear"
+       ],
+       3
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/yamada_tae/multiball_yamada_tae_effect_disappear"
+       ],
+       2
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/gold_ship/gold_ship_multiball_disappear"
+       ],
+       2
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/blindfold_agent/blindfold_agent_skill_multiball_disappear"
+       ],
+       2
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/summoner_little_smr23/summoner_little_smr23_multiball_disappear"
+       ],
+       2
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/priest_prince_playable/priest_prince_playable_multiball_disappear"
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "SpecifyEffectDirectly": {
+       "n": 51,
+       "example": [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_general/multiball/multiball_general_effect/multiball_general_effect_disappear"
+       ]
+      }
+     }
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       47
+      ],
+      [
+       5,
+       2
+      ],
+      [
+       65,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       47
+      ],
+      [
+       true,
+       4
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [
+      [
+       "*",
+       51
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       25
+      ],
+      [
+       4,
+       12
+      ],
+      [
+       3,
+       6
+      ],
+      [
+       2,
+       4
+      ],
+      [
+       8,
+       4
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       25
+      ],
+      [
+       5,
+       12
+      ],
+      [
+       4,
+       6
+      ],
+      [
+       3,
+       4
+      ],
+      [
+       9,
+       4
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "none",
+     "common": [
+      [
+       null,
+       49
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Object",
+     "label": "",
+     "kind": "none",
+     "common": [
+      [
+       null,
+       49
+      ],
+      [
+       1,
+       2
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "CreateTargetAttack": {
+   "index": 44,
+   "label": "CreateTargetAttack",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "TargetAttackLifetime",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CreateTornado": {
+   "index": 43,
+   "label": "CreateTornado",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CreateWallDistanceDetector": {
+   "index": 88,
+   "label": "CreateWallDistanceDetector",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CreateWindAttack": {
+   "index": 40,
+   "label": "CreateWindAttack",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "DecreaseCoffinCount": {
+   "index": 37,
+   "label": "DecreaseCoffinCount",
+   "what": "",
+   "skills": 6,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       3,
+       4
+      ],
+      [
+       5,
+       2
+      ],
+      [
+       4,
+       2
+      ],
+      [
+       2,
+       2
+      ],
+      [
+       1,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       8,
+       3
+      ],
+      [
+       4,
+       2
+      ],
+      [
+       3,
+       2
+      ],
+      [
+       12,
+       2
+      ],
+      [
+       1,
+       1
+      ],
+      [
+       5,
+       1
+      ],
+      [
+       9,
+       1
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "DecreaseCoffinCountHitEffect",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "Generic"
+       ],
+       12
+      ]
+     ],
+     "options": {
+      "Generic": {
+       "n": 12,
+       "example": [
+        "Generic"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "DeleteCondition": {
+   "index": 22,
+   "label": "Remove buffs",
+   "what": "Remove buffs/debuffs from a target (inferred).",
+   "skills": 66,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       42
+      ],
+      [
+       2,
+       22
+      ],
+      [
+       3,
+       20
+      ],
+      [
+       5,
+       16
+      ],
+      [
+       4,
+       15
+      ],
+      [
+       -33,
+       14
+      ],
+      [
+       6,
+       11
+      ],
+      [
+       1,
+       8
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "DeletionalConditionKind",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "DCAll",
+        3
+       ],
+       96
+      ],
+      [
+       [
+        "DCAll",
+        2
+       ],
+       72
+      ]
+     ],
+     "options": {
+      "DCAll": {
+       "n": 168,
+       "example": [
+        "DCAll",
+        3
+       ]
+      }
+     }
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       147
+      ],
+      [
+       2,
+       19
+      ],
+      [
+       999,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       166
+      ],
+      [
+       2,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [
+      [
+       "",
+       168
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "DeleteConditionSyncMode",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "Default"
+       ],
+       168
+      ]
+     ],
+     "options": {
+      "Default": {
+       "n": 168,
+       "example": [
+        "Default"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "EliminateAlterEgo": {
+   "index": 51,
+   "label": "EliminateAlterEgo",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "EliminateAlterEgoTarget",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "EliminateFunnel": {
+   "index": 48,
+   "label": "EliminateFunnel",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "SpawnFunnelKind",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "EraseHitArea": {
+   "index": 27,
+   "label": "EraseHitArea",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ExtendCondition": {
+   "index": 23,
+   "label": "ExtendCondition",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "DeletionalConditionKind",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "FadeOutBgm": {
+   "index": 111,
+   "label": "FadeOutBgm",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "Number",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "FindAllSubjects": {
+   "index": 3,
+   "label": "Find a group",
+   "what": "Pick a group (the party, all enemies...) and run a block with it.",
+   "skills": 288,
+   "params": [
+    {
+     "type": "int",
+     "label": "id of the group",
+     "kind": "binds",
+     "common": [
+      [
+       0,
+       295
+      ],
+      [
+       1,
+       177
+      ],
+      [
+       3,
+       128
+      ],
+      [
+       2,
+       115
+      ],
+      [
+       4,
+       92
+      ],
+      [
+       5,
+       54
+      ],
+      [
+       6,
+       42
+      ],
+      [
+       7,
+       40
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "which group",
+     "kind": "number",
+     "common": [
+      [
+       33,
+       414
+      ],
+      [
+       113,
+       232
+      ],
+      [
+       145,
+       170
+      ],
+      [
+       34,
+       86
+      ],
+      [
+       97,
+       67
+      ],
+      [
+       35,
+       27
+      ],
+      [
+       49,
+       26
+      ],
+      [
+       82,
+       14
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "(inferred) filter",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       744
+      ],
+      [
+       [
+        2
+       ],
+       64
+      ],
+      [
+       [
+        4
+       ],
+       60
+      ],
+      [
+       [
+        5
+       ],
+       56
+      ],
+      [
+       [
+        6
+       ],
+       51
+      ],
+      [
+       [
+        3
+       ],
+       45
+      ],
+      [
+       [
+        1
+       ],
+       43
+      ],
+      [
+       [
+        1,
+        2,
+        4,
+        5,
+        6,
+        7
+       ],
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "(inferred) filter",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       1069
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "(inferred) filter",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       1069
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "(inferred) filter",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       1065
+      ],
+      [
+       [
+        12290
+       ],
+       4
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "(inferred) filter",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       1069
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "IfTargetNotFound",
+     "label": "if nobody is found",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "DoNothing"
+       ],
+       1067
+      ],
+      [
+       [
+        "CreateImaginaryTarget",
+        -192
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "DoNothing": {
+       "n": 1067,
+       "example": [
+        "DoNothing"
+       ]
+      },
+      "CreateImaginaryTarget": {
+       "n": 2,
+       "example": [
+        "CreateImaginaryTarget",
+        -192
+       ]
+      }
+     }
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "for the group",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "FindMultiballSubjects": {
+   "index": 100,
+   "label": "FindMultiballSubjects",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "FindNearSubjects": {
+   "index": 4,
+   "label": "Find the nearest",
+   "what": "Pick the nearest subjects and run a block with them.",
+   "skills": 132,
+   "params": [
+    {
+     "type": "int",
+     "label": "from",
+     "kind": "subject",
+     "common": [
+      [
+       -18,
+       353
+      ],
+      [
+       -17,
+       10
+      ],
+      [
+       4,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "(inferred) how many",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       361
+      ],
+      [
+       100,
+       4
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "(inferred) kind",
+     "kind": "number",
+     "common": [
+      [
+       49,
+       351
+      ],
+      [
+       51,
+       10
+      ],
+      [
+       50,
+       2
+      ],
+      [
+       52,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "IfTargetNotFound",
+     "label": "if nobody is found",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "CreateImaginaryTarget",
+        -100000
+       ],
+       147
+      ],
+      [
+       [
+        "CreateImaginaryTarget",
+        -1000000
+       ],
+       121
+      ],
+      [
+       [
+        "DoNothing"
+       ],
+       58
+      ],
+      [
+       [
+        "CreateImaginaryTarget",
+        -192
+       ],
+       26
+      ],
+      [
+       [
+        "CreateImaginaryTarget",
+        -1
+       ],
+       9
+      ],
+      [
+       [
+        "CreateImaginaryTarget",
+        -100
+       ],
+       2
+      ],
+      [
+       [
+        "CreateImaginaryTarget",
+        -10000
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "CreateImaginaryTarget": {
+       "n": 307,
+       "example": [
+        "CreateImaginaryTarget",
+        -100000
+       ]
+      },
+      "DoNothing": {
+       "n": 58,
+       "example": [
+        "DoNothing"
+       ]
+      }
+     }
+    },
+    {
+     "type": "int",
+     "label": "id of the ones found",
+     "kind": "binds",
+     "common": [
+      [
+       0,
+       225
+      ],
+      [
+       1,
+       34
+      ],
+      [
+       4,
+       15
+      ],
+      [
+       3,
+       14
+      ],
+      [
+       10,
+       6
+      ],
+      [
+       5,
+       6
+      ],
+      [
+       12,
+       5
+      ],
+      [
+       8,
+       5
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "for them",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "HideCharacter": {
+   "index": 39,
+   "label": "Hide the unit",
+   "what": "Hide the unit's sprite for a while.",
+   "skills": 51,
+   "params": [
+    {
+     "type": "int",
+     "label": "unit",
+     "kind": "subject",
+     "common": [
+      [
+       -17,
+       111
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "frames",
+     "kind": "number",
+     "common": [
+      [
+       90,
+       10
+      ],
+      [
+       120,
+       9
+      ],
+      [
+       65,
+       7
+      ],
+      [
+       60,
+       5
+      ],
+      [
+       105,
+       5
+      ],
+      [
+       95,
+       4
+      ],
+      [
+       140,
+       4
+      ],
+      [
+       125,
+       3
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "HideEffect": {
+   "index": 11,
+   "label": "Hide an effect",
+   "what": "Stop an effect early, by its label.",
+   "skills": 25,
+   "params": [
+    {
+     "type": "String",
+     "label": "label",
+     "kind": "string",
+     "common": [
+      [
+       "突進演出",
+       34
+      ],
+      [
+       "突進ドット",
+       10
+      ],
+      [
+       "突進",
+       4
+      ],
+      [
+       "オーラ演出",
+       4
+      ],
+      [
+       "ダッシュ",
+       4
+      ],
+      [
+       "攻撃演出",
+       2
+      ],
+      [
+       "追従する剣",
+       2
+      ],
+      [
+       "突進エフェクト",
+       2
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "HideEffectFromOwner": {
+   "index": 12,
+   "label": "HideEffectFromOwner",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "IfThisCharacterIsBoss": {
+   "index": 61,
+   "label": "IfThisCharacterIsBoss",
+   "what": "",
+   "skills": 5,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       4,
+       4
+      ],
+      [
+       2,
+       4
+      ],
+      [
+       0,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "IfThisCharacterIsLeader": {
+   "index": 64,
+   "label": "IfThisCharacterIsLeader",
+   "what": "",
+   "skills": 1,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       -17,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "IfThisCharacterIsSpecificBoss": {
+   "index": 62,
+   "label": "IfThisCharacterIsSpecificBoss",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "IfThisCharacterIsSpecificFunnel": {
+   "index": 63,
+   "label": "IfThisCharacterIsSpecificFunnel",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "SpawnFunnelKind",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "MoveBall": {
+   "index": 13,
+   "label": "Move the ball",
+   "what": "Move the unit's ball (dashes, charges).",
+   "skills": 76,
+   "params": [
+    {
+     "type": "int",
+     "label": "ball",
+     "kind": "subject",
+     "common": [
+      [
+       -18,
+       206
+      ],
+      [
+       4,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "CoordSysSource",
+     "label": "direction",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "GH",
+        0
+       ],
+       83
+      ],
+      [
+       [
+        "AB"
+       ],
+       65
+      ],
+      [
+       [
+        "GH",
+        1
+       ],
+       25
+      ],
+      [
+       [
+        "EF"
+       ],
+       17
+      ],
+      [
+       [
+        "GH",
+        4
+       ],
+       6
+      ],
+      [
+       [
+        "GH",
+        2
+       ],
+       4
+      ],
+      [
+       [
+        "GH",
+        3
+       ],
+       2
+      ],
+      [
+       [
+        "GH",
+        6
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "GH": {
+       "n": 126,
+       "example": [
+        "GH",
+        0
+       ]
+      },
+      "AB": {
+       "n": 65,
+       "example": [
+        "AB"
+       ]
+      },
+      "EF": {
+       "n": 17,
+       "example": [
+        "EF"
+       ]
+      }
+     }
+    },
+    {
+     "type": "Number",
+     "label": "angle (radians)",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       188
+      ],
+      [
+       3.141592653589793,
+       8
+      ],
+      [
+       2.356194490192345,
+       2
+      ],
+      [
+       3.9269908169872414,
+       2
+      ],
+      [
+       5.497787143782138,
+       2
+      ],
+      [
+       0.7853981633974483,
+       2
+      ],
+      [
+       1.5707963267948966,
+       2
+      ],
+      [
+       4.71238898038469,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "frames",
+     "kind": "number",
+     "common": [
+      [
+       2,
+       64
+      ],
+      [
+       1,
+       48
+      ],
+      [
+       10,
+       24
+      ],
+      [
+       50,
+       13
+      ],
+      [
+       60,
+       10
+      ],
+      [
+       120,
+       10
+      ],
+      [
+       40,
+       7
+      ],
+      [
+       30,
+       6
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "speed",
+     "kind": "number",
+     "common": [
+      [
+       10,
+       32
+      ],
+      [
+       30,
+       28
+      ],
+      [
+       15,
+       23
+      ],
+      [
+       40,
+       16
+      ],
+      [
+       20,
+       14
+      ],
+      [
+       8,
+       12
+      ],
+      [
+       50,
+       11
+      ],
+      [
+       6,
+       10
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "EndingSpeedKind",
+     "label": "afterwards",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "KeepGoing"
+       ],
+       162
+      ],
+      [
+       [
+        "Stop"
+       ],
+       43
+      ],
+      [
+       [
+        "RestoreToSpeedBeforeCommandExecution"
+       ],
+       3
+      ]
+     ],
+     "options": {
+      "KeepGoing": {
+       "n": 162,
+       "example": [
+        "KeepGoing"
+       ]
+      },
+      "Stop": {
+       "n": 43,
+       "example": [
+        "Stop"
+       ]
+      },
+      "RestoreToSpeedBeforeCommandExecution": {
+       "n": 3,
+       "example": [
+        "RestoreToSpeedBeforeCommandExecution"
+       ]
+      }
+     }
+    },
+    {
+     "type": "Boolean",
+     "label": "(inferred) flag",
+     "kind": "bool",
+     "common": [
+      [
+       true,
+       182
+      ],
+      [
+       false,
+       26
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "MoveHitArea": {
+   "index": 25,
+   "label": "Move an area",
+   "what": "Move an attack area (a slash that travels).",
+   "skills": 90,
+   "params": [
+    {
+     "type": "int",
+     "label": "area",
+     "kind": "subject",
+     "common": [
+      [
+       0,
+       108
+      ],
+      [
+       1,
+       66
+      ],
+      [
+       6,
+       31
+      ],
+      [
+       2,
+       31
+      ],
+      [
+       3,
+       30
+      ],
+      [
+       4,
+       25
+      ],
+      [
+       9,
+       21
+      ],
+      [
+       7,
+       19
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "CoordSysSource",
+     "label": "direction",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "CD"
+       ],
+       249
+      ],
+      [
+       [
+        "AB"
+       ],
+       243
+      ],
+      [
+       [
+        "GH",
+        0
+       ],
+       7
+      ],
+      [
+       [
+        "GH",
+        1
+       ],
+       6
+      ],
+      [
+       [
+        "GH",
+        6
+       ],
+       4
+      ],
+      [
+       [
+        "GH",
+        11
+       ],
+       4
+      ],
+      [
+       [
+        "GH",
+        -18
+       ],
+       2
+      ],
+      [
+       [
+        "EF"
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "CD": {
+       "n": 249,
+       "example": [
+        "CD"
+       ]
+      },
+      "AB": {
+       "n": 243,
+       "example": [
+        "AB"
+       ]
+      },
+      "GH": {
+       "n": 51,
+       "example": [
+        "GH",
+        0
+       ]
+      },
+      "EF": {
+       "n": 2,
+       "example": [
+        "EF"
+       ]
+      }
+     }
+    },
+    {
+     "type": "Number",
+     "label": "angle",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       506
+      ],
+      [
+       -1.5707963267948966,
+       10
+      ],
+      [
+       1.7453292519943295,
+       9
+      ],
+      [
+       4.537856055185257,
+       9
+      ],
+      [
+       1.5707963267948966,
+       6
+      ],
+      [
+       3.141592653589793,
+       5
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "speed",
+     "kind": "number",
+     "common": [
+      [
+       30,
+       149
+      ],
+      [
+       40,
+       60
+      ],
+      [
+       0,
+       54
+      ],
+      [
+       20,
+       52
+      ],
+      [
+       45,
+       43
+      ],
+      [
+       80,
+       32
+      ],
+      [
+       60,
+       26
+      ],
+      [
+       55,
+       18
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "TweenSource",
+     "label": "(inferred) option",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "None"
+       ],
+       525
+      ],
+      [
+       [
+        "Some",
+        30,
+        [
+         "CubicIn"
+        ]
+       ],
+       9
+      ],
+      [
+       [
+        "Some",
+        20,
+        [
+         "CubicOut"
+        ]
+       ],
+       3
+      ],
+      [
+       [
+        "Some",
+        100,
+        [
+         "QuadOut"
+        ]
+       ],
+       2
+      ],
+      [
+       [
+        "Some",
+        10,
+        [
+         "QuadIn"
+        ]
+       ],
+       2
+      ],
+      [
+       [
+        "Some",
+        10,
+        [
+         "CubicOut"
+        ]
+       ],
+       2
+      ],
+      [
+       [
+        "Some",
+        15,
+        [
+         "CubicIn"
+        ]
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "None": {
+       "n": 525,
+       "example": [
+        "None"
+       ]
+      },
+      "Some": {
+       "n": 20,
+       "example": [
+        "Some",
+        30,
+        [
+         "CubicIn"
+        ]
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "MultiballNumberVariable": {
+   "index": 107,
+   "label": "MultiballNumberVariable",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "NotifyPowerflipEnd": {
+   "index": 108,
+   "label": "NotifyPowerflipEnd",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ProbabilityWeight": {
+   "index": 106,
+   "label": "ProbabilityWeight",
+   "what": "",
+   "skills": 1,
+   "params": [
+    {
+     "type": "Number",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       5,
+       2
+      ],
+      [
+       95,
+       2
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "RecoveryHitCountCheck": {
+   "index": 90,
+   "label": "RecoveryHitCountCheck",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "HitCountCheckTargetKind",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "RemoveCollider": {
+   "index": 96,
+   "label": "RemoveCollider",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "RemoveColliderFromOwner": {
+   "index": 97,
+   "label": "RemoveColliderFromOwner",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "RemoveEvent": {
+   "index": 1,
+   "label": "RemoveEvent",
+   "what": "",
+   "skills": 20,
+   "params": [
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [
+      [
+       "突進イベント",
+       30
+      ],
+      [
+       "衝突イベント",
+       6
+      ],
+      [
+       "衝突しないイベント",
+       4
+      ],
+      [
+       "停止後の接触判定",
+       4
+      ],
+      [
+       "突進",
+       4
+      ],
+      [
+       "ミサイルキャンセル",
+       2
+      ],
+      [
+       "ミサイルイベント",
+       2
+      ],
+      [
+       "残像演出１",
+       2
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "RemoveEventFromOwner": {
+   "index": 2,
+   "label": "RemoveEventFromOwner",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "RemoveMultiball": {
+   "index": 83,
+   "label": "RemoveMultiball",
+   "what": "",
+   "skills": 2,
+   "params": [
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [
+      [
+       true,
+       4
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "list",
+     "common": [
+      [
+       [
+        1111711,
+        1111712
+       ],
+       2
+      ],
+      [
+       [
+        1110811,
+        1110812
+       ],
+       2
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "RemoveOneWayWallGimmick": {
+   "index": 46,
+   "label": "RemoveOneWayWallGimmick",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "Revive": {
+   "index": 38,
+   "label": "Revive",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "DecreaseCoffinCountHitEffect",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "RotateHitArea": {
+   "index": 26,
+   "label": "RotateHitArea",
+   "what": "",
+   "skills": 1,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       0.09599310885968812,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "TweenSource",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "None"
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "None": {
+       "n": 2,
+       "example": [
+        "None"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "SetHitAreaSomeHitsWithAnyTargetHandler": {
+   "index": 28,
+   "label": "SetHitAreaSomeHitsWithAnyTargetHandler",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "SetHitAreaSomeHitsWithSpecificTargetHandler": {
+   "index": 29,
+   "label": "SetHitAreaSomeHitsWithSpecificTargetHandler",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "SetHitAreaTerminateHandler": {
+   "index": 30,
+   "label": "SetHitAreaTerminateHandler",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "SetPowerFilpSuppress": {
+   "index": 75,
+   "label": "SetPowerFilpSuppress",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "ShakeCamera": {
+   "index": 5,
+   "label": "Camera shake",
+   "what": "Camera shake.",
+   "skills": 345,
+   "params": [
+    {
+     "type": "int",
+     "label": "size (1 small, 2 medium, 3 large)",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       723
+      ],
+      [
+       2,
+       416
+      ],
+      [
+       3,
+       162
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "ShowEffect": {
+   "index": 10,
+   "label": "Effect",
+   "what": "Show an effect.",
+   "skills": 494,
+   "params": [
+    {
+     "type": "String",
+     "label": "label",
+     "kind": "string",
+     "common": [
+      [
+       "攻撃演出",
+       185
+      ],
+      [
+       "全体演出",
+       160
+      ],
+      [
+       "ヒット演出",
+       144
+      ],
+      [
+       "弾演出",
+       138
+      ],
+      [
+       "斬撃演出",
+       121
+      ],
+      [
+       "チャージ演出",
+       95
+      ],
+      [
+       "オーラ演出",
+       54
+      ],
+      [
+       "発射演出",
+       50
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Effect",
+     "label": "effect",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/spry_sailor_hw21/spry_sailor_hw21_rippleL"
+       ],
+       50
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/spry_sailor_hw21/spry_sailor_hw21_rippleR"
+       ],
+       50
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/lightbullet_wiz/lightbullet_wiz_shot"
+       ],
+       39
+      ],
+      [
+       [
+        "ResolveByElement",
+        "battle/effect/skill_general/decoration/heavy_charge",
+        255
+       ],
+       34
+      ],
+      [
+       [
+        "ResolveByElement",
+        "battle/effect/skill_general/area/air_blast",
+        255
+       ],
+       33
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/wind_oracle_1anv/wind_oracle_1anv_shoot"
+       ],
+       32
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/wind_oracle_1anv/wind_oracle_1anv_shot"
+       ],
+       32
+      ],
+      [
+       [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/wind_oracle_1anv/wind_oracle_1anv_hit"
+       ],
+       32
+      ]
+     ],
+     "options": {
+      "SpecifyEffectDirectly": {
+       "n": 3215,
+       "example": [
+        "SpecifyEffectDirectly",
+        "battle/effect/skill_unique/spry_sailor_hw21/spry_sailor_hw21_rippleL"
+       ]
+      },
+      "ResolveByElement": {
+       "n": 425,
+       "example": [
+        "ResolveByElement",
+        "battle/effect/skill_general/decoration/heavy_charge",
+        255
+       ]
+      }
+     }
+    },
+    {
+     "type": "int",
+     "label": "attached to",
+     "kind": "subject",
+     "common": [
+      [
+       -18,
+       1225
+      ],
+      [
+       0,
+       489
+      ],
+      [
+       1,
+       395
+      ],
+      [
+       -1,
+       341
+      ],
+      [
+       2,
+       165
+      ],
+      [
+       -17,
+       135
+      ],
+      [
+       3,
+       126
+      ],
+      [
+       4,
+       112
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "LayerZDepth",
+     "label": "layer",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "ForesideOfCharacter"
+       ],
+       3093
+      ],
+      [
+       [
+        "BacksideOfCharacter"
+       ],
+       271
+      ],
+      [
+       [
+        "SuperForesideOfCharacter"
+       ],
+       220
+      ],
+      [
+       [
+        "NonPixelArt"
+       ],
+       50
+      ],
+      [
+       [
+        "SameAsCharacter"
+       ],
+       6
+      ]
+     ],
+     "options": {
+      "ForesideOfCharacter": {
+       "n": 3093,
+       "example": [
+        "ForesideOfCharacter"
+       ]
+      },
+      "BacksideOfCharacter": {
+       "n": 271,
+       "example": [
+        "BacksideOfCharacter"
+       ]
+      },
+      "SuperForesideOfCharacter": {
+       "n": 220,
+       "example": [
+        "SuperForesideOfCharacter"
+       ]
+      },
+      "NonPixelArt": {
+       "n": 50,
+       "example": [
+        "NonPixelArt"
+       ]
+      },
+      "SameAsCharacter": {
+       "n": 6,
+       "example": [
+        "SameAsCharacter"
+       ]
+      }
+     }
+    },
+    {
+     "type": "EffectLifetime",
+     "label": "how long it shows",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "PlayOnlyFirstSequence"
+       ],
+       2436
+      ],
+      [
+       [
+        "UntilTargetTerminates"
+       ],
+       507
+      ],
+      [
+       [
+        "SpecifyEffectLifetimeDirectly",
+        60
+       ],
+       116
+      ],
+      [
+       [
+        "SpecifyEffectLifetimeDirectly",
+        90
+       ],
+       47
+      ],
+      [
+       [
+        "SpecifyEffectLifetimeDirectly",
+        120
+       ],
+       45
+      ],
+      [
+       [
+        "SpecifyEffectLifetimeDirectly",
+        30
+       ],
+       33
+      ],
+      [
+       [
+        "SpecifyEffectLifetimeDirectly",
+        40
+       ],
+       32
+      ],
+      [
+       [
+        "SpecifyEffectLifetimeDirectly",
+        80
+       ],
+       24
+      ]
+     ],
+     "options": {
+      "PlayOnlyFirstSequence": {
+       "n": 2436,
+       "example": [
+        "PlayOnlyFirstSequence"
+       ]
+      },
+      "SpecifyEffectLifetimeDirectly": {
+       "n": 689,
+       "example": [
+        "SpecifyEffectLifetimeDirectly",
+        60
+       ]
+      },
+      "UntilTargetTerminates": {
+       "n": 507,
+       "example": [
+        "UntilTargetTerminates"
+       ]
+      },
+      "SpecifyEffectLifetimeSLv": {
+       "n": 8,
+       "example": [
+        "SpecifyEffectLifetimeSLv",
+        [
+         {
+          "min": 240,
+          "max": 240
+         }
+        ]
+       ]
+      }
+     }
+    },
+    {
+     "type": "CoordSysSource",
+     "label": "direction",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "AB"
+       ],
+       2622
+      ],
+      [
+       [
+        "CD"
+       ],
+       548
+      ],
+      [
+       [
+        "EF"
+       ],
+       216
+      ],
+      [
+       [
+        "GH",
+        0
+       ],
+       94
+      ],
+      [
+       [
+        "GH",
+        2
+       ],
+       52
+      ],
+      [
+       [
+        "GH",
+        -18
+       ],
+       24
+      ],
+      [
+       [
+        "GH",
+        1
+       ],
+       24
+      ],
+      [
+       [
+        "GH",
+        3
+       ],
+       8
+      ]
+     ],
+     "options": {
+      "AB": {
+       "n": 2622,
+       "example": [
+        "AB"
+       ]
+      },
+      "CD": {
+       "n": 548,
+       "example": [
+        "CD"
+       ]
+      },
+      "GH": {
+       "n": 254,
+       "example": [
+        "GH",
+        0
+       ]
+      },
+      "EF": {
+       "n": 216,
+       "example": [
+        "EF"
+       ]
+      }
+     }
+    },
+    {
+     "type": "int",
+     "label": "offset X",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       3550
+      ],
+      [
+       100,
+       23
+      ],
+      [
+       -100,
+       23
+      ],
+      [
+       40,
+       4
+      ],
+      [
+       -40,
+       4
+      ],
+      [
+       -300,
+       3
+      ],
+      [
+       -200,
+       3
+      ],
+      [
+       200,
+       3
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "offset Y (positive = down)",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       3175
+      ],
+      [
+       -200,
+       66
+      ],
+      [
+       -30,
+       64
+      ],
+      [
+       -65,
+       34
+      ],
+      [
+       -150,
+       34
+      ],
+      [
+       -90,
+       32
+      ],
+      [
+       -50,
+       30
+      ],
+      [
+       -80,
+       26
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Number",
+     "label": "rotation (radians)",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       3474
+      ],
+      [
+       3.141592653589793,
+       66
+      ],
+      [
+       0.7853981633974483,
+       10
+      ],
+      [
+       1.5707963267948966,
+       8
+      ],
+      [
+       -0.7853981633974483,
+       6
+      ],
+      [
+       3.9269908169872414,
+       4
+      ],
+      [
+       5.497787143782138,
+       4
+      ],
+      [
+       2.356194490192345,
+       4
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "follows position",
+     "kind": "bool",
+     "common": [
+      [
+       true,
+       2188
+      ],
+      [
+       false,
+       1452
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "follows direction",
+     "kind": "bool",
+     "common": [
+      [
+       false,
+       2535
+      ],
+      [
+       true,
+       1105
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Option",
+     "label": "scale",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "None"
+       ],
+       1826
+      ],
+      [
+       [
+        "Some",
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ],
+       386
+      ],
+      [
+       [
+        "Some",
+        [
+         {
+          "min": 2,
+          "max": 2
+         }
+        ]
+       ],
+       249
+      ],
+      [
+       [
+        "Some",
+        [
+         {
+          "min": 1.5,
+          "max": 1.5
+         }
+        ]
+       ],
+       212
+      ],
+      [
+       [
+        "Some",
+        [
+         {
+          "min": 4,
+          "max": 4
+         }
+        ]
+       ],
+       199
+      ],
+      [
+       [
+        "Some",
+        [
+         {
+          "min": 3,
+          "max": 3
+         }
+        ]
+       ],
+       190
+      ],
+      [
+       [
+        "Some",
+        [
+         {
+          "min": 6,
+          "max": 6
+         }
+        ]
+       ],
+       131
+      ],
+      [
+       [
+        "Some",
+        [
+         {
+          "min": 5,
+          "max": 5
+         }
+        ]
+       ],
+       72
+      ]
+     ],
+     "options": {
+      "None": {
+       "n": 1826,
+       "example": [
+        "None"
+       ]
+      },
+      "Some": {
+       "n": 1814,
+       "example": [
+        "Some",
+        [
+         {
+          "min": 1,
+          "max": 1
+         }
+        ]
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "SpawnAlterEgo": {
+   "index": 50,
+   "label": "SpawnAlterEgo",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "SpawnAlterEgoPoint",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Boolean",
+     "label": "",
+     "kind": "bool",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "SpawnFunnel": {
+   "index": 47,
+   "label": "SpawnFunnel",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "SpawnFunnelKind",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "SpawnFunnelPoint",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "StartBuffField": {
+   "index": 80,
+   "label": "StartBuffField",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "StartModifierField": {
+   "index": 84,
+   "label": "StartModifierField",
+   "what": "",
+   "skills": 1,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       9999999,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "list",
+     "common": [
+      [
+       [
+        [
+         "Attack",
+         12.5
+        ]
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "Attack": {
+       "n": 2,
+       "example": [
+        "Attack",
+        12.5
+       ]
+      }
+     }
+    },
+    {
+     "type": "ModifierFieldCancelTriggerSourceKind",
+     "label": "",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "None"
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "None": {
+       "n": 2,
+       "example": [
+        "None"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "StartPiercing": {
+   "index": 77,
+   "label": "Pierce",
+   "what": "The ball goes through enemies (inferred).",
+   "skills": 4,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       -17,
+       7
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       10,
+       5
+      ],
+      [
+       40,
+       2
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "StopBall": {
+   "index": 14,
+   "label": "Stop the ball",
+   "what": "Stop or slow the unit's ball for a while.",
+   "skills": 336,
+   "params": [
+    {
+     "type": "int",
+     "label": "ball",
+     "kind": "subject",
+     "common": [
+      [
+       -18,
+       734
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "frames",
+     "kind": "number",
+     "common": [
+      [
+       10,
+       165
+      ],
+      [
+       30,
+       90
+      ],
+      [
+       60,
+       76
+      ],
+      [
+       50,
+       36
+      ],
+      [
+       80,
+       34
+      ],
+      [
+       90,
+       27
+      ],
+      [
+       70,
+       26
+      ],
+      [
+       20,
+       22
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "EndingSpeedKind",
+     "label": "afterwards",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "Stop"
+       ],
+       371
+      ],
+      [
+       [
+        "RestoreToSpeedBeforeActionExecution"
+       ],
+       301
+      ],
+      [
+       [
+        "RestoreToSpeedBeforeCommandExecution"
+       ],
+       62
+      ]
+     ],
+     "options": {
+      "Stop": {
+       "n": 371,
+       "example": [
+        "Stop"
+       ]
+      },
+      "RestoreToSpeedBeforeActionExecution": {
+       "n": 301,
+       "example": [
+        "RestoreToSpeedBeforeActionExecution"
+       ]
+      },
+      "RestoreToSpeedBeforeCommandExecution": {
+       "n": 62,
+       "example": [
+        "RestoreToSpeedBeforeCommandExecution"
+       ]
+      }
+     }
+    },
+    {
+     "type": "CoordSysSource",
+     "label": "direction",
+     "kind": "enum",
+     "common": [
+      [
+       [
+        "AB"
+       ],
+       402
+      ],
+      [
+       [
+        "EF"
+       ],
+       274
+      ],
+      [
+       [
+        "GH",
+        0
+       ],
+       42
+      ],
+      [
+       [
+        "GH",
+        3
+       ],
+       6
+      ],
+      [
+       [
+        "GH",
+        9
+       ],
+       4
+      ],
+      [
+       [
+        "GH",
+        1
+       ],
+       4
+      ],
+      [
+       [
+        "GH",
+        2
+       ],
+       2
+      ]
+     ],
+     "options": {
+      "AB": {
+       "n": 402,
+       "example": [
+        "AB"
+       ]
+      },
+      "EF": {
+       "n": 274,
+       "example": [
+        "EF"
+       ]
+      },
+      "GH": {
+       "n": 58,
+       "example": [
+        "GH",
+        0
+       ]
+      }
+     }
+    },
+    {
+     "type": "Number",
+     "label": "angle",
+     "kind": "number",
+     "common": [
+      [
+       0,
+       734
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "StopPiercing": {
+   "index": 78,
+   "label": "StopPiercing",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "SubtractFeverPoint": {
+   "index": 9,
+   "label": "SubtractFeverPoint",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "SubtractSkillPoint": {
+   "index": 7,
+   "label": "SubtractSkillPoint",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "value",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "SuppressBallActivity": {
+   "index": 94,
+   "label": "SuppressBallActivity",
+   "what": "",
+   "skills": 1,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       -18,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 240,
+         "max": 240
+        }
+       ],
+       1
+      ],
+      [
+       [
+        {
+         "min": 270,
+         "max": 300
+        }
+       ],
+       1
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "SuppressSkill": {
+   "index": 99,
+   "label": "SuppressSkill",
+   "what": "",
+   "skills": 1,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       -18,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "range",
+     "common": [
+      [
+       [
+        {
+         "min": 210,
+         "max": 210
+        }
+       ],
+       2
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "TargetMate": {
+   "index": 87,
+   "label": "TargetMate",
+   "what": "",
+   "skills": 3,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [
+      [
+       9,
+       2
+      ],
+      [
+       10,
+       2
+      ],
+      [
+       11,
+       2
+      ],
+      [
+       6,
+       2
+      ],
+      [
+       7,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       4
+      ],
+      [
+       [
+        1
+       ],
+       2
+      ],
+      [
+       [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7
+       ],
+       2
+      ],
+      [
+       [
+        2
+       ],
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       10
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       10
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       10
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "Array",
+     "label": "",
+     "kind": "list",
+     "common": [
+      [
+       [],
+       6
+      ],
+      [
+       [
+        1,
+        3,
+        4,
+        5,
+        6
+       ],
+       2
+      ],
+      [
+       [
+        2
+       ],
+       2
+      ]
+     ],
+     "options": {}
+    }
+   ]
+  },
+  "Trace": {
+   "index": 0,
+   "label": "Trace",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    }
+   ]
+  }
+ },
+ "events": {
+  "ActivatedMultiballOfExecutorSelf": {
+   "index": 5,
+   "label": "ActivatedMultiballOfExecutorSelf",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CollisionOfBallAndEnemy": {
+   "index": 2,
+   "label": "When the ball hits",
+   "what": "Run the block when the unit's ball hits an enemy (inferred).",
+   "skills": 4,
+   "params": [
+    {
+     "type": "int",
+     "label": "(inferred) frames it listens",
+     "kind": "number",
+     "common": [
+      [
+       40,
+       4
+      ],
+      [
+       1800,
+       2
+      ],
+      [
+       30,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "(inferred) number",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       8
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "label",
+     "kind": "string",
+     "common": [
+      [
+       "*",
+       8
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "(inferred) number",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       6
+      ],
+      [
+       0,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "on a hit",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CollisionOfBallAndSpecificEnemy": {
+   "index": 3,
+   "label": "When the ball hits (enemy)",
+   "what": "Run a block when the ball hits an enemy (inferred).",
+   "skills": 14,
+   "params": [
+    {
+     "type": "int",
+     "label": "(inferred) subject",
+     "kind": "subject",
+     "common": [
+      [
+       0,
+       19
+      ],
+      [
+       1,
+       6
+      ],
+      [
+       2,
+       4
+      ],
+      [
+       7,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "(inferred) frames it listens",
+     "kind": "number",
+     "common": [
+      [
+       60,
+       8
+      ],
+      [
+       9,
+       4
+      ],
+      [
+       120,
+       2
+      ],
+      [
+       30,
+       2
+      ],
+      [
+       31,
+       2
+      ],
+      [
+       25,
+       2
+      ],
+      [
+       3,
+       2
+      ],
+      [
+       22,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "(inferred) number",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       31
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "label",
+     "kind": "string",
+     "common": [
+      [
+       "接触イベント",
+       9
+      ],
+      [
+       "衝突イベント",
+       8
+      ],
+      [
+       "*",
+       4
+      ],
+      [
+       "接触処理",
+       4
+      ],
+      [
+       "衝突しないイベント",
+       2
+      ],
+      [
+       "接触後の停止処理",
+       2
+      ],
+      [
+       "接触後の攻撃処理",
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "(inferred) number",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       17
+      ],
+      [
+       2,
+       6
+      ],
+      [
+       3,
+       6
+      ],
+      [
+       8,
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "on a hit",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "(inferred) otherwise",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "CollisionOfSpecificBallAndSpecificEnemy": {
+   "index": 4,
+   "label": "CollisionOfSpecificBallAndSpecificEnemy",
+   "what": "",
+   "skills": 0,
+   "params": [
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "",
+     "kind": "string",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "",
+     "kind": "number",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "Repeat": {
+   "index": 1,
+   "label": "Repeat",
+   "what": "Run the block again and again (inferred: every N frames, M times).",
+   "skills": 83,
+   "params": [
+    {
+     "type": "int",
+     "label": "(inferred) frames between",
+     "kind": "number",
+     "common": [
+      [
+       1,
+       101
+      ],
+      [
+       20,
+       15
+      ],
+      [
+       10,
+       12
+      ],
+      [
+       40,
+       12
+      ],
+      [
+       4,
+       9
+      ],
+      [
+       6,
+       8
+      ],
+      [
+       5,
+       8
+      ],
+      [
+       22,
+       6
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "int",
+     "label": "(inferred) times",
+     "kind": "number",
+     "common": [
+      [
+       3,
+       37
+      ],
+      [
+       2,
+       31
+      ],
+      [
+       60,
+       24
+      ],
+      [
+       1,
+       14
+      ],
+      [
+       5,
+       12
+      ],
+      [
+       80,
+       10
+      ],
+      [
+       4,
+       9
+      ],
+      [
+       9,
+       7
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "label",
+     "kind": "string",
+     "common": [
+      [
+       "*",
+       182
+      ],
+      [
+       "突進イベント",
+       22
+      ],
+      [
+       "突進",
+       4
+      ],
+      [
+       "足煙イベント",
+       2
+      ],
+      [
+       "残像演出１",
+       2
+      ],
+      [
+       "残像演出２",
+       2
+      ],
+      [
+       "残像演出３",
+       2
+      ],
+      [
+       "残像処理1",
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "each time",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  },
+  "Wait": {
+   "index": 0,
+   "label": "Wait",
+   "what": "Wait, then run the block (the rest of the script is usually inside it).",
+   "skills": 334,
+   "params": [
+    {
+     "type": "int",
+     "label": "frames (60 = 1 s)",
+     "kind": "number",
+     "common": [
+      [
+       30,
+       130
+      ],
+      [
+       10,
+       126
+      ],
+      [
+       20,
+       119
+      ],
+      [
+       5,
+       86
+      ],
+      [
+       40,
+       81
+      ],
+      [
+       60,
+       78
+      ],
+      [
+       0,
+       71
+      ],
+      [
+       15,
+       67
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "String",
+     "label": "label",
+     "kind": "string",
+     "common": [
+      [
+       "*",
+       2074
+      ],
+      [
+       "弱攻撃アクション",
+       2
+      ],
+      [
+       "強攻撃アクション",
+       2
+      ],
+      [
+       "攻撃可能時間イベント",
+       2
+      ],
+      [
+       "ミサイルキャンセル",
+       2
+      ],
+      [
+       "ミサイルイベント",
+       2
+      ],
+      [
+       "花びらBスタート",
+       2
+      ],
+      [
+       "砲弾の時間による爆発",
+       2
+      ]
+     ],
+     "options": {}
+    },
+    {
+     "type": "ActionDslExpression",
+     "label": "then",
+     "kind": "block",
+     "common": [],
+     "options": {}
+    }
+   ]
+  }
+ }
+}

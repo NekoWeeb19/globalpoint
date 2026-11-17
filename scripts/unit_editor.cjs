@@ -238,7 +238,7 @@ async function getUnit(id) {
     })
     const skills = ["1", "2"].filter(n => r.current.skill[`${r.skillName}/${n}`] !== undefined).map(n => {
         const key = `${r.skillName}/${n}`, s = lines(r.current.skill[key])[0], g = lines(r.own.skill[key])[0]
-        return { key, name: s[0], plus: n === "2", gaugeMin: Number(s[4]), gaugeMax: Number(s[5]), game: { gaugeMin: Number(g[4]), gaugeMax: Number(g[5]) } }
+        return { key, name: s[0], description: s[1] ?? "", script: s[7] ?? "", plus: n === "2", gaugeMin: Number(s[4]), gaugeMax: Number(s[5]), game: { gaugeMin: Number(g[4]), gaugeMax: Number(g[5]), script: g[7] ?? "" } }
     })
     return {
         id, name: t[0] || c[0], title: t[3] ?? "", element: ELEMENTS[Number(c[3])] ?? "", rarity: Number(c[2]),

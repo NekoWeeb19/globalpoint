@@ -35,6 +35,13 @@ const AE = require(path.join(__dirname, "..", "..", "..", "scripts", "armament_e
     importArmamentKits: (data: unknown) => Promise<{ imported: string[], refused: { id: string, why: string }[] }>
 }
 
+// skills (scripts/skill_editor.cjs): a skill's script as blocks of commands
+const SE = require(path.join(__dirname, "..", "..", "..", "scripts", "skill_editor.cjs")) as {
+    readScript: (logical: string) => Promise<unknown | null>
+    skillData: () => unknown
+    isScriptPath: (p: unknown) => boolean
+}
+
 type Mode = string | boolean
 // the editor's mode: "default", "advanced" or "unrestricted" (older pages send advanced: true = unrestricted)
 const modeOf = (b: { advanced?: boolean, mode?: string }): Mode => typeof b.mode === "string" ? b.mode : b.advanced === true
@@ -78,6 +85,16 @@ const routes = async (fastify: FastifyInstance) => {
     // codes, plain words, fields, templates and what CN's units use
     fastify.get("/data", async (_: FastifyRequest, reply: FastifyReply) => {
         try { return reply.send(await UE.editorData()) } catch (e) { return failed(reply, e) }
+    })
+    // the skill editor's command list, and one skill script (?path= the skill row's column 7)
+    fastify.get("/skill-data", async (_: FastifyRequest, reply: FastifyReply) => reply.send(SE.skillData()))
+    fastify.get("/skill-script", async (request: FastifyRequest, reply: FastifyReply) => {
+        const { path: logical } = request.query as { path?: string }
+        if (!SE.isScriptPath(logical)) return reply.status(400).send({ error: "Bad Request", message: "Not a skill script path" })
+        try {
+            const script = await SE.readScript(String(logical))
+            return script === null ? reply.status(404).send({ error: "Not Found", message: `No script ${logical}` }) : reply.send({ path: logical, script })
+        } catch (e) { return failed(reply, e) }
     })
     fastify.get("/unit/:id", async (request: FastifyRequest, reply: FastifyReply) => {
         const { id } = request.params as { id: string }
