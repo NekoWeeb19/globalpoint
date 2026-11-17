@@ -43,12 +43,46 @@ or `colorless`. A fixed-colour effect (`SpecifyEffectDirectly`) is used at its o
 |---|---|
 | `.png` | the sprite sheet: the effect's art pieces (the game stores it with a scrambled signature, `\x89png`: put `PNG` back to open it) |
 | `.atlas.amf3.deflate` | where each piece is on the sheet |
-| `.parts.amf3.deflate` | the pieces that make up the effect |
-| `.timeline.amf3.deflate` | how the pieces move, scale and fade over time |
+| `.parts.amf3.deflate` | the animation: the pieces, and how they move, scale, turn and fade on every frame |
+| `.timeline.amf3.deflate` | the named sequences (e.g. spread: `neutral` 1-40, then `end` 41-68) and the sounds |
 
 Unit-only effects (`skill_unique/...`) are found the same way at their own path (Hidden Blader's throw:
-`.timeline` and `.parts`). Because file names are hashed, a folder can't be listed: a file is found by its exact
-name only.
+`.timeline` and `.parts`), but **their pictures are one sheet per folder**: `skill_unique/<unit>/<unit>.png` and
+`.atlas` (e.g. `wind_oracle_1anv/wind_oracle_1anv`), named by the effect's images (`<folder>/.gen/<effect>/a`).
+Because file names are hashed, a folder can't be listed: a file is found by its exact name only.
+
+**The unit's own sprite** (for the skill pose): `character/<unit>/pixelart/sprite_sheet.png` and `.atlas`, plus
+`pixelart.timeline` (sequences: `neutral`, `walk_back`, `walk_front`, `skill_ready`, `kachidoki`, `into_coffin`,
+`ghost_raise`, `ghost_neutral`, `revive`; the body circle; the HP gauge point). A frame animation: images
+`pixelart0051`..., each in a 256 × 256 frame; frame *f* shows the first image numbered *f* or later
+(`flatomo.animation.frame.FrameAnimationSource`). In battle it's drawn × 6 (`BattleConstants.SCALE_RENDERER`). When a
+skill fires, the sprite plays `skill_ready` with a skill flash and the cut-in (`MemberImpl.startSkillCutinAnimation`),
+the ball holds 60 frames (`BallImpl.startToSkillCutin`), then the script runs.
+
+### How an effect's animation is stored (`.parts`)
+
+Read from the CN 1.8.1 client's own player (the `flatomo.animation.parts` package: `PartsAnimationSource`,
+`GraphicsSource`, `PartsAnimationImageProvider.moveImage`, `LayoutTools.apply`, `CustomTweenRecord`) and ported to
+`web/public/js/parts-player.js`, which the unit editor's effect viewer uses. Checked by eye against the game
+(Clara's whirlwind slash, the spread blast).
+
+- **`t`**: matrices `{a, b, c, d, x, y}` in fixed point, 4096 = 1.0.
+- **`i`**: the images, by atlas name. **Atlas** frames: `x, y, w, h` on the sheet; `r: true` = stored turned 90°
+  clockwise (`w × h` is the turned size); `fx, fy, fw, fh` = trimmed (the pixels sit at `-fx, -fy`). The image's
+  origin is its untrimmed top-left; effects are drawn around (0, 0).
+- **`g`**: graphics; `g[0]` is the effect. Each has `t` (frames) and `s` (segments, drawn in order). A segment's
+  `s` = kind `<< 30` | start frame (kind 0 an image, 1 a movie, 2 another graphic), `i` = the image or graphic, `l` =
+  its keys, one after another:
+  - `t` = duration (low 16 bits) | tween `<< 16` (0 none, 1 a custom curve from `c`, 2 ease in/out by N %) | easing
+    value `<< 18`; between keys, the matrix, alpha and colour go from one key to the next along the curve.
+  - `m` = matrix index `<< 12` | blend mode `<< 8` (0 normal, 1 add, 2 multiply, 3 overlay, 4 screen) | alpha (0-255).
+  - `c` = colour: multiplier % `<< 24` | red, green, blue offsets (default `0x64000000`: 100 %, no offsets).
+  - `r` (a graphic): loop kind `<< 30` | its start frame (0 hold that frame, 1 play once, 2 loop).
+- A nested graphic's matrix, alpha and colour multiply into its parent's.
+- **`c`**: custom easing curves, six numbers per cubic Bezier segment (control 1, control 2, end), × 1,000,000.
+- Drawn size against what hits: the editor measured each shared effect's size per scale from CN's own skills
+  (e.g. air_blast radius 50 per scale); the pictures reach a little past that (air_blast's burst is about 1.5 × the
+  hit radius).
 
 ## How an effect is placed (`ShowEffect`)
 

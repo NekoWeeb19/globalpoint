@@ -21,6 +21,15 @@ background.
 - **Saving** writes a unit change file (`assets/custom_units/changes/unit-editor-<id>.json`) and rebuilds the CN game
   update; phones get it with Download from PC.
 
+**Added 2026-11-16/17: the Skill tab** (override "GlobalFestForEver"): a unit's skill and Skill+ scripts as
+editable commands, checked against all of CN's scripts, saved as new files and shipped with every game update;
+an effect viewer and a skill preview that play the game's own animation files (a port of the client's player).
+Guide: [../SKILL_GUIDE.md](../SKILL_GUIDE.md); reference: [skill-commands.md](skill-commands.md),
+[skill-effects.md](skill-effects.md). Code: `scripts/skill_editor.cjs`, `scripts/cn_app_bundle.cjs`,
+`scripts/research/skill_commands_from_pcode.cjs`, `assets/skill_editor/commands.json`,
+`web/public/js/parts-player.js`, `web/public/js/skill-stage.js`. Tested in game: an editor-made skill ran; another
+unit's multiball was summoned.
+
 **Tested in game** (StarPointTest emulator, 2026-11-03): Amelia's ability 1 changed to "every 6 → 1 s: combo +50 → 100",
 a combination no CN unit has. The update rebuilt by itself, her unit page showed the new line in the game's words,
 and in battle the combo jumped by 50 every few seconds. The test change was removed afterwards.

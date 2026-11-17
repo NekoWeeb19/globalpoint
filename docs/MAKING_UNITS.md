@@ -2,15 +2,23 @@
 
 How to make a custom unit for the CN app, change an existing one by hand, and what the server and the
 build do with them. Getting a finished unit into the game, giving it and removing it is in
-[CUSTOM_UNITS.md](CUSTOM_UNITS.md). For abilities and numbers, the dashboard's
-[Unit editor](UNIT_EDITOR.md) is easier than editing files by hand.
+[CUSTOM_UNITS.md](CUSTOM_UNITS.md). For abilities, numbers, text and the skill, the dashboard's
+[Unit editor](UNIT_EDITOR.md) is easier than editing files by hand, and works on custom units too.
+
+**Where the work is now:** what a unit *does* (abilities, leader skill, stats, skill gauge, name and text, class
+and role, its skill: any command the game has, any unit's effects, any multiball) is all editable in the
+dashboard. What still has to be made by hand is **art and sound**: the pixel sprite (with its `skill_ready`
+pose), the portraits and icons, the cut-in ([png2atf recipe](research/new-units.md#making-a-battle-cut-in-atf)),
+voices, and any brand-new effect art (the effect format is documented, [research/skill-effects.md](research/skill-effects.md),
+but there's no tool that makes it yet). Packaging the art is a script (`build_cn_patch.cjs`, below).
 
 A custom unit has two parts:
 
 | Part | Where | Shipped by |
 |---|---|---|
 | **Rows** (the unit's lines in 19 game tables) and **server data** (character entry, Mana Boards, summon pools) | one JSON file, `assets/custom_units/<id>.json` | every CN schedule build (`scripts/gen_cn_event_schedule.cjs`) adds the rows to the tables it ships; the server reads the file at start |
-| **Files** (art, voices, animations, skill scripts) | an art update, `1.4.9xx` | `scripts/build_cn_patch.cjs`, once |
+| **Files** (art, voices, animations, the cloned skill script) | an art update, `1.4.9xx` | `scripts/build_cn_patch.cjs`, once |
+| **Edited skill scripts** (the Unit editor's Skill tab) | `<custom units folder>/skills/` | every CN schedule build, like the rows |
 
 Because the schedule build adds the rows itself, every rebuild (a dashboard schedule edit, a clock change, a
 kit date) keeps the unit. Before this, a rebuild shipped CN's own tables without the unit's rows, and a save
@@ -19,8 +27,9 @@ holding it hit C8601.
 ## Changing an existing unit by hand
 
 Custom unit files are only for new units: a file that uses a CN unit's id or string id is refused. The
-[Unit editor](UNIT_EDITOR.md) covers abilities, leader skill, stats, skill gauge, name and class. For
-anything else, use one of these; both last through every schedule rebuild.
+[Unit editor](UNIT_EDITOR.md) covers abilities, leader skill, stats, skill gauge, name, title, description,
+class, role and the skill's script. For anything else, use one of these; both last through every schedule
+rebuild.
 
 ### Other rows: a change file by hand
 
@@ -106,8 +115,10 @@ node scripts/build_cn_patch.cjs 1.4.950 <newest version> my_art.json
    the game already has (new numbers and combinations are fine; new mechanics are not). Mistakes show up
    clearly: the build and the server name a bad id or node id, a missing file shows as the asset recovery
    screen with its path in `logs/cn_requests.log`, and a bad row as C8601 (see
-   [Troubleshooting](CUSTOM_UNITS.md#troubleshooting)). Every unit tested so far is a copy of Haruhi; a hand-made one hasn't
-   been tried yet.
+   [Troubleshooting](CUSTOM_UNITS.md#troubleshooting)). Units tested so far: copies of Haruhi, and (research,
+   2026-11-16, not part of GlobalPoint) **harpy**, a cut unit from the archive: a copy of Clara with harpy's art
+   in its files, a sprite rebuilt from its enemy drawings, its own skill script and a png2atf cut-in; it played in
+   battle. Its voices were still Clara's.
 2. **Build its art update**, numbered well above the schedule builds (StarPoint's art updates are 1.4.500,
    600, 700 and 800 so far; custom units use 1.4.9xx, and a phone builds its own schedule numbers):
 

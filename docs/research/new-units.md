@@ -275,10 +275,13 @@ companion's `files/server/logs/cn_requests.log` (`/cn/crash`, `未找到素材 <
    the drawing scale (`.frame`), and the portrait crops (`trimmed_image`, `character_image`,
    `full_shot_image_attribute`). **Not studied yet:** the rules behind those values (frame counts per sequence,
    timing, how crops are measured, which atlas fields are required); copy a template unit's and compare.
-4. **Skills.** A skill script is a JSON-shaped AMF3 tree (`["ActionDsl", 2, …, ["Block", [["Command",
-   ["StopBall", …]], ["Command", ["ShowEffect", …, "battle/effect/skill_unique/<x>/<y>"]] …]]]`). New skills can
-   combine existing commands and reuse any unit's effects. Writing one by hand needs the command list documented
-   (wfax/wdfp-extractor decode the format but don't explain it). New *effect* animations are art, like sprites.
+4. **Skills.** Done (2026-11-16/17): the Unit editor's **Skill tab** edits skill scripts (an AMF3 tree,
+   `["ActionDsl", 1, …, ["Block", [["Command", ["StopBall", …]], …]]]`) as commands, checks them against every CN
+   script, previews them, and ships them ([../UNIT_EDITOR.md](../UNIT_EDITOR.md#skill-tab),
+   [../SKILL_GUIDE.md](../SKILL_GUIDE.md)). Every command is documented in [skill-commands.md](skill-commands.md);
+   effects, their files and their animation format in [skill-effects.md](skill-effects.md). New skills combine
+   existing commands and reuse any unit's effects and any multiball (by id). New *effect* animations are still art:
+   the format is known (and played by the dashboard), but nothing makes it yet.
 5. **Voices.** Optional. Game MP3s have each frame's sync byte 0xFF stored as 0x7F (wdfp-extractor's restoreMp3);
    a new clip should be stored the same way (untested whether plain MP3 also plays).
 6. **Ids.** Pick an id with the right rarity/element digits that CN never used; Mana Board ids follow from it.

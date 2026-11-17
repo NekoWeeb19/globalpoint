@@ -2,7 +2,7 @@
 
 > Written by Claude (AI) in a Claude Code session, with the repository owner choosing how it works.
 
-Change what a unit's abilities do, and its numbers, from the dashboard: **Unit editor** in the menu
+Change what a unit's abilities and skill do, and its numbers, from the dashboard: **Unit editor** in the menu
 (`/unit-editor`). Works for every CN unit and for custom units ([CUSTOM_UNITS.md](CUSTOM_UNITS.md)).
 No unit ids change, so saves are never at risk.
 
@@ -45,9 +45,94 @@ level 1 to the highest. Numbers are shown in plain units (%, seconds, points, co
 × 100,000, and the editor converts both ways. An effect whose unit isn't known shows its stored number,
 "(game value)".
 
-Not editable here: what a skill does (its damage is in the skill's script, a file), skill text (the game writes
-ability text itself from the rows, so it always matches), element and rarity (the server keeps its own copy), Mana
-Board costs.
+- **Skill tab**: what the skill and Skill+ do, from their scripts (below).
+
+Not editable here: the skill's name and description text, ability text (the game writes it itself from the rows, so
+it always matches), element and rarity (the server keeps its own copy), Mana Board costs.
+
+## Skill tab
+
+New to it? [SKILL_GUIDE.md](SKILL_GUIDE.md) is a short guide: what a skill needs at minimum, what can break, recipes.
+
+A skill is a script (a file the skill row names), a list of **commands** run top to bottom. Each card is one command;
+indented cards run inside the one above: after a **Wait**, when an **Attack area** appears, on each of its hits, for
+each unit a **Find** picked, in either branch of an **If**. The most used:
+
+| Command | Does |
+|---|---|
+| **Attack area** | the zone that hits: shape (circle, rectangle, fan), size, where (attached to the unit or ball, offset, direction), how long, how often it hits |
+| **Effect** | an animation: a shared effect (drawn in the unit's element) or a unit's own, placed like an area |
+| **Damage** | inside an area's "on each hit": the hit target, element, multiplier, break-gauge damage, Fever gained |
+| **Buff / debuff** | on the unit, the party or a found group: kind (attack, skill damage, element resistance...), frames, amount, max stacks |
+| **Stop the ball**, **Move the ball** | the ball's movement while the skill plays |
+| **Wait**, **Repeat** | timing: what's inside runs after N frames / right away, then every N frames, M times in all |
+| **Random pick** | runs one of its options at random, by each option's **Weight** (1 and 1 = half each). Inside a Repeat, every run picks again: e.g. four copies of an Effect at 0°, 90°, 180°, 270° give a random rotation each time. Options are groups with ↑ ↓ Copy Remove |
+| **Find a group**, **Find the nearest** | pick the party, all enemies, the nearest enemy...; the commands inside act on them |
+| **Camera shake**, **Heal**, **Remove buffs**, **Fever / skill gauge** | as named |
+
+- **Change** any setting in place. Choices fill in CN's most common version when picked; elements, groups, "who it
+  may go to" and what an area or effect is attached to are named dropdowns; angles are in degrees; numbers that grow
+  with skill level are two boxes (skill level 1 → the top level). Settings most of CN's skills leave as they are sit
+  under "more".
+- **+ Add...** at the end of every block puts in CN's most common form of a command (a new Attack area comes with
+  its effect and damage inside); **↑ ↓ Copy Remove** on every card.
+- **Start from another unit's skill** loads another unit's skill or Skill+ script to change from there; **Reset to
+  game** puts the unit's own back.
+- The skill's own animations and pictures that aren't in the script stay the game's: the unit's skill pose, the
+  cut-in, the voice. Effects are the game's own files (any shared effect, or another unit's own).
+- **What hits vs what's drawn**: an Attack area is invisible; what you see is the Effect drawn on it, and the two are
+  sized separately. CN draws each shared effect at a fixed size per scale (measured from CN's own skills: e.g.
+  *spread* is a circle of radius 42 at scale 1, *air blast* 50, *laser* a 133 × 1333 beam, *claw horizontal* 200 × 80),
+  so under an Attack area the editor shows what its effect draws ("Drawn: spread at scale 6 ≈ a circle of radius 252")
+  and warns when it doesn't match: a round picture on a rectangle, a picture 20 % or more bigger or smaller than what
+  hits, or a fan (no shared effect is fan-shaped; CN's fans use units' own art). **Keep effects in step with their
+  attack areas** (on by default, at the top of the tab) sets the effect's scale whenever the area's size or the effect
+  on it changes, and the effect suggestions list the ones that fit the area's shape first. Units' own effects have no
+  measured size ("size not known").
+- **▶ Preview skill** (under the size line) plays the whole skill as edited, before saving: the unit's own pixel sprite
+  in its skill pose during the first second (the game's cut-in: the sprite's `skill_ready` sequence, the ball held for
+  60 frames, then the script runs), then every effect where and when the script shows it, the attack areas' hit
+  outlines while they hit, the ball's moves, the unit hiding, camera shakes, the **skill flash** when it fires, and the
+  **hits**: each attack area hits a pretend target (the cross, put where the first area reaches) while it's inside, at
+  the area's hit interval up to its max hits, running "on each hit" each time, so a Damage shows its hit effect there
+  (the game's own art; Fine and Coarse are built into the game app, `assets/bundle.zip` in the game APK, which the
+  server reads from `CN_GAME_APK` or the newest `.apk` in the `apk/` folder; without one, a drawn burst in the element's
+  colour stands in). Play/pause, a frame slider, from the start. It's a stage, not the battle: no enemies (enemy groups also
+  stand on the pretend target), the ball stands still unless Move the ball moves it (moving up), and a branch (If ...)
+  shows its first block. Units are drawn × 6, as in battle (effects and areas in battle units). Compared with a battle
+  recording (2026-11-16): the air blast, the 15 Coarse hits of a 5-second area hitting every 20 frames and the skill
+  flash matched.
+- **▶ View effect** on an Effect card plays the effect right there (the game's own animation files, played the way
+  the client plays them, at 60 frames a second): play/pause, a frame slider, the element colours it comes in (the unit's
+  own first), its sequences, and, when it's drawn on an attack area, a dashed outline of what the area hits.
+- **Timing**: each effect's animation length is read from its timeline file (e.g. *spread* plays 40 frames, then its
+  "end" to frame 68), so the "Drawn" line says how long the picture shows ("for 40 frames", or "for as long as the area
+  lasts") and warns when the picture ends well before the area stops hitting, or plays on well after.
+- **Run time and the ball**: under the size line, how long the skill runs (Waits, attack areas, effects and ball moves
+  added up; Repeat as interval × times) and when the ball is stopped; a note when something attached to the ball and
+  following it lasts past the stop (it then moves with the ball, as Clara's whirlwind is meant to).
+- **Hits per enemy**: under each Damage inside an attack area, how many times the area can hit one enemy (from its
+  time between hits, max hits and "disappears" settings) and the damage multiplier added up over those hits (Clara:
+  15 hits × 0.533 = 8 per enemy). This is read from the settings, not measured in game.
+- **Element**: a Damage that hits as another element than the unit's own gets a note when the skill's shared effects
+  are drawn in the unit's element (it would look like one element and hit as another).
+
+**Guard rails** (the same Mode picker): every CN skill script passes them.
+- **Default**: only commands and choices CN's skills use, effects CN's skills show, and at most 60 commands, 8 attack
+  areas and 10 levels of blocks (a script you started from may stay as big as it was: the biggest CN skill has 149
+  commands and 16 areas). Ids (the names commands give an area, a hit target, a group) are hidden: what uses them
+  lists them by name.
+- **Advanced**: larger limits (200 / 20 / 16); ids shown under "more".
+- **Unrestricted**: also commands and choices CN never uses (marked untested), any effect path, any value as text
+  ("{ }"), limits 1000 / 100 / 40.
+- **Always refused**: anything the game can't read (a wrong type, an unknown command), and a command that acts on an id
+  nothing above it has named.
+
+**Saving** writes the script as a new file, `skills/battle/action/skill/action/custom/<unit>_<1|2>_<hash>` in the custom
+units folder (a new name whenever it changes, so the game never keeps an old copy), and points the skill row at it.
+The CN update ships every saved script a change file uses; **Download from PC** copies them to phones; a **kit**
+carries its unit's scripts inside it, and importing one writes them back (a kit whose skill script is missing is
+refused). Older script files of the unit that nothing uses any more are deleted when it's saved.
 
 ## Sharing kits
 

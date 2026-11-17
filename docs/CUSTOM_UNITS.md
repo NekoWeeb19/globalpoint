@@ -113,7 +113,10 @@ again: the phone deletes unit files the PC no longer has. The art update can sta
 ## Changing an existing unit
 
 Custom unit files are only for new units. To change a unit the game already has (its abilities, leader
-skill, stats, skill gauge, name or class), use the dashboard's **Unit editor** ([UNIT_EDITOR.md](UNIT_EDITOR.md)):
-it checks what the game can read, saves a change file and rebuilds the game update for you, on a PC or in the
+skill, stats, skill gauge, name, title, description, class, role, or what its skill does), use the dashboard's
+**Unit editor** ([UNIT_EDITOR.md](UNIT_EDITOR.md); for skills, [SKILL_GUIDE.md](SKILL_GUIDE.md)). It works on
+custom units too: their edits go into the unit's own file, and edited skill scripts ship with every game update.
+The editor
+checks what the game can read, saves a change file and rebuilds the game update for you, on a PC or in the
 companion. For other rows, or new pictures for a unit, see
 [MAKING_UNITS.md](MAKING_UNITS.md#changing-an-existing-unit-by-hand).
