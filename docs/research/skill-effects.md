@@ -141,7 +141,9 @@ Rarer ones (under 16 skills each): `ConditionalsHealthPointRatio`, `AddCombo`, `
 `RemoveMultiball`, `BindCoffinRevivalCountVariable(Of)`, `CreateCollider`, `SuppressBallActivity`,
 `ConditionalsProbability`, `ProbabilityWeight`, `BindConditionAccumulationVariable`, `IfThisCharacterIsLeader`,
 `RotateHitArea`, `ConditionalsSkillPoint200Percent`, `ConditionalsNumCoffins`, `StartModifierField`, `CreateFixedAttack`.
-Each command's settings are in the client's `ActionDslCommand` (one function per command, with its parameter types).
+Each command's settings are in the client's `ActionDslCommand` (one function per command, with its parameter types);
+**[skill-commands.md](skill-commands.md)** lists every command with each parameter's type, meaning and the values CN's
+scripts use.
 
 ## Tested: a skill script of our own (2026-11-16, emulator)
 
