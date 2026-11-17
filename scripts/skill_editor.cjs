@@ -232,15 +232,45 @@ async function effectFiles(p, colour) {
     const { readCn } = require("./cn_read.cjs")
     const colours = COLOURS.filter(c => hasCnFile(effectBase(p, c) + ".parts.amf3.deflate"))
     const base = effectBase(p, colour ?? (hasCnFile(p + ".parts.amf3.deflate") ? null : colours[0]))
-    const [parts, atlas, timeline] = await Promise.all([".parts", ".atlas", ".timeline"].map(e => readCn(base + e + ".amf3.deflate")))
-    if (!parts || !atlas) return null
-    return { base, colours, parts: amfFile(parts), atlas: amfFile(atlas), timeline: timeline ? amfFile(timeline) : null }
+    const [partsBuf, ownAtlas, timeline] = await Promise.all([".parts", ".atlas", ".timeline"].map(e => readCn(base + e + ".amf3.deflate")))
+    if (!partsBuf) return null
+    const parts = amfFile(partsBuf)
+    // the sheet: the effect's own, or (units' own effects) one per folder, <folder>/<folder name>, named by its images
+    let sheet = base, atlas = ownAtlas
+    if (!atlas) {
+        const dir = String(parts.i?.[0]?.p ?? "").split("/.gen/")[0]
+        if (isEffectPath(dir)) { sheet = `${dir}/${dir.split("/").pop()}`; atlas = await readCn(sheet + ".atlas.amf3.deflate") }
+    }
+    if (!atlas) return null
+    return { base, sheet, colours, parts, atlas: amfFile(atlas), timeline: timeline ? amfFile(timeline) : null }
 }
 
-/** An effect's sheet as a PNG (the game stores it with a lowercase "png" signature). */
-async function effectImage(p, colour) {
-    if (!isEffectPath(p) || (colour && !COLOURS.includes(colour))) throw new Error("not an effect path")
-    const buf = await require("./cn_read.cjs").readCn(effectBase(p, colour) + ".png")
+/** An effect sheet as a PNG (the "sheet" effectFiles names; the game stores it with a lowercase "png" signature). */
+async function effectImage(sheet) {
+    if (!isEffectPath(sheet)) throw new Error("not an effect path")
+    const buf = await require("./cn_read.cjs").readCn(sheet + ".png")
+    if (!buf) return null
+    const out = Buffer.from(buf)
+    if (out[1] === 0x70 && out[2] === 0x6e && out[3] === 0x67) out.write("PNG", 1, "latin1")
+    return out
+}
+
+// ---- a unit's pixel sprite, for the skill preview (character/<dev>/pixelart: frame animation, drawn x 6 in battle) ----
+
+const isDevName = d => typeof d === "string" && /^[a-z0-9_]+$/.test(d)
+
+/** A unit's sprite atlas and timeline (its sequences: neutral, skill_ready...); null when the game has none. */
+async function unitSprite(dev) {
+    if (!isDevName(dev)) throw new Error("not a unit name")
+    const { readCn } = require("./cn_read.cjs")
+    const [atlas, timeline] = await Promise.all([`character/${dev}/pixelart/sprite_sheet.atlas`, `character/${dev}/pixelart/pixelart.timeline`].map(f => readCn(f + ".amf3.deflate")))
+    return atlas ? { atlas: amfFile(atlas), timeline: timeline ? amfFile(timeline) : null } : null
+}
+
+/** A unit's sprite sheet as a PNG (signature restored). */
+async function unitSpriteImage(dev) {
+    if (!isDevName(dev)) throw new Error("not a unit name")
+    const buf = await require("./cn_read.cjs").readCn(`character/${dev}/pixelart/sprite_sheet.png`)
     if (!buf) return null
     const out = Buffer.from(buf)
     if (out[1] === 0x70 && out[2] === 0x6e && out[3] === 0x67) out.write("PNG", 1, "latin1")
@@ -262,4 +292,4 @@ function customScripts() {
     return out
 }
 
-module.exports = { effectFiles, effectImage, readScript, skillData, isScriptPath, checkScript, scriptStats, writeScript, customScripts, pruneScripts, scriptsIn, exportScript, importScript, SUBJECTS, LIMITS, CUSTOM_PREFIX }
+module.exports = { effectFiles, effectImage, unitSprite, unitSpriteImage, readScript, skillData, isScriptPath, checkScript, scriptStats, writeScript, customScripts, pruneScripts, scriptsIn, exportScript, importScript, SUBJECTS, LIMITS, CUSTOM_PREFIX }

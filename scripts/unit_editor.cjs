@@ -242,7 +242,7 @@ async function getUnit(id) {
         return { key, name: s[0], description: s[1] ?? "", script: s[7] ?? "", plus: n === "2", gaugeMin: Number(s[4]), gaugeMax: Number(s[5]), game: { gaugeMin: Number(g[4]), gaugeMax: Number(g[5]), script: g[7] ?? "" } }
     })
     return {
-        id, name: t[0] || c[0], title: t[3] ?? "", element: ELEMENTS[Number(c[3])] ?? "", rarity: Number(c[2]),
+        id, dev: c[0] ?? "", name: t[0] || c[0], title: t[3] ?? "", element: ELEMENTS[Number(c[3])] ?? "", rarity: Number(c[2]),
         custom: Boolean(r.custom), saved: fs.existsSync(editorFile(id)), others: r.others, kit: r.kit,
         abilities, leader, stats, skills, details,
     }

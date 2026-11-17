@@ -1158,7 +1158,7 @@
                 const key = path + "|" + (colour ?? "")
                 if (!effectCache.has(key)) effectCache.set(key, api("/effect?path=" + encodeURIComponent(path) + (colour ? "&colour=" + colour : "")).then((files) => new Promise((ok) => {
                     const img = new Image(); img.onload = () => ok({ files, img }); img.onerror = () => ok({ files, img: null })
-                    img.src = "/api/unit-editor/effect-image?path=" + encodeURIComponent(path) + (files.base !== path ? "&colour=" + files.base.split("_").pop() : "")
+                    img.src = "/api/unit-editor/effect-image?sheet=" + encodeURIComponent(files.sheet)
                 })).catch((e) => { effectCache.delete(key); throw e }))
                 return effectCache.get(key)
             }
@@ -1223,6 +1223,52 @@
                     requestAnimationFrame(tick)
                 }).catch((e) => { status.textContent = "Couldn't load the effect: " + e.message })
                 start()
+                return box
+            }
+
+            // ---- skill preview: the script run frame by frame (web/public/js/skill-stage.js), the unit's sprite, effects, areas ----
+            const previewOpen = new Set() // skill keys whose preview is open
+            const spriteCache = new Map() // unit's internal name -> its sprite
+            const loadSprite = () => {
+                const dev = unit?.dev
+                if (!dev) return Promise.resolve(null)
+                if (!spriteCache.has(dev)) spriteCache.set(dev, api("/sprite?unit=" + encodeURIComponent(dev)).then((d) => new Promise((ok) => {
+                    const img = new Image(); img.onload = () => ok({ ...d, image: img }); img.onerror = () => ok(null)
+                    img.src = "/api/unit-editor/sprite-image?unit=" + encodeURIComponent(dev)
+                })).catch(() => null))
+                return spriteCache.get(dev)
+            }
+            function skillPreview(s) {
+                const box = el("div", "flex flex-col gap-2 p-3 rounded-2xl bg-surface-container-high")
+                const canvas = el("canvas"); canvas.width = 360; canvas.height = 480
+                canvas.style.cssText = "width: 100%; max-width: 360px; background: #101418; border-radius: 12px"
+                const controls = el("div", "flex flex-wrap gap-2 items-center"), status = el("p", "text-sm text-on-surface-variant", "Getting the unit and effects...")
+                box.append(canvas, controls, status)
+                const sim = SkillPreview.simulate(s.program, S.effectFrames ?? {})
+                const colour = ELEMENT_COLOUR[unit?.element] ?? "blue"
+                const effect = (path, shared) => loadEffect(path, shared ? colour : null).then(({ files, img }) => new PartsPlayer(files.parts, files.atlas, img))
+                loadSprite().then((sprite) => {
+                    const stage = new SkillPreview.SkillStage(canvas, sim, sprite, effect, S.effectFrames ?? {})
+                    let frame = 0, playing = true, last = 0
+                    const play = el("button", BTN, "Pause"); play.type = "button"
+                    play.onclick = () => { playing = !playing; play.textContent = playing ? "Pause" : "Play" }
+                    const again = el("button", BTN, "From the start"); again.type = "button"; again.onclick = () => { frame = 0; playing = true; play.textContent = "Pause" }
+                    const slider = el("input"); slider.type = "range"; slider.min = "0"; slider.max = String(sim.frames.length - 1); slider.value = "0"; slider.setAttribute("aria-label", "Frame")
+                    slider.oninput = () => { playing = false; play.textContent = "Play"; frame = Number(slider.value) }
+                    const label = el("span", "text-sm text-on-surface-variant")
+                    controls.append(play, again, slider, label)
+                    status.textContent = `${(sim.frames.length / 60).toFixed(1)} s in all: the unit's skill pose and the cut-in for the first second (as in battle), then the script. ` +
+                        "Dashed: what an attack area hits, while it hits. " + sim.notes.join(" ") + " The ball is shown standing still unless Move the ball moves it." + (sprite ? "" : " (No sprite for this unit in the game's files: a circle stands in.)")
+                    const tick = (time) => {
+                        if (!canvas.isConnected) return
+                        if (playing && time - last >= 1000 / 60) { last = time; frame = frame + 1 >= sim.frames.length ? 0 : frame + 1 }
+                        stage.draw(frame)
+                        label.textContent = frame < sim.cutin ? `cut-in ${frame + 1} / ${sim.cutin}` : `script frame ${frame - sim.cutin} (${((frame - sim.cutin) / 60).toFixed(2)} s)`
+                        slider.value = String(frame)
+                        requestAnimationFrame(tick)
+                    }
+                    requestAnimationFrame(tick)
+                })
                 return box
             }
 
@@ -1372,6 +1418,14 @@
                 if (drift.length) sec.appendChild(el("p", "text-sm text-on-surface-variant", tl.stops.length
                     ? `${what[0].toUpperCase() + what.slice(1)} following the ball ${drift.some((x) => x.to === null) ? "last" : `last until frame ${Math.max(...drift.map((x) => x.to))}`}, past frame ${stopEnd} when the ball is free again: they move with it from then.`
                     : `${what[0].toUpperCase() + what.slice(1)} following the ball move with it as it keeps going.`))
+                const prev = el("button", BTN, previewOpen.has(s.key) ? "Hide preview" : "▶ Preview skill"); prev.type = "button"
+                const prevSlot = el("div", "flex flex-col")
+                prev.onclick = () => {
+                    if (previewOpen.has(s.key)) { previewOpen.delete(s.key); prevSlot.innerHTML = ""; prev.textContent = "▶ Preview skill" }
+                    else { previewOpen.add(s.key); prevSlot.appendChild(skillPreview(s)); prev.textContent = "Hide preview" }
+                }
+                if (previewOpen.has(s.key)) prevSlot.appendChild(skillPreview(s))
+                sec.append(prev, prevSlot)
                 const msgs = el("ul", "flex flex-col gap-1 text-sm"); msgs.dataset.skillMsgs = String(n); sec.appendChild(msgs)
                 sec.appendChild(blockEditor({ get: () => s.program[11], set: (b) => { s.program[11] = b } }, new Map(), 0, redraw))
                 showSkillMsgs()
@@ -1517,6 +1571,7 @@
         })()
     </script>
     <script src="/public/js/parts-player.js"></script>
+    <script src="/public/js/skill-stage.js"></script>
     <script src="/public/js/sidebar-status.js" defer></script>
 </body>
 

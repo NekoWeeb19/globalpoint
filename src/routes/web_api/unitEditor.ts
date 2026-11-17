@@ -41,7 +41,9 @@ const SE = require(path.join(__dirname, "..", "..", "..", "scripts", "skill_edit
     skillData: () => unknown
     isScriptPath: (p: unknown) => boolean
     effectFiles: (path: string, colour?: string) => Promise<unknown | null>
-    effectImage: (path: string, colour?: string) => Promise<Buffer | null>
+    effectImage: (sheet: string) => Promise<Buffer | null>
+    unitSprite: (dev: string) => Promise<unknown | null>
+    unitSpriteImage: (dev: string) => Promise<Buffer | null>
 }
 
 type Mode = string | boolean
@@ -98,7 +100,7 @@ const routes = async (fastify: FastifyInstance) => {
             return script === null ? reply.status(404).send({ error: "Not Found", message: `No script ${logical}` }) : reply.send({ path: logical, script })
         } catch (e) { return failed(reply, e) }
     })
-    // an effect's animation and its sheet, for the effect viewer (?path= an effect path, &colour= for a shared effect)
+    // an effect's animation (?path= an effect path, &colour= for a shared effect), and a sheet's picture (?sheet= as /effect names it)
     fastify.get("/effect", async (request: FastifyRequest, reply: FastifyReply) => {
         const { path: p, colour } = request.query as { path?: string, colour?: string }
         try {
@@ -106,11 +108,28 @@ const routes = async (fastify: FastifyInstance) => {
             return files === null ? reply.status(404).send({ error: "Not Found", message: `No effect ${p}` }) : reply.send(files)
         } catch (e) { return reply.status(400).send({ error: "Bad Request", message: e instanceof Error ? e.message : String(e) }) }
     })
-    fastify.get("/effect-image", async (request: FastifyRequest, reply: FastifyReply) => {
-        const { path: p, colour } = request.query as { path?: string, colour?: string }
+    // a unit's pixel sprite (?unit= its internal name), for the skill preview
+    fastify.get("/sprite", async (request: FastifyRequest, reply: FastifyReply) => {
+        const { unit } = request.query as { unit?: string }
         try {
-            const png = await SE.effectImage(String(p ?? ""), colour || undefined)
-            if (png === null) return reply.status(404).send({ error: "Not Found", message: `No image for ${p}` })
+            const sprite = await SE.unitSprite(String(unit ?? ""))
+            return sprite === null ? reply.status(404).send({ error: "Not Found", message: `No sprite for ${unit}` }) : reply.send(sprite)
+        } catch (e) { return reply.status(400).send({ error: "Bad Request", message: e instanceof Error ? e.message : String(e) }) }
+    })
+    fastify.get("/sprite-image", async (request: FastifyRequest, reply: FastifyReply) => {
+        const { unit } = request.query as { unit?: string }
+        try {
+            const png = await SE.unitSpriteImage(String(unit ?? ""))
+            if (png === null) return reply.status(404).send({ error: "Not Found", message: `No sprite for ${unit}` })
+            reply.header("cache-control", "max-age=86400")
+            return reply.type("image/png").send(png)
+        } catch (e) { return reply.status(400).send({ error: "Bad Request", message: e instanceof Error ? e.message : String(e) }) }
+    })
+    fastify.get("/effect-image", async (request: FastifyRequest, reply: FastifyReply) => {
+        const { sheet } = request.query as { sheet?: string }
+        try {
+            const png = await SE.effectImage(String(sheet ?? ""))
+            if (png === null) return reply.status(404).send({ error: "Not Found", message: `No image for ${sheet}` })
             reply.header("cache-control", "max-age=86400")
             return reply.type("image/png").send(png)
         } catch (e) { return reply.status(400).send({ error: "Bad Request", message: e instanceof Error ? e.message : String(e) }) }

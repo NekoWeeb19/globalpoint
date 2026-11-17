@@ -86,6 +86,13 @@ each unit a **Find** picked, in either branch of an **If**. The most used:
   attack areas** (on by default, at the top of the tab) sets the effect's scale whenever the area's size or the effect
   on it changes, and the effect suggestions list the ones that fit the area's shape first. Units' own effects have no
   measured size ("size not known").
+- **▶ Preview skill** (under the size line) plays the whole skill as edited, before saving: the unit's own pixel sprite
+  in its skill pose during the first second (the game's cut-in: the sprite's `skill_ready` sequence, the ball held for
+  60 frames, then the script runs), then every effect where and when the script shows it, the attack areas' hit
+  outlines while they hit, the ball's moves, the unit hiding, camera shakes; play/pause, a frame slider, from the
+  start. It's a stage, not the battle: no enemies (a pretend target, the cross above the unit, stands in for "the one
+  hit" and enemy groups; "on each hit" runs once), the ball stands still unless Move the ball moves it (moving up), and
+  a branch (If ...) shows its first block. Units are drawn × 6, as in battle (effects and areas in battle units).
 - **▶ View effect** on an Effect card plays the effect right there (the game's own animation files, played the way
   the client plays them, at 60 frames a second): play/pause, a frame slider, the element colours it comes in (the unit's
   own first), its sequences, and, when it's drawn on an attack area, a dashed outline of what the area hits.

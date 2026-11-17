@@ -135,7 +135,8 @@
                 ctx.save()
                 ctx.globalAlpha = Math.max(0, Math.min(1, q.alpha))
                 ctx.globalCompositeOperation = BLEND[q.blend] ?? "source-over"
-                ctx.setTransform(a * scale, b * scale, c * scale, d * scale, cx + x * scale, cy + y * scale)
+                // on top of the caller's transform (the skill stage places and turns effects)
+                ctx.transform(a * scale, b * scale, c * scale, d * scale, cx + x * scale, cy + y * scale)
                 // a trimmed frame: its pixels sit at (-fx, -fy) inside the untrimmed size
                 ctx.translate(-(f.fx ?? 0), -(f.fy ?? 0))
                 // a rotated frame ("r"): stored turned 90 degrees clockwise in the sheet (w x h there), turned back here

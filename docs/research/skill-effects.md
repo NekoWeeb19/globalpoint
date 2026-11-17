@@ -47,8 +47,17 @@ or `colorless`. A fixed-colour effect (`SpecifyEffectDirectly`) is used at its o
 | `.timeline.amf3.deflate` | the named sequences (e.g. spread: `neutral` 1-40, then `end` 41-68) and the sounds |
 
 Unit-only effects (`skill_unique/...`) are found the same way at their own path (Hidden Blader's throw:
-`.timeline` and `.parts`). Because file names are hashed, a folder can't be listed: a file is found by its exact
-name only.
+`.timeline` and `.parts`), but **their pictures are one sheet per folder**: `skill_unique/<unit>/<unit>.png` and
+`.atlas` (e.g. `wind_oracle_1anv/wind_oracle_1anv`), named by the effect's images (`<folder>/.gen/<effect>/a`).
+Because file names are hashed, a folder can't be listed: a file is found by its exact name only.
+
+**The unit's own sprite** (for the skill pose): `character/<unit>/pixelart/sprite_sheet.png` and `.atlas`, plus
+`pixelart.timeline` (sequences: `neutral`, `walk_back`, `walk_front`, `skill_ready`, `kachidoki`, `into_coffin`,
+`ghost_raise`, `ghost_neutral`, `revive`; the body circle; the HP gauge point). A frame animation: images
+`pixelart0051`..., each in a 256 × 256 frame; frame *f* shows the first image numbered *f* or later
+(`flatomo.animation.frame.FrameAnimationSource`). In battle it's drawn × 6 (`BattleConstants.SCALE_RENDERER`). When a
+skill fires, the sprite plays `skill_ready` with a skill flash and the cut-in (`MemberImpl.startSkillCutinAnimation`),
+the ball holds 60 frames (`BallImpl.startToSkillCutin`), then the script runs.
 
 ### How an effect's animation is stored (`.parts`)
 
