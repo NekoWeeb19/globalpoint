@@ -225,14 +225,18 @@ const isEffectPath = p => typeof p === "string" && /^battle\/(effect|common)\/[\
 const amfFile = buf => { let raw; try { raw = zlib.inflateRawSync(buf) } catch { raw = zlib.inflateSync(buf) } return readAmf3(raw) }
 // an effect's files: a shared effect (ResolveByElement) has a copy per colour, <path>/<name>_<colour>/<name>_<colour>
 const effectBase = (p, colour) => { const name = p.split("/").pop(); return colour ? `${p}/${name}_${colour}/${name}_${colour}` : p }
-const hasCnFile = logical => { const R = require("./cn_read.cjs"); return R.cnIndex().has(R.hashed(logical)) }
+// a game file: the update files, else the app's built-in ones (scripts/cn_app_bundle.cjs: e.g. the Fine and Coarse hits)
+const APP = require("./cn_app_bundle.cjs")
+const hasGameFile = async logical => { const R = require("./cn_read.cjs"); return R.cnIndex().has(R.hashed(logical)) || APP.hasAppFile(logical) }
+const readGameFile = async logical => (await require("./cn_read.cjs").readCn(logical)) ?? APP.readAppFile(logical)
 
 /** An effect's animation (parts, atlas, timeline) and the colours it comes in; null when the game has no such effect. */
 async function effectFiles(p, colour) {
     if (!isEffectPath(p) || (colour && !COLOURS.includes(colour))) throw new Error("not an effect path")
-    const { readCn } = require("./cn_read.cjs")
-    const colours = COLOURS.filter(c => hasCnFile(effectBase(p, c) + ".parts.amf3.deflate"))
-    const base = effectBase(p, colour ?? (hasCnFile(p + ".parts.amf3.deflate") ? null : colours[0]))
+    const readCn = readGameFile
+    const colours = []
+    for (const c of COLOURS) if (await hasGameFile(effectBase(p, c) + ".parts.amf3.deflate")) colours.push(c)
+    const base = effectBase(p, colour ?? ((await hasGameFile(p + ".parts.amf3.deflate")) ? null : colours[0]))
     const [partsBuf, ownAtlas, timeline] = await Promise.all([".parts", ".atlas", ".timeline"].map(e => readCn(base + e + ".amf3.deflate")))
     if (!partsBuf) return null
     const parts = amfFile(partsBuf)
@@ -253,7 +257,7 @@ async function effectFiles(p, colour) {
 /** An effect sheet as a PNG (the "sheet" effectFiles names; the game stores it with a lowercase "png" signature). */
 async function effectImage(sheet) {
     if (!isEffectPath(sheet)) throw new Error("not an effect path")
-    const buf = await require("./cn_read.cjs").readCn(sheet + ".png")
+    const buf = await readGameFile(sheet + ".png")
     if (!buf) return null
     const out = Buffer.from(buf)
     if (out[1] === 0x70 && out[2] === 0x6e && out[3] === 0x67) out.write("PNG", 1, "latin1")
@@ -267,7 +271,7 @@ const isDevName = d => typeof d === "string" && /^[a-z0-9_]+$/.test(d)
 /** A unit's sprite atlas and timeline (its sequences: neutral, skill_ready...); null when the game has none. */
 async function unitSprite(dev) {
     if (!isDevName(dev)) throw new Error("not a unit name")
-    const { readCn } = require("./cn_read.cjs")
+    const readCn = readGameFile
     const [atlas, timeline] = await Promise.all([`character/${dev}/pixelart/sprite_sheet.atlas`, `character/${dev}/pixelart/pixelart.timeline`].map(f => readCn(f + ".amf3.deflate")))
     return atlas ? { atlas: amfFile(atlas), timeline: timeline ? amfFile(timeline) : null } : null
 }
@@ -275,7 +279,7 @@ async function unitSprite(dev) {
 /** A unit's sprite sheet as a PNG (signature restored). */
 async function unitSpriteImage(dev) {
     if (!isDevName(dev)) throw new Error("not a unit name")
-    const buf = await require("./cn_read.cjs").readCn(`character/${dev}/pixelart/sprite_sheet.png`)
+    const buf = await readGameFile(`character/${dev}/pixelart/sprite_sheet.png`)
     if (!buf) return null
     const out = Buffer.from(buf)
     if (out[1] === 0x70 && out[2] === 0x6e && out[3] === 0x67) out.write("PNG", 1, "latin1")

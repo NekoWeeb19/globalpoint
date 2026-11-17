@@ -9,7 +9,8 @@
 // An approximation for the dashboard, not the battle: no enemies (a pretend target stands in for "the one hit", groups
 // of enemies and anything the stage can't place; it's put where the first attack area reaches), the ball stands still
 // unless Move the ball moves it (moving up), and a branch (If ...) shows its first block. Fine and Coarse hit effects
-// aren't in the game's update files, so a drawn stand-in shows them. Needs parts-player.js (window.PartsPlayer).
+// are built into the game app (assets/bundle.zip; the server reads it from the game APK, scripts/cn_app_bundle.cjs);
+// without it a drawn burst stands in. Needs parts-player.js (window.PartsPlayer).
 ;(function (root) {
     const CUTIN = 60 // frames before the script runs
     const UNIT_SCALE = 6
@@ -32,7 +33,8 @@
         const colour = element === 255 ? unitColour : COLOURS[element - 1] ?? unitColour
         const H = "battle/effect/hit/normal_damage/"
         switch (v[0]) {
-            case "Fine": case "Coarse": return { path: `standin:${v[0].toLowerCase()}:${colour}`, standin: true }
+            // built into the game app (assets/bundle.zip); a drawn burst stands in when the server has no game APK
+            case "Fine": case "Coarse": { const n = v[0].toLowerCase(); return { path: `${H}${n}/${n}_${colour}/${n}_${colour}`, fallback: `standin:${n}:${colour}` } }
             case "Slash": return { path: `${H}slash/slash_${colour}/slash_${colour}` }
             case "CriticalSlash": return { path: `${H}slash_strong/slash_strong_${colour}/slash_strong_${colour}` }
             case "Dark": case "Explosion": case "Fire": case "Frozen": case "Shine": case "Splash": case "Tornado": { const n = v[0].toLowerCase(); return { path: `${H}${n}/${n}` } }
@@ -189,8 +191,8 @@
                         const hit = hitEffect(p[15], p[2], opts.colour ?? "blue")
                         if (!hit) break
                         const of = subject(p[1], local)
-                        if (hit.standin) notes.add("Fine and Coarse hit effects aren't in the game's update files: a drawn burst stands in for them.")
-                        effects.push({ kind: "effect", path: hit.path, shared: !!hit.shared, standin: !!hit.standin, start: t, end: t + (effectFrames[hit.path]?.total ?? 24), once: false, x: of.x, y: of.y, rot: 0, scale: 1, layer: "" })
+                        // a hit effect plays once through (the stage hides it after its last frame)
+                        effects.push({ kind: "effect", path: hit.path, shared: !!hit.shared, fallback: hit.fallback, hit: true, start: t, end: t + (effectFrames[hit.path]?.total ?? 60), once: false, x: of.x, y: of.y, rot: 0, scale: 1, layer: "" })
                         break
                     }
                     case "HideCharacter": hides.push([t, t + (p[2] || 0)]); break
@@ -230,7 +232,7 @@
             const snap = { frame: f, ball: { x: ball.x, y: ball.y, hidden: hides.some(([a, b]) => f >= a && f < b) }, shake: 0, areas: [], effects: [], points: [] }
             for (const a of areas) if (f >= a.start && f < a.end) { follow(a); snap.areas.push({ shape: a.shape, x: a.x, y: a.y, rot: a.rot }) }
             for (const p of points) if (f >= p.start && f < p.end) { follow(p); snap.points.push({ x: p.x, y: p.y }) }
-            for (const e of effects) if (f >= e.start && f < e.end) { follow(e); snap.effects.push({ path: e.path, shared: e.shared, standin: e.standin, local: f - e.start, once: e.once, x: e.x, y: e.y, rot: e.rot, scale: e.scale, layer: e.layer }) }
+            for (const e of effects) if (f >= e.start && f < e.end) { follow(e); snap.effects.push({ path: e.path, shared: e.shared, fallback: e.fallback, hit: e.hit, local: f - e.start, once: e.once, x: e.x, y: e.y, rot: e.rot, scale: e.scale, layer: e.layer }) }
             for (const s of shakes) if (f >= s.start && f < s.end) snap.shake = Math.max(snap.shake, s.size * 6 * (1 - (f - s.start) / 18))
             frames.push(snap)
         }
@@ -258,9 +260,10 @@
         constructor(canvas, sim, sprite, loadEffect, effectFrames) {
             this.canvas = canvas; this.sim = sim; this.sprite = sprite; this.effectFrames = effectFrames
             this.players = new Map()
-            for (const f of sim.frames) for (const e of f.effects) if (!e.standin && !this.players.has(e.path)) {
+            // players by path: null while loading, false when the effect can't be had
+            for (const f of sim.frames) for (const e of f.effects) if (!this.players.has(e.path)) {
                 this.players.set(e.path, null)
-                loadEffect(e.path, e.shared).then((pl) => this.players.set(e.path, pl)).catch(() => { })
+                loadEffect(e.path, e.shared).then((pl) => this.players.set(e.path, pl || false)).catch(() => this.players.set(e.path, false))
             }
             // the sprite's frames by number (frame f shows the first image numbered f or later)
             if (sprite) {
@@ -291,8 +294,10 @@
             const drawEffects = (behind) => {
                 for (const e of snap.effects) {
                     if ((e.layer === "BacksideOfCharacter") !== behind) continue
-                    if (e.standin) { if (!behind) standin(e); continue }
-                    const pl = this.players.get(e.path); if (!pl) continue
+                    const pl = this.players.get(e.path)
+                    if (pl === false && e.fallback) { if (!behind) standin({ ...e, path: e.fallback }); continue }
+                    if (!pl) continue
+                    if (e.hit && e.local >= pl.total) continue
                     const lf = effectFrame(this.effectFrames[e.path], pl.total, e.local, e.once)
                     ctx.save(); ctx.translate(W(e.x), H(e.y)); ctx.rotate(e.rot || 0)
                     pl.draw(ctx, lf, 0, 0, v.zoom * e.scale)
