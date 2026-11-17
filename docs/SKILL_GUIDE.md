@@ -55,6 +55,40 @@ the buff inside on "the group"). Tested: attack up on the unit showed and applie
 | **Buff / debuff** | no | Attack up, damage up, resistances... on the unit, the party or the enemy hit. |
 | **Camera shake, Heal, Fever / skill gauge** | no | As named. |
 
+## When things happen
+
+There's no separate "trigger" setting in a skill: **where a command sits decides when it runs** (and, inside a Find or
+an area, *on whom*). The script runs top to bottom, all at once, after the 1-second cut-in; the blocks inside other
+commands run later or more than once:
+
+| Put the command... | It runs | E.g. a Buff / debuff there |
+|---|---|---|
+| at the **top level** | once, the moment the skill starts | buff the unit (or the party) as the skill fires |
+| inside a **Wait** (N frames) | once, N frames later | a buff that lands after the attack |
+| inside a **Repeat** (every N frames, M times) | M times: right away, then every N frames | a buff given again and again (stacks up to its max stacks) |
+| in an Attack area's **when it appears** | once per area, when the area appears (a formation of 5 areas: 5 times) | rare; mostly effects and Move an area go here |
+| in an Attack area's **on each hit** | every time the area hits an enemy, once per enemy per hit | a **debuff on "the hit target"** (only enemies it touches get it), or a buff on the unit per hit |
+| inside **Find a group / Find the nearest** | once for each one found, with the id pointing at them | buff every party member; debuff the nearest enemy |
+| inside **If HP ≥ X %** / **If in Fever** | only in the branch that's true when it's reached | Clara's skill: attack up if HP ≥ 60 %, a shield and heal if not |
+| inside **Random pick** | one option, picked by weight, each time it's reached | a random bonus |
+| inside **When the ball hits** | when the unit's ball hits an enemy, while the event listens (its frames, its max times) | a debuff on the enemy the ball touches |
+
+**For buffs and debuffs, the Buff / debuff command itself then decides how it lands** (names from the client's code):
+
+- **target**: who gets it. "the unit", or an id from around it: "the group" (in a Find), "the hit target" (in on
+  each hit).
+- **conditions**: the buff itself, e.g. *ACAttackPoint* = attack: **frames** (how long it lasts; 720 = 12 s),
+  **amount** (0.4 = +40 %, negative = down), **max stacks**. Several conditions can be given at once.
+- **chance it lands**: 1 = always.
+- **given again even if it's already on**: off = a second copy is ignored while the first lasts; on = it stacks
+  (up to max stacks).
+- **can be removed**: whether cleansing / dispelling can take it off.
+- **who it may go to**: a unit, the party, or either (a mismatch is a client error, so keep CN's value).
+
+So, for example, "debuff every enemy the slash touches, once" is: Attack area → **on each hit** → Buff / debuff on
+**the hit target**, with "given again" off. "Buff the unit each time the area hits" is the same place with the target
+**the unit** and max stacks above 1.
+
 ## What can break a skill
 
 The checker (red "Can't save" notes) refuses anything the game can't read, so a saved skill always *loads*. These are
