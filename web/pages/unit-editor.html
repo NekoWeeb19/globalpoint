@@ -496,7 +496,20 @@
                 $("reset").disabled = !unit.saved && !dirty()
                 if (unit.custom) $("reset").title = "A custom unit's changes are in its own file"
             }
-            function changed() { renderButtons(); scheduleCheck() }
+            function changed() { renderButtons(); scheduleCheck(); schedulePreviews() }
+            // open skill previews follow every edit, not only redraws (rebuilt a moment after the last change, same frame)
+            const previewSlots = new Map() // skill key -> { slot, s, frame: () => current frame }
+            let previewTimer = null
+            function schedulePreviews() {
+                clearTimeout(previewTimer)
+                previewTimer = setTimeout(() => {
+                    for (const [key, p] of previewSlots) {
+                        if (!p.slot.isConnected || !previewOpen.has(key)) { previewSlots.delete(key); continue }
+                        const at = p.frame(), playing = p.playing()
+                        p.slot.innerHTML = ""; p.slot.appendChild(skillPreview(p.s, p.slot, at, playing))
+                    }
+                }, 400)
+            }
 
             function renderAbilities() {
                 const box = $("tab-abilities"); box.innerHTML = ""
@@ -1238,7 +1251,8 @@
                 })).catch(() => null))
                 return spriteCache.get(dev)
             }
-            function skillPreview(s) {
+            // slot: where it's shown (to rebuild it there after an edit); from / wasPlaying: where it was
+            function skillPreview(s, slot, from = 0, wasPlaying = true) {
                 const box = el("div", "flex flex-col gap-2 p-3 rounded-2xl bg-surface-container-high")
                 const canvas = el("canvas"); canvas.width = 360; canvas.height = 480
                 canvas.style.cssText = "width: 100%; max-width: 360px; background: #101418; border-radius: 12px"
@@ -1249,11 +1263,12 @@
                 const effect = (path, shared) => loadEffect(path, shared ? colour : null).then(({ files, img }) => new PartsPlayer(files.parts, files.atlas, img))
                 loadSprite().then((sprite) => {
                     const stage = new SkillPreview.SkillStage(canvas, sim, sprite, effect, S.effectFrames ?? {})
-                    let frame = 0, playing = true, last = 0
-                    const play = el("button", BTN, "Pause"); play.type = "button"
+                    let frame = Math.min(from, sim.frames.length - 1), playing = wasPlaying, last = 0
+                    if (slot) previewSlots.set(s.key, { slot, s, frame: () => frame, playing: () => playing })
+                    const play = el("button", BTN, playing ? "Pause" : "Play"); play.type = "button"
                     play.onclick = () => { playing = !playing; play.textContent = playing ? "Pause" : "Play" }
                     const again = el("button", BTN, "From the start"); again.type = "button"; again.onclick = () => { frame = 0; playing = true; play.textContent = "Pause" }
-                    const slider = el("input"); slider.type = "range"; slider.min = "0"; slider.max = String(sim.frames.length - 1); slider.value = "0"; slider.setAttribute("aria-label", "Frame")
+                    const slider = el("input"); slider.type = "range"; slider.min = "0"; slider.max = String(sim.frames.length - 1); slider.value = String(frame); slider.setAttribute("aria-label", "Frame")
                     slider.oninput = () => { playing = false; play.textContent = "Play"; frame = Number(slider.value) }
                     const label = el("span", "text-sm text-on-surface-variant")
                     controls.append(play, again, slider, label)
@@ -1437,9 +1452,9 @@
                 const prevSlot = el("div", "flex flex-col")
                 prev.onclick = () => {
                     if (previewOpen.has(s.key)) { previewOpen.delete(s.key); prevSlot.innerHTML = ""; prev.textContent = "▶ Preview skill" }
-                    else { previewOpen.add(s.key); prevSlot.appendChild(skillPreview(s)); prev.textContent = "Hide preview" }
+                    else { previewOpen.add(s.key); prevSlot.appendChild(skillPreview(s, prevSlot)); prev.textContent = "Hide preview" }
                 }
-                if (previewOpen.has(s.key)) prevSlot.appendChild(skillPreview(s))
+                if (previewOpen.has(s.key)) prevSlot.appendChild(skillPreview(s, prevSlot))
                 sec.append(prev, prevSlot)
                 const msgs = el("ul", "flex flex-col gap-1 text-sm"); msgs.dataset.skillMsgs = String(n); sec.appendChild(msgs)
                 sec.appendChild(blockEditor({ get: () => s.program[11], set: (b) => { s.program[11] = b } }, new Map(), 0, redraw))
