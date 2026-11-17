@@ -49,9 +49,9 @@ const MEANINGS = {
 // events: commands that hold a block run later (after a wait, again and again, when the ball hits...)
 const EVENT_MEANINGS = {
     Wait: { label: "Wait", what: "Wait, then run the block (the rest of the script is usually inside it).", p: [["frames (60 = 1 s)"], ["label", "string"], ["then", "block"]] },
-    Repeat: { label: "Repeat", what: "Run the block again and again (inferred: every N frames, M times).", p: [["(inferred) frames between"], ["(inferred) times"], ["label", "string"], ["each time", "block"]] },
-    CollisionOfBallAndEnemy: { label: "When the ball hits", what: "Run the block when the unit's ball hits an enemy (inferred).", p: [["(inferred) frames it listens"], ["(inferred) number"], ["label", "string"], ["(inferred) number"], ["on a hit", "block"]] },
-    CollisionOfBallAndSpecificEnemy: { label: "When the ball hits (enemy)", what: "Run a block when the ball hits an enemy (inferred).", p: [["(inferred) subject", "subject"], ["(inferred) frames it listens"], ["(inferred) number"], ["label", "string"], ["(inferred) number"], ["on a hit", "block"], ["(inferred) otherwise", "block"]] },
+    Repeat: { label: "Repeat", what: "Run the block right away, then every N frames, M times in all (client: ListeningEvent).", p: [["frames between"], ["times"], ["label", "string"], ["each time", "block"]] },
+    CollisionOfBallAndEnemy: { label: "When the ball hits", what: "Run the block when the unit's ball hits an enemy (inferred).", p: [["frames it listens"], ["max times it fires"], ["label", "string"], ["(inferred) number"], ["on a hit", "block"]] },
+    CollisionOfBallAndSpecificEnemy: { label: "When the ball hits (enemy)", what: "Run a block when the ball hits an enemy (inferred).", p: [["(inferred) subject", "subject"], ["frames it listens"], ["max times it fires"], ["label", "string"], ["(inferred) number"], ["on a hit", "block"], ["(inferred) otherwise", "block"]] },
 }
 
 const rd = b => { try { return readAmf3(zlib.inflateRawSync(b)) } catch { return readAmf3(zlib.inflateSync(b)) } }

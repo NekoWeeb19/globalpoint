@@ -15622,7 +15622,7 @@
    "params": [
     {
      "type": "int",
-     "label": "(inferred) frames it listens",
+     "label": "frames it listens",
      "kind": "number",
      "shapes": [
       "number"
@@ -15645,7 +15645,7 @@
     },
     {
      "type": "int",
-     "label": "(inferred) number",
+     "label": "max times it fires",
      "kind": "number",
      "shapes": [
       "number"
@@ -16276,7 +16276,7 @@
     },
     {
      "type": "int",
-     "label": "(inferred) frames it listens",
+     "label": "frames it listens",
      "kind": "number",
      "shapes": [
       "number"
@@ -16319,7 +16319,7 @@
     },
     {
      "type": "int",
-     "label": "(inferred) number",
+     "label": "max times it fires",
      "kind": "number",
      "shapes": [
       "number"
@@ -16496,7 +16496,7 @@
   "Repeat": {
    "index": 1,
    "label": "Repeat",
-   "what": "Run the block again and again (inferred: every N frames, M times).",
+   "what": "Run the block right away, then every N frames, M times in all (client: ListeningEvent).",
    "skills": 83,
    "template": [
     "Event",
@@ -16530,7 +16530,7 @@
    "params": [
     {
      "type": "int",
-     "label": "(inferred) frames between",
+     "label": "frames between",
      "kind": "number",
      "shapes": [
       "number"
@@ -16573,7 +16573,7 @@
     },
     {
      "type": "int",
-     "label": "(inferred) times",
+     "label": "times",
      "kind": "number",
      "shapes": [
       "number"
