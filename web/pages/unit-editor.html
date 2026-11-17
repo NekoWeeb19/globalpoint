@@ -780,6 +780,7 @@
             const scriptCache = new Map(), programBase = {}, gameBase = {}
             const skillData = () => S ? Promise.resolve(S) : (skillLoading ??= api("/skill-data").then((d) => {
                 S = d
+                S.effectFrames = Object.fromEntries(d.effects.filter((e) => e.frames).map((e) => [e.path, e.frames]))
                 const list = el("datalist"); list.id = "skill-effects"
                 for (const e of d.effects) { const o = el("option"); o.value = e.path; o.label = `${e.path.includes("/skill_general/") ? "shared" : "unit's own"}, ${e.skills} skill${e.skills === 1 ? "" : "s"}`; list.appendChild(o) }
                 document.body.appendChild(list)
@@ -914,7 +915,7 @@
                 ["81", "the unit's multiballs"], ["82", "units without multiballs"], ["83", "1st unit"], ["84", "2nd unit"], ["85", "3rd unit"], ["86", "all multiballs"],
                 ["87", "summoned multiballs"], ["97", "the main squad"], ["113", "main squad members"], ["114", "main squad, not the unit"], ["129", "all sub squads"],
                 ["130", "the unit's sub squads"], ["131", "summoned sub squads"], ["145", "all sub squad members"], ["146", "the unit's sub squad members"], ["147", "summoned sub squad members"]]
-            const codeSelect = (list, holder, i, label) => select(list, String(holder[i]), (x) => { holder[i] = Number(x); changed() }, label)
+            const codeSelect = (list, holder, i, label, after) => select(list, String(holder[i]), (x) => { holder[i] = Number(x); (after ?? changed)() }, label)
             // formations (inferred from CN's values): Circle = ring, NWay = fan, Line = row
             const FORMATION = { Circle: ["areas", "ring radius"], NWay: ["areas", "angle between"], Line: ["areas", "spacing"], AShaped: ["areas", "angle", "distance"] }
             function rangeBoxes(list, label, onSet) {
@@ -955,7 +956,7 @@
                     box.onchange = () => { holder[i] = box.checked; done() }
                     wrap.appendChild(box); return wrap
                 }
-                if (typeof v === "number" && (/^element/.test(label) || label === "element") && ELEMENTS.some(([k]) => k === String(v))) { wrap.appendChild(codeSelect(ELEMENTS, holder, i, label)); return wrap }
+                if (typeof v === "number" && (/^element/.test(label) || label === "element") && ELEMENTS.some(([k]) => k === String(v))) { wrap.appendChild(codeSelect(ELEMENTS, holder, i, label, () => { done(); rerender() })); return wrap }
                 if (typeof v === "number" && /^who it may go to/.test(label)) { wrap.appendChild(codeSelect([["1", "a unit"], ["2", "the party"], ["3", "either"]], holder, i, label)); return wrap }
                 if (typeof v === "number" && meta.kind === "group") { wrap.appendChild(codeSelect(GROUPS, holder, i, label)); return wrap }
                 if (typeof v === "number") {
@@ -1014,7 +1015,7 @@
             }
             // ---- effects drawn on attack areas: CN draws each shared effect at a fixed size per scale (effectSizes, measured
             // from CN's own areas: e.g. spread = radius 42 at scale 1), so the editor can size an effect to its area ----
-            let keepFit = prefs.get("skill-editor-fit") !== "0"
+            let keepFit = prefs.get("skill-editor-fit") !== "0", currentProgram = null
             const effectPath = (fx) => Array.isArray(fx) && typeof fx[1] === "string" ? fx[1] : null
             const r2 = (n) => Math.round(n * 100) / 100
             const areaEnds = (shape, end) => ({ kind: shape?.[0], a: shape?.[1]?.[0]?.[end], b: shape?.[2]?.[0]?.[end] })
@@ -1045,7 +1046,12 @@
                 const out = [], area = areaEnds(p[9], "max")
                 for (const fx of effectsOnArea(p)) {
                     const path = effectPath(fx[2]), size = S.effectSizes?.[path], sc = scaleOf(fx).max, name = (path ?? "?").split("/").pop().replace(/_/g, " ")
-                    if (!size) { out.push({ text: `Drawn: ${name}, size not known (not one of the shared effects CN draws on areas)` }); continue }
+                    if (!size) {
+                        const life = effectLife(fx), alife = areaLife(p)
+                        const warn = typeof life === "number" && alife && (life < alife * 0.75 || life > alife * 1.5) ? `it shows for ${life} frames, the area hits for ${alife}` : ""
+                        out.push({ text: `Drawn: ${name}, size not known (not one of the shared effects CN draws on areas)${typeof life === "number" ? `, for ${secs(life)}` : life === "area" ? ", for as long as the area lasts" : ""}`, warn })
+                        continue
+                    }
                     const drawn = size.shape === "Circle" ? `a circle of radius ${Math.round(size.radius * sc)}` : `a ${Math.round(size.width * sc)} × ${Math.round(size.height * sc)} rectangle`
                     let warn = ""
                     const round = area.kind === "Circle" || area.kind === "Sector"
@@ -1055,7 +1061,16 @@
                         const want = fitScale(size, area)
                         if (want && Math.abs(sc / want - 1) > 0.2) warn = `the picture is ${Math.round(Math.abs(sc / want - 1) * 100)} % ${sc > want ? "bigger" : "smaller"} than what hits (scale ${r2(want)} fits)`
                     }
-                    out.push({ text: `Drawn: ${name} at scale ${sc} ≈ ${drawn}`, warn })
+                    // how long it shows against how long the area hits
+                    const life = effectLife(fx), alife = areaLife(p)
+                    let when = ""
+                    if (life === "area") when = ", for as long as the area lasts"
+                    else if (typeof life === "number") when = `, for ${secs(life)}`
+                    if (!warn && typeof life === "number" && alife) {
+                        if (life < alife * 0.75) warn = `the picture is gone at frame ${life} but the area hits until frame ${alife}`
+                        else if (life > alife * 1.5) warn = `the picture plays on to frame ${life} after the area stops hitting at frame ${alife}`
+                    }
+                    out.push({ text: `Drawn: ${name} at scale ${sc} ≈ ${drawn}${when}`, warn })
                 }
                 return out
             }
@@ -1075,16 +1090,76 @@
                 return id
             }
 
+            // ---- how long things last (frames; 60 = 1 s) ----
+            const topOf = (v) => typeof v === "number" ? v : isRangeV(v) ? v[0][rangeKeys(v[0])[1]] : null
+            // an attack area's lifetime (null when it isn't a number of frames)
+            const areaLife = (p) => Array.isArray(p[13]) && /^SpecifyHitAreaLifetime/.test(p[13][0]) ? topOf(p[13][1]) : null
+            // an effect's time on screen: frames, "area" (as long as what it's on), or null (not known)
+            function effectLife(fx) {
+                const lt = fx[5], fr = S.effectFrames?.[effectPath(fx[2])]
+                if (!Array.isArray(lt)) return null
+                if (/^SpecifyEffectLifetime/.test(lt[0])) return topOf(lt[1])
+                if (lt[0] === "PlayOnlyFirstSequence") return fr ? fr.first : null
+                if (lt[0] === "UntilTargetTerminates") return "area"
+                return null
+            }
+            const secs = (f) => `${f} frames (${num(f / 60)} s)`
+            // the skill's timeline: when it ends, and when the ball is stopped (Wait and Repeat move what's inside later)
+            function skillTimeline(root) {
+                const out = { end: 0, stops: [], onBall: [] }
+                const walk = (block, t) => {
+                    for (const it of block[1]) {
+                        if (isBlockV(it)) { walk(it, t); continue }
+                        if (!isItemV(it)) continue
+                        const p = it[1], kids = p.slice(1).filter((x) => isBlockV(x) || isItemV(x)).map((x) => isBlockV(x) ? x : ["Block", [x]])
+                        let at = t
+                        if (it[0] === "Event" && p[0] === "Wait" && typeof p[1] === "number") at = t + p[1]
+                        if (it[0] === "Event" && p[0] === "Repeat" && typeof p[1] === "number" && typeof p[2] === "number") at = t + p[1] * Math.max(0, p[2] - 1)
+                        if (p[0] === "CreateHitArea") {
+                            const life = areaLife(p)
+                            if (life !== null) out.end = Math.max(out.end, t + life)
+                            if (p[2] === -18 && p[7]) out.onBall.push({ what: "an attack area", from: t, to: life === null ? null : t + life })
+                        }
+                        if (p[0] === "ShowEffect") {
+                            const life = effectLife(p)
+                            if (typeof life === "number") out.end = Math.max(out.end, t + life)
+                            if (p[3] === -18 && p[10]) out.onBall.push({ what: "an effect", from: t, to: typeof life === "number" ? t + life : null })
+                        }
+                        if ((p[0] === "StopBall" || p[0] === "HideCharacter" || p[0] === "MoveBall") && typeof (p[0] === "MoveBall" ? p[4] : p[2]) === "number") {
+                            const f = p[0] === "MoveBall" ? p[4] : p[2]
+                            out.end = Math.max(out.end, t + f)
+                            if (p[0] === "StopBall") out.stops.push([t, t + f])
+                        }
+                        out.end = Math.max(out.end, t)
+                        for (const k of kids) walk(k, at)
+                    }
+                }
+                walk(root, 0)
+                return out
+            }
+            // how often an attack area hits each enemy, from its "time between hits", max hits and "disappears" settings
+            function hitsPerEnemy(p) {
+                const life = areaLife(p), iv = p[14], max = Array.isArray(p[15]) && p[15][0] === "Some" ? topOf(p[15][1]) : null
+                let n = null, every = null
+                if (Array.isArray(iv) && iv[0] === "CalculatedUsingMaxNumOfHits") { n = topOf(iv[1]); if (life) every = Math.round(life / n * 10) / 10 }
+                if (Array.isArray(iv) && iv[0] === "SpecifyMinHitIntervalDirectly" && life) { every = topOf(iv[1]); n = Math.max(1, Math.ceil(life / every)) }
+                if (n !== null && max) n = Math.min(n, max)
+                if (p[16] === true) n = 1 // disappears when it hits
+                const areas = Array.isArray(p[12]) && p[12][0] !== "Single" && typeof p[12][1] === "number" ? p[12][1] : 1
+                return { n, every, areas }
+            }
+            const ELEMENT_NAMES = Object.fromEntries(ELEMENTS)
+
             // ---- blocks: cards with their settings; add, move, copy, remove ----
             // getBlock/setBlock: a block slot may hold a block, one command or nothing; it becomes a block when changed
-            function blockEditor(slot, outer, depth, rerender, area = null) {
+            function blockEditor(slot, outer, depth, rerender, area = null, hitArea = null) {
                 const cur = slot.get(), block = isBlockV(cur) ? cur : ["Block", cur ? [cur] : []]
                 const commit = () => { if (block !== cur) slot.set(block); changed(); rerender() }
                 const list = el("div", "flex flex-col gap-2" + (depth ? " border-outline-variant" : ""))
                 if (depth) list.style.cssText = "padding-left: 16px; border-left-width: 2px; border-left-style: solid"
                 const scope = new Map(outer)
                 block[1].forEach((it, j) => {
-                    if (isBlockV(it)) { list.appendChild(blockEditor({ get: () => block[1][j], set: (b) => { block[1][j] = b } }, scope, depth + 1, rerender, area)); return }
+                    if (isBlockV(it)) { list.appendChild(blockEditor({ get: () => block[1][j], set: (b) => { block[1][j] = b } }, scope, depth + 1, rerender, area, hitArea)); return }
                     if (!isItemV(it)) { list.appendChild(el("p", "text-sm", JSON.stringify(it))); return }
                     const [name, ...ps] = it[1], info = infoOf(it)
                     const card = el("div", "flex flex-col gap-1 p-3 rounded-2xl bg-surface-container-low")
@@ -1110,7 +1185,7 @@
                         if (meta.type === "ActionDslExpression") {
                             const sub = el("div", "flex flex-col gap-1 mt-1")
                             sub.appendChild(el("span", "text-sm text-on-surface-variant", label + ":"))
-                            sub.appendChild(blockEditor({ get: () => it[1][i + 1], set: (b) => { it[1][i + 1] = b } }, inner, depth + 1, rerender, name === "CreateHitArea" && i === 19 ? it[1] : null))
+                            sub.appendChild(blockEditor({ get: () => it[1][i + 1], set: (b) => { it[1][i + 1] = b } }, inner, depth + 1, rerender, name === "CreateHitArea" && i === 19 ? it[1] : null, name === "CreateHitArea" && i === 22 ? it[1] : hitArea))
                             blocks.push(sub); return
                         }
                         const line = el("div", "flex flex-wrap gap-2 items-center"), name_ = el("span", "text-on-surface-variant", label.replace("(radians)", "(degrees)"))
@@ -1127,6 +1202,22 @@
                         if (typical && (!meta.label || meta.label.startsWith("(inferred)"))) usual.push(line); else main.appendChild(line)
                     })
                     card.appendChild(main)
+                    if (name === "CreateNormalAttack") {
+                        const notes = []
+                        const mult = it[1][6], lo = isRangeV(mult) ? mult[0][rangeKeys(mult[0])[0]] : null, hi = topOf(mult)
+                        if (hitArea && lo !== null) {
+                            const h = hitsPerEnemy(hitArea)
+                            if (h.n !== null) {
+                                const tot = (m) => num(Math.round(m * h.n * 100) / 100)
+                                notes.push({ text: `The attack area can hit each enemy up to ${h.n} time${h.n === 1 ? "" : "s"}${h.every ? ` (every ${h.every} frames)` : ""}, so the damage multiplier adds up to ${tot(lo)}${lo === hi ? "" : ` → ${tot(hi)}`} per enemy${h.areas > 1 ? `, per area (the formation makes ${h.areas}: more where they overlap)` : ""}. (Hits × multiplier, from the settings; not measured in game.)` })
+                            }
+                        }
+                        // the element it hits as, against the effects drawn in the unit's own element
+                        const elem = it[1][2]
+                        if (typeof elem === "number" && elem !== 255 && JSON.stringify(currentProgram ?? []).includes('"ResolveByElement"'))
+                            notes.push({ text: `Hits as ${ELEMENT_NAMES[String(elem)] ?? "element " + elem}`, warn: "the skill's shared effects are drawn in the unit's own element, so it may look like another element than it hits as" })
+                        for (const n of notes) card.appendChild(el("p", "text-sm px-3 py-1 rounded-lg " + (n.warn ? "bg-tertiary-container text-on-tertiary-container" : "text-on-surface-variant"), n.text + (n.warn ? ` — ${n.warn}` : "")))
+                    }
                     if (name === "CreateHitArea") for (const n of drawnNotes(it[1])) {
                         card.appendChild(el("p", "text-sm px-3 py-1 rounded-lg " + (n.warn ? "bg-tertiary-container text-on-tertiary-container" : "text-on-surface-variant"), n.text + (n.warn ? ` — ${n.warn}` : "")))
                     }
@@ -1183,6 +1274,17 @@
                 if (!root) { sec.appendChild(el("p", "text-on-surface-variant", "The script has no command block.")); return }
                 const st = scriptStats(root), lim = S.limits[checkMode()] ?? S.limits.default
                 sec.appendChild(el("p", "text-sm text-on-surface-variant", `${st.commands} commands · ${st.areas} attack area${st.areas === 1 ? "" : "s"} · ${st.effects} effect${st.effects === 1 ? "" : "s"} · ${st.depth} levels deep (the most in this mode: ${lim.commands} commands, ${lim.areas} areas, ${lim.depth} levels, or as big as the script you started from)`))
+                currentProgram = s.program
+                const tl = skillTimeline(root)
+                const stopEnd = tl.stops.length ? Math.max(...tl.stops.map((x) => x[1])) : 0
+                sec.appendChild(el("p", "text-sm text-on-surface-variant", `Runs about ${secs(tl.end)} from the start (Waits, attack areas, effects and ball moves added up; Repeat taken as interval × times). ` +
+                    (tl.stops.length ? `The ball is stopped ${tl.stops.map(([a, b]) => `from frame ${a} to ${b}`).join(", ")}.` : "The ball keeps moving the whole time (no Stop the ball).")))
+                const drift = tl.onBall.filter((x) => x.to === null || x.to > stopEnd)
+                // things that follow the ball move with it once it's free (Clara's whirlwind does this on purpose)
+                const what = [...new Set(drift.map((x) => x.what))].join(" and ")
+                if (drift.length) sec.appendChild(el("p", "text-sm text-on-surface-variant", tl.stops.length
+                    ? `${what[0].toUpperCase() + what.slice(1)} following the ball ${drift.some((x) => x.to === null) ? "last" : `last until frame ${Math.max(...drift.map((x) => x.to))}`}, past frame ${stopEnd} when the ball is free again: they move with it from then.`
+                    : `${what[0].toUpperCase() + what.slice(1)} following the ball move with it as it keeps going.`))
                 const msgs = el("ul", "flex flex-col gap-1 text-sm"); msgs.dataset.skillMsgs = String(n); sec.appendChild(msgs)
                 sec.appendChild(blockEditor({ get: () => s.program[11], set: (b) => { s.program[11] = b } }, new Map(), 0, redraw))
                 showSkillMsgs()

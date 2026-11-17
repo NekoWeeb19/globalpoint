@@ -155,6 +155,25 @@ const shapeOf = v => v === null || v === undefined ? "none" : typeof v === "bool
     }
     // effects CN's skills show: how (in the unit's element / that file), path, how many skills
     out.effects = [...effects].map(([k, set]) => { const [how, p] = k.split("|"); return { how, path: p, skills: set.size } }).sort((a, b) => b.skills - a.skills)
+    // each effect's animation (its .timeline: sequences of frames, e.g. spread "neutral" 1-40 then "end" 41-68): first = what
+    // "play once" (PlayOnlyFirstSequence) shows, total = to the last frame. A shared effect is read from one of its colours.
+    const COLOURS = ["blue", "red", "yellow", "green", "white", "black", "colorless"]
+    let timed = 0
+    for (const e of out.effects) {
+        const name = e.path.split("/").pop()
+        const tries = e.how === "ResolveByElement" ? COLOURS.map(c => `${e.path}/${name}_${c}/${name}_${c}`) : [e.path]
+        for (const t of tries) {
+            const buf = await readFast(t + ".timeline.amf3.deflate"); if (!buf) continue
+            try {
+                const seqs = (rd(buf).sequences ?? []).filter(s => Number.isFinite(s.begin) && Number.isFinite(s.end))
+                if (!seqs.length) break
+                e.frames = { first: seqs[0].end - seqs[0].begin + 1, total: Math.max(...seqs.map(s => s.end)), sequences: seqs.map(s => `${s.name} ${s.begin}-${s.end} ${s.kind}`) }
+                timed++
+            } catch { }
+            break
+        }
+    }
+    console.log(`animation lengths: ${timed} of ${out.effects.length} effects`)
     // each shared effect's size at scale 1, from the areas CN draws it on (the shape CN uses most; medians):
     // Circle: radius; Rectangle: width x height. The editor sizes an effect to its area with these.
     const median = xs => { const s = [...xs].sort((a, b) => a - b); return s[Math.floor(s.length / 2)] }

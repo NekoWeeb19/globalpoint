@@ -86,6 +86,17 @@ each unit a **Find** picked, in either branch of an **If**. The most used:
   attack areas** (on by default, at the top of the tab) sets the effect's scale whenever the area's size or the effect
   on it changes, and the effect suggestions list the ones that fit the area's shape first. Units' own effects have no
   measured size ("size not known").
+- **Timing**: each effect's animation length is read from its timeline file (e.g. *spread* plays 40 frames, then its
+  "end" to frame 68), so the "Drawn" line says how long the picture shows ("for 40 frames", or "for as long as the area
+  lasts") and warns when the picture ends well before the area stops hitting, or plays on well after.
+- **Run time and the ball**: under the size line, how long the skill runs (Waits, attack areas, effects and ball moves
+  added up; Repeat as interval × times) and when the ball is stopped; a note when something attached to the ball and
+  following it lasts past the stop (it then moves with the ball, as Clara's whirlwind is meant to).
+- **Hits per enemy**: under each Damage inside an attack area, how many times the area can hit one enemy (from its
+  time between hits, max hits and "disappears" settings) and the damage multiplier added up over those hits (Clara:
+  15 hits × 0.533 = 8 per enemy). This is read from the settings, not measured in game.
+- **Element**: a Damage that hits as another element than the unit's own gets a note when the skill's shared effects
+  are drawn in the unit's element (it would look like one element and hit as another).
 
 **Guard rails** (the same Mode picker): every CN skill script passes them.
 - **Default**: only commands and choices CN's skills use, effects CN's skills show, and at most 60 commands, 8 attack
