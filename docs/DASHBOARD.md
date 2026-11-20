@@ -26,7 +26,7 @@ a screen down, goes back to the top.
 | **News** | [posts on the in-game News board](#post-news) |
 | **Mail** | [gifts that arrive at a set time, once or repeating](#schedule-mail) |
 | **Players** | [gifts](#give-a-unit-an-item-an-armament-or-beads), [saves](#back-up-or-move-a-save), the active account, removing a unit |
-| **Unit editor** | [change units' and armaments' abilities and numbers](#edit-a-unit-or-an-armament) |
+| **Unit editor** | [change units' and armaments' abilities and numbers, and units' skills](#edit-a-unit-or-an-armament) |
 
 ---
 
@@ -217,8 +217,9 @@ the login bonuses. Opening the game again the same day goes straight home. Not d
 safe. The full guide is [UNIT_EDITOR.md](UNIT_EDITOR.md).
 1. Pick a unit (or switch **Units / Armaments** at the top).
 2. Edit a tab: **Abilities** (each ability and the leader skill, one line per effect; **In game** shows
-   it in the unit page's words), **Numbers** (HP/ATK, skill gauge, every min → max), or **Details**
-   (name, title, description, class, role).
+   it in the unit page's words), **Numbers** (HP/ATK, skill gauge, every min → max), **Details**
+   (name, title, description, class, role), or **Skill** (what the skill and Skill+ do, as commands, with
+   ▶ View effect and ▶ Preview skill; [SKILL_GUIDE.md](SKILL_GUIDE.md) is a short guide).
 
    ![One ability: its line, its fields, and the In game wording](images/dashboard-unit-ability.png)
 

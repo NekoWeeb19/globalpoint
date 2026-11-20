@@ -645,3 +645,38 @@ Used by **1** skills; client index 17.
 In the client but in no skill script (some are used by enemies or other actions):
 
 `ChangeBgm` (2 params), `ChangeFieldAnimation` (2 params), `ChangeFieldAssets` (16 params), `ConditionalsCoffinCountFilter` (11 params), `ConditionalsCoffinCountSubject` (6 params), `ConditionalsCombo` (3 params), `ConditionalsConditionExist` (4 params), `ConditionalsHitAreaHitCount` (4 params), `ConditionalsMainOrUnison` (2 params), `ConditionalsNumExecutions2` (3 params), `ConditionalsNumExecutions3` (4 params), `ConditionalsNumExecutions4` (5 params), `ConditionalsNumExecutions5` (6 params), `ConditionalsNumExecutionsOddOrEven` (2 params), `ConditionalsUnifyElement` (4 params), `CreateFlood` (1 params), `CreateGravitationalField` (10 params), `CreateNormalHeal` (5 params), `CreateOneWayWallGimmick` (8 params), `CreateOnlyHitAttack` (6 params), `CreatePointsDistanceDetector` (6 params), `CreateShield` (8 params), `CreateShockWaveAttack` (14 params), `CreateTargetAttack` (5 params), `CreateTornado` (8 params), `CreateWallDistanceDetector` (4 params), `CreateWindAttack` (3 params), `EliminateAlterEgo` (1 params), `EliminateFunnel` (1 params), `EraseHitArea` (1 params), `ExtendCondition` (3 params), `FadeOutBgm` (1 params), `FindMultiballSubjects` (6 params), `HideEffectFromOwner` (1 params), `IfThisCharacterIsSpecificBoss` (4 params), `IfThisCharacterIsSpecificFunnel` (4 params), `MultiballNumberVariable` (6 params), `NotifyPowerflipEnd` (1 params), `RecoveryHitCountCheck` (3 params), `RemoveCollider` (1 params), `RemoveColliderFromOwner` (1 params), `RemoveEventFromOwner` (1 params), `RemoveOneWayWallGimmick` (1 params), `Revive` (2 params), `SetHitAreaSomeHitsWithAnyTargetHandler` (3 params), `SetHitAreaSomeHitsWithSpecificTargetHandler` (4 params), `SetHitAreaTerminateHandler` (2 params), `SetPowerFilpSuppress` (1 params), `SpawnAlterEgo` (4 params), `SpawnFunnel` (4 params), `StartBuffField` (3 params), `StopPiercing` (1 params), `SubtractFeverPoint` (1 params), `SubtractSkillPoint` (2 params), `Trace` (1 params)
+
+## Multiball ids (CreateSummonsMultiball, setting 2)
+
+A multiball id is the owning unit's id plus one digit. They're defined in the client's own multiball table
+(`pinball.master.generated.MultiballTable`: character, image, element, rarity, kind, action, auto-invocation
+condition...), a built-in table the dashboard doesn't read. The ids CN's skills summon (2026-11-17 scan):
+
+| Owner (unit id) | Multiball ids |
+|---|---|
+| Marina (111002) | 1110021, 1110022 |
+| Kikuno (111006) | 1110061 - 1110064 |
+| Suizen (111039) | 1110391 - 1110394 |
+| Ryunon (111081) | 1110811, 1110812 |
+| Dedalia (111135) | 1111351, 1111352 |
+| Stinelle (111147) | 1111471, 1111472 |
+| Couette (111171) | 1111711, 1111712 |
+| Gold Ship (113001) | 1130011 |
+| Couette (161039) | 1610391, 1610392 |
+| Denah (161051) | 1610511, 1610512 |
+| Couette (161087) | 1610871, 1610872 |
+| Yukariko Kuguri (161129) | 1611291, 1611292 |
+| Nephtim (161177) | 1611771, 1611772 |
+| Marden (161189) | 1611891, 1611892 |
+| Chatrina (161195) | 1611951, 1611952 |
+| Lyla (251006) | 2510061 - 2510063 |
+| Arum (261001) | 2610011, 2610012 |
+| Ryuichi Kageoka (261065) | 2610651, 2610652 |
+| Tae Yamada (263003) | 2630031, 2630032 |
+| Marnie (311002) | 3110021 - 3110023 |
+| Colt (331010) | 3310101, 3310102 |
+| Aureo (351004) | 3510041, 3510042 |
+
+Bomb multiballs (`CreateBombMultiball`) name a sprite instead: `character/bomb` (Hanabi), `character/illusionist_ball`
+(Illumine), `character/docking_beast_xm19_multiball` (Aureo 231007), `character/ruin_girl_meteor` (Nephtim 151001),
+plus the bomb's own skill script. Tested: a skill summoned another unit's multiball (Clara, emulator, 2026-11-17).

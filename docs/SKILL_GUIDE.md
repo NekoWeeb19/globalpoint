@@ -146,6 +146,13 @@ four options (Weight 1 each), each an Effect at rotation 0°, 90°, 180°, 270°
 **Buff the whole party:** Find a group → which group "the party" → inside it, Buff / debuff on "the group": e.g.
 ACAttackPoint frames 720, amount 0.3 (+30 %), max stacks 1.
 
+**Summon a multiball (another unit's):** + Add… → **CreateSummonsMultiball**, then set its second setting to a
+multiball id. Ids are the owning unit's id plus one digit (Gold Ship 113001 → 1130011; Marnie 311002 → 3110021,
+3110022, 3110023; the full list of CN's is in [research/skill-commands.md](research/skill-commands.md)); they're
+defined in the game's own multiball table (look, element, the multiball's own action). Tested (2026-11-17): Clara
+summoned another unit's multiball and it played. Its stats likely come from that table or the summoner; not checked.
+The third setting is how long it stays (9000 frames = 150 s in most CN skills). The preview doesn't show multiballs.
+
 ## Sharing and other devices
 
 - **PC:** saved skills go into the CN game update the server builds; close and reopen the game.

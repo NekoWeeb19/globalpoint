@@ -2,7 +2,7 @@
 
 > Written by Claude (AI) in a Claude Code session, with the repository owner choosing how it works.
 
-Change what a unit's abilities do, and its numbers, from the dashboard: **Unit editor** in the menu
+Change what a unit's abilities and skill do, and its numbers, from the dashboard: **Unit editor** in the menu
 (`/unit-editor`). Works for every CN unit and for custom units ([CUSTOM_UNITS.md](CUSTOM_UNITS.md)).
 No unit ids change, so saves are never at risk.
 

@@ -92,8 +92,9 @@ server runs, or tap **Dashboard** in StarPoint Companion. How to use each one is
   <img src="docs/images/feature-scheduled-mail.png" alt="A new scheduled mail: paid beads every day, 4 times" width="560">
 
 - **Unit and armament editor:** mix and match conditions, triggers and effects in any ability, change
-  a unit's numbers, or rename it and rewrite its title and description. Edited kits can be shared
-  as files. See [UNIT_EDITOR.md](docs/UNIT_EDITOR.md).
+  a unit's numbers, rename it and rewrite its title and description, or rebuild what its **skill** does
+  (attack areas, effects, timing, buffs, summons) with a live preview. Edited kits can be shared as
+  files. See [UNIT_EDITOR.md](docs/UNIT_EDITOR.md) and the [skill guide](docs/SKILL_GUIDE.md).
 
   <img src="docs/images/feature-ability-editor.png" alt="The unit editor: an ability's lines, and its in-game wording" width="560">
 
