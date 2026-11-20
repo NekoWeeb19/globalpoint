@@ -183,5 +183,10 @@
   "path": "production/upload/ed/1fb7ddc68786bda7c0d9400029a0c2fd36c523",
   "from": "battle/enemy/boss/big_slime_boss_single4.esdl.amf3.deflate",
   "why": "boss name \"黏黏波露王\" -> \"Sticky King Polu\", as standard_boss big_slime_boss_single/80"
+ },
+ {
+  "path": "production/medium_upload/16/4cbbff18c75b00cc76eb6451a475b1c443cd61",
+  "from": "character/cat_fighter_ny20/pixelart/sprite_sheet.png",
+  "why": "character/cat_fighter_ny20/ui/login_bonus_icon.png: a login bonus day gives this unit; its pixel sprite at item-icon size"
  }
 ]

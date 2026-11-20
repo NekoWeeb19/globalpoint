@@ -14,6 +14,8 @@
 //     not found character/white_tiger_2anv_assist/ui/square_0.png", a player's crash log, 2026-11-11). The guest gets
 //     its normal version's icons (the name without "_assist", else without its last part, e.g. stella_chapter12 ->
 //     stella).
+//  3. Boss models whose name no longer matches the boss table (below).
+//  4. A unit given by a login bonus day gets a reward-size picture for the login bonus screen (below).
 //
 //   node --env-file=.env scripts/gen_cn_art_fixes.cjs
 const fs = require("fs")
@@ -132,6 +134,47 @@ const key = p => p.replace(/^production\/[a-z_]+\//, "production/upload/")
             if (nameIn(fixed) !== c[0]) { console.log(`boss ${row}: renaming ${c[1]} failed; left alone`); continue }
             done.set(c[1], c[0])
             fixes.push({ path: file.stored, data: zlib.deflateRawSync(fixed, { level: 9 }), from: `${c[1]}.esdl.amf3.deflate`, why: `boss name "${now}" -> "${c[0]}", as standard_boss ${row}` })
+        }
+    }
+
+    // 4. a unit given by a login bonus day: the day's reward picture is the unit's 212x212 icon (ui/square_0), and the
+    // login bonus screen draws reward pictures as pixel art, 6 layout units per pixel (an item picture is 20x20), so the
+    // icon covered the whole card (normal_ny20_jan day 5, Mew (New Year), a player's report, 2026-11-20; CN's only such
+    // day). A unit reward also gets no tile or frame, only its picture. The new picture (ui/login_bonus_icon) is the
+    // unit's own pixel sprite (its first battle frame) in a 20x20 item-size picture; the update builder shows the day
+    // as an item with it, so the game draws its own reward tile and frame around it (loginBonusUnitIcons in
+    // scripts/gen_cn_event_schedule.cjs). The server still gives the unit: it pays from assets/login_bonus.json.
+    {
+        const { decodePng, encodePng, readAmf } = require("./cn_sprite_merge.cjs")
+        const SIZE = 20, tile = { w: SIZE, h: SIZE, px: Buffer.alloc(SIZE * SIZE * 4) }
+        const rows = await readCnTable("master/bonus/login_bonus.orderedmap")
+        const devs = new Set()
+        for (const line of Object.values(rows ?? {})) {
+            const c = R.splitCsv(line.replace(/\n$/, ""))
+            const m = c[6] === "2" ? /^character\/([a-z0-9_]+)\/ui\/square_0$/.exec(c[4] ?? "") : null
+            if (m) devs.add(m[1])
+        }
+        for (const dev of [...devs].sort()) {
+            const icon = await cnGet(`character/${dev}/ui/square_0.png`) // for the upload folder and PNG signature
+            const sheetFile = await cnGet(`character/${dev}/pixelart/sprite_sheet.png`)
+            const atlasFile = await cnGet(`character/${dev}/pixelart/sprite_sheet.atlas.amf3.deflate`)
+            const sheet = sheetFile && decodePng(Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47]), sheetFile.data.subarray(4)]))
+            if (!icon || !sheet || !atlasFile) { console.log(`login bonus icon for ${dev}: its icon or pixel sprite is missing`); continue }
+            // the first battle frame (the lowest-numbered one; "neutral" starts the timeline)
+            const frame = readAmf(inflate(atlasFile.data)).filter(f => !f.r).sort((a, b) => a.n.localeCompare(b.n))[0]
+            if (!frame || frame.w > tile.w || frame.h > tile.h) { console.log(`login bonus icon for ${dev}: no frame that fits ${SIZE}x${SIZE}`); continue }
+            const px = Buffer.from(tile.px)
+            const ox = Math.floor((tile.w - frame.w) / 2), oy = Math.floor((tile.h - frame.h) / 2)
+            for (let y = 0; y < frame.h; y++) for (let x = 0; x < frame.w; x++) {
+                const s = ((frame.y + y) * sheet.w + frame.x + x) * 4
+                if (sheet.px[s + 3] < 128) continue
+                const d = ((oy + y) * tile.w + ox + x) * 4
+                sheet.px.copy(px, d, s, s + 3); px[d + 3] = 255
+            }
+            const target = `character/${dev}/ui/login_bonus_icon.png`
+            const folder = icon.stored.slice(0, icon.stored.indexOf("/", "production/".length) + 1)
+            fixes.push({ path: folder + hashed(target).replace(/^production\/upload\//, ""), data: encodePng({ w: tile.w, h: tile.h, px }, icon.data.subarray(0, 8)),
+                from: `character/${dev}/pixelart/sprite_sheet.png`, why: `${target}: a login bonus day gives this unit; its pixel sprite at item-icon size` })
         }
     }
 

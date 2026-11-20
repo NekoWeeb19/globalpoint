@@ -132,6 +132,31 @@ function fillNormalLoginBonusGaps(tree) {
     }
 }
 
+/**
+ * A login bonus day that gives a unit shows the unit's 212x212 icon (ui/square_0), which the login bonus screen draws
+ * as pixel art (6 layout units per pixel, made for 20x20 item pictures), over the whole card (normal_ny20_jan day 5,
+ * Mew (New Year)), with no reward tile or frame. The day is shown as an item (column 6 kind 1) with the unit's 20x20
+ * pixel sprite every update carries (ui/login_bonus_icon, scripts/gen_cn_art_fixes.cjs rule 4), so the game draws its
+ * own tile and frame. Display only: the server pays the day from assets/login_bonus.json, still the unit. A day whose
+ * picture isn't there is left as it is.
+ */
+function loginBonusUnitIcons(tree) {
+    let fixes = []
+    try { fixes = JSON.parse(fs.readFileSync(path.join(ROOT, "assets", "cn_art_fixes.json"), "utf8")) } catch { }
+    const shipped = new Set(fixes.map(f => f.path.replace(/^production\/[a-z_]+\//, "production/upload/")))
+    let changed = 0
+    for (const { leaf } of R.leaves(tree)) {
+        const fields = R.splitCsv(leaf.text.replace(/\n$/, ""))
+        const m = fields[6] === "2" ? /^character\/([a-z0-9_]+)\/ui\/square_0$/.exec(fields[4] ?? "") : null
+        if (!m || !shipped.has(fileOf(`character/${m[1]}/ui/login_bonus_icon.png`))) continue
+        fields[4] = `character/${m[1]}/ui/login_bonus_icon`
+        fields[6] = "1" // shown as an item: the game's own reward tile
+        R.setLeafText(leaf, fields.map(R.csvField).join(",") + (leaf.text.endsWith("\n") ? "\n" : ""))
+        changed++
+    }
+    if (changed) console.log(`Login bonus unit rewards: ${changed} day(s) shown as an item with the unit's sprite`)
+}
+
 /** Splits the pass home banner into one row per pass window (start/end of each pass, after moves). */
 function passBannerWindows(trees, { banner, pass, id }) {
     const bt = trees.get(banner), pt = trees.get(pass)
@@ -700,7 +725,7 @@ async function main() {
         if (EOS_TABLES.includes(file)) for (const { leaf } of R.leaves(tree)) {
             if (leaf.text.includes("2025-08-14 23:59:59")) R.setLeafText(leaf, leaf.text.split("2025-08-14 23:59:59").join("2199-12-31 23:59:59"))
         }
-        if (file === CAMPAIGN_TABLES.login) fillNormalLoginBonusGaps(tree)
+        if (file === CAMPAIGN_TABLES.login) { fillNormalLoginBonusGaps(tree); loginBonusUnitIcons(tree) }
         if (DUNGEON_FIXES[file]) {
             let fixed = 0
             for (const { path: keys, leaf } of R.leaves(tree)) {
