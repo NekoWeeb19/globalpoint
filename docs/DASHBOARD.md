@@ -9,12 +9,14 @@ UTC** everywhere on the dashboard.
 **Changes reach the game at its title screen.** After a change to events, summons, campaigns, enemy
 strength, units or the date, close the game fully and open it again: it downloads a small update.
 The server builds it in the background, so wait a minute or two on a PC (a few minutes on a phone).
-The bottom of the sidebar, on every tab, shows the server time, the real time, when the next daily reset
-is, and the game update: **Rebuilding the game update** (wait before opening the game) or **Game update
-ready**. On a phone, the menu button in the bar at the top opens the tabs and this block; the bar's dot
-shows the game update (olive ready, yellow rebuilding, red can't reach the server).
-On long pages (Events, Summons), a round **↑** button in the bottom-right corner, shown once you've scrolled
-a screen down, goes back to the top.
+The bottom of the sidebar, on every tab, shows:
+- the server time, the real time, and when the next daily reset is;
+- the game update: **Rebuilding the game update** (wait before opening the game) or **Game update ready**.
+
+On a phone, the menu button in the top bar opens the tabs and this block. The bar's dot shows the game
+update: olive is ready, yellow is rebuilding, red means the server can't be reached.
+On long pages (Events, Summons), a round **↑** button appears in the bottom-right corner once you scroll
+down; it takes you back to the top.
 
 | Tab | What it's for |
 |---|---|
@@ -43,13 +45,18 @@ missions follow the real day, not the server's). Each also shows in your own tim
 - **More**: **Reset to the real time**, and **Match real time (keep date)**, which keeps the date but
   uses the real time of day, so the server's day turns over with the daily reset.
 
-Close and reopen the game after changing the date. A jump doesn't give a login bonus or reset the dailies:
-those follow the real day. To get them without waiting, press **Start the next day now**, then close and
-reopen the game. That login is a new day for every save: the next login bonus (with the daily beads), daily
-missions and login-day missions, Boss Boost, daily first summons and free pulls, solo boss event tickets
-and today's shop limits. The server's date stays as it is, and pressing it twice before logging in still
-counts as one day. New installs start on 2019-12-01, just before the CN game's first banners and
-events.
+Close and reopen the game after changing the date.
+
+**Changing the date doesn't give a login bonus or reset the dailies**: those follow the real day. To get
+them now, press **Start the next day now**, then close and reopen the game. The next login then counts
+as a new day for every save:
+- the next login bonus (with the daily beads), daily missions and login-day missions;
+- Boss Boost, daily first summons and free pulls;
+- solo boss event tickets and today's shop limits.
+
+The server's date doesn't change. Pressing the button twice before logging in still counts as one day.
+
+New installs start on 2019-12-01, just before the CN game's first banners and events.
 
 ## What's on now
 
@@ -65,15 +72,15 @@ nothing is listed unless you move events there.
 1. Find the event (search, or filter by **Game**, **Kind** and **Show**). Set **Game** to **CN app**
    for the CN game's list.
 2. Press **Schedule**, set **Starts** and **Ends** (or **Start now**, and **Original length** to keep
-   its length), and **Save**. Its quests, missions, shop and tokens move with it. An event can run for up to
-   10 years. A longer run stretches everything inside it to fit (its phases, shop and mission windows),
-   and events over about a year are left out of **What's on** and the automatic News posts.
+   its length), and **Save**. Its quests, missions, shop and tokens move with it.
+   - An event can run for up to 10 years. Its phases, shop and mission windows stretch to fit.
+   - Events longer than about a year aren't listed in **What's on** or the automatic News posts.
 
-   After saving, a summary says where each one stands on the **server's** date (on now, starts in N days, or
-   ended and so not in the game at that date), with a **Move the server's date to its start** button, and the
-   game update's progress (**Rebuilding**... then **ready**: close and reopen the game). In the list, moved ones
-   show the same status, e.g. **On now · ends in 5 days** or **Ended 3 days ago · not in the game now**: an event
-   only shows in the game while the server's date is inside its dates.
+   **An event only shows in the game while the server's date is inside its dates.** After saving, a
+   summary says where each event stands on the server's date (**on now**, **starts in N days**, or
+   **ended**). It has a **Move the server's date to its start** button, and shows the game update's
+   progress (**Rebuilding**... then **ready**: close and reopen the game). Moved events show the same
+   status in the list, e.g. **On now · ends in 5 days**.
 
    ![An event's date editor](images/dashboard-event-editor.png)
 3. To move several, tick them and use **All start at (UTC)**; **Also move the summon banners that opened
@@ -142,17 +149,20 @@ player** (press it, then open the reinstalled game within 30 minutes).
    (e.g. weekly for 6 weeks from 1 March, every March); for a run with an end, under a year long.
 3. **Schedule**. The list shows each mail's next send; **Edit** changes it, **Delete** stops it.
 
-**Share a schedule:** tick mails and **Export ticked** (or **Export all**) for one `.json` file of what is
-sent and when (not who got what). **Import a file…** adds someone else's next to yours, each checked like
-one you made; a unit your setup doesn't have (another setup's custom unit) is refused with the reason.
-When some of the imported mails' first send times have already passed, it asks: **Send them now** (one
-of each right away) or **Start each at its next time**.
+**Who gets it:** the active save (Players > **Active account**). Tick **Send to every save** to send it
+to all of them; each gets it the next time its mailbox opens.
 
-Each mail can be claimed for 30 days. It goes to the active save (Players > **Active account**), or with
-**Send to every save** ticked to every save (each gets it the next time its mailbox opens), and
-follows the server time, so moving the date makes due mails arrive. A first send already in the past
-sends once right away, not every missed one. Mails survive restarts, and the companion's **Download
-from PC** brings them with **My save**.
+**Good to know:**
+- Each mail can be claimed for 30 days.
+- Mails follow the server time, so moving the date forward makes due mails arrive.
+- A first send that's already in the past sends once right away, not once for every missed time.
+- Scheduled mails survive restarts. The companion's **Download from PC** brings them along with **My save**.
+
+**Share a schedule:** tick mails and press **Export ticked** (or **Export all**). You get one `.json` file
+of what is sent and when (not who got what). **Import a file…** adds someone else's mails next to yours,
+checked like ones you made. A mail with a unit your setup doesn't have (someone else's custom unit) is
+refused, with the reason. If some imported first sends are already in the past, it asks: **Send them
+now** (one of each right away) or **Start each at its next time**.
 
 ## Back up or move a save
 
@@ -172,15 +182,18 @@ from PC** brings them with **My save**.
 **News** > **New post**: a title, the text (a blank line between paragraphs), the **Category** (the CN
 app's News tab) and **Show in**, then **Post**. Players see it the next time they open News.
 
-**Automatic event posts** (on by default; the switch is at the top of the News tab): the CN app's News board
-announces events and summon banners under its **Events** tab, each with its picture: **Coming soon**
-(starting within 7 days), **Now on**, and **Ended** (for 7 days after), newest first, up to 100. They follow
-the server's date, moved events and time jumps included, and nothing is stored: they come and go by
-themselves. Banners that open with an event are in its post. Your own posts sit next to them.
+**Automatic event posts** (on by default; the switch is at the top of the News tab): the CN app's News
+board posts about events and summon banners by itself, under its **Events** tab, each with its picture:
+- **Coming soon**: starting within 7 days;
+- **Now on**;
+- **Ended**: for 7 days after it ends.
 
-**Open the News board once a day** (on by default, under the automatic posts switch): like the live game's
-daily news, the first time the CN app opens after the daily reset (05:00 UTC) it shows the News board after
-the login bonuses. Opening the game again the same day goes straight home. Not during the tutorial.
+They follow the server's date (moved events and date changes included) and come and go by themselves.
+Banners that open with an event are in that event's post. Your own posts show next to them.
+
+**Open the News board once a day** (on by default, under the automatic posts switch): like the live
+game, the first time the CN app opens after the daily reset (05:00 UTC), it shows the News board after
+the login bonuses. Later that day the game goes straight to the home screen. Not during the tutorial.
 
 ## Game settings
 
@@ -195,15 +208,19 @@ the login bonuses. Opening the game again the same day goes straight home. Not d
 - **Paid beads with each daily login bonus:** 150 by default; 0 turns it off.
 - **Never-ending mails:** Bread, Mana and EXP x1500 that can be claimed again and again; untick one to
   remove it.
-- **Stamina (Spend stamina like the real game):** off by default, so battles never cost stamina. On: each
-  battle costs its stamina when it starts (half-cost stamina campaigns included, CN app), retiring gives
-  it back, stamina refills 1 point every 6 minutes (faster at higher ranks) up to your rank's maximum,
-  ranking up adds the new maximum on top, and stamina items or 50 beads (100 stamina) refill it. Close and
-  reopen the game after changing it.
-- **Co-op rescues (Count co-op clears as rescues):** on by default (CN app). Every cleared co-op battle
-  counts as joining someone else's battle as a backup, like the live game: it pays 10 Silver, Gold or
-  Lilac Nuggets (harder battles pay better ones) and counts for the "clear battles as a backup" missions.
-  Boss battles, advent events, world story boss battles, raids and hard multi battles pay nuggets.
+- **Stamina (Spend stamina like the real game):** off by default, so battles never cost stamina. Turned
+  on, it works like the live game:
+  - each battle costs its stamina when it starts (half-cost campaigns count, CN app), and retiring gives
+    it back;
+  - stamina refills 1 point every 6 minutes (faster at higher ranks), up to your rank's maximum;
+  - ranking up adds a full refill on top;
+  - stamina items, or 50 beads for 100 stamina, refill it.
+
+  Close and reopen the game after changing it.
+- **Co-op rescues (Count co-op clears as rescues):** on by default (CN app). Every co-op battle you clear
+  counts as helping in someone else's battle, like the live game. It pays 10 Silver, Gold or Lilac
+  Nuggets (harder battles pay better ones) and counts for the "clear battles as a backup" missions.
+  Battles that pay: boss battles, advent events, world story bosses, raids and hard multi.
 - **Summon rates:** the 5★ and 4★ chance per pull for **Unit banners**, **Star Fest / Meteor Festival**
   and **Armaments** (3★ is the rest). **Base game rates** restores 5% / 25%, and 7.5% / 25% for Star
   Fest and Meteor Festival. Pulls follow from the next pull; the game's own **Rates** screen (and its
@@ -247,14 +264,14 @@ New units are added with files: see [CUSTOM_UNITS.md](CUSTOM_UNITS.md).
 - **Yearly copies follow the clock:** repeating campaigns and The Haunt's monthly floors are built for
   the game year and one year either side. Moving further means a small download at the next title
   screen.
-- **JP and CN dates mixed in one event:** CN's data dates the events before CN's launch (2021) with JP's
-  dates, but some of their parts with CN's own, about 640-690 days later (and the other way round for a few
-  later events): the first Serpents' and Not Today, Romero's shops, the anniversary quests' daily attempts,
-  Trial by Water's missions, some home banners and announcements. GlobalPoint puts those parts on their
-  event's dates (keeping their length), moved or not.
+- **JP and CN dates mixed in one event:** in CN's data, events from before CN's launch (2021) carry JP's
+  dates, but a few of their parts carry CN's own dates, about 640-690 days later. Examples: the first
+  Serpents' and Not Today, Romero's shops, the anniversary quests' daily attempts, Trial by Water's
+  missions, some home banners. GlobalPoint moves those parts onto their event's dates, so you don't need
+  to do anything.
 - **Boss events 100006 and 100007** are different events in each game: on the CN app they're CN's own (The
   Leap of Haruhi Suzumiya, a Lightcrest Serpent rerun), listed under their own entries.
 - **The Haunt** opens on 2020-01-12 and stays open, with a fresh set of floors every month.
-- **There's no login.** With `LISTEN_HOST` at `127.0.0.1` (the default) only the same device can reach
-  the dashboard; `0.0.0.0` (needed to copy to a phone, and for setup 2) opens it to your whole network, so use that only on a
-  network you trust.
+- **There's no password.** With `LISTEN_HOST` at `127.0.0.1` (the default), only the same device can
+  open the dashboard. `0.0.0.0` (needed to copy to a phone, and for setup 2) opens it to everyone on
+  your network, so use it only on a network you trust.
