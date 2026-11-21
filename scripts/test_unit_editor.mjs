@@ -113,6 +113,20 @@ try {
     const w2 = JSON.parse(fs.readFileSync(file, "utf8"))[ID].rows
     check("a skill gauge change is saved as columns (the skill's text stays)", JSON.stringify(Object.values(w2)) === JSON.stringify([{ cols: { 5: "500" } }]), w2)
 
+    // the skill's name and description (columns 0 and 1); a description may have line breaks, a name may not
+    const sk1 = edit(); sk1.skills[0].name = "Test Skill, Renamed"; sk1.skills[0].description = "Line one, with a comma\r\nLine \"two\""
+    await UE.saveUnit(ID, sk1, false)
+    const skw = JSON.parse(fs.readFileSync(file, "utf8"))[ID].rows[`master/skill/action_skill.orderedmap#${unit.skills[0].key}`]
+    check("a skill name and description change is saved as columns 0 and 1", JSON.stringify(skw) === JSON.stringify({ cols: { 0: "Test Skill, Renamed", 1: "Line one, with a comma\nLine \"two\"" } }), skw)
+    const skr = await UE.getUnit(ID)
+    check("... and read back as typed, with the game's text kept beside it", skr.skills[0].name === "Test Skill, Renamed" && skr.skills[0].description === "Line one, with a comma\nLine \"two\"" && skr.skills[0].game.name === unit.skills[0].name, skr.skills[0])
+    const sk2 = edit(); sk2.skills[0].name = "  "
+    const skRefused = await UE.saveUnit(ID, sk2, false)
+    check("an empty skill name is refused", Boolean(skRefused.errors) && skRefused.errors.skills[0].some(m => m.includes("name")), skRefused.errors?.skills)
+    const skBreak = edit(); skBreak.skills[0].name = "a\nb"
+    check("a skill name with a line break is refused", (await UE.checkEdit({ ...skBreak, id: ID })).skills[0].some(m => m.includes("line breaks")))
+    await UE.saveUnit(ID, e2, false)
+
     const bad = edit(); bad.abilities[0].lines[0][47] = "99999"
     const refused = await UE.saveUnit(ID, bad, false)
     check("a line that can't be saved is refused, and nothing is written", refused.errors && JSON.parse(fs.readFileSync(file, "utf8"))[ID].rows[`master/skill/action_skill.orderedmap#gp_test_haruhi/2`] !== undefined)

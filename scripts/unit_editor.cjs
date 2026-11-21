@@ -239,7 +239,7 @@ async function getUnit(id) {
     })
     const skills = ["1", "2"].filter(n => r.current.skill[`${r.skillName}/${n}`] !== undefined).map(n => {
         const key = `${r.skillName}/${n}`, s = lines(r.current.skill[key])[0], g = lines(r.own.skill[key])[0]
-        return { key, name: s[0], description: s[1] ?? "", script: s[7] ?? "", plus: n === "2", gaugeMin: Number(s[4]), gaugeMax: Number(s[5]), game: { gaugeMin: Number(g[4]), gaugeMax: Number(g[5]), script: g[7] ?? "" } }
+        return { key, name: s[0], description: s[1] ?? "", script: s[7] ?? "", plus: n === "2", gaugeMin: Number(s[4]), gaugeMax: Number(s[5]), game: { name: g[0] ?? "", description: g[1] ?? "", gaugeMin: Number(g[4]), gaugeMax: Number(g[5]), script: g[7] ?? "" } }
     })
     return {
         id, dev: c[0] ?? "", name: t[0] || c[0], title: t[3] ?? "", element: ELEMENTS[Number(c[3])] ?? "", rarity: Number(c[2]),
@@ -462,6 +462,9 @@ async function checkEdit(edit, advanced = false) {
     out.scripts = []
     for (const s of edit.skills ?? []) {
         const e = Number.isInteger(s.gaugeMin) && Number.isInteger(s.gaugeMax) && s.gaugeMin > 0 && s.gaugeMax > 0 ? [] : ["the skill gauge must be whole numbers above 0"]
+        // the skill's name and description (what the unit page shows); a description may have line breaks, as CN's own do
+        if (s.name !== undefined && !String(s.name).trim()) e.push("the skill name can't be empty")
+        if (/[\r\n]/.test(String(s.name ?? ""))) e.push("the skill name can't have line breaks")
         let script = null
         if (s.program !== undefined && s.program !== null) {
             const original = SE.isScriptPath(s.from) ? await SE.readScript(s.from).catch(() => null) : null
@@ -512,6 +515,8 @@ async function saveUnit(id, edit, advanced = false) {
         if (r.own.skill[s.key] === undefined) continue
         const g = lines(r.own.skill[s.key])[0]
         const cols = {}
+        if (s.name !== undefined && String(s.name) !== (g[0] ?? "")) cols[0] = String(s.name)
+        if (s.description !== undefined && String(s.description).replace(/\r\n?/g, "\n") !== (g[1] ?? "")) cols[1] = String(s.description).replace(/\r\n?/g, "\n")
         if (String(s.gaugeMin) !== g[4]) cols[4] = String(s.gaugeMin)
         if (String(s.gaugeMax) !== g[5]) cols[5] = String(s.gaugeMax)
         // an edited script: written under the custom units folder (a new name per content), the row pointed at it

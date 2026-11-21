@@ -419,7 +419,7 @@
                 }).catch((e) => { $("load-status").textContent = e.message })
             }
             const payload = () => ({ id: unit.id, abilities: edit.abilities.map((a) => ({ key: a.key, lines: a.lines })), leader: edit.leader ? { key: edit.leader.key, lines: edit.leader.lines } : null,
-                stats: edit.stats.map((s) => ({ level: s.level, hp: s.hp, atk: s.atk })), skills: edit.skills.map((s) => ({ key: s.key, gaugeMin: s.gaugeMin, gaugeMax: s.gaugeMax, ...skillScriptPart(s) })),
+                stats: edit.stats.map((s) => ({ level: s.level, hp: s.hp, atk: s.atk })), skills: edit.skills.map((s) => ({ key: s.key, name: s.name, description: s.description, gaugeMin: s.gaugeMin, gaugeMax: s.gaugeMax, ...skillScriptPart(s) })),
                 details: (({ name, title, description, class: cls, role, leaderName }) => ({ name, title, description, class: cls, role, leaderName }))(edit.details) })
             const dirty = () => edit && JSON.stringify(payload()) !== saved
 
@@ -1421,7 +1421,8 @@
                 const redraw = () => drawSkill(sec, s, n)
                 sec.innerHTML = ""
                 const head = el("div", "flex flex-wrap gap-3 items-baseline")
-                head.appendChild(el("h3", "text-xl text-on-background font-semibold", (s.plus ? "Skill+: " : "Skill: ") + s.name))
+                const title = el("h3", "text-xl text-on-background font-semibold", (s.plus ? "Skill+: " : "Skill: ") + s.name)
+                head.appendChild(title)
                 if (skillChanged(s)) head.appendChild(el("span", "px-3 py-1 rounded-full text-sm bg-primary-container text-on-primary-container", "changed"))
                 const tools = el("div", "flex flex-wrap gap-2 ml-auto")
                 const borrow = el("button", BTN, "Start from another unit's skill"); borrow.type = "button"
@@ -1431,7 +1432,7 @@
                 back.disabled = !gameBase[s.key] || JSON.stringify(s.program) === gameBase[s.key]
                 back.onclick = () => { s.program = JSON.parse(gameBase[s.key]); s.from = s.game.script; changed(); redraw() }
                 tools.append(borrow, back); head.appendChild(tools); sec.appendChild(head); sec.appendChild(copyRow)
-                if (s.description) sec.appendChild(el("p", "text-sm text-on-surface", s.description))
+                sec.appendChild(skillTextFields(s, title))
                 sec.appendChild(el("p", "text-sm text-on-surface-variant", `Script: ${s.from}${s.from !== s.script ? ` (the skill uses ${s.script} until saved)` : ""}`))
                 const root = Array.isArray(s.program) && isBlockV(s.program[11]) ? s.program[11] : null
                 if (!root) { sec.appendChild(el("p", "text-on-surface-variant", "The script has no command block.")); return }
@@ -1459,6 +1460,29 @@
                 const msgs = el("ul", "flex flex-col gap-1 text-sm"); msgs.dataset.skillMsgs = String(n); sec.appendChild(msgs)
                 sec.appendChild(blockEditor({ get: () => s.program[11], set: (b) => { s.program[11] = b } }, new Map(), 0, redraw))
                 showSkillMsgs()
+            }
+            // the skill's name and description: the unit page's text, which the game doesn't write from the script,
+            // so it stays the old text after a script edit unless it's changed here too
+            function skillTextFields(s, title) {
+                const box = el("div", "flex flex-col gap-3")
+                const field = (label, key, area) => {
+                    const r = el("div", "flex flex-col gap-1")
+                    r.appendChild(el("label", "text-sm text-on-surface", label))
+                    const input = el(area ? "textarea" : "input", INPUT + " w-full max-w-[640px]" + (area ? " h-[96px] py-2" : ""))
+                    input.value = s[key] ?? ""; input.setAttribute("aria-label", `${s.plus ? "Skill+" : "Skill"} ${label.toLowerCase()}`)
+                    input.oninput = () => {
+                        s[key] = area ? input.value.replace(/\r\n?/g, "\n") : input.value.replace(/[\r\n]+/g, " ")
+                        if (key === "name") title.textContent = (s.plus ? "Skill+: " : "Skill: ") + s.name
+                        changed()
+                    }
+                    r.appendChild(input)
+                    r.appendChild(el("span", "text-sm text-on-surface-variant whitespace-pre-line", `Game: ${s.game[key] || "(empty)"}`))
+                    box.appendChild(r)
+                }
+                field("Name", "name", false)
+                field("Description", "description", true)
+                box.appendChild(el("p", "text-sm text-on-surface-variant", "The unit page shows this text. The game doesn't write it from the script, so after changing what the skill does, change the description too. Line breaks in the description show as new lines in game."))
+                return box
             }
             function showSkillMsgs() {
                 for (const ul of document.querySelectorAll("[data-skill-msgs]")) {

@@ -156,8 +156,8 @@ unit's multiball and it played. Not checked: whose stats it uses. The preview do
   keep playing as long as they show.)
 - **The hit effect is often most of what you see.** An area that hits every 20 frames shows its hit effect on every
   enemy, every hit (tested: Coarse, 15 times over a 5-second area).
-- **The skill's name and description don't change.** The unit page still describes the old skill; that text isn't
-  editable yet.
+- **The skill's name and description don't change by themselves.** The unit page still describes the old skill until
+  you change the **Name** and **Description** boxes at the top of the skill on the Skill tab.
 
 ## On phones, and sharing
 
