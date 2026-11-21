@@ -164,18 +164,21 @@ export function partyNameElement(name: string): number | undefined {
  * player's other strongest parties, never the party the player is using; if there aren't enough, the
  * player's own party fills in. When the stage's recommended element is known, the "NPC" parties named
  * with that element ("Thunder NPC") come first, then "NPC" parties with no element, then the others.
+ * Parties picked on the dashboard (`chosen`, the save's co-op partners) come before all of these, in their order,
+ * when they still exist, have units and aren't the party in use.
  */
-export function pickPartnerParties(parties: SavedParty[], currentPartyId: number, stageElement?: number): number[] {
+export function pickPartnerParties(parties: SavedParty[], currentPartyId: number, stageElement?: number, chosen: number[] = []): number[] {
     const usable = parties.filter(p => p.partyId !== currentPartyId && p.characterIds.some(id => id !== null))
+    const picks = [...new Set(chosen)].map(id => usable.find(p => p.partyId === id)).filter((p): p is SavedParty => p !== undefined)
     const rank = (p: SavedParty) => {
         if (stageElement === undefined) return 0
         const element = partyNameElement(p.name)
         return element === stageElement ? 0 : element === undefined ? 1 : 2
     }
-    const named = usable.filter(p => p.name.toUpperCase().includes("NPC"))
+    const named = usable.filter(p => !picks.includes(p) && p.name.toUpperCase().includes("NPC"))
         .map((p, order) => ({ p, order })).sort((a, b) => rank(a.p) - rank(b.p) || a.order - b.order).map(x => x.p)
-    const rest = usable.filter(p => !named.includes(p)).sort((a, b) => b.strength - a.strength || a.partyId - b.partyId)
-    const picked = [...named, ...rest].slice(0, 2).map(p => p.partyId)
+    const rest = usable.filter(p => !picks.includes(p) && !named.includes(p)).sort((a, b) => b.strength - a.strength || a.partyId - b.partyId)
+    const picked = [...picks, ...named, ...rest].slice(0, 2).map(p => p.partyId)
     while (picked.length < 2) picked.push(currentPartyId)
     return picked
 }

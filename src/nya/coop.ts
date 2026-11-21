@@ -15,6 +15,7 @@ import { PartyCategory } from "../data/types"
 import { CoopCharacter, CoopParty, CoopPlayerInfo, ManaNodeFormat, SavedParty, newRoomNumber, partyGroupSlot, pickPartnerParties } from "../lib/coop"
 import { getRankByPt } from "./player"
 import { questElement } from "../lib/quest"
+import { getCoopPartnerPicksSync } from "./coopPartnerPicks"
 
 export interface CoopRoom {
     roomNumber: string
@@ -204,7 +205,8 @@ export function partnerParties(playerId: number, currentPartyId: number, stageEl
     const load = (partyId: number) => ({ partyId, party: loadCoopParty(playerId, partyId) })
     const loaded = (p: { partyId: number, party: CoopParty | null }): p is { partyId: number, party: CoopParty } =>
         p.party !== null && p.party.characters.some(c => c !== null)
-    const partners = pickPartnerParties(saved, currentPartyId, stageElement).map(load).filter(loaded)
+    // the save's co-op partners picked on the dashboard (player page) come first
+    const partners = pickPartnerParties(saved, currentPartyId, stageElement, getCoopPartnerPicksSync(playerId)).map(load).filter(loaded)
     if (partners.length >= 2) return partners
     const others = saved
         .filter(p => p.partyId !== currentPartyId && !partners.some(q => q.partyId === p.partyId))

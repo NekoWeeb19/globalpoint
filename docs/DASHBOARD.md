@@ -123,6 +123,10 @@ player** (press it, then open the reinstalled game within 30 minutes).
   login.
 - **Set rank:** moves the player rank to any rank from 1 to 250, up or down. Rank-up rewards aren't given.
 
+**Co-op partners** on the player page: pick up to two of this save's parties as your COM partners in co-op
+(no game restart needed). **Clear** goes back to the usual order (NPC-named parties, then the strongest; see
+DETAILS.md, Co-op partners). The picks are kept in the save, so they move with save export and import.
+
 **Save tools** on the player page (close the game first, then reopen it):
 - **Clone save:** a full copy as a new player, everything included. Play it by picking it under **Active
   account**; handy for testing something, or keeping a save as it is.

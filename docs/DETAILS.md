@@ -54,14 +54,17 @@ COM partners' battles too.
 ## Co-op partners
 
 Your two COM partners in co-op are your own saved parties (any party group), never the party you play with:
-1. Parties whose name contains **NPC** come first. When the stage has a recommended element, NPC parties named
+0. Parties picked on the dashboard (player page, **Co-op partners**) come first, in the picked order. A picked
+   party is skipped when it's the one you play with or has no units.
+1. Then parties whose name contains **NPC**. When the stage has a recommended element, NPC parties named
    with that element come before the others: name a party, for example, `Thunder NPC` or `[Water NPC]`. The words
    are Fire, Water, Thunder (or Lightning), Wind, Light and Dark, in any letter case, or 火 水 雷 风/風 光 暗. Then
    come NPC parties with no element in the name, then NPC parties of another element. Stages without a
    recommended element (raids, for example) take NPC parties in party order.
 2. If there aren't two NPC parties, your strongest other parties fill in (by their units' total EXP).
 
-The pick is made each time you recruit COM partners, so renaming a party takes effect in the next room.
+The pick is made each time you recruit COM partners, so renaming a party or changing the dashboard picks takes
+effect in the next room.
 
 ## Translation
 

@@ -22,6 +22,7 @@ import { DROP_MULTIPLIER_MAX, DROP_MULTIPLIER_MIN, getDropMultiplier, setDropMul
 import { DEFAULT_GACHA_RATES, getGachaRates, resetGachaRates, setGachaRates } from "../../nya/gachaRates";
 import { ENEMY_MULTIPLIER_MAX, ENEMY_MULTIPLIER_MIN, getEnemyScaling, setEnemyScaling } from "../../nya/enemySettings";
 import { lanAddresses } from "../../nya/coop";
+import { coopPartnerChoicesSync, setCoopPartnerPicksSync } from "../../nya/coopPartnerPicks";
 import { getServerSettings, setServerSettings } from "../../nya/serverSettings";
 import { DEFAULT_MESSAGE, deleteMailSchedule, exportMailSchedules, importMailSchedules, MAIL_DAYS, mailScheduleStatus, saveMailSchedule } from "../../nya/mailSchedule";
 
@@ -384,6 +385,25 @@ const routes = async (fastify: FastifyInstance) => {
         const result = Number.isInteger(playerId) ? setPlayerRankSync(playerId, rank) : null
         if (result === null) return reply.status(400).send({ "error": "Bad Request", "message": "Invalid player." })
         return reply.send({ message: `Done: rank ${result.from} -> ${result.to} (no rank-up rewards). Close and reopen the game.` })
+    })
+
+    // co-op partners (player page): the save's parties and its picks; POST { playerId, picks: [party|null, party|null] }
+    fastify.get("/save/coopPartners", async (request: FastifyRequest, reply: FastifyReply) => {
+        const playerId = Number(((request.query ?? {}) as { playerId?: unknown }).playerId)
+        if (!Number.isInteger(playerId) || getPlayerSync(playerId) === null) return reply.status(400).send({ "error": "Bad Request", "message": "Invalid player." })
+        return reply.send(coopPartnerChoicesSync(playerId))
+    })
+    fastify.post("/save/coopPartners", async (request: FastifyRequest, reply: FastifyReply) => {
+        const body = (request.body ?? {}) as { playerId?: unknown, picks?: unknown }
+        const playerId = Number(body.playerId)
+        if (!Number.isInteger(playerId) || getPlayerSync(playerId) === null) return reply.status(400).send({ "error": "Bad Request", "message": "Invalid player." })
+        if (!Array.isArray(body.picks)) return reply.status(400).send({ "error": "Bad Request", "message": "picks must be a list." })
+        const picks = body.picks.map(p => p === null || p === undefined || p === "" ? null : Number(p))
+        const result = setCoopPartnerPicksSync(playerId, picks)
+        if (!result.ok) return reply.status(400).send({ "error": "Bad Request", "message": result.message })
+        return reply.send({ picks: result.picks, message: result.picks.length === 0
+            ? "Cleared: co-op partners are picked as before (NPC-named parties, then the strongest)."
+            : "Saved. The next co-op room uses " + (result.picks.length === 2 ? "these two parties" : "this party first") + " as COM partners (no game restart needed)." })
     })
 
     // reinstalled game: the next NEW guest login takes over this player's account: { playerId }

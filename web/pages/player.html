@@ -368,6 +368,83 @@
                     })
                 })()
             </script>
+            <section id="coop-partners" data-player-id="{{playerId}}"
+                class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5">
+                <h3 class="text-xl text-on-background font-semibold mt-2">Co-op partners</h3>
+                <p class="text-on-surface-variant text-center">Pick which of this save's parties join co-op rooms as COM partners. A picked party is skipped when it's the one you're using or has no units, and the usual order fills in: parties named "NPC" (matching the stage's element first, e.g. "Water NPC"), then the strongest. Takes effect at the next co-op room; no game restart needed.</p>
+                <div class="flex gap-3 flex-wrap justify-center items-center">
+                    <label for="coopPartner1" class="text-on-surface">Partner 1</label>
+                    <select id="coopPartner1" class="max-w-full rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3"></select>
+                    <label for="coopPartner2" class="text-on-surface">Partner 2</label>
+                    <select id="coopPartner2" class="max-w-full rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-4 py-3"></select>
+                </div>
+                <div class="flex gap-3 flex-wrap justify-center">
+                    <button type="button" id="coopPartnersSave"
+                        class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">
+                        Save partners
+                    </button>
+                    <button type="button" id="coopPartnersClear"
+                        class="text-base border border-outline-variant text-on-surface h-[40px] px-[24px] rounded-full flex items-center justify-center disabled:opacity-40 disabled:pointer-events-none">
+                        Clear
+                    </button>
+                </div>
+                <p id="coopPartnersMessage" class="text-sm text-on-surface-variant text-center" role="status"></p>
+            </section>
+            <script>
+                (function () {
+                    const section = document.getElementById("coop-partners")
+                    const playerId = Number(section.dataset.playerId)
+                    const selects = [document.getElementById("coopPartner1"), document.getElementById("coopPartner2")]
+                    const message = document.getElementById("coopPartnersMessage")
+                    const saveButton = document.getElementById("coopPartnersSave")
+                    const clearButton = document.getElementById("coopPartnersClear")
+                    function fill(parties, picks) {
+                        selects.forEach((select, i) => {
+                            select.textContent = ""
+                            const none = document.createElement("option")
+                            none.value = ""
+                            none.textContent = "Automatic"
+                            select.appendChild(none)
+                            for (const party of parties) {
+                                const option = document.createElement("option")
+                                option.value = String(party.partyId)
+                                option.textContent = "Party " + party.partyId + ": " + (party.name || "(no name)") + (party.units === 0 ? " (empty)" : "")
+                                option.disabled = party.units === 0
+                                select.appendChild(option)
+                            }
+                            select.value = picks[i] === undefined ? "" : String(picks[i])
+                        })
+                    }
+                    async function load() {
+                        try {
+                            const response = await fetch("/api/server/save/coopPartners?playerId=" + playerId)
+                            const reply = await response.json()
+                            if (!response.ok) throw new Error(reply.message || response.statusText)
+                            fill(reply.parties, reply.picks)
+                        } catch (error) {
+                            message.textContent = "Error: " + error.message
+                        }
+                    }
+                    async function save(picks) {
+                        saveButton.disabled = clearButton.disabled = true
+                        message.textContent = "Saving..."
+                        try {
+                            const response = await fetch("/api/server/save/coopPartners", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ playerId, picks }) })
+                            const reply = await response.json().catch(() => ({}))
+                            if (!response.ok) throw new Error(reply.message || response.statusText)
+                            message.textContent = reply.message
+                            selects.forEach((select, i) => { select.value = reply.picks[i] === undefined ? "" : String(reply.picks[i]) })
+                        } catch (error) {
+                            message.textContent = "Error: " + error.message
+                        } finally {
+                            saveButton.disabled = clearButton.disabled = false
+                        }
+                    }
+                    saveButton.addEventListener("click", () => save(selects.map(select => select.value === "" ? null : Number(select.value))))
+                    clearButton.addEventListener("click", () => save([null, null]))
+                    load()
+                })()
+            </script>
             <section
                 class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5">
                 <h3 class="text-xl text-on-background font-semibold mt-2">Reinstalled game</h3>
