@@ -35,8 +35,8 @@ android {
         applicationId "org.globalpoint.companion"
         minSdk 24
         targetSdk 34
-        versionCode 77
-        versionName "0.8.94"
+        versionCode 78
+        versionName "0.8.95"
         externalNativeBuild {
             ndkBuild { arguments "NODEJS_MOBILE_DIR=${nodeDir}" }
         }

@@ -114,4 +114,24 @@ if (process.env.COMPANION_PROBE === "1") {
     w.on("error", e => console.log(`[probe] worker_threads failed: ${e.message}`))
 }
 
-require(path.join(serverDir, "out", "server.js"))
+// A server file that can't be read means the copy unpacked on the phone is damaged (player report 2026-11-21:
+// "Invalid package config .../node_modules/avvio/package.json"; the same file is fine in the APK). The app only
+// unpacks again when its version changes, so the server stayed broken. Here the unpack marker (ServerFiles.java)
+// is removed and Node stops with an error: the app restarts it and unpacks a fresh copy first. Its crash limit
+// (3 in 2 minutes) stops the loop if a fresh copy fails too.
+const LOAD_ERRORS = new Set(["ERR_INVALID_PACKAGE_CONFIG", "ERR_INVALID_PACKAGE_TARGET", "ERR_PACKAGE_PATH_NOT_EXPORTED", "MODULE_NOT_FOUND"])
+function damagedServerFile(error) {
+    if (!error) return false
+    const text = `${error.message ?? ""}\n${error.stack ?? ""}`
+    return (LOAD_ERRORS.has(error.code) || error instanceof SyntaxError) && text.includes(serverDir)
+}
+try {
+    require(path.join(serverDir, "out", "server.js"))
+} catch (error) {
+    console.error("[companion] the server could not load:", error && error.stack || error)
+    if (damagedServerFile(error)) {
+        try { fs.rmSync(path.join(serverDir, ".installed"), { force: true }) } catch { }
+        console.error("[companion] a server file looks damaged: the server files are unpacked again as the server restarts")
+    }
+    process.exit(3)
+}
