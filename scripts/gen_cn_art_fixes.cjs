@@ -8,7 +8,9 @@
 //  1. A unit's pixel sprite (pixelart/sprite_sheet or pixelart/special_sprite_sheet) whose CN layout lists other
 //     frames than global's while the animation timing file is the same as global's: CN's frames don't fit the timing,
 //     and the animation plays out of order with pieces all over the screen (Vagner's summon animation, a player's
-//     report, 2026-11-11; the only unit found). Global's picture and layout are used.
+//     report, 2026-11-11; the only unit found). Global's picture and layout are used. Also (1b) when CN's layout points
+//     past the edge of CN's own picture while global's pair fits, or (1c) when an earlier StarPoint update put global's
+//     picture in but left CN's layout (Luna's skill pose, 1.4.56; a player's report, 2026-11-20).
 //  2. Guest units ("..._assist", e.g. Taiga's 2nd-anniversary guest in a world story event quest) have no square icon
 //     in CN's or global's files; a screen that shows it stopped the game with U0000 ("notify_asset_recovery: asset
 //     not found character/white_tiger_2anv_assist/ui/square_0.png", a player's crash log, 2026-11-11). The guest gets
@@ -51,17 +53,44 @@ const key = p => p.replace(/^production\/[a-z_]+\//, "production/upload/")
     const devs = [...new Set(Object.values(chars).map(line => R.splitCsv(line.replace(/\n$/, ""))[0]).filter(Boolean))]
     const fixes = []
 
+    // what StarPoint's translation and art updates (the data pack's, up to 1.4.800) put in place of CN's files
+    const patchedSha = new Map()
+    {
+        const patchDir = path.join(ROOT, ".cdn", "cn_patches")
+        const num = v => v.split(".").map(Number).reduce((a, b) => a * 10000 + b, 0)
+        for (const p of JSON.parse(fs.readFileSync(path.join(patchDir, "patches.json"), "utf8"))) {
+            if (num(p.version) > num("1.4.800")) continue
+            for (const a of p.archives) for (const e of (await unzipper.Open.file(path.join(patchDir, a.file))).files)
+                if (e.type === "File" && /\/upload\/|medium_upload|android_upload/.test(e.path.split("\\").join("/"))) patchedSha.set(key(e.path.split("\\").join("/")), e)
+        }
+    }
+
     // 1. pixel sprites whose frames don't fit the timing
     for (const dev of devs) for (const [sheet, timing] of [["sprite_sheet", "pixelart"], ["special_sprite_sheet", "special"]]) {
         const base = `character/${dev}/pixelart/`
         const [cP, cA, cT] = await Promise.all([cnGet(base + sheet + ".png"), cnGet(base + sheet + ".atlas.amf3.deflate"), cnGet(base + timing + ".timeline.amf3.deflate")])
         if (!cP || !cA || !cT) continue
         const [gP, gA, gT] = await Promise.all([globalGet(base + sheet + ".png"), globalGet(base + sheet + ".atlas.amf3.deflate"), globalGet(base + timing + ".timeline.amf3.deflate")])
-        if (!gP || !gA || !gT || sha(cT.data) !== sha(gT)) continue
+        // frames whose stored rectangle (x, y, w x h as stored) reaches past the sheet's picture
+        const outside = (pngData, atlas) => { const w = pngData.readUInt32BE(16), h = pngData.readUInt32BE(20); return atlas.filter(f => f.x + f.w > w || f.y + f.h > h).length }
+        const cnOut = outside(cP.data, readAmf3(inflate(cA.data)))
+        if (cnOut > 0 && (!gP || !gA || !gT)) console.log(`${base}${sheet}: ${cnOut} frame(s) outside CN's sheet, and global has no copy to use`)
+        if (!gP || !gA || !gT || sha(cT.data) !== sha(gT)) { if (cnOut > 0 && gT) console.log(`${base}${sheet}: ${cnOut} frame(s) outside CN's sheet, but global's timing differs; left`); continue }
         const frames = b => readAmf3(inflate(b)).map(f => +f.n.slice(-4)).sort((x, y) => x - y).join(",")
-        if (frames(cA.data) === frames(gA)) continue
+        let why = null
+        if (frames(cA.data) !== frames(gA)) why = "CN's frames don't fit the animation timing"
+        // 1b. CN's layout and picture don't match: frames point past the picture, so the sprite is drawn from the wrong
+        // pixels and glitches around (Luna, a player's report, 2026-11-20: 6 battle and 5 skill-pose frames)
+        else if (cnOut > 0 && outside(gP, readAmf3(inflate(gA))) === 0) why = `CN's layout points outside its picture (${cnOut} frames)`
+        // 1c. a StarPoint update put global's picture in place of CN's but left CN's layout, which is packed differently
+        // (frames rotated the other way), so the sprite is cut from the wrong pieces (Luna's skill pose, 1.4.56)
+        else {
+            const p = patchedSha.get(hashed(base + sheet + ".png")), a = patchedSha.get(hashed(base + sheet + ".atlas.amf3.deflate"))
+            if (p && !a && sha(await p.buffer()) === sha(gP) && sha(cA.data) !== sha(gA)) why = "an earlier StarPoint update gave it global's picture but kept CN's layout"
+        }
+        if (!why) continue
         for (const [file, data, stored] of [[sheet + ".png", gP, cP.stored], [sheet + ".atlas.amf3.deflate", gA, cA.stored]])
-            fixes.push({ path: stored, data, from: "global", why: `${base}${file}: CN's frames don't fit the animation timing` })
+            fixes.push({ path: stored, data, from: "global", why: `${base}${file}: ${why}` })
     }
 
     // 2. guest units' square icons, from their normal version: the guests in the unit list, and the ones quests name in

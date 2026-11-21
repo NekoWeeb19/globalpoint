@@ -20,6 +20,16 @@
   "why": "character/fire_dragon/pixelart/special_sprite_sheet.atlas.amf3.deflate: CN's frames don't fit the animation timing"
  },
  {
+  "path": "production/upload/19/da91f8a618702aaac7f3afc486c679964c2835",
+  "from": "global",
+  "why": "character/luna/pixelart/special_sprite_sheet.png: an earlier StarPoint update gave it global's picture but kept CN's layout"
+ },
+ {
+  "path": "production/upload/19/05837d35818054cb3aa249deadf9cd533346b0",
+  "from": "global",
+  "why": "character/luna/pixelart/special_sprite_sheet.atlas.amf3.deflate: an earlier StarPoint update gave it global's picture but kept CN's layout"
+ },
+ {
   "path": "production/medium_upload/ff/dfa55a39458269055c2f985ca7d3f8cb9bed3a",
   "from": "character/devil_leader/ui/square_0.png",
   "why": "character/devil_leader_assist/ui/square_0.png: missing; the normal version's icon"

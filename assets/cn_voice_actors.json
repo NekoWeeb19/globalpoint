@@ -1,0 +1,4 @@
+{
+ "why": "Voice actors CN's unit text table leaves blank (\"--\") but global's names; filled in by scripts/gen_cn_event_schedule.cjs. Values from global's master/character/character_text (last column), 2026-11-20. CN's 4 KonoSuba collab units (111117, 121123, 151111, 263015) also have \"--\" and aren't in global's table, so they're left as they are.",
+ "rows": {"111045":"Kisho Taniyama","151001":"Ai Kayano","151009":"Ai Kayano","151063":"Ai Kayano","161177":"Ai Kayano","211001":"Takuya Sato","211006":"Yuuki Kuwahara","211038":"Takuya Sato","221002":"Yuuki Kuwahara","221022":"Yuuki Kuwahara","251010":"Yuuki Kuwahara","311008":"Takuya Sato","321002":"Yuuki Kuwahara"}
+}

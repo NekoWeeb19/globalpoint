@@ -450,6 +450,16 @@ async function main() {
             return true
         }])),
         [UI_TEXT]: (key, c) => {
+            // CN turned off the voices of 12 units by string id (character_voice_exclude, "ruin_girl|...|dragon_slayer|
+            // berserker": Nephtim, Azel, ...), though their voice files are in the game: their lines said "This unit has
+            // no voice lines" (GlobalLogic.noPlayVoice: any voice path containing a listed part). The list can't be
+            // left empty (an empty part is in every path, which would silence every unit), so it gets a part no path has.
+            if (key === "character_voice_exclude") {
+                const none = "no-voice-is-excluded"
+                if (c[0] === none) return false
+                c[0] = none
+                return true
+            }
             const fix = TEXT_FIXES[key]
             let changed = false
             if (fix && typeof c[0] === "string" && c[0].includes(fix[0])) { c[0] = c[0].replace(fix[0], fix[1]); changed = true }
@@ -605,10 +615,14 @@ async function main() {
     // scripts/gen_cn_star_grain_text.cjs): each product's own name and description
     const starGrainText = (() => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, "assets", "cn_star_grain_text.json"), "utf8")) } catch { return null } })()
     const starGrainTable = starGrainText ? fileOf(starGrainText.table) : null
+    // voice actors CN's unit text leaves blank ("--") while global names them (assets/cn_voice_actors.json; the
+    // Voices screen showed "VA --" for Azel)
+    const voiceActors = (() => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, "assets", "cn_voice_actors.json"), "utf8")).rows } catch { return null } })()
+    const voiceActorTable = voiceActors ? fileOf("master/character/character_text.orderedmap") : null
     const custom = CU.readCustomUnits()
     for (const p of custom.problems) console.log(`Custom unit skipped: ${p}`)
     const customTables = CU.unitTables(custom.units)
-    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...(globalItemTable ? [globalItemTable] : []), ...(starGrainTable ? [starGrainTable] : []), ...kitTables, MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES), ...customTables, ...changes.rows.keys(), ...enemyTables, ...rateFiles.keys(), ...lastChanged])].sort()
+    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...(globalItemTable ? [globalItemTable] : []), ...(starGrainTable ? [starGrainTable] : []), ...(voiceActorTable ? [voiceActorTable] : []), ...kitTables, MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES), ...customTables, ...changes.rows.keys(), ...enemyTables, ...rateFiles.keys(), ...lastChanged])].sort()
     const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
     const cn = await cnFiles(new Set([...fileList, featureFile]))
     // art StarPoint's patches added (scripts/gen_cn_banner_art.cjs) counts too: their file names and
@@ -775,6 +789,21 @@ async function main() {
         if (changes.rows.has(file)) console.log(`Unit changes: ${replaceRows(tree, changes.rows.get(file))} of ${changes.rows.get(file).size} row(s) in ${file}`)
         if (enemyTables.includes(file)) console.log(`Enemy strength: HP x${enemy.hp}, attack x${enemy.atk} on ${ES.scaleTree(tree, enemy, R)} row(s) in ${file}`)
         if (rateFiles.has(file)) console.log(`Summon rates: ${GO.writeTree(tree, rateFiles.get(file), gachaRates, R)} row(s) in ${rateFiles.get(file)}`)
+        if (file === voiceActorTable) {
+            // after kits and unit changes, so a changed row still gets its name; only a blank ("--") last column
+            let filled = 0
+            for (const { path: keys, leaf } of R.leaves(tree)) {
+                const name = voiceActors[keys[0]]
+                if (!name) continue
+                const end = leaf.text.endsWith("\n") ? "\n" : ""
+                const fields = R.splitCsv(leaf.text.replace(/\n$/, ""))
+                if (fields[fields.length - 1] !== "--") continue
+                fields[fields.length - 1] = name
+                R.setLeafText(leaf, fields.map(R.csvField).join(",") + end)
+                filled++
+            }
+            if (filled) console.log(`Voice actors: ${filled} unit(s) given global's name for a blank VA`)
+        }
         trees.set(file, tree)
     }
 
