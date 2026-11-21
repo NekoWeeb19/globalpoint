@@ -29,8 +29,9 @@ const check = (name, ok, detail) => {
 const describe = partners => partners.map(p => p.partyId).join(", ")
 const hasUnits = partners => partners.every(p => p.party.characters.some(c => c !== null))
 
+let db
 try {
-    const db = new Database(path.join(work, ".database", "wdfp_data.db"))
+    db = new Database(path.join(work, ".database", "wdfp_data.db"))
     const playerId = Number(process.argv[2]) || db.prepare("SELECT player_id FROM players_parties GROUP BY player_id ORDER BY COUNT(*) DESC LIMIT 1").get().player_id
     const current = savedParties(playerId).find(p => p.characterIds.some(id => id !== null))?.partyId ?? 1
     console.log(`player ${playerId}, party in use ${current}`)
@@ -54,11 +55,12 @@ try {
     db.prepare("UPDATE players_parties SET character_id_1 = (SELECT id FROM players_characters WHERE player_id = ? ORDER BY exp DESC LIMIT 1) WHERE player_id = ? AND group_id = 1 AND slot = 2 AND category = 1").run(playerId, playerId)
     const one = partnerParties(playerId, 999)
     check("one usable party: two partners, that party first", one.length === 2 && one[0].partyId === 2 && hasUnits(one), describe(one))
-    db.close()
 } finally {
-    getDatabase(0).close() // the server's own handle on the copy (Database.WDFP_DATA), so the copy can be deleted
+    try { db?.close() } catch { }
+    try { getDatabase(0).close() } catch { } // the server's own handle on the copy (Database.WDFP_DATA), so the copy can be deleted
     process.chdir(repo)
-    rmSync(work, { recursive: true, force: true })
+    // a leftover temp folder must not hide the test's own error (Windows: EBUSY while a handle is still open)
+    try { rmSync(work, { recursive: true, force: true }) } catch (e) { console.log(`temp folder left: ${work} (${e.code})`) }
 }
 console.log(failures === 0 ? "\nall passed" : `\n${failures} failed`)
 process.exit(failures === 0 ? 0 : 1)
