@@ -45,9 +45,9 @@ level 1 to the highest. Numbers are shown in plain units (%, seconds, points, co
 × 100,000, and the editor converts both ways. An effect whose unit isn't known shows its stored number,
 "(game value)".
 
-- **Skill tab**: what the skill and Skill+ do, from their scripts (below).
+- **Skill tab**: the skill's and Skill+'s name and description, and what they do, from their scripts (below).
 
-Not editable here: the skill's name and description text, ability text (the game writes it itself from the rows, so
+Not editable here: ability text (the game writes it itself from the rows, so
 it always matches), element and rarity (the server keeps its own copy), Mana Board costs.
 
 ## Skill tab
@@ -79,6 +79,10 @@ another run inside it: after a **Wait**, when an **Attack area** appears, on eac
 - **Start from another unit's skill** copies another unit's Skill or Skill+ to start from. **Reset to game** puts the
   unit's own skill back.
 - The skill pose, cut-in picture and voice aren't part of the list: they stay the unit's own.
+- **Name** and **Description** at the top of each skill: the text the unit page shows (grey under each box: the
+  game's own). The game doesn't write it from the script, so after changing what a skill does, change its
+  description too. A description may run over several lines (press Enter), as some of CN's own do; a name may not
+  be empty. Kits carry the text along with the rest of the skill.
 
 **Checking your skill before saving:**
 - **▶ Preview skill** plays the whole skill as you've edited it: the unit's skill pose, the effects, outlines of where

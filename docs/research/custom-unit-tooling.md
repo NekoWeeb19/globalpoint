@@ -16,6 +16,7 @@ background.
   its target and its numbers. Lines can be added, removed, or copied from any other unit.
 - **Numbers**: HP/ATK, skill gauge, and every value of every line as **min → max**.
 - **Details**: name, title, description, leader skill name, class, role.
+- **Skill tab**: the skill and Skill+ script as command cards, plus their name and description (action_skill columns 0 and 1).
 - **Kit sharing**: download one, some or all edited units as one file (itself a change file), and import them.
 - **In game**: each ability in the unit page's own words, at both ends of its range.
 - **Saving** writes a unit change file (`assets/custom_units/changes/unit-editor-<id>.json`) and rebuilds the CN game
