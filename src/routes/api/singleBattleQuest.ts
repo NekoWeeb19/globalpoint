@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { deletePlayerRushEventPlayedPartyListSync, getAccountPlayers, getPlayerRushEventSync, getPlayerSingleQuestProgressSync, getPlayerSync, getSession, insertPlayerQuestProgressSync, insertPlayerRushEventClearedFolderSync, insertPlayerRushEventPlayedPartySync, updatePlayerQuestProgressSync, updatePlayerRushEventSync, updatePlayerSync } from "../../data/wdfpData";
+import { deletePlayerRushEventPlayedPartyListSync, getAccountPlayers, getPlayerPartyGroupListSync, getPlayerRushEventSync, getPlayerSingleQuestProgressSync, getPlayerSync, getSession, insertPlayerQuestProgressSync, insertPlayerRushEventClearedFolderSync, insertPlayerRushEventPlayedPartySync, updatePlayerQuestProgressSync, updatePlayerRushEventSync, updatePlayerSync } from "../../data/wdfpData";
 import { getQuestFromCategorySync, getRushEventFolderClearRewards, getRushEventFolderLastRound } from "../../lib/assets";
 import { getCharactersEvolutionImgLevels, givePlayerCharactersExpSync } from "../../lib/character";
 import { questElement, givePlayerRewardsSync, givePlayerRewardSync, givePlayerScoreRewardsSync } from "../../lib/quest";
@@ -707,8 +707,9 @@ const routes = async (fastify: FastifyInstance) => {
             ...(staminaSpent !== null && staminaSpent.cost > 0 ? { staminaCost: staminaSpent.cost } : {}),
         }
 
-        // update player last quest id
-        if (questData.fixedParty === undefined) {
+        // update player last quest id. Only a party the save has: quests with a guest unit start with party 3000,
+        // and a main party the save doesn't have stops the game at home (F1009, player log 2026-11-21)
+        if (questData.fixedParty === undefined && Object.values(getPlayerPartyGroupListSync(playerId)).some(group => group.list[String(partyId)] !== undefined)) {
             updatePlayerSync({
                 id: playerId,
                 partySlot: partyId

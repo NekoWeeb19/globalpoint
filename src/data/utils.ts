@@ -132,6 +132,16 @@ export function serializePartyGroupList(
 }
 
 /**
+ * The main party to send: the saved one if a party with that number exists, else the first party the save has (1 if
+ * none). Guest-unit quests start with party 3000, which older servers saved as the main party (player log 2026-11-21).
+ */
+export function existingPartySlot(partySlot: number, partyGroupList: Record<string, UserPartyGroup>): number {
+    const slots = Object.values(partyGroupList).flatMap(group => Object.keys(group.list).map(Number)).filter(Number.isSafeInteger)
+    if (slots.includes(partySlot)) return partySlot
+    return slots.length > 0 ? Math.min(...slots) : 1
+}
+
+/**
  * Serializes a PlayerRushEvent into a UserRushEvent.
  * 
  * @param rushEvent The data for the rush event.
@@ -300,7 +310,8 @@ export function serializePlayerData(
             "exp_pool": playerData.expPool,
             "exp_pooled_time": epochOf(playerData.expPooledTime),
             "leader_character_id": playerData.leaderCharacterId,
-            "party_slot": playerData.partySlot,
+            // a main party the save doesn't have stops the game at home (F1009 in PartyLogic.get_mainCharacters)
+            "party_slot": existingPartySlot(playerData.partySlot, userPartyGroupList),
             "degree_id": playerData.degreeId,
             "birth": playerData.birth,
             "free_mana": playerData.freeMana,
