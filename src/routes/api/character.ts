@@ -446,7 +446,10 @@ const routes = async (fastify: FastifyInstance) => {
                         "create_time": clientSerializeDate(characterData.joinTime),
                         "update_time": clientSerializeDate(characterData.updateTime),
                         "join_time": clientSerializeDate(characterData.joinTime),
-                        "bond_token_list": bondTokenList
+                        "bond_token_list": bondTokenList,
+                        // CN node awakening opens once board 1 is complete (src/nya/manaAwake.ts awakeUnlocksSync).
+                        // The client reads it only inside the unit's character_list entry, not at the top of data.
+                        ...(inCnRequest() ? { "mana_board_awake": manaBoardAwakeSync(playerId)[String(characterId)] ?? {} } : {})
                     }
                 ],
                 "evolution": evolutionData,
@@ -455,8 +458,6 @@ const routes = async (fastify: FastifyInstance) => {
                     [String(characterId)]: userCharacterManaNodeListItem
                 },
                 "mail_arrived": false,
-                // CN node awakening opens once board 1 is complete (src/nya/manaAwake.ts awakeUnlocksSync)
-                ...(inCnRequest() ? { "mana_board_awake": { [String(characterId)]: manaBoardAwakeSync(playerId)[String(characterId)] ?? {} } } : {}),
                 ...(activeMissionList.length > 0 ? { "active_mission_list": activeMissionList } : {})
             }, manaCost > 0 ? [{ kind: COUNTER_KINDS.MANA_SPENT, amount: manaCost }] : [])
         })

@@ -61,6 +61,8 @@ import infodeskPlugin from "./routes/infodesk";
 import companionPlugin from "./routes/companion";
 import { cnApiUrl, isCnRequest, runInCnContext, CN_INTERNAL_HEADER, CN_PREFIX, CN_CDN_PREFIX, cnCdnRoot, adaptCnReply, cnApiPath, CN_PATCH_PREFIX, cnPatchDir } from "./lib/cnClient";
 import { fixUint32Tags } from "./lib/msgpackCompat";
+import { getAccountPlayersSync, getSessionSync } from "./data/wdfpData";
+import { addManaBoardAwakeToCharacterList } from "./nya/manaAwake";
 import cnApiPlugin from "./routes/api/cn";
 import { existsSync } from "fs";
 import cnVersionPlugin from "./routes/cnVersion";
@@ -116,6 +118,27 @@ fastify.addHook('onResponse', (request, reply, done) => {
     done()
 })
 
+/**
+ * CN unit awakening: a unit's awake unlock must reach the client in its character_list entry
+ * (src/nya/manaAwake.ts addManaBoardAwakeToCharacterList), or it only shows after a restart.
+ * Never stops the reply.
+ */
+function addCnAwakeUnlocks(body: unknown, payload: unknown) {
+    try {
+        const characterList = (payload as { data?: { character_list?: unknown } } | null)?.data?.character_list
+        if (!Array.isArray(characterList) || characterList.length === 0) return
+        const viewerId = (body as { viewer_id?: unknown } | null)?.viewer_id
+        if (viewerId === undefined || viewerId === null) return
+        const session = getSessionSync(String(viewerId))
+        if (session === null) return
+        const playerId = getAccountPlayersSync(session.accountId)[0]
+        if (playerId === undefined) return
+        addManaBoardAwakeToCharacterList(playerId, characterList)
+    } catch (error) {
+        console.error(`[awake] could not add awake unlocks to a reply: ${(error as Error)?.message ?? error}`)
+    }
+}
+
 // serializers
 fastify.addHook('onSend', (request, reply, payload, done) => {
     try {
@@ -124,6 +147,7 @@ fastify.addHook('onSend', (request, reply, payload, done) => {
                 // the CN client's decoder can't read msgpack uint32 (src/lib/msgpackCompat.ts)
                 // and some fields have another shape there (adaptCnReply)
                 const cn = isCnRequest(request.originalUrl)
+                if (cn) addCnAwakeUnlocks(request.body, payload)
                 const packed = pack(cn ? adaptCnReply(payload, cnApiPath(request.originalUrl)) : payload)
                 done(null, (cn ? fixUint32Tags(packed) : packed).toString('base64'))
                 break;

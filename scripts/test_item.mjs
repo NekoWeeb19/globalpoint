@@ -18,7 +18,8 @@ const has = n => () => n
 
 // data
 const items = rules.items
-check("data: 1022 items, 71 stamina items, 786 sellable", Object.keys(items).length === 1022 && Object.values(items).filter(i => i.effectKind === 2).length === 71 && Object.values(items).filter(i => i.sellable).length === 786)
+// global 1022 items (71 stamina, 786 sellable) + 266 CN-only ones (scripts/gen_cn_merge.cjs scripts/gen_items.cjs)
+check("data: 1288 items, 110 stamina items, 965 sellable", Object.keys(items).length === 1288 && Object.values(items).filter(i => i.effectKind === 2).length === 110 && Object.values(items).filter(i => i.sellable).length === 965)
 check("data: Staminade Swig (101) recovers 25, can't be sold", items["101"].stamina === 25 && !items["101"].sellable)
 check("data: Ember Element (1) sells for 5 mana", items["1"].sellable && items["1"].salePrice === 5)
 

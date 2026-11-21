@@ -75,6 +75,25 @@ export function manaBoardAwakeSync(playerId: number): Record<string, Record<stri
     return out
 }
 
+/**
+ * Adds each unit's mana_board_awake to the character_list entries of a CN reply. The client reads a unit's awake
+ * unlock only from its character_list entry (or /load), so without this a unit whose "complete all" awake mission
+ * or board 1 finished during play kept "Complete all Awakening Missions first." until the game restarted. Units
+ * with nothing unlocked are left alone, and an entry that already has the field keeps it.
+ */
+export function addManaBoardAwakeToCharacterList(playerId: number, characterList: unknown): void {
+    if (!Array.isArray(characterList)) return
+    let unlocked: Record<string, Record<string, number>> | null = null
+    for (const entry of characterList) {
+        if (entry === null || typeof entry !== "object" || "mana_board_awake" in entry) continue
+        const id = (entry as Record<string, unknown>).character_id
+        if (typeof id !== "number" && typeof id !== "string") continue
+        unlocked ??= manaBoardAwakeSync(playerId)
+        const levels = unlocked[String(id)]
+        if (levels && Object.keys(levels).length > 0) (entry as Record<string, unknown>).mana_board_awake = levels
+    }
+}
+
 /** A unit's learned nodes in the CN client's form, with their awake levels. */
 export function cnManaNodeList(nodes: number[], awake: Record<string, number> | undefined) {
     return nodes.map(node => typeof node === "number" ? { multiplied_id: node, awake_level: awake?.[String(node)] ?? 0 } : node)
