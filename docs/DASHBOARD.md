@@ -168,6 +168,24 @@ checked like ones you made. A mail with a unit your setup doesn't have (someone 
 refused, with the reason. If some imported first sends are already in the past, it asks: **Send them
 now** (one of each right away) or **Start each at its next time**.
 
+**CN's gifts** (on by default): the gifts and compensation mails CN sent its players from launch
+(2021-10-26) to its end (2025-07-22), from CN's official Bilibili posts. That's 122 gifts, 213 mails and
+about 219,000 free beads, plus summon tickets, limit-break and EX-break materials, stamina potions, the
+unit Eloise (Indomitable Lady) and The Carrot Sword of Imagination.
+- They arrive in the CN app's mailbox on CN's dates (CN time 12:00 = 04:00 UTC), for every save. Each item
+  is its own mail, claimable for 30 days.
+- A gift more than 30 days old when a save first looks isn't sent: jumping the date ahead gives only the
+  last month's gifts.
+- Gifts for real-world reasons are titled "Milestone Gift" (chart ranks, repost goals, server-wide
+  counts) or "Compensation Gift" (CN's apologies for bugs and downtime).
+- The global app doesn't get them.
+- **Send CN's gifts** turns them all off or on. **All gifts** lists every gift with its items and status;
+  **Remove** stops one (**Put back** undoes it). The settings are in `.database/cn_gift_mails.json`, the
+  gifts in `assets/cn_gift_mails.json`.
+- Not included: profile titles, exchange tickets (CN gave those through an exchange event, not by mail),
+  one-day battle tries and bonus points, gift codes, and mails only some players got.
+- CN sent most of them only to Rank 5+ players; here every save gets them.
+
 ## Back up or move a save
 
 - **Players** > a player > **Download Save** gives a JSON file; **Upload Save** puts one back. It works
@@ -225,6 +243,10 @@ the login bonuses. Later that day the game goes straight to the home screen. Not
   counts as helping in someone else's battle, like the live game. It pays 10 Silver, Gold or Lilac
   Nuggets (harder battles pay better ones) and counts for the "clear battles as a backup" missions.
   Battles that pay: boss battles, advent events, world story bosses, raids and hard multi.
+- **Rank cap (Rank cap follows CN's dates):** on by default (CN app). Your rank stops at the cap CN had
+  on the server date: 100 from launch (and before it), 125 from 2021-12-16, 150 from 2022-06-16, 175 from
+  2023-02-02, 250 from 2024-05-09. At the cap, rank points stop (none are saved up); after the next raise
+  ranking up carries on. A save already above the cap keeps its rank. Off: up to 250 at any date.
 - **Summon rates:** the 5★ and 4★ chance per pull for **Unit banners**, **Star Fest / Meteor Festival**
   and **Armaments** (3★ is the rest). **Base game rates** restores 5% / 25%, and 7.5% / 25% for Star
   Fest and Meteor Festival. Pulls follow from the next pull; the game's own **Rates** screen (and its

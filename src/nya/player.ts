@@ -6,6 +6,7 @@ import { STAMINA_OVERFLOW_MAX, currentStamina, recoverySeconds } from "../lib/st
 import { getServerDate } from "../utils";
 import { realStaminaOn } from "./serverSettings";
 import { bisect } from "./utils";
+import { rankPointLimit } from "../lib/rankCap";
 
 /**
  * The rank a player with these rank points has: the highest rank whose total_rp they reached (as the game shows it).
@@ -49,7 +50,11 @@ export const givePlayerRankPoint = (playerData: Player, rankPoint: number) => {
     // modify playerData in place
     if (!playerData) throw new Error("Player not found");
     const currentRank = getRankByPt(playerData.rankPoint);
-    modifyPlayer(playerData, 'rankPoint', playerData.rankPoint + rankPoint);
+    // the CN app's rank cap of the server date (src/lib/rankCap.ts): points stop at the cap rank's total, as at a max
+    // rank in the game; a save already past it keeps what it has
+    const limit = rankPointLimit()
+    const next = playerData.rankPoint + rankPoint
+    modifyPlayer(playerData, 'rankPoint', limit === null || next <= limit ? next : Math.max(playerData.rankPoint, limit));
     const newRank = getRankByPt(playerData.rankPoint);
     if (newRank.rank > currentRank.rank) {
         if (realStaminaOn()) {

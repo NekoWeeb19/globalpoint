@@ -1,0 +1,1944 @@
+{
+ "_note": "CN's own gift and compensation mails, from its official Bilibili posts (2021-10-26 to 2025-07-22), sent on CN's dates to every save of the CN app (src/nya/cnGiftMails.ts, docs/DASHBOARD.md Mail). id = the post's number in the post list, post = its Bilibili id, at = send time (UTC; CN time - 8 h). One game mail per item. Left out: profile titles, exchange tickets (CN gave them through an exchange event, not by mail), one-day battle tries and bonus points, gift codes, pre-registration rewards and mails only some players got. Gifts for real-world reasons are titled \"Milestone Gift\" (chart ranks, repost goals, server-wide counts) or \"Compensation Gift\" (CN's apologies for bugs and downtime).",
+ "message": "A gift for all adventurers. Thank you for playing World Flipper!",
+ "mails": [
+  {
+   "id": 32,
+   "post": "585511034377977690",
+   "at": "2021-10-26T02:00:00Z",
+   "title": "Launch Day Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 538,
+   "post": "586190901935125347",
+   "at": "2021-11-02T04:00:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 545,
+   "post": "587706166393807861",
+   "at": "2021-11-03T04:00:00Z",
+   "title": "Halloween Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 554,
+   "post": "589097744387990552",
+   "at": "2021-11-04T04:00:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    },
+    {
+     "kind": "item",
+     "typeId": 4,
+     "amount": 5
+    },
+    {
+     "kind": "item",
+     "typeId": 8,
+     "amount": 5
+    },
+    {
+     "kind": "item",
+     "typeId": 12,
+     "amount": 5
+    },
+    {
+     "kind": "item",
+     "typeId": 16,
+     "amount": 5
+    },
+    {
+     "kind": "item",
+     "typeId": 49,
+     "amount": 5
+    },
+    {
+     "kind": "item",
+     "typeId": 45,
+     "amount": 5
+    }
+   ]
+  },
+  {
+   "id": 562,
+   "post": "590953148787791589",
+   "at": "2021-11-10T04:00:00Z",
+   "title": "14 Days Since Launch",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 578,
+   "post": "594292915350787420",
+   "at": "2021-11-18T04:00:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 610,
+   "post": "599488159336217614",
+   "at": "2021-12-02T04:00:00Z",
+   "title": "Boss Battle Support Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 633,
+   "post": "604683326012646692",
+   "at": "2021-12-17T04:00:00Z",
+   "title": "Main Story Chapter 7 Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 644,
+   "post": "608023079687760554",
+   "at": "2021-12-24T04:00:00Z",
+   "title": "Holy Night Festival Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 654,
+   "post": "610620671619007522",
+   "at": "2022-01-01T04:00:00Z",
+   "title": "New Year's Day Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 2000
+    }
+   ]
+  },
+  {
+   "id": 671,
+   "post": "615073719478153952",
+   "at": "2022-01-13T04:00:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 687,
+   "post": "617671302816384986",
+   "at": "2022-01-20T04:00:00Z",
+   "title": "New Event Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 707,
+   "post": "622124333494644006",
+   "at": "2022-02-01T04:00:00Z",
+   "title": "Lunar New Year Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 726,
+   "post": "627319521645313647",
+   "at": "2022-02-15T04:00:00Z",
+   "title": "Lantern Festival Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 746,
+   "post": "633256875925700644",
+   "at": "2022-03-03T04:00:00Z",
+   "title": "Early Spring Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 757,
+   "post": "635854446368129081",
+   "at": "2022-03-10T04:00:00Z",
+   "title": "Main Story Chapter 8 Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 778,
+   "post": "640786786817146918",
+   "at": "2022-03-24T04:00:00Z",
+   "title": "Princess Connect! Collab Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 794,
+   "post": "644018350275428448",
+   "at": "2022-04-01T04:00:00Z",
+   "title": "April Fools' Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    },
+    {
+     "kind": "equip",
+     "typeId": 3010023,
+     "amount": 1
+    }
+   ]
+  },
+  {
+   "id": 811,
+   "post": "650778465522417699",
+   "at": "2022-04-19T07:00:00Z",
+   "title": "Thank-You Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 815,
+   "post": "651195803193311254",
+   "at": "2022-04-21T04:00:00Z",
+   "title": "Compensation Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 106,
+     "amount": 5
+    },
+    {
+     "kind": "item",
+     "typeId": 45,
+     "amount": 50
+    },
+    {
+     "kind": "item",
+     "typeId": 49,
+     "amount": 50
+    },
+    {
+     "kind": "item",
+     "typeId": 4,
+     "amount": 50
+    }
+   ]
+  },
+  {
+   "id": 826,
+   "post": "653295475262226481",
+   "at": "2022-04-26T04:00:00Z",
+   "title": "Half Anniversary Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    },
+    {
+     "kind": "item",
+     "typeId": 999900,
+     "amount": 30
+    },
+    {
+     "kind": "mana",
+     "amount": 100000
+    },
+    {
+     "kind": "exp",
+     "amount": 100000
+    }
+   ]
+  },
+  {
+   "id": 833,
+   "post": "654515555233955857",
+   "at": "2022-05-01T04:00:00Z",
+   "title": "Golden Week Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 853,
+   "post": "659975012957028369",
+   "at": "2022-05-14T04:00:00Z",
+   "title": "200 Days Since Launch",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 131,
+   "post": "664505352838971433",
+   "at": "2022-05-26T09:00:00Z",
+   "title": "Compensation Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 102,
+     "amount": 3
+    }
+   ]
+  },
+  {
+   "id": 890,
+   "post": "667396703328927796",
+   "at": "2022-06-03T04:00:00Z",
+   "title": "Dragon Boat Festival Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 143,
+   "post": "669805196448104489",
+   "at": "2022-06-09T04:00:00Z",
+   "title": "Compensation Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 102,
+     "amount": 10
+    }
+   ]
+  },
+  {
+   "id": 915,
+   "post": "672264894262804505",
+   "at": "2022-06-16T06:51:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    },
+    {
+     "kind": "item",
+     "typeId": 9,
+     "amount": 180
+    },
+    {
+     "kind": "item",
+     "typeId": 10,
+     "amount": 150
+    },
+    {
+     "kind": "item",
+     "typeId": 11,
+     "amount": 80
+    },
+    {
+     "kind": "item",
+     "typeId": 12,
+     "amount": 25
+    }
+   ]
+  },
+  {
+   "id": 152,
+   "post": "675292480982220809",
+   "at": "2022-06-30T04:00:00Z",
+   "title": "Thank-You Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 13001,
+     "amount": 3
+    }
+   ]
+  },
+  {
+   "id": 949,
+   "post": "680354091448139827",
+   "at": "2022-07-08T04:00:00Z",
+   "title": "Zombie Land Saga Collab Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 973,
+   "post": "685208808850456677",
+   "at": "2022-07-21T04:00:00Z",
+   "title": "Zombie Land Saga Collab Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 168,
+   "post": "685645297782620161",
+   "at": "2022-07-23T11:00:00Z",
+   "title": "Compensation Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 102,
+     "amount": 10
+    }
+   ]
+  },
+  {
+   "id": 996,
+   "post": "690403992866390035",
+   "at": "2022-08-04T04:00:00Z",
+   "title": "Tanabata Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    },
+    {
+     "kind": "mana",
+     "amount": 77777
+    }
+   ]
+  },
+  {
+   "id": 176,
+   "post": "695973302585262096",
+   "at": "2022-08-19T07:00:00Z",
+   "title": "Compensation Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 52,
+     "amount": 5
+    },
+    {
+     "kind": "item",
+     "typeId": 51,
+     "amount": 5
+    }
+   ]
+  },
+  {
+   "id": 1023,
+   "post": "698196794361774161",
+   "at": "2022-08-25T04:00:00Z",
+   "title": "Main Story Part 1 Finale Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 178,
+   "post": "698598777529827399",
+   "at": "2022-08-26T10:00:00Z",
+   "title": "Compensation Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 102,
+     "amount": 3
+    }
+   ]
+  },
+  {
+   "id": 1037,
+   "post": "704134161438343224",
+   "at": "2022-09-10T04:00:00Z",
+   "title": "Mid-Autumn Festival Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 189,
+   "post": "706035934349492304",
+   "at": "2022-09-22T10:00:00Z",
+   "title": "Compensation Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 999802,
+     "amount": 15
+    }
+   ]
+  },
+  {
+   "id": 1054,
+   "post": "709777727061753953",
+   "at": "2022-09-30T16:00:00Z",
+   "title": "National Day Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 999003,
+     "amount": 1
+    },
+    {
+     "kind": "item",
+     "typeId": 999005,
+     "amount": 1
+    },
+    {
+     "kind": "item",
+     "typeId": 4,
+     "amount": 30
+    },
+    {
+     "kind": "item",
+     "typeId": 8,
+     "amount": 30
+    },
+    {
+     "kind": "item",
+     "typeId": 12,
+     "amount": 30
+    },
+    {
+     "kind": "item",
+     "typeId": 16,
+     "amount": 30
+    },
+    {
+     "kind": "item",
+     "typeId": 49,
+     "amount": 30
+    },
+    {
+     "kind": "item",
+     "typeId": 45,
+     "amount": 30
+    },
+    {
+     "kind": "item",
+     "typeId": 10003,
+     "amount": 1
+    },
+    {
+     "kind": "item",
+     "typeId": 12002,
+     "amount": 1
+    },
+    {
+     "kind": "item",
+     "typeId": 99,
+     "amount": 20
+    },
+    {
+     "kind": "item",
+     "typeId": 102,
+     "amount": 10
+    },
+    {
+     "kind": "mana",
+     "amount": 50000
+    }
+   ]
+  },
+  {
+   "id": 199,
+   "post": "715630238476795909",
+   "at": "2022-10-11T06:00:00Z",
+   "title": "Compensation Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 101,
+     "amount": 3
+    }
+   ]
+  },
+  {
+   "id": 1102,
+   "post": "716379967969034407",
+   "at": "2022-10-13T04:00:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1132,
+   "post": "721204036561272953",
+   "at": "2022-10-26T04:00:00Z",
+   "title": "1st Anniversary Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1162,
+   "post": "727141412246651009",
+   "at": "2022-11-11T04:00:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1181,
+   "post": "729367927595204759",
+   "at": "2022-11-17T04:00:00Z",
+   "title": "Stamina Support Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 999105,
+     "amount": 20
+    }
+   ]
+  },
+  {
+   "id": 1193,
+   "post": "731594455813980305",
+   "at": "2022-11-23T04:00:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    },
+    {
+     "kind": "item",
+     "typeId": 99,
+     "amount": 30
+    }
+   ]
+  },
+  {
+   "id": 220,
+   "post": "736758810403668008",
+   "at": "2022-12-07T04:00:00Z",
+   "title": "Compensation Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    },
+    {
+     "kind": "item",
+     "typeId": 106,
+     "amount": 5
+    }
+   ]
+  },
+  {
+   "id": 1235,
+   "post": "739758299606417429",
+   "at": "2022-12-15T04:00:00Z",
+   "title": "Re:Zero Collab Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 3000
+    }
+   ]
+  },
+  {
+   "id": 1252,
+   "post": "742355891543605270",
+   "at": "2022-12-22T04:00:00Z",
+   "title": "Winter Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 99,
+     "amount": 30
+    }
+   ]
+  },
+  {
+   "id": 231,
+   "post": "743469211490189412",
+   "at": "2022-12-25T04:00:00Z",
+   "title": "Holy Night Festival Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1262,
+   "post": "746066743274766504",
+   "at": "2023-01-01T04:00:00Z",
+   "title": "New Year's Day Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 240,
+   "post": "750187725754204169",
+   "at": "2023-01-12T10:00:00Z",
+   "title": "Compensation Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 101,
+     "amount": 5
+    }
+   ]
+  },
+  {
+   "id": 1304,
+   "post": "753859531948163201",
+   "at": "2023-01-22T04:00:00Z",
+   "title": "Lunar New Year Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 2030
+    },
+    {
+     "kind": "item",
+     "typeId": 10003,
+     "amount": 1
+    }
+   ]
+  },
+  {
+   "id": 1341,
+   "post": "759054724376821793",
+   "at": "2023-02-05T04:00:00Z",
+   "title": "Lantern Festival Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1362,
+   "post": "762394512457728038",
+   "at": "2023-02-14T04:00:00Z",
+   "title": "Valentine's Day Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 50102,
+     "amount": 1
+    }
+   ]
+  },
+  {
+   "id": 1377,
+   "post": "765363172343283735",
+   "at": "2023-02-22T04:00:00Z",
+   "title": "Granblue Fantasy Collab Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 3000
+    }
+   ]
+  },
+  {
+   "id": 1407,
+   "post": "768331853738278945",
+   "at": "2023-03-02T04:00:00Z",
+   "title": "Welcome Back Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 102,
+     "amount": 10
+    },
+    {
+     "kind": "item",
+     "typeId": 99,
+     "amount": 30
+    }
+   ]
+  },
+  {
+   "id": 1437,
+   "post": "770929449971482659",
+   "at": "2023-03-09T04:00:00Z",
+   "title": "1.5 Anniversary Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1447,
+   "post": "772413786372964517",
+   "at": "2023-03-13T04:00:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 500
+    }
+   ]
+  },
+  {
+   "id": 1453,
+   "post": "772784875841257480",
+   "at": "2023-03-14T04:00:00Z",
+   "title": "White Day Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 901,
+     "amount": 1
+    }
+   ]
+  },
+  {
+   "id": 1464,
+   "post": "776495723317297190",
+   "at": "2023-03-24T04:00:00Z",
+   "title": "Zombie Land Saga Collab Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1473,
+   "post": "779464146985943044",
+   "at": "2023-04-01T04:00:00Z",
+   "title": "April Fools' Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1501,
+   "post": "786143942143901696",
+   "at": "2023-04-19T04:00:00Z",
+   "title": "Early Summer Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1520,
+   "post": "789854811040252343",
+   "at": "2023-04-29T04:00:00Z",
+   "title": "Golden Week Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    },
+    {
+     "kind": "item",
+     "typeId": 12002,
+     "amount": 1
+    }
+   ]
+  },
+  {
+   "id": 1527,
+   "post": "791014435032399912",
+   "at": "2023-05-03T04:00:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 3000
+    }
+   ]
+  },
+  {
+   "id": 1558,
+   "post": "797647582569431059",
+   "at": "2023-05-20T04:00:00Z",
+   "title": "570 Days Since Launch",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1573,
+   "post": "799503003894677573",
+   "at": "2023-05-25T04:00:00Z",
+   "title": "Summer Festival Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 999003,
+     "amount": 10
+    },
+    {
+     "kind": "item",
+     "typeId": 999005,
+     "amount": 10
+    },
+    {
+     "kind": "item",
+     "typeId": 12002,
+     "amount": 1
+    },
+    {
+     "kind": "item",
+     "typeId": 10003,
+     "amount": 2
+    },
+    {
+     "kind": "item",
+     "typeId": 106,
+     "amount": 5
+    },
+    {
+     "kind": "mana",
+     "amount": 15000
+    },
+    {
+     "kind": "item",
+     "typeId": 99,
+     "amount": 15
+    },
+    {
+     "kind": "item",
+     "typeId": 13001,
+     "amount": 3
+    }
+   ]
+  },
+  {
+   "id": 1593,
+   "post": "802100604677652532",
+   "at": "2023-06-01T04:00:00Z",
+   "title": "June Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1630,
+   "post": "809893414549061671",
+   "at": "2023-06-22T04:00:00Z",
+   "title": "Dragon Boat Festival Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1631,
+   "post": "809893414556401769",
+   "at": "2023-06-22T04:00:00Z",
+   "title": "Treasure Key Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 500000,
+     "amount": 10
+    }
+   ]
+  },
+  {
+   "id": 1658,
+   "post": "816572921928482856",
+   "at": "2023-07-10T04:00:00Z",
+   "title": "Haruhi Suzumiya Collab Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 328,
+   "post": "816613238784393273",
+   "at": "2023-07-10T10:00:00Z",
+   "title": "Compensation Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 102,
+     "amount": 3
+    }
+   ]
+  },
+  {
+   "id": 330,
+   "post": "817038234406092867",
+   "at": "2023-07-11T10:00:00Z",
+   "title": "Collab Summon Ticket Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 999003,
+     "amount": 5
+    }
+   ]
+  },
+  {
+   "id": 1673,
+   "post": "820283777980825620",
+   "at": "2023-07-20T04:00:00Z",
+   "title": "Midsummer Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1718,
+   "post": "832578577132159044",
+   "at": "2023-08-23T04:00:00Z",
+   "title": "Tanabata Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 99,
+     "amount": 77
+    },
+    {
+     "kind": "mana",
+     "amount": 7777
+    },
+    {
+     "kind": "exp",
+     "amount": 77777
+    }
+   ]
+  },
+  {
+   "id": 1748,
+   "post": "835869372491759737",
+   "at": "2023-08-31T04:00:00Z",
+   "title": "2nd Anniversary Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 364,
+   "post": "837447364925980672",
+   "at": "2023-09-04T08:00:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 500
+    }
+   ]
+  },
+  {
+   "id": 1761,
+   "post": "837448073595584515",
+   "at": "2023-09-04T10:00:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1771,
+   "post": "838803960408047616",
+   "at": "2023-09-08T01:45:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 2000
+    }
+   ]
+  },
+  {
+   "id": 1806,
+   "post": "846630825351970997",
+   "at": "2023-09-29T04:00:00Z",
+   "title": "Mid-Autumn Festival Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1808,
+   "post": "847372995718545488",
+   "at": "2023-10-01T04:00:00Z",
+   "title": "National Day Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1839,
+   "post": "854052528854138947",
+   "at": "2023-10-19T04:00:00Z",
+   "title": "Princess Connect! Collab Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1852,
+   "post": "856650142228414536",
+   "at": "2023-10-26T04:00:00Z",
+   "title": "Argo Compass Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 30029,
+     "amount": 3
+    }
+   ]
+  },
+  {
+   "id": 1867,
+   "post": "859618823640186899",
+   "at": "2023-11-02T04:00:00Z",
+   "title": "Re:Zero Collab Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1887,
+   "post": "864442931152420931",
+   "at": "2023-11-16T04:00:00Z",
+   "title": "EX Break Celebration Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 14002,
+     "amount": 3
+    },
+    {
+     "kind": "item",
+     "typeId": 14003,
+     "amount": 1
+    },
+    {
+     "kind": "item",
+     "typeId": 14005,
+     "amount": 3
+    },
+    {
+     "kind": "item",
+     "typeId": 14006,
+     "amount": 1
+    },
+    {
+     "kind": "item",
+     "typeId": 14008,
+     "amount": 3
+    },
+    {
+     "kind": "item",
+     "typeId": 14009,
+     "amount": 1
+    },
+    {
+     "kind": "item",
+     "typeId": 14011,
+     "amount": 3
+    },
+    {
+     "kind": "item",
+     "typeId": 14012,
+     "amount": 1
+    },
+    {
+     "kind": "item",
+     "typeId": 14014,
+     "amount": 3
+    },
+    {
+     "kind": "item",
+     "typeId": 14015,
+     "amount": 1
+    },
+    {
+     "kind": "item",
+     "typeId": 14017,
+     "amount": 3
+    },
+    {
+     "kind": "item",
+     "typeId": 14018,
+     "amount": 1
+    }
+   ]
+  },
+  {
+   "id": 1899,
+   "post": "866669441955397719",
+   "at": "2023-11-22T04:00:00Z",
+   "title": "November Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1916,
+   "post": "872235723863883784",
+   "at": "2023-12-07T04:00:00Z",
+   "title": "Bead Day Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1600
+    },
+    {
+     "kind": "item",
+     "typeId": 102,
+     "amount": 5
+    },
+    {
+     "kind": "item",
+     "typeId": 999005,
+     "amount": 10
+    }
+   ]
+  },
+  {
+   "id": 1940,
+   "post": "878915256985845811",
+   "at": "2023-12-25T04:00:00Z",
+   "title": "Christmas Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 1954,
+   "post": "881512831764135992",
+   "at": "2024-01-01T04:00:00Z",
+   "title": "New Year's Day Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2012,
+   "post": "896170717635150560",
+   "at": "2024-02-09T16:00:00Z",
+   "title": "Lunar New Year Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 2030
+    },
+    {
+     "kind": "item",
+     "typeId": 10003,
+     "amount": 2
+    }
+   ]
+  },
+  {
+   "id": 2019,
+   "post": "897840600912494627",
+   "at": "2024-02-14T04:00:00Z",
+   "title": "Valentine's Day Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 50102,
+     "amount": 1
+    }
+   ]
+  },
+  {
+   "id": 2040,
+   "post": "900809277977919688",
+   "at": "2024-02-22T04:00:00Z",
+   "title": "2.5 Anniversary Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2071,
+   "post": "906005930736353316",
+   "at": "2024-03-07T04:00:00Z",
+   "title": "Umamusume Collab Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2103,
+   "post": "911199645695213570",
+   "at": "2024-03-21T04:00:00Z",
+   "title": "KonoSuba Collab Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 3000
+    }
+   ]
+  },
+  {
+   "id": 2129,
+   "post": "915281067216207875",
+   "at": "2024-04-01T04:01:00Z",
+   "title": "April Fools' Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 12002,
+     "amount": 1
+    },
+    {
+     "kind": "item",
+     "typeId": 10003,
+     "amount": 3
+    },
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2157,
+   "post": "921218945411711026",
+   "at": "2024-04-17T04:00:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 3000
+    }
+   ]
+  },
+  {
+   "id": 2171,
+   "post": "926414137862389793",
+   "at": "2024-05-01T04:00:00Z",
+   "title": "May Day Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    },
+    {
+     "kind": "item",
+     "typeId": 70043,
+     "amount": 500
+    }
+   ]
+  },
+  {
+   "id": 2196,
+   "post": "933464751871098913",
+   "at": "2024-05-20T04:00:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 999001,
+     "amount": 1
+    }
+   ]
+  },
+  {
+   "id": 2204,
+   "post": "934578011718549509",
+   "at": "2024-05-23T04:00:00Z",
+   "title": "Armament Enhancement Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 14037,
+     "amount": 110
+    },
+    {
+     "kind": "item",
+     "typeId": 14040,
+     "amount": 9
+    },
+    {
+     "kind": "item",
+     "typeId": 30029,
+     "amount": 4
+    }
+   ]
+  },
+  {
+   "id": 2220,
+   "post": "938288863432933379",
+   "at": "2024-06-01T04:00:00Z",
+   "title": "Children's Day Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2227,
+   "post": "941257545067003969",
+   "at": "2024-06-10T04:00:00Z",
+   "title": "Dragon Boat Festival Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2270,
+   "post": "952761185211514886",
+   "at": "2024-07-11T04:00:00Z",
+   "title": "3rd Anniversary Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    },
+    {
+     "kind": "chara",
+     "typeId": 231093,
+     "amount": 1
+    }
+   ]
+  },
+  {
+   "id": 2305,
+   "post": "963893740492029956",
+   "at": "2024-08-10T04:00:00Z",
+   "title": "Tanabata Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    },
+    {
+     "kind": "item",
+     "typeId": 99,
+     "amount": 77
+    },
+    {
+     "kind": "mana",
+     "amount": 7777
+    },
+    {
+     "kind": "exp",
+     "amount": 77777
+    }
+   ]
+  },
+  {
+   "id": 2324,
+   "post": "968746984815984640",
+   "at": "2024-08-23T04:00:00Z",
+   "title": "Summer Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2351,
+   "post": "977994979217506313",
+   "at": "2024-09-17T04:00:00Z",
+   "title": "Mid-Autumn Festival Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1800
+    },
+    {
+     "kind": "item",
+     "typeId": 999005,
+     "amount": 10
+    },
+    {
+     "kind": "item",
+     "typeId": 101,
+     "amount": 5
+    }
+   ]
+  },
+  {
+   "id": 2366,
+   "post": "983190171710128132",
+   "at": "2024-10-01T04:00:00Z",
+   "title": "National Day Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2399,
+   "post": "994693812081131562",
+   "at": "2024-11-01T04:00:00Z",
+   "title": "Halloween Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2416,
+   "post": "998404663844798489",
+   "at": "2024-11-11T04:00:00Z",
+   "title": "Milestone Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2459,
+   "post": "1014732411494203413",
+   "at": "2024-12-25T04:00:00Z",
+   "title": "Christmas Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2475,
+   "post": "1017330007707484168",
+   "at": "2025-01-01T04:00:00Z",
+   "title": "New Year's Day Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2477,
+   "post": "1017701092917510161",
+   "at": "2025-01-01T04:00:00Z",
+   "title": "3.5 Anniversary Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 6000
+    },
+    {
+     "kind": "item",
+     "typeId": 10003,
+     "amount": 2
+    },
+    {
+     "kind": "item",
+     "typeId": 12002,
+     "amount": 1
+    }
+   ]
+  },
+  {
+   "id": 2490,
+   "post": "1020298689095139334",
+   "at": "2025-01-09T04:00:00Z",
+   "title": "3.5 Anniversary Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 999003,
+     "amount": 10
+    },
+    {
+     "kind": "item",
+     "typeId": 10003,
+     "amount": 1
+    },
+    {
+     "kind": "item",
+     "typeId": 12002,
+     "amount": 1
+    }
+   ]
+  },
+  {
+   "id": 2512,
+   "post": "1027720392592064537",
+   "at": "2025-01-29T04:00:00Z",
+   "title": "Lunar New Year Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 2030
+    },
+    {
+     "kind": "item",
+     "typeId": 10003,
+     "amount": 2
+    },
+    {
+     "kind": "item",
+     "typeId": 30029,
+     "amount": 1
+    }
+   ]
+  },
+  {
+   "id": 2528,
+   "post": "1032915585072103425",
+   "at": "2025-02-12T04:00:00Z",
+   "title": "Lantern Festival Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2529,
+   "post": "1033657755386249221",
+   "at": "2025-02-14T04:00:00Z",
+   "title": "Valentine's Day Gift",
+   "items": [
+    {
+     "kind": "item",
+     "typeId": 50102,
+     "amount": 100
+    },
+    {
+     "kind": "item",
+     "typeId": 901,
+     "amount": 100
+    },
+    {
+     "kind": "item",
+     "typeId": 49100,
+     "amount": 10
+    },
+    {
+     "kind": "item",
+     "typeId": 99,
+     "amount": 200
+    }
+   ]
+  },
+  {
+   "id": 2557,
+   "post": "1046274651332804613",
+   "at": "2025-03-20T04:00:00Z",
+   "title": "Spring Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    },
+    {
+     "kind": "item",
+     "typeId": 267,
+     "amount": 2000
+    }
+   ]
+  },
+  {
+   "id": 2570,
+   "post": "1050727158049144854",
+   "at": "2025-04-01T04:00:00Z",
+   "title": "April Fools' Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    },
+    {
+     "kind": "equip",
+     "typeId": 3010023,
+     "amount": 1
+    }
+   ]
+  },
+  {
+   "id": 2588,
+   "post": "1061860228621926406",
+   "at": "2025-05-01T04:00:00Z",
+   "title": "May Day Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2595,
+   "post": "1064061367174037508",
+   "at": "2025-05-07T02:00:00Z",
+   "title": "Thank-You Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 60000
+    },
+    {
+     "kind": "item",
+     "typeId": 12002,
+     "amount": 2
+    },
+    {
+     "kind": "item",
+     "typeId": 10003,
+     "amount": 12
+    },
+    {
+     "kind": "item",
+     "typeId": 49100,
+     "amount": 40
+    },
+    {
+     "kind": "item",
+     "typeId": 102,
+     "amount": 4000
+    },
+    {
+     "kind": "item",
+     "typeId": 99,
+     "amount": 200
+    },
+    {
+     "kind": "item",
+     "typeId": 500000,
+     "amount": 3
+    }
+   ]
+  },
+  {
+   "id": 2612,
+   "post": "1068910846959157273",
+   "at": "2025-05-20T04:00:00Z",
+   "title": "Early Summer Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2617,
+   "post": "1072992783856304163",
+   "at": "2025-05-31T04:00:00Z",
+   "title": "Dragon Boat Festival Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2618,
+   "post": "1073363869058990089",
+   "at": "2025-06-01T04:00:00Z",
+   "title": "Children's Day Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  },
+  {
+   "id": 2645,
+   "post": "1080043402169417729",
+   "at": "2025-06-19T04:00:00Z",
+   "title": "4th Anniversary Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 8000
+    },
+    {
+     "kind": "item",
+     "typeId": 10003,
+     "amount": 4
+    },
+    {
+     "kind": "item",
+     "typeId": 12002,
+     "amount": 2
+    },
+    {
+     "kind": "item",
+     "typeId": 99,
+     "amount": 200
+    },
+    {
+     "kind": "item",
+     "typeId": 49100,
+     "amount": 40
+    }
+   ]
+  },
+  {
+   "id": 2666,
+   "post": "1092289212968861696",
+   "at": "2025-07-22T04:00:00Z",
+   "title": "Summer Gift",
+   "items": [
+    {
+     "kind": "beads_free",
+     "amount": 1500
+    }
+   ]
+  }
+ ]
+}

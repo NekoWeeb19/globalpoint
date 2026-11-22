@@ -24,7 +24,8 @@ import { ENEMY_MULTIPLIER_MAX, ENEMY_MULTIPLIER_MIN, getEnemyScaling, setEnemySc
 import { lanAddresses } from "../../nya/coop";
 import { coopPartnerChoicesSync, setCoopPartnerPicksSync } from "../../nya/coopPartnerPicks";
 import { getServerSettings, setServerSettings } from "../../nya/serverSettings";
-import { DEFAULT_MESSAGE, deleteMailSchedule, exportMailSchedules, importMailSchedules, MAIL_DAYS, mailScheduleStatus, saveMailSchedule } from "../../nya/mailSchedule";
+import { cnGiftStatus, DEFAULT_MESSAGE, deleteMailSchedule, exportMailSchedules, importMailSchedules, MAIL_DAYS, mailScheduleStatus, saveMailSchedule } from "../../nya/mailSchedule";
+import { cnGiftSettings, setCnGiftRemoved, setCnGiftsOn } from "../../nya/cnGiftMails";
 
 interface TimeQuery {
     time: string | undefined
@@ -153,7 +154,7 @@ const routes = async (fastify: FastifyInstance) => {
     fastify.get("/settings", async (_: FastifyRequest, reply: FastifyReply) => reply.send(getServerSettings()))
     fastify.post("/settings", async (request: FastifyRequest, reply: FastifyReply) => {
         try {
-            return reply.send(setServerSettings((request.body ?? {}) as { dailyPaidBeads?: unknown, infiniteMails?: unknown, realStamina?: unknown, autoNews?: unknown, dailyNews?: unknown, rescueRewards?: unknown }))
+            return reply.send(setServerSettings((request.body ?? {}) as { dailyPaidBeads?: unknown, infiniteMails?: unknown, realStamina?: unknown, autoNews?: unknown, dailyNews?: unknown, rescueRewards?: unknown, cnRankCap?: unknown }))
         } catch (error) {
             return reply.status(400).send({ error: "Bad Request", message: (error as Error).message })
         }
@@ -273,6 +274,12 @@ const routes = async (fastify: FastifyInstance) => {
             activePlayer: playerId,
             days: MAIL_DAYS,
             defaultMessage: DEFAULT_MESSAGE,
+            // CN's own gift mails (src/nya/cnGiftMails.ts): on unless turned off, minus the removed ones
+            cnGifts: (() => {
+                const settings = cnGiftSettings()
+                const removed = new Set(settings.removed ?? [])
+                return { on: !settings.off, gifts: cnGiftStatus(playerId).map(g => ({ ...g, removed: removed.has(g.id) })) }
+            })(),
         }
     }
 
@@ -282,6 +289,18 @@ const routes = async (fastify: FastifyInstance) => {
     fastify.post("/mail", async (request: FastifyRequest, reply: FastifyReply) => {
         try {
             saveMailSchedule((request.body ?? {}) as Record<string, unknown>)
+        } catch (error) {
+            return reply.status(400).send({ "error": "Bad Request", "message": (error as Error).message })
+        }
+        return reply.send(mailOverview())
+    })
+
+    // CN's gifts: { on } turns them all on or off; { id, removed } removes one gift or puts it back
+    fastify.post("/mail/cn-gifts", async (request: FastifyRequest, reply: FastifyReply) => {
+        const body = (request.body ?? {}) as { on?: unknown, id?: unknown, removed?: unknown }
+        try {
+            if (typeof body.on === "boolean") setCnGiftsOn(body.on)
+            else setCnGiftRemoved(Number(body.id), body.removed === true)
         } catch (error) {
             return reply.status(400).send({ "error": "Bad Request", "message": (error as Error).message })
         }

@@ -17,7 +17,8 @@
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "fs"
 import path from "path"
 import { getAccountPlayersSync } from "../data/wdfpData"
-import { cnLinkedAccountId } from "../lib/cnClient"
+import { cnLinkedAccountId, inCnRequest } from "../lib/cnClient"
+import { cnGifts, cnGiftSchedules, giftIdOf, isCnGiftScheduleId } from "./cnGiftMails"
 import { getServerDate } from "../utils"
 
 const DIR = path.join(process.cwd(), ".database")
@@ -298,9 +299,10 @@ const date2str = (ms: number) => new Date(ms).toISOString().replace("T", " ").re
 
 /**
  * Delivers what's due to a save and drops its expired mails. Returns its unclaimed mails (oldest first).
- * Saves the file only when something changed.
+ * Saves the file only when something changed. cn: also CN's own gifts (src/nya/cnGiftMails.ts): by default when the
+ * request came from the CN app.
  */
-export function scheduledMailsFor(playerId: number, now = getServerDate().getTime()): ScheduledMail[] {
+export function scheduledMailsFor(playerId: number, now = getServerDate().getTime(), cn = inCnRequest()): ScheduledMail[] {
     const d = readDelivered()
     const key = String(playerId)
     const state: PlayerState = d.players[key] ?? { progress: {}, mails: [] }
@@ -308,7 +310,7 @@ export function scheduledMailsFor(playerId: number, now = getServerDate().getTim
 
     const active = isActiveSave(playerId)
     {
-        for (const s of listMailSchedules()) {
+        for (const s of [...listMailSchedules(), ...(cn ? cnGiftSchedules() : [])]) {
             if (!active && s.everyone !== true) continue
             const p = state.progress[s.id]
             const timing = timingOf(s)
@@ -419,8 +421,8 @@ export const isScheduledMailId = (id: number) => id >= FIRST_MAIL_ID && id < 90_
 
 /** For the dashboard: each schedule with its next send and, for the given save, how many were delivered and wait unclaimed. */
 export function mailScheduleStatus(playerId: number | null, now = getServerDate().getTime()) {
-    // the active save: deliver what's due first, so the counts are current
-    if (playerId !== null) scheduledMailsFor(playerId, now)
+    // the active save (the CN app's): deliver what's due first, so the counts are current
+    if (playerId !== null) scheduledMailsFor(playerId, now, true)
     // no active save (each device its own account): every save that has received some, added up
     const players = Object.entries(readDelivered().players).filter(([id]) => playerId === null || id === String(playerId)).map(([, state]) => state)
     return listMailSchedules().map(s => {
@@ -432,6 +434,21 @@ export function mailScheduleStatus(playerId: number | null, now = getServerDate(
             waiting: players.reduce((n, p) => n + p.mails.filter(m => m.scheduleId === s.id && m.expires > now).length, 0),
         }
     })
+}
+
+/**
+ * For the dashboard: each of CN's gifts with, for the given save (all saves added up without one), how many of its
+ * mails were delivered and wait unclaimed.
+ */
+export function cnGiftStatus(playerId: number | null, now = getServerDate().getTime()) {
+    if (playerId !== null) scheduledMailsFor(playerId, now, true)
+    const players = Object.entries(readDelivered().players).filter(([id]) => playerId === null || id === String(playerId)).map(([, state]) => state)
+    const delivered: Record<number, number> = {}, waiting: Record<number, number> = {}
+    for (const p of players) {
+        for (const [id, n] of Object.entries(p.delivered ?? {})) if (isCnGiftScheduleId(Number(id))) delivered[giftIdOf(Number(id))] = (delivered[giftIdOf(Number(id))] ?? 0) + n
+        for (const m of p.mails) if (isCnGiftScheduleId(m.scheduleId) && m.expires > now) waiting[giftIdOf(m.scheduleId)] = (waiting[giftIdOf(m.scheduleId)] ?? 0) + 1
+    }
+    return cnGifts().mails.map(g => ({ ...g, delivered: delivered[g.id] ?? 0, waiting: waiting[g.id] ?? 0 }))
 }
 
 // ---- sharing schedules (the Mail tab's Export / Import) ----

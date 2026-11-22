@@ -109,6 +109,17 @@
                 <p id="active" class="text-on-surface-variant"></p>
                 <p class="text-sm text-on-surface-variant">The never-ending mails (Bread, Mana, EXP) are on the Dashboard tab. Players &gt; Give sends a one-off mail right away.</p>
             </section>
+            <section id="cn-gifts" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3">
+                <h3 class="text-xl text-on-background font-semibold">CN's gifts</h3>
+                <p class="text-sm text-on-surface-variant">The gifts and compensation mails CN sent its players from launch (2021-10-26) to its end (2025-07-22), from CN's official posts: beads, summon tickets, materials, stamina potions, a unit and an armament. They arrive in the CN app's mailbox on CN's dates, for every save; one mail per item, each claimable for 30 days. A gift more than 30 days old when a save first looks isn't sent, so moving the date far ahead doesn't pour out years of gifts. Profile titles, exchange tickets and one-day battle tries aren't included.</p>
+                <label class="flex gap-2 items-center text-on-surface"><input type="checkbox" id="cn-on" class="w-5 h-5"> Send CN's gifts</label>
+                <p id="cn-summary" class="text-sm text-on-surface-variant"></p>
+                <details id="cn-details" class="text-sm">
+                    <summary class="text-on-surface cursor-pointer">All gifts (remove single ones here)</summary>
+                    <ul id="cn-list" class="flex flex-col gap-2 mt-3"></ul>
+                </details>
+                <p id="cn-message" class="text-sm text-on-surface-variant" role="status"></p>
+            </section>
             <section class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
                 <h3 id="form-title" class="text-xl text-on-background font-semibold">New scheduled mail</h3>
                 <form id="form" class="flex flex-col gap-4">
@@ -282,7 +293,74 @@
                 b.addEventListener("click", onClick)
                 return b
             }
+            // ---- CN's gifts (src/nya/cnGiftMails.ts) ----
+            let giftNames = null
+            fetch("/api/unit-editor/names").then(r => r.ok ? r.json() : null).then(n => {
+                if (!n) return
+                giftNames = { item: new Map(n.item.map(x => [String(x.id), x.name])), chara: new Map(n.chara.map(x => [String(x.id), x.name])), equip: new Map(n.equip.map(x => [String(x.id), x.name])) }
+                renderCnGifts()
+            }).catch(() => { })
+            const GIFT_KIND = { beads_free: "Free beads", beads_paid: "Paid beads", mana: "Mana", exp: "EXP" }
+            const giftItemText = (x) => (GIFT_KIND[x.kind] ?? (giftNames?.[x.kind]?.get(String(x.typeId)) ?? (KIND[x.kind] + " " + x.typeId))) + " × " + x.amount.toLocaleString("en")
+            async function cnGiftPost(body) {
+                busy = true
+                try {
+                    const r = await fetch("/api/server/mail/cn-gifts", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
+                    const reply = await r.json()
+                    if (!r.ok) throw new Error(reply.message || r.statusText)
+                    data = reply
+                    $("cn-message").textContent = ""
+                    render()
+                } catch (error) {
+                    $("cn-message").textContent = "Error: " + error.message
+                } finally {
+                    busy = false
+                }
+            }
+            $("cn-on").addEventListener("change", () => cnGiftPost({ on: $("cn-on").checked }))
+            function renderCnGifts() {
+                const cn = data.cnGifts
+                if (!cn) { show($("cn-gifts"), false); return }
+                $("cn-on").checked = cn.on
+                const now = Date.parse(data.serverTime)
+                const kept = cn.gifts.filter(g => !g.removed)
+                const mails = kept.reduce((n, g) => n + g.items.length, 0)
+                const beads = kept.reduce((n, g) => n + g.items.filter(x => x.kind === "beads_free").reduce((a, x) => a + x.amount, 0), 0)
+                const next = kept.find(g => Date.parse(g.at) > now)
+                const delivered = cn.gifts.reduce((n, g) => n + g.delivered, 0), waiting = cn.gifts.reduce((n, g) => n + g.waiting, 0)
+                $("cn-summary").textContent = !cn.on ? "Off: no CN gifts are sent (mails already in a mailbox stay until claimed or expired)."
+                    : kept.length + " gifts (" + mails + " mails, " + beads.toLocaleString("en") + " free beads)" + (kept.length < cn.gifts.length ? ", " + (cn.gifts.length - kept.length) + " removed" : "") + ". " +
+                    (next ? "Next: " + next.title + ", " + fmt(next.at) + " UTC. " : "All sent: the server date is past CN's last gift. ") +
+                    "Delivered " + delivered + " mails, " + waiting + " waiting to be claimed" + (data.activePlayer ? " (the active save)." : " (all saves).")
+                const list = $("cn-list")
+                list.replaceChildren()
+                for (const g of cn.gifts) {
+                    const li = document.createElement("li")
+                    li.className = "flex flex-col gap-1 p-3 rounded-2xl bg-surface-container-low"
+                    if (g.removed) li.style.opacity = "0.6"
+                    const head = document.createElement("span")
+                    head.className = "text-on-surface font-semibold"
+                    head.textContent = fmt(g.at) + " UTC · " + g.title
+                    const what = document.createElement("span")
+                    what.className = "text-on-surface-variant"
+                    what.textContent = g.items.map(giftItemText).join(", ")
+                    const status = document.createElement("span")
+                    status.className = "text-on-surface-variant"
+                    status.textContent = g.removed ? "Removed: won't be sent."
+                        : g.waiting > 0 ? "Arrived: " + g.waiting + " mail" + (g.waiting === 1 ? "" : "s") + " waiting to be claimed."
+                        : g.delivered > 0 ? "Arrived and claimed (or expired)."
+                        : Date.parse(g.at) > now ? "Upcoming."
+                        : "Past: not sent (more than 30 days before the save looked, or before it existed)."
+                    const actions = document.createElement("div")
+                    actions.className = "flex gap-2"
+                    actions.append(button(g.removed ? "Put back" : "Remove", () => cnGiftPost({ id: g.id, removed: !g.removed })))
+                    li.append(head, what, status, actions)
+                    list.appendChild(li)
+                }
+            }
+
             function render() {
+                renderCnGifts()
                 $("days").textContent = data.days
                 $("active").textContent = data.activeAccount === null
                     ? "Goes to: any save that opens its mailbox (no CN account is picked on the Players tab)."
