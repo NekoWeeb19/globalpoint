@@ -7,7 +7,7 @@ A **kit** is the file the dashboard's Unit editor makes when you download edited
 read one and put the same changes into its own game update. How a fork ships the result to the game is up to that fork;
 everything the kit needs to describe the change is in the file.
 
-A kit is plain JSON (UTF-8). It holds only what differs from CN's own data, as rows of the game's own tables, named the
+A kit is plain JSON (UTF-8). It holds only what was changed in the editor, as rows of the game's own tables, named the
 way the game names them. It doesn't depend on GlobalPoint's database, update numbers, hashed file names or other files.
 
 ## The whole file
@@ -40,7 +40,8 @@ way the game names them. It doesn't depend on GlobalPoint's database, update num
   - **`scripts`** (units only, optional): edited skill scripts the rows point at (below).
 
 One file can hold many entries. The same layout is GlobalPoint's "change file" format, so a kit also works dropped into
-GlobalPoint's `custom_units/changes/` folder.
+GlobalPoint's `custom_units/changes/` folder. (Importing a kit on GlobalPoint's dashboard replaces that unit's earlier
+editor changes with the kit's; it doesn't merge them.)
 
 **Encoding:** write the file as UTF-8 **without a byte-order mark (BOM)**. Some Windows editors (Notepad's "UTF-8 with
 BOM", PowerShell 5's `Out-File`) add one, and a strict JSON parser such as Node's `JSON.parse` rejects the file.
@@ -88,7 +89,7 @@ The row must already exist in the fork's table. Kits only change rows; they neve
 
 Class values: 0 Swordsman, 1 Fighter, 2 Deadeye, 3 Support, 4 Special. Role values are the words the game uses:
 Attacker, Tank, Healer, Supporter, Jammer, Balance. Ability and leader rows are copied as the editor built them, in the
-client's own column layout (numbers × 100,000, as the table stores them); a reader doesn't need to understand them to
+client's own column layout (numbers as the table stores them: percentages and the like × 100,000); a reader doesn't need to understand them to
 apply them. The trigger columns are described in [research/ability-triggers.md](research/ability-triggers.md), and
 GlobalPoint's editor reads the full layout from `assets/unit_editor/ability_codes.json`. A leader row is the ability
 layout without its columns 1 and 2.
@@ -101,7 +102,7 @@ layout without its columns 1 and 2.
 |---|---|---|---|
 | `master/item/equipment.orderedmap` | `<id>` | `cols` | 1 name, 7 description. |
 | `master/item/equipment_status.orderedmap` | `<id>/<level>` | whole row | `hp,atk` at that armament level (the levels the table lists). |
-| `master/ability/ability_soul.orderedmap` | `<id>` | whole row | One line per effect version: slot (0-9), learn level, kind, then the unit ability layout. |
+| `master/ability/ability_soul.orderedmap` | `<id>` | whole row | One line per effect version: slot (0-9), learn level, then the unit ability layout from its column 5 (kind) on. |
 
 ## Skill scripts
 
@@ -116,8 +117,8 @@ it**: the skill program in AMF3, raw-deflated (no zlib header), the same format 
 `*.action.dsl.amf3.deflate` files.
 
 To use it, put the decoded bytes in the game update as the file **`<path>.action.dsl.amf3.deflate`**, stored under
-its hashed name in the `upload` folder (see below). A row whose column 7 points at a script the update doesn't carry
-makes the game fail to load the skill, so ship both or neither.
+its hashed name in the `upload` folder (see below). If column 7 points at a script the update doesn't carry, the game
+can't find the file (it opens its asset recovery screen), so ship both or neither.
 
 A script path only ever belongs to the unit in its name. GlobalPoint's importer refuses a script whose path names
 another unit, and checks that the game can read the script.
@@ -155,8 +156,8 @@ the update. Table decoding and encoding is `scripts/cdn_rows.cjs`.
 
 - **CN data only.** Ids, tables and columns are those of the final CN client (1.8.1). Every CN fork uses that client,
   so the layout matches. Global's tables differ; a kit isn't meant for them.
-- **CN units and armaments only.** GlobalPoint's importer refuses an id that isn't in CN's tables. A kit made for a
-  GlobalPoint custom unit (one made from data) only applies where that same unit exists.
+- **CN units and armaments only.** GlobalPoint's importer refuses an id that isn't in CN's tables. Edits to a
+  GlobalPoint custom unit (one made from data) are saved in that unit's own file and never go into a kit.
 - **Text is whatever was typed.** The editor fills its boxes from GlobalPoint's English tables, so most kits carry
   English names and descriptions, but any text works. How it looks depends on the game's fonts: the CN client draws
   Chinese, and Japanese kana should work; other scripts (Korean, emoji) may not show.
