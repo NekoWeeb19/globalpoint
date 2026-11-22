@@ -71,17 +71,18 @@ CSV 规则（游戏自己的）：字段以 `,` 分隔。包含 `,`、`"`、换�
 | 数据表 | 行键 | 写入方式 | 内容 |
 |---|---|---|---|
 | `master/ability/ability.orderedmap` | `<id>1` … `<id>6` | 整行 | 能力 1-6，每条能力一个 CSV 子行（最多 8 行）。 |
-| `master/ability/leader_ability.orderedmap` | `<id>` | 整行 | 队长技能，每条一个子行（最多 8 行）。 |
+| `master/ability/leader_ability.orderedmap` | `<id>` | 整行 | 队长特性，每条一个子行（最多 8 行）。 |
 | `master/character/character_status.orderedmap` | `<id>/1`、`<id>/10`、`<id>/80`、`<id>/100` | 整行 | 该等级的 `hp,atk`。 |
 | `master/skill/action_skill.orderedmap` | `<skill>/1`（技能）、`<skill>/2`（技能+） | `cols` | 0 名称，1 说明（可以有换行），4 技能等级 1 时的技能槽，5 最高技能等级时的技能槽，7 技能脚本路径。 |
 | `master/character/character_text.orderedmap` | `<id>` | `cols` | 0 名称，2 说明，3 称号。 |
-| `master/character/character.orderedmap` | `<id>` | `cols` | 6 职业，18 队长技能名，26 定位。 |
+| `master/character/character.orderedmap` | `<id>` | `cols` | 6 类型，18 队长特性名，26 职责。 |
 
-职业的值：0 剑士（Swordsman），1 格斗（Fighter），2 射手（Deadeye），3 辅助（Support），4 特殊（Special）。定位的值
-是游戏使用的英文单词：Attacker、Tank、Healer、Supporter、Jammer、Balance。能力行和队长技能行按编辑器生成的样子原样
+类型的值：0 剑士（Swordsman），1 格斗（Fighter），2 射击（Deadeye），3 辅助（Support），4 特殊（Special）（名称取自国服
+客户端的界面文字 `type_knight` 等）。职责的值是英文单词，国服自己的数据表也是这样存储的：Attacker、Tank、Healer、
+Supporter、Jammer、Balance。能力行和队长特性行按编辑器生成的样子原样
 复制，使用客户端自己的列布局（数值 × 100,000，与数据表的存储方式相同）；读取程序不需要理解它们也能应用。触发条件
 相关的列见 [research/ability-triggers.md](research/ability-triggers.md)（英文），GlobalPoint 的编辑器从
-`assets/unit_editor/ability_codes.json` 读取完整布局。队长技能行就是去掉第 1、2 列的能力行布局。
+`assets/unit_editor/ability_codes.json` 读取完整布局。队长特性行就是去掉第 1、2 列的能力行布局。
 
 ### 装备编辑器写入的内容
 
@@ -145,7 +146,7 @@ GlobalPoint 自己的相关代码：`scripts/custom_units.cjs`（`readUnitChange
 - **文字就是输入的内容。** 编辑器的输入框预先填入的是 GlobalPoint 的英文数据表内容，所以大多数配置包带的是英文名称和
   说明，但任何文字都可以。显示效果取决于游戏的字体：国服客户端可以显示中文，日文假名应该也可以；其他文字（韩文、
   表情符号）可能无法显示。
-- **整行会替换分支自己的行。** 如果分支自己也改过同一条能力行或队长技能行，配置包中的行会把它替换掉。按列的修改
+- **整行会替换分支自己的行。** 如果分支自己也改过同一条能力行或队长特性行，配置包中的行会把它替换掉。按列的修改
   只影响那些列。
 - **只靠游戏更新就够了**（就 GlobalPoint 所知）：配置包修改的内容，GlobalPoint 的服务器都不另存副本（例如装备的
   属性和能力）。如果某个分支的服务器自己另存了某个值的副本（例如用于计算战力的角色属性），可能需要在那里也应用修改。
