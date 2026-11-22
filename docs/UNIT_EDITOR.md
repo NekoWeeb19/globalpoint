@@ -152,6 +152,9 @@ on this page (each unit's changes become its editor file, after the same checks 
 doesn't exist, rows of another unit, or a line the game can't read is refused), or drop it into the custom units
 folder's `changes/`. Custom units' changes are in their own files and aren't listed.
 
+The file's layout (which tables, rows and columns, and how skill scripts travel) is in [KIT_FORMAT.md](KIT_FORMAT.md),
+for anyone who wants to use a kit on another CN server or fork.
+
 ## The guard rails
 
 - **Default mode** offers only the triggers CN's own units use (every CN unit's 4,928 ability and leader lines):
