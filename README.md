@@ -138,6 +138,7 @@ also play as they did on any date ([balance by date](docs/DETAILS.md#balance-by-
   translated, the server's settings (`.env`), and pointers for developers.
 - [docs/UNIT_EDITOR.md](docs/UNIT_EDITOR.md) and [docs/CUSTOM_UNITS.md](docs/CUSTOM_UNITS.md): changing
   units and armaments, and adding new units ([docs/MAKING_UNITS.md](docs/MAKING_UNITS.md) to make one).
+  [docs/KIT_FORMAT.md](docs/KIT_FORMAT.md): the layout of a kit file, for using one on another CN fork.
 - [docs/contributing.md](docs/contributing.md): how the project is put together, for developers.
 
 ## Special thanks

@@ -134,6 +134,7 @@ For working on GlobalPoint rather than playing it:
   from nothing.
 - [docs/UNIT_EDITOR.md](UNIT_EDITOR.md) and [docs/CUSTOM_UNITS.md](CUSTOM_UNITS.md): changing
   units and adding new ones; [docs/research/](research/new-units.md) has the research behind them.
+  [docs/KIT_FORMAT.md](KIT_FORMAT.md) describes a kit file, for using one on another CN fork.
 - [docs/global/](global/README.md): the original StarPoint pages for the global app (legacy),
   including captured traffic from the official global servers.
 - `scripts/package_release.cjs`: copies a working PC server (code, game files and the game APK) into
