@@ -40,4 +40,20 @@ function kitState(kits, nowMs) {
     return [...activeStages(kits, nowMs)].map(([unit, s]) => `${unit}:${s === null ? "now" : s.until}`).sort().join(",")
 }
 
-module.exports = { readKits, activeStages, kitState }
+// ---- matching a balance patch note's unit names to unit ids (scripts/build_kit_text.cjs, test_kit_dates.mjs) ----
+
+/** The note's misspellings -> global's spelling. */
+const NAME_FIXES = { "lavish tunderbolt metis": "lavish thunderbolt metis", "sunny-sdie fambler naska": "sunny-side gambler naska", "knight of the whilte helm gerard": "knight of the white helm gerard", "the neovilolin virtuoso lyra": "the neoviolin virtuoso lyra", "hight-hat negotiant libram": "high-hat negotiant libram", "one-eyed gunnder selgir": "one-eyed gunner selgir" }
+const normName = s => s.toLowerCase().replace(/[’']/g, "'").replace(/[^a-z0-9' !&.-]/g, " ").replace(/\s+/g, " ").trim()
+
+/**
+ * A lookup from a note's unit name to its id, from global's character_text rows ({ id: text }, name in column 0,
+ * title in 3): the first unit with that title + name (story copies of a unit share it and come later).
+ */
+function unitNameLookup(characterText, splitCsv) {
+    const byName = new Map()
+    for (const [id, t] of Object.entries(characterText)) { const c = splitCsv(t); const key = normName(`${c[3]} ${c[0]}`); if (!byName.has(key)) byName.set(key, id) }
+    return name => { const n = normName(name); return byName.get(NAME_FIXES[n] ?? n) ?? null }
+}
+
+module.exports = { readKits, activeStages, kitState, unitNameLookup }

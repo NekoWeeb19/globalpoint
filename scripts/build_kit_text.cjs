@@ -14,12 +14,10 @@ const path = require("path")
 const R = require("./cdn_rows.cjs")
 const { readCnTable } = require("./cn_read.cjs")
 const { readTable } = require("./cdn_master.cjs")
+const { unitNameLookup } = require("./kit_dates.cjs")
 
 const [patchFile, until, label, namesFile, flag] = process.argv.slice(2)
 const KIT_FILE = path.join(__dirname, "..", "assets", "kit_dates.json")
-// the note's spelling -> global's
-const FIX = { "lavish tunderbolt metis": "lavish thunderbolt metis", "sunny-sdie fambler naska": "sunny-side gambler naska", "knight of the whilte helm gerard": "knight of the white helm gerard", "the neovilolin virtuoso lyra": "the neoviolin virtuoso lyra", "hight-hat negotiant libram": "high-hat negotiant libram", "one-eyed gunnder selgir": "one-eyed gunner selgir" }
-const norm = s => s.toLowerCase().replace(/[’']/g, "'").replace(/[^a-z0-9' !&.-]/g, " ").replace(/\s+/g, " ").trim()
 const skeleton = s => s.replace(/[/]/g, " ").replace(/\s+/g, " ").replace(/\d+(\.\d+)?/g, "N").replace(/\s*([+\-%&]|N)\s*/g, "$1").trim()
 
 /** The percentages of a note line in order: { value, max } (max = the "(Max +X%)" after it, if any). */
@@ -73,14 +71,14 @@ function rebuild(rowText, before, after, leader) {
     const rows = JSON.parse(fs.readFileSync(patchFile, "utf8")).units
     const names = new Set(JSON.parse(fs.readFileSync(namesFile, "utf8")))
     const text = await readTable("master/character/character_text.orderedmap", false)
-    const byName = new Map()
-    // the first unit with a title + name (story versions of a unit share it and come later)
-    for (const [id, t] of Object.entries(text)) { const c = R.splitCsv(t); const k = norm(`${c[3]} ${c[0]}`); if (!byName.has(k)) byName.set(k, id) }
+    const idOf = unitNameLookup(text, R.splitCsv)
     const AB = "master/ability/ability.orderedmap", LD = "master/ability/leader_ability.orderedmap"
     const tables = { [AB]: await readCnTable(AB), [LD]: await readCnTable(LD) }
     // a unit's leader skill row is named in its character row (column 17), not always its own id
     const chars = await readCnTable("master/character/character.orderedmap")
     const leaderKey = id => (chars[id] && R.splitCsv(String(chars[id]))[17]) || id
+    // and its ability rows in columns 19-24 (usually <id><n>, but not for Nimbus 10, Schult, Teurgis...)
+    const abilityKey = (id, n) => (chars[id] && R.splitCsv(String(chars[id]))[18 + Number(n)]) || id + n
     const kits = fs.existsSync(KIT_FILE) ? JSON.parse(fs.readFileSync(KIT_FILE, "utf8")) : {}
     const built = new Map(), skipped = []
     for (const r of rows) {
@@ -88,9 +86,9 @@ function rebuild(rowText, before, after, leader) {
         const m = r.part.match(/^(Leader|Ability (\d))$/)
         if (!m) continue // skill lines: no numbers to put back (cost changes aren't given)
         if (skeleton(r.before) !== skeleton(r.after)) { skipped.push(`${r.unit} ${r.part}: not numbers-only`); continue }
-        const n = norm(r.unit), id = byName.get(FIX[n] ?? n)
+        const id = idOf(r.unit)
         if (!id) { skipped.push(`${r.unit}: unit not found`); continue }
-        const leader = m[1] === "Leader", table = leader ? LD : AB, key = leader ? leaderKey(id) : id + m[2]
+        const leader = m[1] === "Leader", table = leader ? LD : AB, key = leader ? leaderKey(id) : abilityKey(id, m[2])
         const current = tables[table][key]
         if (current === undefined) { skipped.push(`${r.unit} ${r.part}: no CN row ${key}`); continue }
         // a row a later patch also changed starts from that patch's old row (the unit's kit between the two)
