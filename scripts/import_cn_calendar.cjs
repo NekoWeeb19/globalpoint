@@ -41,6 +41,24 @@ const JP_ONLY = [
     "story_event:200025", "story_event:200026", "story_event:200027", "advent_event:300001",
 ]
 const CATALOG = path.join(__dirname, "..", "assets", "event_catalog_cn.json")
+// The fork's few non-date edits worth taking (reviewed 2026-11-22), applied the same way as the dates: table, row,
+// column, CN files' value, the fork's value.
+// - CN's own 2022 New Year banner (9090) and the 2022 Fire element rerun (42) on their 2022 unit pools (CN's rows
+//   kept the first run's 2020 pools)
+// - four armament banners' list picture: CN's rows name equipment_pickup_N, which the CN files don't have (so the
+//   builder hid them); the fork's element pictures are in the files
+const FORK_CELLS = [
+    ["master/gacha/gacha.orderedmap", "9090", 14, "ny20_character_3", "ny22_character_3"],
+    ["master/gacha/gacha.orderedmap", "9090", 15, "ny20_character_4", "ny22_character_4"],
+    ["master/gacha/gacha.orderedmap", "9090", 16, "ny20_character_5", "ny22_character_5"],
+    ["master/gacha/gacha.orderedmap", "42", 14, "red_element_pickup_02_character_3", "red_element_pickup_20_character_3"],
+    ["master/gacha/gacha.orderedmap", "42", 15, "red_element_pickup_02_character_4", "red_element_pickup_20_character_4"],
+    ["master/gacha/gacha.orderedmap", "42", 16, "red_element_pickup_02_character_5", "red_element_pickup_20_character_5"],
+    ["master/gacha/gacha.orderedmap", "5000", 3, "dynamic/gacha_list_banner/equipment_pickup_1", "dynamic/gacha_list_banner/equipment_red_pickup_1"],
+    ["master/gacha/gacha.orderedmap", "5002", 3, "dynamic/gacha_list_banner/equipment_pickup_2", "dynamic/gacha_list_banner/equipment_wind_pickup_2"],
+    ["master/gacha/gacha.orderedmap", "5004", 3, "dynamic/gacha_list_banner/equipment_pickup_3", "dynamic/gacha_list_banner/equipment_yellow_pickup_1"],
+    ["master/gacha/gacha.orderedmap", "5006", 3, "dynamic/gacha_list_banner/equipment_pickup_4", "dynamic/gacha_list_banner/equipment_black_pickup_2"],
+]
 // gacha columns our own general-ticket fix also changes (scripts/gen_cn_event_schedule.cjs)
 const GACHA_TICKET_COLUMNS = new Set([20, 26, 27, 28, 32])
 
@@ -204,10 +222,11 @@ const rowsOf = buf => {
         }))
         if (Object.keys(cellsTo).length > 0) (tables[logical] ??= {})[key] = cellsTo
     }
+    for (const [logical, key, col, from, to] of FORK_CELLS) ((tables[logical] ??= {})[key] ??= {})[String(col)] = [from, to]
     const sha = crypto.createHash("sha256")
     if (source.endsWith(".zip")) sha.update(fs.readFileSync(source))
     fs.writeFileSync(OUT, JSON.stringify({
-        _note: "CN's own calendar, taken from 晓之车's starpoint-cn tables by scripts/import_cn_calendar.cjs: table -> row key -> cell -> [CN game files' date, CN's real date]. Cell = column, or record:column. 'hidden' = rows of events CN never ran: dated before 2013 by CN, or listed in the script's JP_ONLY; 'hiddenYears' = how many years each moved back so its event starts in 2020 (their final dates are in 'tables' like every other row). Rows the fork changed in other ways are left out (see the import report).",
+        _note: "CN's own calendar, taken from 晓之车's starpoint-cn tables by scripts/import_cn_calendar.cjs: table -> row key -> cell -> [CN game files' date, CN's real date]. Cell = column, or record:column. 'hidden' = rows of events CN never ran: dated before 2013 by CN, or listed in the script's JP_ONLY; 'hiddenYears' = how many years each moved back so its event starts in 2020 (their final dates are in 'tables' like every other row). Rows the fork changed in other ways are left out (see the import report), apart from the few cells the script's FORK_CELLS takes (banner pools and pictures).",
         source: { name: path.basename(source), sha256: source.endsWith(".zip") ? sha.digest("hex") : null, imported: new Date().toISOString().slice(0, 10) },
         hidden, hiddenYears, tables,
     }, null, 1) + "\n")

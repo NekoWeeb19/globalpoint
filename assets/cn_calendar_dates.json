@@ -1,5 +1,5 @@
 {
- "_note": "CN's own calendar, taken from 晓之车's starpoint-cn tables by scripts/import_cn_calendar.cjs: table -> row key -> cell -> [CN game files' date, CN's real date]. Cell = column, or record:column. 'hidden' = rows of events CN never ran: dated before 2013 by CN, or listed in the script's JP_ONLY; 'hiddenYears' = how many years each moved back so its event starts in 2020 (their final dates are in 'tables' like every other row). Rows the fork changed in other ways are left out (see the import report).",
+ "_note": "CN's own calendar, taken from 晓之车's starpoint-cn tables by scripts/import_cn_calendar.cjs: table -> row key -> cell -> [CN game files' date, CN's real date]. Cell = column, or record:column. 'hidden' = rows of events CN never ran: dated before 2013 by CN, or listed in the script's JP_ONLY; 'hiddenYears' = how many years each moved back so its event starts in 2020 (their final dates are in 'tables' like every other row). Rows the fork changed in other ways are left out (see the import report), apart from the few cells the script's FORK_CELLS takes (banner pools and pictures).",
  "source": {
   "name": "intermediate.zip",
   "sha256": "b1de0f603b996e8573a022bc2286914ec07a88a810f339a689f242112b9aecae",
@@ -3442,6 +3442,18 @@
     ]
    },
    "42": {
+    "14": [
+     "red_element_pickup_02_character_3",
+     "red_element_pickup_20_character_3"
+    ],
+    "15": [
+     "red_element_pickup_02_character_4",
+     "red_element_pickup_20_character_4"
+    ],
+    "16": [
+     "red_element_pickup_02_character_5",
+     "red_element_pickup_20_character_5"
+    ],
     "29": [
      "2020-09-10 12:00:00",
      "2022-10-31 12:00:00"
@@ -4964,6 +4976,10 @@
     ]
    },
    "5000": {
+    "3": [
+     "dynamic/gacha_list_banner/equipment_pickup_1",
+     "dynamic/gacha_list_banner/equipment_red_pickup_1"
+    ],
     "29": [
      "2020-01-27 12:00:00",
      "2021-12-02 12:00:00"
@@ -4992,6 +5008,10 @@
     ]
    },
    "5002": {
+    "3": [
+     "dynamic/gacha_list_banner/equipment_pickup_2",
+     "dynamic/gacha_list_banner/equipment_wind_pickup_2"
+    ],
     "29": [
      "2020-04-07 12:00:00",
      "2022-02-17 12:00:00"
@@ -5020,6 +5040,10 @@
     ]
    },
    "5004": {
+    "3": [
+     "dynamic/gacha_list_banner/equipment_pickup_3",
+     "dynamic/gacha_list_banner/equipment_yellow_pickup_1"
+    ],
     "29": [
      "2020-05-11 12:00:00",
      "2022-03-10 12:00:00"
@@ -5048,6 +5072,10 @@
     ]
    },
    "5006": {
+    "3": [
+     "dynamic/gacha_list_banner/equipment_pickup_4",
+     "dynamic/gacha_list_banner/equipment_black_pickup_2"
+    ],
     "29": [
      "2020-06-23 12:00:00",
      "2022-04-14 12:00:00"
@@ -5356,6 +5384,18 @@
     ]
    },
    "9090": {
+    "14": [
+     "ny20_character_3",
+     "ny22_character_3"
+    ],
+    "15": [
+     "ny20_character_4",
+     "ny22_character_4"
+    ],
+    "16": [
+     "ny20_character_5",
+     "ny22_character_5"
+    ],
     "29": [
      "2019-12-31 12:00:00",
      "2022-01-27 12:00:00"

@@ -64,6 +64,9 @@ const GO = require("./gacha_odds.cjs")
 const { uploadPath: fileOf } = require("./cdn_hash.cjs")
 // CN's real calendar (assets/cn_calendar_dates.json): applied to every table first, and its tables always ship
 const CAL = require("./cn_calendar.cjs")
+// story scripts CN's own files cut short, shipped as global's complete English copies (assets/cn_story_fixes)
+const STORY_FIXES_DIR = path.join(__dirname, "..", "assets", "cn_story_fixes")
+const STORY_FIXES = (() => { try { return JSON.parse(fs.readFileSync(path.join(STORY_FIXES_DIR, "index.json"), "utf8")).files } catch { return {} } })()
 // the yearly free pull copies this update has (.database/cn_schedule_built.json): the server never sends the
 // CN client a used copy it doesn't have (an unknown campaign id stops it with C8601)
 const builtFreePullCopyIds = []
@@ -410,7 +413,14 @@ async function main() {
     // every file the schedule can touch, from the newest translated copy (else CN's own)
     // tables CN closed on its shutdown day (2025-08-14 23:59:59, China time) that global keeps open:
     // their rows ending then are kept open (2199-12-31), so e.g. the Star Sliver exchange isn't empty
-    const EOS_TABLES = ["master/shop/star_crumb_exchange.orderedmap"].map(fileOf)
+    // ...and what CN's last update (2025-06-26) made permanent until the shutdown, which the CN fork these dates come
+    // from keeps open too: raid 7's quests and missions, the two constant boss events (Cross Blue, the Uma Musume
+    // collab) and their quests, their news pages, a tutorial. (The constant Haniwa Carnival and Grand Gauntlet and
+    // CN's last 8 banners the fork doesn't keep, so they still close then; the dashboard can move them.)
+    const EOS_TABLES = ["master/shop/star_crumb_exchange.orderedmap", "master/quest/event/raid_event_quest.orderedmap",
+        "master/mission/event_mission.orderedmap", "master/quest/event/advent_event.orderedmap",
+        "master/quest/event/advent_event_quest.orderedmap", "master/feature_banner/feature_announcement.orderedmap",
+        "master/tutorial/triggered_tutorial.orderedmap"].map(fileOf)
     // Permanent Events-tab dungeons whose CN dates leave a hole (the early rows are JP's schedule):
     // - element dungeons: the weekday rotation rows ended in 2018 and the every-element rows only open
     //   2020-01-15, so a save starting 2019-12-01 had none; the every-element rows open from 2001 instead
@@ -442,6 +452,9 @@ async function main() {
         field_cancel_trigger_kind_multiball_appear: ["::if has_constraint::  ::constraint:::end:: summon(s)", "::if has_constraint::::constraint:: ::end::summon(s)"],
         field_cancel_trigger_kind_multiball_remove: ["::if has_constraint:: ::constraint::'s:end:: multiballs", "::if has_constraint::::constraint::'s ::end::multiballs"],
         ability_description_instant_trigger_kind_same_element_member: ["::if once::::if is_max::::else::or more:: units", "::if once::::if is_max::::else:: or more::end::::else::::end:: units"],
+        // global's own text for these two was still Japanese ("3秒後に", "…の「X」を消去"): English in its place
+        ability_description_delay: ["::delay::&nbsp;秒後に::end::", "after ::delay::&nbsp;second(s) ::end::"],
+        ability_description_instant_content_delete_unique_condition: ["::if !withoutTarget::::target::の::end::「::name::」を消去", "remove 「::name::」::if !withoutTarget:: from ::target::::end::"],
     }
     const UI_TEXT = "production/upload/d6/88e4a5f7d84cc422357cc8acbdb72817bc8670"
     const NAME_FIXES = require("./cn_name_fixes.cjs")
@@ -634,7 +647,7 @@ async function main() {
     const custom = CU.readCustomUnits()
     for (const p of custom.problems) console.log(`Custom unit skipped: ${p}`)
     const customTables = CU.unitTables(custom.units)
-    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...(globalItemTable ? [globalItemTable] : []), ...(starGrainTable ? [starGrainTable] : []), ...(voiceActorTable ? [voiceActorTable] : []), ...kitTables, ...CAL.FILES, MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES), ...customTables, ...changes.rows.keys(), ...enemyTables, ...rateFiles.keys(), ...lastChanged])].sort()
+    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...(globalItemTable ? [globalItemTable] : []), ...(starGrainTable ? [starGrainTable] : []), ...(voiceActorTable ? [voiceActorTable] : []), ...kitTables, ...CAL.FILES, ...Object.keys(STORY_FIXES), MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES), ...customTables, ...changes.rows.keys(), ...enemyTables, ...rateFiles.keys(), ...lastChanged])].sort()
     const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
     const cn = await cnFiles(new Set([...fileList, featureFile]))
     // art StarPoint's patches added (scripts/gen_cn_banner_art.cjs) counts too: their file names and
@@ -705,6 +718,7 @@ async function main() {
     }
     // files.json's paths are the PC's; on a phone the copy sits in the dir itself (src/routes/companion.ts)
     const tableBuffer = async file => {
+        if (STORY_FIXES[file]) return fs.readFileSync(path.join(STORY_FIXES_DIR, STORY_FIXES[file].file))
         const from = translatedFrom.get(file)
         const translated = from && fs.existsSync(from) ? from : path.join(TRANSLATED, file)
         return fs.existsSync(translated) ? fs.readFileSync(translated) : await cn.get(file)?.buffer()
@@ -916,6 +930,7 @@ async function main() {
             const window = cnWindows[event.key]
             if (event.family === "gacha" || !window) continue
             const start = Date.parse(window.start), end = Date.parse(window.end)
+            const rerun = !!event.rerunOf || /\(Rerun\)$/.test(event.name ?? "")
             for (const [file, label] of LINEUP) {
                 const rows = (event.rows[file] ?? []).map(p => leafOf(file, p)).filter(Boolean).map(leaf => {
                     const ds = (leaf.text.match(DATE) ?? []).map(parse).filter(ms => ms !== null && ms < FAR)
@@ -925,7 +940,9 @@ async function main() {
                 const pick = rows.filter(r => {
                     if (shifted.has(r.leaf)) return false
                     const days = Math.abs(r.first - start) / DAY
-                    return (days >= 550 && days <= 720) || (file === EVENT_SHOP_FILE && r.first > end)
+                    // a rerun's parts still on its first run's dates (e.g. Trial by Light (Rerun)'s daily mission, 2022-08-18 on
+                    // the first run's dates, rerun 2022-10-20) come along too
+                    return (days >= 550 && days <= 720) || (file === EVENT_SHOP_FILE && r.first > end) || (rerun && r.last < start)
                 })
                 if (pick.length === 0) continue
                 const from = Math.min(...pick.map(r => r.first)), shift = start - from

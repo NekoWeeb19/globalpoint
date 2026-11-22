@@ -6,3 +6,4 @@
 *.cmd text eol=crlf
 # game files shipped as-is (scripts/gen_cn_art_fixes.cjs): never touch their bytes
 assets/cn_art_fixes/** binary
+assets/cn_story_fixes/production__* binary
