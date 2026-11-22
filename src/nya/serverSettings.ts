@@ -5,6 +5,7 @@
 // - daily news: the CN app opens its News board at the first load after each daily reset (on by default)
 // - co-op rescue rewards: nuggets and backup-mission counts for co-op clears (on by default; src/nya/rescue.ts)
 // - CN rank cap: the CN app's rank stops at CN's rank cap of the server date (on by default; src/lib/rankCap.ts)
+// - CN returning-player bonuses: CN's comeback login bonuses after 30+ days away (on by default; src/nya/comeback.ts)
 
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "fs"
 import path from "path"
@@ -15,7 +16,7 @@ export const PAID_BEADS_MAX = 100000
 export type InfiniteMail = "bread" | "mana" | "exp"
 export const INFINITE_MAILS: readonly InfiniteMail[] = ["bread", "mana", "exp"]
 
-interface Saved { dailyPaidBeads?: number, infiniteMails?: Partial<Record<InfiniteMail, boolean>>, realStamina?: boolean, autoNews?: boolean, dailyNews?: boolean, rescueRewards?: boolean, cnRankCap?: boolean }
+interface Saved { dailyPaidBeads?: number, infiniteMails?: Partial<Record<InfiniteMail, boolean>>, realStamina?: boolean, autoNews?: boolean, dailyNews?: boolean, rescueRewards?: boolean, cnRankCap?: boolean, cnComeback?: boolean }
 
 let cache: { mtimeMs: number, saved: Saved } | null = null
 function read(): Saved {
@@ -72,7 +73,12 @@ export function cnRankCapOn(): boolean {
     return read().cnRankCap !== false
 }
 
-export interface ServerSettings { dailyPaidBeads: number, fromEnv: boolean, infiniteMails: Record<InfiniteMail, boolean>, realStamina: boolean, autoNews: boolean, dailyNews: boolean, rescueRewards: boolean, cnRankCap: boolean, max: number }
+/** Whether the CN app gives CN's returning-player login bonuses (src/nya/comeback.ts; on unless turned off). */
+export function cnComebackOn(): boolean {
+    return read().cnComeback !== false
+}
+
+export interface ServerSettings { dailyPaidBeads: number, fromEnv: boolean, infiniteMails: Record<InfiniteMail, boolean>, realStamina: boolean, autoNews: boolean, dailyNews: boolean, rescueRewards: boolean, cnRankCap: boolean, cnComeback: boolean, max: number }
 
 export function getServerSettings(): ServerSettings {
     const saved = read()
@@ -85,12 +91,13 @@ export function getServerSettings(): ServerSettings {
         dailyNews: dailyNewsOn(),
         rescueRewards: rescueRewardsOn(),
         cnRankCap: cnRankCapOn(),
+        cnComeback: cnComebackOn(),
         max: PAID_BEADS_MAX,
     }
 }
 
 /** Saves the given settings (others unchanged). Throws when a value is out of range. */
-export function setServerSettings(change: { dailyPaidBeads?: unknown, infiniteMails?: unknown, realStamina?: unknown, autoNews?: unknown, dailyNews?: unknown, rescueRewards?: unknown, cnRankCap?: unknown }): ServerSettings {
+export function setServerSettings(change: { dailyPaidBeads?: unknown, infiniteMails?: unknown, realStamina?: unknown, autoNews?: unknown, dailyNews?: unknown, rescueRewards?: unknown, cnRankCap?: unknown, cnComeback?: unknown }): ServerSettings {
     const saved = { ...read() }
     if (change.dailyPaidBeads !== undefined) {
         const n = Number(change.dailyPaidBeads)
@@ -110,6 +117,7 @@ export function setServerSettings(change: { dailyPaidBeads?: unknown, infiniteMa
     if (typeof change.dailyNews === "boolean") saved.dailyNews = change.dailyNews
     if (typeof change.rescueRewards === "boolean") saved.rescueRewards = change.rescueRewards
     if (typeof change.cnRankCap === "boolean") saved.cnRankCap = change.cnRankCap
+    if (typeof change.cnComeback === "boolean") saved.cnComeback = change.cnComeback
     write(saved)
     return getServerSettings()
 }

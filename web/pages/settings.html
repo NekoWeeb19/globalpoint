@@ -462,6 +462,34 @@
                 </script>
             </section>
 
+            <section id="comeback" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
+                <h3 class="text-xl text-on-background font-semibold">Returning-player bonuses</h3>
+                <label class="flex gap-3 items-center cursor-pointer text-on-surface"><input id="comeback-on" type="checkbox" class="w-5 h-5" /> Give CN's returning-player bonuses</label>
+                <p class="text-sm text-on-surface-variant">On (the default): a save that was away 30+ days of server time (a real month off, or the date moved a month ahead) gets CN's returning-player login bonuses that were open on that date, once each: the 15-day bonus (1,500 beads in all, 2023-03-02 to 2024-06-12), the one-off returning gift (2023-08-31 to 2024-05-23), the 7-day bonus with 10-pull tickets (from 2024-05-23) and the 3rd anniversary one (2024-07-11 to 08-22). They show with the daily login bonus. CN app only.</p>
+                <p id="comeback-message" class="text-sm text-on-surface-variant" role="status"></p>
+                <script>
+                    (function () {
+                        const box = document.getElementById("comeback-on"), message = document.getElementById("comeback-message")
+                        fetch("/api/server/settings").then(r => r.json()).then(data => { box.checked = data.cnComeback !== false })
+                            .catch(error => { message.textContent = "Could not load: " + error.message })
+                        box.addEventListener("change", async () => {
+                            message.textContent = "Saving..."
+                            try {
+                                const response = await fetch("/api/server/settings", {
+                                    method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ cnComeback: box.checked })
+                                })
+                                const data = await response.json().catch(() => ({}))
+                                if (!response.ok) throw new Error(data.message || response.statusText)
+                                box.checked = data.cnComeback !== false
+                                message.textContent = box.checked ? "On: saves back after 30+ days get CN's returning-player bonuses." : "Off: no returning-player bonuses."
+                            } catch (error) {
+                                message.textContent = "Error: " + error.message
+                            }
+                        })
+                    })()
+                </script>
+            </section>
+
             <!-- the global app's banner rotation (legacy, PC only): hidden unless it's on, or DASHBOARD_BANNER_ROTATION="true" in .env -->
             <section id="rotation" style="display: none" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-4">
                 <div class="flex items-center justify-between gap-3 flex-wrap">

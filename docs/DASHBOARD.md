@@ -247,6 +247,12 @@ the login bonuses. Later that day the game goes straight to the home screen. Not
   on the server date: 100 from launch (and before it), 125 from 2021-12-16, 150 from 2022-06-16, 175 from
   2023-02-02, 250 from 2024-05-09. At the cap, rank points stop (none are saved up); after the next raise
   ranking up carries on. A save already above the cap keeps its rank. Off: up to 250 at any date.
+- **Returning-player bonuses (Give CN's returning-player bonuses):** on by default (CN app). A save away
+  30+ days of server time (a real month off, or the date moved a month ahead) gets the returning-player
+  login bonuses CN had open on that date, once each, one day per login with the daily bonus: the 15-day
+  bonus (1,500 beads in all; 2023-03-02 to 2024-06-12), the one-off returning gift (2023-08-31 to
+  2024-05-23), the 7-day bonus with 10-pull tickets (from 2024-05-23) and the 3rd anniversary one
+  (2024-07-11 to 08-22). The first load after this update only records the save's date.
 - **Summon rates:** the 5★ and 4★ chance per pull for **Unit banners**, **Star Fest / Meteor Festival**
   and **Armaments** (3★ is the rest). **Base game rates** restores 5% / 25%, and 7.5% / 25% for Star
   Fest and Meteor Festival. Pulls follow from the next pull; the game's own **Rates** screen (and its

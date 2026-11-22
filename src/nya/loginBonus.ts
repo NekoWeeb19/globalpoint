@@ -12,6 +12,9 @@ import { dayNumber } from "../lib/mission"
 import { givePlayerRewardsSync } from "../lib/quest"
 import { CharacterReward, CurrencyReward, EquipmentItemReward, Reward, RewardType } from "../lib/types"
 import { getServerDate } from "../utils"
+import { inCnRequest } from "../lib/cnClient"
+import { startComebacksSync } from "./comeback"
+import { cnComebackOn } from "./serverSettings"
 
 
 interface RawLoginBonusRow {
@@ -54,10 +57,12 @@ function toReward(reward: LoginBonusReward): Reward | null {
 export function settleLoginBonusSync(playerId: number, serverMs = getServerDate().getTime(), realMs = Date.now()): string[] {
     const db = getDatabase(Database.WDFP_DATA)
     return db.transaction(() => {
+        // the CN app's returning-player bonuses (src/nya/comeback.ts): started when the save was away long enough
+        const started = inCnRequest() && cnComebackOn() ? startComebacksSync(playerId, loginBonusDataFor(), serverMs) : new Set<string>()
         const progress: Record<string, LoginBonusProgress> = {}
         for (const row of getRows(playerId)) progress[row.group_id] = { lastIndex: row.last_index, lastDay: row.last_day }
 
-        const grants = settleLoginBonus(loginBonusDataFor(), serverMs, dayNumber(realMs), progress)
+        const grants = settleLoginBonus(loginBonusDataFor(), serverMs, dayNumber(realMs), progress, started)
         if (grants.length === 0) return []
 
         const rewards = grants.flatMap(grant => grant.rewards.map(toReward).filter((reward): reward is Reward => reward !== null))

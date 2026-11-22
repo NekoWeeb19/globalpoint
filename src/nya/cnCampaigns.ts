@@ -5,6 +5,7 @@
 
 import loginBonusData from "../../assets/login_bonus.json"
 import cnCampaignData from "../../assets/campaigns_cn.json"
+import cnComebackData from "../../assets/cn_comeback_bonuses.json"
 import { LoginBonusData, LoginBonusGroup } from "../lib/loginBonus"
 import { RewardCampaign } from "../lib/rewardCampaign"
 import { inCnRequest } from "../lib/cnClient"
@@ -22,7 +23,9 @@ export const cnCampaigns = cnCampaignData as unknown as CnCampaigns
 
 const globalLogin = loginBonusData as LoginBonusData
 // the same group objects as global's (the schedules change those in place), plus CN's own
-const cnLogin: LoginBonusData = { ...globalLogin, groups: { ...globalLogin.groups, ...cnCampaigns.loginBonuses } }
+// CN's own returning-player groups (assets/cn_comeback_bonuses.json, src/nya/comeback.ts) replace global's of the same ids
+const cnComebackGroups = (cnComebackData as unknown as { groups: Record<string, LoginBonusGroup> }).groups
+const cnLogin: LoginBonusData = { ...globalLogin, groups: { ...globalLogin.groups, ...cnCampaigns.loginBonuses, ...cnComebackGroups } }
 
 /** The login bonus groups for the client making the request. */
 export function loginBonusDataFor(): LoginBonusData {
@@ -34,7 +37,7 @@ export function loginBonusDataFor(): LoginBonusData {
  * step with the yearly schedule); null puts global's group back.
  */
 export function setCnLoginGroup(id: string, group: LoginBonusGroup | null) {
-    cnLogin.groups[id] = group ?? globalLogin.groups[id]
+    cnLogin.groups[id] = group ?? cnComebackGroups[id] ?? globalLogin.groups[id]
 }
 
 /** The group the CN client gets for an id (its CN copy when there is one). */

@@ -14,6 +14,8 @@ import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";
 import { progressPlayerMissionsSync } from "../../nya/mission";
 import { prepareSoloAdventEventsSync } from "../../nya/soloAdvent";
 import { getPendingLoginBonusSync, settleLoginBonusSync } from "../../nya/loginBonus";
+import { comebackRunningSync } from "../../nya/comeback";
+import { loginBonusDataFor } from "../../nya/cnCampaigns";
 import { refillBossBoostSync } from "../../nya/bossBoost";
 import { freePullCopyEntriesSync, cnKnownFreePullEntries, refreshFreePullCopiesSync } from "../../nya/campaignSchedule";
 import { refillPeriodicRewardPointsSync } from "../../nya/periodicReward";
@@ -134,6 +136,8 @@ const routes = async (fastify: FastifyInstance) => {
         // the yearly free pull copy running now (dashboard Campaigns tab) on every regular unit banner
         clientData.gacha_campaign_list = [...cnKnownFreePullEntries(clientData.gacha_campaign_list), ...freePullCopyEntriesSync(clientData.gacha_campaign_list)]
         const pendingLoginBonus = getPendingLoginBonusSync(playerId)
+        // a returning-player bonus running (src/nya/comeback.ts): the CN client's is_comeback
+        if (cn && clientData.user_info && comebackRunningSync(playerId, loginBonusDataFor())) (clientData.user_info as unknown as Record<string, unknown>).is_comeback = true
         if (pendingLoginBonus !== null) {
             clientData.bonus_index_list = pendingLoginBonus.bonus_index_list
             clientData.login_bonus_received_at = pendingLoginBonus.login_bonus_received_at

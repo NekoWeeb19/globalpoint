@@ -10,8 +10,8 @@
 //
 // Group types: Normal (the everyday bonus; the earliest-starting open one is used, and it loops),
 // Limited (event bonuses; every open one runs, and stops after its last day) and ActiveUser (a gift for
-// players who kept playing). The Comeback types reward players returning after a long break, which
-// a single-player save doesn't track, so they aren't given.
+// players who kept playing). The Comeback types reward players returning after a long break: only a save
+// that started one gets it (the CN app, src/nya/comeback.ts decides who qualifies; global's aren't given).
 
 /** One reward: kind 0 beads, 1 item, 2 character, 3 mana, 4 EXP. */
 export interface LoginBonusReward {
@@ -20,7 +20,10 @@ export interface LoginBonusReward {
     id?: number
 }
 
-export type LoginBonusGroupType = "Normal" | "Limited" | "Comeback" | "ComebackAlways" | "ActiveUser"
+export type LoginBonusGroupType = "Normal" | "Limited" | "Comeback" | "ComebackAlways" | "ActiveUser" | "ComebackCn" | "ComebackJp"
+
+/** The returning-player types (CN also has ComebackCn and ComebackJp, the CN fork's names for its types 5 and 6). */
+export const COMEBACK_TYPES: ReadonlySet<LoginBonusGroupType> = new Set(["Comeback", "ComebackAlways", "ComebackCn", "ComebackJp"])
 
 export interface LoginBonusGroup {
     type: LoginBonusGroupType
@@ -31,6 +34,11 @@ export interface LoginBonusGroup {
     yearlyFrom: string | null
     yearlyUntil: string | null
     linkedComeback: string | null
+    /** Returning-player groups (assets/cn_comeback_bonuses.json): when the previous login must have been, and the days away. */
+    conditionFrom?: string | null
+    conditionUntil?: string | null
+    daysAway?: number | null
+    includeBeginner?: boolean | null
     /** Day 1 first. */
     days: LoginBonusReward[][]
 }
@@ -131,14 +139,34 @@ export function loginBonusProgressKey(groupId: string, group: LoginBonusGroup, s
 /** The group id of a saved progress key. */
 export const loginBonusGroupOfKey = (key: string) => key.split("#")[0]
 
+/** Days away a returning-player group asks for when its row has none (CN's posts: 30). */
+export const COMEBACK_DAYS_AWAY = 30
+const DAY_MS = 86_400_000
+
+/**
+ * Whether a save qualifies for a returning-player group now: away (server time since its previous load) for the
+ * group's days, and, for Comeback and ComebackJp, its previous load inside the group's condition period. ComebackCn's
+ * period is a far-future placeholder in CN's data (its posts give only the 30 days) and ComebackAlways has none.
+ */
+export function comebackQualifies(group: LoginBonusGroup, previousMs: number, serverMs: number): boolean {
+    if (!COMEBACK_TYPES.has(group.type) || !isLoginBonusGroupOpen(group, serverMs)) return false
+    if (serverMs - previousMs < (group.daysAway ?? COMEBACK_DAYS_AWAY) * DAY_MS) return false
+    if (group.type === "Comeback" || group.type === "ComebackJp") {
+        const from = parseDate(group.conditionFrom ?? null), until = parseDate(group.conditionUntil ?? null)
+        if (from !== null && previousMs < from) return false
+        if (until !== null && previousMs > until) return false
+    }
+    return true
+}
+
 /**
  * The groups that give a bonus at a server time, in the order the client shows them: event
  * (Limited/ActiveUser) groups by start date, then the one Normal group (the earliest-starting open
- * one, as in the client).
+ * one, as in the client). Returning-player groups only when the save started them (started).
  */
-export function openLoginBonusGroups(data: LoginBonusData, serverMs: number): string[] {
+export function openLoginBonusGroups(data: LoginBonusData, serverMs: number, started: ReadonlySet<string> = new Set()): string[] {
     const open = Object.entries(data.groups)
-        .filter(([_, group]) => GIVEN_TYPES.has(group.type) && group.days.length > 0 && isLoginBonusGroupOpen(group, serverMs))
+        .filter(([id, group]) => (GIVEN_TYPES.has(group.type) || (COMEBACK_TYPES.has(group.type) && started.has(id))) && group.days.length > 0 && isLoginBonusGroupOpen(group, serverMs))
         .sort((a, b) => (parseDate(a[1].start) ?? 0) - (parseDate(b[1].start) ?? 0) || (a[0] < b[0] ? -1 : 1))
     const normal = open.find(([_, group]) => group.type === "Normal")
     return [...open.filter(([_, group]) => group.type !== "Normal").map(([id]) => id), ...(normal ? [normal[0]] : [])]
@@ -153,13 +181,14 @@ export function settleLoginBonus(
     data: LoginBonusData,
     serverMs: number,
     realDay: number,
-    progress: Readonly<Record<string, LoginBonusProgress>>
+    progress: Readonly<Record<string, LoginBonusProgress>>,
+    started: ReadonlySet<string> = new Set()
 ): LoginBonusGrant[] {
     const lastDay = Math.max(-Infinity, ...Object.values(progress).map(p => p.lastDay))
     if (lastDay >= realDay) return []
 
     const grants: LoginBonusGrant[] = []
-    for (const groupId of openLoginBonusGroups(data, serverMs)) {
+    for (const groupId of openLoginBonusGroups(data, serverMs, started)) {
         const group = data.groups[groupId]
         const progressKey = loginBonusProgressKey(groupId, group, serverMs)
         const lastIndex = progress[progressKey]?.lastIndex ?? 0
