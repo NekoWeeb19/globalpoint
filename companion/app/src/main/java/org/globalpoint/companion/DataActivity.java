@@ -87,9 +87,10 @@ public class DataActivity extends Activity {
         });
 
         u.heading("No PC? Import a pack");
-        u.text("A data pack (~1.8 GB: everything above except your save and the full game files) or a comics pack "
-                + "(~1.4 GB), copied to this phone, e.g. into Downloads. Packs are made on a PC with "
-                + "scripts/build_pack.cjs. A data pack never touches your save.", 13);
+        u.text("A data pack (~1.8 GB: everything above except your save and the full game files), a comics pack "
+                + "(~1.4 GB) or the skill preview art pack (~35 MB: the Unit editor's skill preview pictures; import it after a data pack), "
+                + "copied to this phone, e.g. into Downloads. Packs are made on a PC with "
+                + "scripts/build_pack.cjs. A pack never touches your save.", 13);
         comicsPack = u.button("Import pack...", () -> {
             Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -257,7 +258,7 @@ public class DataActivity extends Activity {
         if (requestCode == PICK_COMICS) {
             run(() -> {
                 String kind = DataTransfer.packKind(this, uri);
-                if (kind == null) throw new java.io.IOException("this isn't a StarPoint pack (make one on a PC with: node scripts/build_pack.cjs data|comics <out.zip>)");
+                if (kind == null) throw new java.io.IOException("this isn't a StarPoint pack (make one on a PC with: node scripts/build_pack.cjs data|comics|art <out.zip>)");
                 DataTransfer.PackResult r;
                 String done;
                 if (kind.equals("data")) {
@@ -270,6 +271,10 @@ public class DataActivity extends Activity {
                     done = "Data pack imported (game files version " + r.version + "): " + r.written + " file(s) unpacked"
                             + (r.skipped > 0 ? ", " + r.skipped + " already here" : "") + (r.removed > 0 ? ", " + r.removed + " old file(s) removed" : "")
                             + ". Your save wasn't touched. Back on the main screen the server starts.";
+                } else if (kind.equals("art")) {
+                    r = DataTransfer.importArtPack(this, uri, this::progress);
+                    done = "Skill preview art ready: " + r.written + " file(s) unpacked" + (r.skipped > 0 ? ", " + r.skipped + " already here" : "")
+                            + ". The Unit editor's skill preview now shows the unit and its effects.";
                 } else {
                     r = DataTransfer.importComicsPack(this, uri, this::progress);
                     done = "Comics ready: " + r.written + " file(s) unpacked" + (r.skipped > 0 ? ", " + r.skipped + " already here" : "")
@@ -294,7 +299,7 @@ public class DataActivity extends Activity {
         try (android.database.Cursor cur = getContentResolver().query(uri, new String[]{android.provider.DocumentsContract.Document.COLUMN_FLAGS}, null, null, null)) {
             if (cur != null && cur.moveToFirst()) canDelete = (cur.getInt(0) & android.provider.DocumentsContract.Document.FLAG_SUPPORTS_DELETE) != 0;
         } catch (Exception ignored) { }
-        String size = bytes > 0 ? String.format(Locale.US, " (%.1f GB)", bytes / 1073741824.0) : "";
+        String size = bytes <= 0 ? "" : bytes < (1L << 30) ? String.format(Locale.US, " (%.0f MB)", bytes / 1048576.0) : String.format(Locale.US, " (%.1f GB)", bytes / 1073741824.0);
         if (!canDelete) {
             status.append("\n\nThe pack" + size + " can be deleted now. This app isn't allowed to delete it there, so delete it in your Files app.");
             return;

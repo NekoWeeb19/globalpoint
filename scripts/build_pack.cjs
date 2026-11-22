@@ -4,6 +4,11 @@
 //
 //   node scripts/build_pack.cjs comics <out.zip> [--from <server folder>] [--comics <folder>]
 //     <CDN_DIR>/comics as .cdn/comics/... (~1.4 GB). Marker: starpoint-comics-pack.json
+//   node scripts/build_pack.cjs art <out.zip> [--from <server folder>] [--slim <folder>]
+//     the Unit editor's skill preview art from the slim CN folder (unit sprites and skill effects in tables/, which
+//     scripts/gen_cn_slim.cjs adds by their hashed names, plus preview_art.txt; ~35 MB), for phones that already
+//     have the data pack, so the 1.8 GB data pack needn't be downloaded again. Marker: starpoint-art-pack.json.
+//     Import it after a data pack: a data pack replaces .cdn/cn/tables and removes what it doesn't hold.
 //   node scripts/build_pack.cjs data <out.zip> [--from <server folder>] [--slim <folder>]
 //     what "Download from PC" brings, without the save and the full game files (~1.8 GB): the CN version
 //     files (path, entities csv), the slim CN tables + names.txt (schedule edits), the English tables,
@@ -26,8 +31,8 @@ const zlib = require("zlib")
 const args = process.argv.slice(2)
 const kind = args.shift(), out = args.shift()
 const opt = name => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : undefined }
-if (!["comics", "data"].includes(kind) || !out) {
-    console.error("usage: node scripts/build_pack.cjs comics|data <out.zip> [--from <server folder>] [--slim <folder>] [--comics <folder>]")
+if (!["comics", "data", "art"].includes(kind) || !out) {
+    console.error("usage: node scripts/build_pack.cjs comics|data|art <out.zip> [--from <server folder>] [--slim <folder>] [--comics <folder>]")
     process.exit(1)
 }
 
@@ -62,6 +67,13 @@ function addTree(zipPath, dir) {
     }
     return true
 }
+/** Whether a file is an orderedmap table (as scripts/gen_cn_slim.cjs tells them from art). */
+function isTable(buf) {
+    if (buf.length < 8) return false
+    const indexLength = buf.readUInt32LE(0)
+    if (indexLength < 4 || 4 + indexLength > buf.length) return false
+    try { zlib.inflateSync(buf.subarray(4, 4 + indexLength)); return true } catch { return false }
+}
 const need = (ok, what) => { if (!ok) { console.error(`Missing: ${what}`); process.exit(1) } }
 
 let marker
@@ -69,6 +81,19 @@ if (kind === "comics") {
     const comics = path.resolve(opt("comics") || path.join(cdn, "comics"))
     need(addTree(".cdn/comics", comics), `comics folder ${comics}`)
     marker = { name: "starpoint-comics-pack.json", info: { kind: "starpoint-comics-pack", version: 1 } }
+} else if (kind === "art") {
+    const slim = [opt("slim") && path.resolve(opt("slim")), cnRoot, setting("CN_SLIM_DIR") && at(setting("CN_SLIM_DIR")), path.join(cdn, "cn_slim")].find(isSlim)
+    need(slim, "a slim CN folder (tables/ + names.txt): pass --slim, or make one with node scripts/gen_cn_slim.cjs")
+    const record = path.join(slim, "preview_art.txt")
+    need(fs.existsSync(record), `${record} (the slim CN folder has no skill preview art yet: start the server, or run node scripts/gen_cn_slim.cjs)`)
+    const [artVersion, artCount] = fs.readFileSync(record, "utf8").split(/\r?\n/).map(Number)
+    // the art is what in tables/ isn't a table (scripts/gen_cn_slim.cjs keeps only real tables there besides the art)
+    addTree(".cdn/cn/tables", path.join(slim, "tables"))
+    const art = files.splice(0).filter(([, file]) => !isTable(fs.readFileSync(file)))
+    files.push(...art)
+    if (art.length !== artCount) console.log(`Note: ${art.length} art files found, preview_art.txt says ${artCount}.`)
+    addFile(".cdn/cn/preview_art.txt", record)
+    marker = { name: "starpoint-art-pack.json", info: { kind: "starpoint-art-pack", version: 1, artVersion } }
 } else {
     need(addFile(".cdn/cn/path", path.join(cnRoot, "path")), `${path.join(cnRoot, "path")} (CN_CDN_DIR)`)
     const entities = path.join(cnRoot, "entities")

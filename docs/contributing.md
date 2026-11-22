@@ -61,7 +61,7 @@ Node scripts that build data, translations, game updates and packages. The ones 
   own use, not for publishing. `verify_package.cjs` checks a folder's game files and updates
   (`setup.bat` runs it).
 - `build_cn_obb.cjs` (optional): builds the OBB with every game file, for phones and emulators (setup 1).
-- `build_pack.cjs`: the data and comics packs for the companion's **Import pack...**.
+- `build_pack.cjs`: the data, comics and skill preview art packs for the companion's **Import pack...**.
 - `gen_cn_art_fill.cjs`: global's pictures for CN pictures that were missing, as an art patch.
 - `build_kit_*.cjs`, `kit_dates.cjs`: the old unit kits for balance by date (`assets/kit_dates.json`).
 - `gen_cn_slim.cjs`: the small CN data set the phone needs for schedule changes.

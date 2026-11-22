@@ -28,6 +28,7 @@ final class DownloadCheck {
             {"5494b5a79f6508068c133c6ebd971862b1f0aaef1e6d0b2955d85a76eca1f697", 10293099326L, "the single OBB (game files 1.4.203)"},
             {"8637a682ab1439e8c62040ebe9a4ce47b3b3ec28b4f1f65c4ba00f5332a6e393", 2358543886L, "starpoint-data.zip (data pack, game files 1.4.800)"},
             {"7409b79cbe56c8c7ff05e48755904c7c35fb9677914925607a474f5a33424174", 1427068120L, "starpoint-comics.zip (comics pack)"},
+            {"4e70bfda526106a0f12fc9288e8a20c417b3246cdd3a2894051d5dfc5d03450c", 36791493L, "starpoint-skill-preview-art.zip (skill preview art pack)"},
             {"198f2b4fb31568e2050ca5e1989d711ff63077494b21ff990562263c0ff0774e", 139394817L, "World Flipper (game) APK, build 25"},
     };
 

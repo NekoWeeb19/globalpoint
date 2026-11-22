@@ -166,13 +166,16 @@ final class DataTransfer {
     /** First entry of a comics pack (scripts/build_comics_pack.cjs). */
     static final String COMICS_MARKER = "starpoint-comics-pack.json";
 
+    /** First entry of a skill preview art pack (scripts/build_pack.cjs art). */
+    static final String ART_MARKER = "starpoint-art-pack.json";
+
     /** First entry of a data pack (scripts/build_pack.cjs data). */
     static final String DATA_MARKER = "starpoint-data-pack.json";
 
     /** What a pack import did. */
     static final class PackResult { int written, skipped, removed; long packBytes; String version = ""; }
 
-    /** "comics", "data", or null when the file isn't a pack: read from its first entry. */
+    /** "comics", "data", "art", or null when the file isn't a pack: read from its first entry. */
     static String packKind(Context c, Uri uri) {
         try (InputStream raw = c.getContentResolver().openInputStream(uri);
              ZipInputStream zip = new ZipInputStream(new BufferedInputStream(raw, 1 << 16))) {
@@ -180,6 +183,7 @@ final class DataTransfer {
             if (first == null) return null;
             if (COMICS_MARKER.equals(first.getName())) return "comics";
             if (DATA_MARKER.equals(first.getName())) return "data";
+            if (ART_MARKER.equals(first.getName())) return "art";
         } catch (Exception ignored) { }
         return null;
     }
@@ -189,7 +193,7 @@ final class DataTransfer {
         try (InputStream raw = c.getContentResolver().openInputStream(uri);
              ZipInputStream zip = new ZipInputStream(new BufferedInputStream(raw, 1 << 16))) {
             ZipEntry first = zip.getNextEntry();
-            if (first == null || !(COMICS_MARKER.equals(first.getName()) || DATA_MARKER.equals(first.getName()))) return null;
+            if (first == null || !(COMICS_MARKER.equals(first.getName()) || DATA_MARKER.equals(first.getName()) || ART_MARKER.equals(first.getName()))) return null;
             return new JSONObject(new String(readAll(zip), "UTF-8"));
         } catch (Exception ignored) { }
         return null;
@@ -348,6 +352,63 @@ final class DataTransfer {
             }
         }
         if (result.written + result.skipped == 0) throw new IOException("the pack holds no comics");
+        p.update("Done", total, total);
+        return result;
+    }
+
+    /**
+     * Unpacks a skill preview art pack (the Unit editor's unit sprites and skill effects) into files/data/.cdn/cn:
+     * files in .cdn/cn/tables by their hashed names, and .cdn/cn/preview_art.txt. Files already there with the same
+     * size are skipped. The server may keep running: it reads these per request. A data pack imported later replaces
+     * .cdn/cn/tables, so this pack goes after it.
+     */
+    static PackResult importArtPack(Context c, Uri uri, Progress p) throws Exception {
+        File data = ServerFiles.dataDir(c);
+        long total = -1;
+        try (android.content.res.AssetFileDescriptor fd = c.getContentResolver().openAssetFileDescriptor(uri, "r")) {
+            if (fd != null) total = fd.getLength();
+        } catch (Exception ignored) { }
+        PackResult result = new PackResult();
+        result.packBytes = total;
+        if (!new File(data, ".cdn/cn/tables").isDirectory()) {
+            throw new IOException("import the data pack first (or Download from PC with Event schedule editing ticked): the skill preview art goes with its CN tables");
+        }
+        try (InputStream raw = c.getContentResolver().openInputStream(uri);
+             CountingStream counted = new CountingStream(new BufferedInputStream(raw, 1 << 20));
+             ZipInputStream zip = new ZipInputStream(counted)) {
+            ZipEntry first = zip.getNextEntry();
+            if (first == null || !ART_MARKER.equals(first.getName())) throw new IOException("this isn't a skill preview art pack");
+            JSONObject info = new JSONObject(new String(readAll(zip), "UTF-8"));
+            if (!"starpoint-art-pack".equals(info.optString("kind"))) throw new IOException("this isn't a skill preview art pack");
+            long free = new StatFs(data.getPath()).getAvailableBytes();
+            long need = info.optLong("bytes", 0) + (64L << 20);
+            if (free < need) {
+                throw new IOException(String.format(Locale.US, "Not enough free space: the art needs %.0f MB, %.0f MB free.", need / 1048576.0, free / 1048576.0));
+            }
+            ZipEntry entry;
+            long last = 0;
+            while ((entry = zip.getNextEntry()) != null) {
+                if (entry.isDirectory()) continue;
+                String name = entry.getName().replace('\\', '/');
+                if (!name.startsWith(".cdn/cn/tables/") && !name.equals(".cdn/cn/preview_art.txt")) continue;
+                File out = target(data, name);
+                if (out == null) continue;
+                long size = entry.getSize();
+                if (size >= 0 && out.exists() && out.length() == size && !name.equals(".cdn/cn/preview_art.txt")) {
+                    result.skipped++;
+                } else {
+                    long[] ignore = {0};
+                    copy(zip, out, size, ignore, total, (m, d, t) -> { }, name);
+                    result.written++;
+                }
+                long now = System.currentTimeMillis();
+                if (now - last > 250) {
+                    p.update("Skill preview art: " + (result.written + result.skipped) + " / " + info.optInt("files") + " files", counted.count, total);
+                    last = now;
+                }
+            }
+        }
+        if (result.written + result.skipped == 0) throw new IOException("the pack holds no art");
         p.update("Done", total, total);
         return result;
     }

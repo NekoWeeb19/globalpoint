@@ -106,6 +106,11 @@ same size, so it resumes), and then offers to delete the pack.
   - The server stops while it's imported. A data pack never touches the save or account files.
   - It replaces whole folders, so earlier schedule edits on the phone are removed: the phone starts
     in the pack's state. Build it from a clean setup, not a server with its own schedule edits.
+- **Skill preview art pack** (~35 MB, `starpoint-skill-preview-art.zip`), made with
+  `node scripts/build_pack.cjs art <out.zip> [--from <server folder>] [--slim <slim CN folder>]`: the unit
+  sprites and skill effects the Unit editor's skill preview draws (0.8.98+), from the slim CN folder, for a phone
+  that already has the data pack (data packs made before 0.8.98 don't have the art). Import it after a data pack:
+  a data pack replaces `.cdn/cn/tables` and removes what it doesn't hold. The server keeps running meanwhile.
   - If the game's files are older than the pack (an older OBB, say), the game downloads the
     difference from the phone once.
 - **Comics pack** (~1.4 GB), `node scripts/build_pack.cjs comics <out.zip>`: the server's comics
