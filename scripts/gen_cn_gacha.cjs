@@ -26,7 +26,8 @@ async function readCnTable(logical) {
     const e = index.get(key) ?? index.get(key.replace(/^production\//, ""))
     if (!e) return null
     const out = {}
-    for (const { path: keys, leaf } of R.leaves(R.decodeFile(await e.buffer()))) out[keys.join("/")] = leaf.text
+    // on CN's real calendar (scripts/cn_calendar.cjs)
+    for (const { path: keys, leaf } of R.leaves(R.decodeFile(require("./cn_calendar.cjs").applyToBuffer(key, await e.buffer())))) out[keys.join("/")] = leaf.text
     return out
 }
 

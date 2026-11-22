@@ -62,6 +62,8 @@ const ES = require("./enemy_scaling.cjs")
 const GENERAL_TICKET_BANNERS = new Set(JSON.parse(fs.readFileSync(path.join(__dirname, "..", "assets", "cn_general_ticket_banners.json"), "utf8")).banners)
 const GO = require("./gacha_odds.cjs")
 const { uploadPath: fileOf } = require("./cdn_hash.cjs")
+// CN's real calendar (assets/cn_calendar_dates.json): applied to every table first, and its tables always ship
+const CAL = require("./cn_calendar.cjs")
 // the yearly free pull copies this update has (.database/cn_schedule_built.json): the server never sends the
 // CN client a used copy it doesn't have (an unknown campaign id stops it with C8601)
 const builtFreePullCopyIds = []
@@ -413,7 +415,7 @@ async function main() {
     // - element dungeons: the weekday rotation rows ended in 2018 and the every-element rows only open
     //   2020-01-15, so a save starting 2019-12-01 had none; the every-element rows open from 2001 instead
     //   (until 2022-05-31 as before, when the combined dungeon takes over)
-    // - The Haunt (2022-05-12 to 2026-05-12 04:59:59, China time) opens earlier, 2020-01-12, and stays
+    // - The Haunt (2022-05-12 to 2026-05-12 04:59:59, China time) opens on CN's own date and stays
     //   open (2199-12-31). Its floors change monthly: 48 sets of 10 quests, each with its own month. The months
     //   outside CN's get copies that carry on the same monthly loop (addTowerCopies, src/lib/towerRotation.ts).
     // the pop-up dialog table (its logical name isn't known; this is its stored path) and the dates that hide a row
@@ -482,12 +484,10 @@ async function main() {
         },
         [fileOf("master/quest/event/tower_dungeon_event.orderedmap")]: (key, c) => {
             let changed = false
-            if (c[11] === "2022-05-12 12:00:00" || c[11] === "2021-05-12 12:00:00") { c[11] = "2020-01-12 12:00:00"; changed = true }
             for (let i = 0; i < c.length; i++) if (c[i] === "2026-05-12 04:59:59") { c[i] = "2199-12-31 23:59:59"; changed = true }
             return changed
         },
-        // two Launch Gala banners at once: CN's own launch banner (61, 2011-12-24 to 2021-11-04) overlaps the
-        // JP-era one (1, until 2020-01-27); 61 opens when 1 closes.
+        // two Launch Gala banners at once (1 and 61): see the end of this fix.
         // Armament portals (equipment odds in columns 22-24) whose ticket deadline (column 31) is after their
         // pull window's end (column 30) stay listed and take ticket pulls after the end, but the client only
         // loads armament rates for portals before their end, so such a pull's result crashed (C8013 "...
@@ -524,11 +524,12 @@ async function main() {
                 c[27] = "(None)"; c[28] = "(None)"; c[32] = "true"; c[generalColumn] = "true"
                 changed = true
             }
+            // 61 (newnormal_1) is the same Launch Gala as 1 (normal_1, same picture), open from 2011 to CN's 2021-11-04.
+            // On CN's calendar (scripts/cn_calendar.cjs) 1 runs CN's own launch dates, the paid test 2021-08-17 to
+            // 2021-11-04, so 61 would be a second copy beside it: it opens at its own end instead (never shows)
             if (key !== "61" || c[0] !== "newnormal_1") return changed
-            const i = c.indexOf("2011-12-24 12:00:00")
-            if (i < 0) return false
-            c[i] = "2020-01-27 12:00:00"
-            return true
+            if (c[29] === "2011-12-24 12:00:00" && /^\d{4}-/.test(c[30] ?? "")) { c[29] = c[30]; return true }
+            return changed
         },
         // login announcements ("TAP SCREEN" pages) and pop-up dialogs whose picture is in neither the CN files
         // nor StarPoint's patches (scripts/gen_cn_art_fill.cjs adds global's) show blank: hidden (dates in 2000)
@@ -613,8 +614,6 @@ async function main() {
     // (its logical name isn't known; this is its stored path, found by the unit -> date rows matching each
     // unit's "finish Mana Board 2" title mission)
     const MB2_OPEN = "production/upload/bc/0bc800f482670f3ec8a7f2fee9b9deeeca3a04"
-    // the CN game's start (China time); launch units with board 2 before it are moved to later waves
-    const LAUNCH_MB2_FROM = "2019-12-01 00:00:00"
     const mb2InUse = new Set((() => { try { return JSON.parse(fs.readFileSync(path.join(dataDir(), "cn_mb2_in_use.json"), "utf8")).map(String) } catch { return [] } })())
     // Custom units (assets/custom_units/*.json, scripts/custom_units.cjs, docs/CUSTOM_UNITS.md): their rows are
     // added to every table they touch, and those tables always ship, so a rebuild never drops a unit a save has
@@ -635,7 +634,7 @@ async function main() {
     const custom = CU.readCustomUnits()
     for (const p of custom.problems) console.log(`Custom unit skipped: ${p}`)
     const customTables = CU.unitTables(custom.units)
-    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...(globalItemTable ? [globalItemTable] : []), ...(starGrainTable ? [starGrainTable] : []), ...(voiceActorTable ? [voiceActorTable] : []), ...kitTables, MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES), ...customTables, ...changes.rows.keys(), ...enemyTables, ...rateFiles.keys(), ...lastChanged])].sort()
+    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...(globalItemTable ? [globalItemTable] : []), ...(starGrainTable ? [starGrainTable] : []), ...(voiceActorTable ? [voiceActorTable] : []), ...kitTables, ...CAL.FILES, MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES), ...customTables, ...changes.rows.keys(), ...enemyTables, ...rateFiles.keys(), ...lastChanged])].sort()
     const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
     const cn = await cnFiles(new Set([...fileList, featureFile]))
     // art StarPoint's patches added (scripts/gen_cn_banner_art.cjs) counts too: their file names and
@@ -698,7 +697,7 @@ async function main() {
         const file = fileOf("master/quest/event/world_story_event.orderedmap")
         const from = translatedFrom.get(file)
         const translated = from && fs.existsSync(from) ? from : path.join(TRANSLATED, file)
-        const buf = fs.existsSync(translated) ? fs.readFileSync(translated) : await cn.get(file)?.buffer()
+        const buf = CAL.applyToBuffer(file, fs.existsSync(translated) ? fs.readFileSync(translated) : await cn.get(file)?.buffer())
         if (buf) for (const { path: keys, leaf } of R.leaves(R.decodeFile(buf))) {
             const first = (leaf.text.match(/\d{4}-\d\d-\d\d \d\d:\d\d:\d\d/) ?? [])[0]
             if (first && keys.length === 1) worldStoryStart.set(keys[0], first)
@@ -735,6 +734,9 @@ async function main() {
         const buf = await tableBuffer(file)
         if (!buf) continue // a table CN doesn't have
         const tree = R.decodeFile(buf)
+        // CN's real calendar first (scripts/cn_calendar.cjs): the fixes below look for CN's dates
+        const onCnCalendar = CAL.applyToTree(file, tree)
+        if (onCnCalendar > 0) console.log(`CN calendar: ${onCnCalendar} row(s) in ${file}`)
         // custom units' rows first, so the fixes below (e.g. Mana Board 2 kept open for a save) apply to them too
         for (const unit of customUnits) {
             const rows = Object.entries(unit.rows).filter(([ref]) => CU.tableFile(ref) === file)
@@ -769,22 +771,16 @@ async function main() {
         if (file === MB2_OPEN) {
             const dates = {}
             let kept = 0
-            // CN copies JP's early schedule, and opens board 2 of its launch units (89) from 2015, before the game
-            // starts. Units on JP's board 2 wave list (assets/mb2_jp_waves.json) open on the earlier of CN's date and
-            // their JP wave (wave 1 when Ether can first be had, then monthly); the launch units all are on it
+            // CN's own waves (assets/cn_mb2_waves.json, from CN's Bilibili wave posts): the table folds CN's first three
+            // waves (2022-05-26, 06-16, 07-14) into 2015-03-01 and dates wave 4 a week after its post; each unit opens on
+            // its wave's date (the CN calendar switch, 2026-11-22; before it, JP's waves from assets/mb2_jp_waves.json)
             const rows = R.leaves(tree)
-            const jp = JSON.parse(fs.readFileSync(path.join(ROOT, "assets", "mb2_jp_waves.json"), "utf8"))
-            const waveDate = n => {
-                const d = new Date(jp.firstWave.replace(" ", "T") + "Z")
-                d.setUTCMonth(d.getUTCMonth() + n - 1)
-                return d.toISOString().slice(0, 19).replace("T", " ")
-            }
+            const cnWaves = JSON.parse(fs.readFileSync(path.join(ROOT, "assets", "cn_mb2_waves.json"), "utf8")).units
             for (const { path: keys, leaf } of rows) {
                 const end = leaf.text.endsWith("\n") ? "\n" : ""
                 const fields = R.splitCsv(leaf.text.replace(/\n$/, ""))
-                const n = jp.units[keys[0]]
-                const target = n === undefined ? null : waveDate(n)
-                if (target !== null && (fields[0] < LAUNCH_MB2_FROM || fields[0] > target)) {
+                const target = cnWaves[keys[0]]
+                if (target !== undefined && fields[0] !== target) {
                     fields[0] = target
                     R.setLeafText(leaf, fields.map(R.csvField).join(",") + end)
                 }

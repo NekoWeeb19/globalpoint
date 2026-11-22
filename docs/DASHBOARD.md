@@ -56,7 +56,7 @@ as a new day for every save:
 
 The server's date doesn't change. Pressing the button twice before logging in still counts as one day.
 
-New installs start on 2019-12-01, just before the CN game's first banners and events.
+New installs start on 2021-10-26, the CN game's launch. The events CN never ran (JP-only) are in 2020.
 
 ## What's on now
 

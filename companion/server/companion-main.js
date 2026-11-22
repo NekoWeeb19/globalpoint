@@ -75,7 +75,7 @@ const defaults = {
     // custom units (docs/CUSTOM_UNITS.md): in the data folder, so they survive app updates and save imports;
     // "Download from PC" brings the PC's unit files here
     CUSTOM_UNITS_DIR: path.join(dataDir, ".cdn", "custom_units"),
-    SERVER_START_DATE: "2019-12-01T05:00:00Z", // just before the CN game's first regular banners and events
+    SERVER_START_DATE: "2021-10-26T02:00:00Z", // the CN game's launch (10:00 China time)
     LISTEN_HOST: "127.0.0.1",
     LISTEN_PORT: "8000",
     COOP_HOST: "127.0.0.1",

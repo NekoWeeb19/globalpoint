@@ -13,10 +13,10 @@ const kitFile = new URL("../assets/kit_dates.json", import.meta.url)
 const raw = JSON.parse(require("fs").readFileSync(kitFile, "utf8"))
 const kits = readKits(kitFile)
 const PATCHES = [
-    { file: "../assets/balance_global_2022-05-31.json", until: "2022-05-31 06:00:00" },
-    { file: "../assets/balance_global_2023-09-12.json", until: "2023-09-12 06:00:00" },
+    { file: "../assets/balance_global_2022-05-31.json", until: "2022-04-19 06:00:00" },
+    { file: "../assets/balance_global_2023-09-12.json", until: "2023-08-01 06:00:00" },
 ]
-const PATCH_DATES = ["2022-05-31 06:00:00", "2023-09-12 06:00:00", "2024-05-27 06:00:00"]
+const PATCH_DATES = ["2022-04-19 06:00:00", "2023-08-01 06:00:00", "2024-04-15 06:00:00"]
 // changed by a patch, with no stage on purpose
 const NO_STAGE = {
     "Adventurous Pup Lou": "the 2022 patch changed only his skill's behavior (its action file); no old copy exists",

@@ -6,7 +6,9 @@
 //   needs it on page 0 (error 2035 otherwise).
 // Titles and release times are in assets/comics_en.json (Flipper World) and comics_stella_en.json
 // (Stella's W.F.101); scripts/download_comics.cjs downloads the pages as <episode>.png. A comic is
-// listed once the server date reaches its release.
+// listed once the server date reaches its release. The CN app gets them on its own calendar: global's first
+// comics came out with global's launch (2021-09-08 14:00 UTC), so for CN they start with CN's launch (2021-10-26
+// 10:00 China time), every release 47.5 days later (the CN calendar switch, 2026-11-22).
 // With no comics there, the list holds one placeholder (StarPoint's logo): an empty list stops the
 // client (error 2035, "latest comic not found").
 
@@ -15,13 +17,15 @@ import { existsSync, readdirSync, readFileSync } from "fs";
 import path from "path";
 import { getSession } from "../../data/wdfpData";
 import { generateDataHeaders, getServerDate } from "../../utils";
-import { cdnDir } from "../../lib/cnClient";
+import { cdnDir, inCnRequest } from "../../lib/cnClient";
 import comicsEn from "../../../assets/comics_en.json";
 import comicsStellaEn from "../../../assets/comics_stella_en.json";
 
 const COMIC_DIR = path.join(cdnDir(), "comics")
 const PLACEHOLDER = path.join(process.cwd(), "web", "public", "img", "logo.png")
 const PER_PAGE = 9
+// global's first comics (2021-09-08 14:00 UTC) to CN's launch (2021-10-26 02:00 UTC)
+const CN_COMIC_DELAY_MS = Date.parse("2021-10-26T02:00:00Z") - Date.parse("2021-09-08T14:00:00Z")
 
 interface Comic { episode: number, title: string, file: string, thumbnail: string, banner: string }
 
@@ -41,7 +45,8 @@ function comicsOf(kind: number): Comic[] {
         if (!match || /\.(small|large)\.(png|jpe?g)$/i.test(file)) return []
         const episode = Number(match[1])
         const release = RELEASES[kind]?.get(episode)
-        if (release !== undefined && release.at > now) return [] // not out yet on the server date
+        const at = release === undefined ? undefined : release.at + (inCnRequest() ? CN_COMIC_DELAY_MS : 0)
+        if (at !== undefined && at > now) return [] // not out yet on the server date
         const small = path.join(dir, `${episode}.small.png`)
         const large = path.join(dir, `${episode}.large.png`)
         const full = path.join(dir, file)

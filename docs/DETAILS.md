@@ -14,20 +14,20 @@ developers.
 
 The server's date decides how units play, the way they did on that date.
 
-- **Mana Board 2** follows JP's six early waves, since CN copied JP's order. Each of the 214 units
-  JP listed opens on its JP wave or its CN date, whichever comes first. The first wave is
-  2020-09-10, when Ether (the board 2 material from the Challenge Single Battles) can first be
-  had, then one wave a month. Other units open on CN's own date. A unit your save already moved to
-  Mana Board 2 keeps it, whatever the date. The waves are in `assets/mb2_jp_waves.json`.
+- **Mana Board 2** opens on CN's own waves: 50 waves from 2022-05-26 to 2025-06-19, as CN's official
+  posts announced them. Before 2022-05-26 only Star Hopper Alk has it; a few units CN never opened don't get it.
+  A unit your save already moved to Mana Board 2 keeps it, whatever the date. The waves are in
+  `assets/cn_mb2_waves.json`.
 - **Awakening and EX Boost** open on CN's own date for each unit. The CN app does this by itself.
-- **Global's balance patches** (live 2022-05-31, 2023-09-12 and 2024-05-27): before each one, the
+- **Balance patches** (on CN's calendar 2022-04-19, 2023-08-01 and 2024-04-15: CN had the first one six weeks
+  before global's 2022-05-31, and the later two keep that lead): before each one, the
   units and armaments it changed use their old leader skills and abilities. That covers 142 units
   and 60 armaments: every one the three patches changed, except Adventurous Pup Lou, whose only
   change was his skill. They come from global's patch notes and, for 2024, global's own game files.
   When the date passes, the game's own kit comes back by itself.
 - **What can't go back:** a skill's behavior, and numbers the notes don't give. Where a patch changed
   what a skill does, or only said "reduces skill gauge" or "adjusted skill weight", the unit keeps
-  today's skill. So the 2023-09-12 reworks (Pecorine, Mormia, Arum and the others) have their old
+  today's skill. So the 2023 reworks (Pecorine, Mormia, Arum and the others) have their old
   abilities and leader skills with today's skill; Deep-Sea Princess Amelia also has her old class and
   stats. Mad Scientist Renoir keeps today's ability 1, since the note's old text is cut off.
 
@@ -110,7 +110,7 @@ anywhere, the picture is hidden rather than left in Chinese or blank.
 |---|---|---|
 | `LISTEN_HOST` | `127.0.0.1` | `0.0.0.0` lets other devices on your network in (needed for setup 2, and to copy to a phone) |
 | `LISTEN_PORT` | `8000` | the server's port (the game app expects 8000) |
-| `SERVER_START_DATE` | `2019-12-01T05:00:00Z` | the game date a new install starts at |
+| `SERVER_START_DATE` | `2021-10-26T02:00:00Z` | the game date a new install starts at |
 | `SERVER_TIME_TICKS` | `true` | the server clock runs like a real one |
 | `LOGIN_BONUS_PAID_BEADS` | `150` | paid beads with each daily login bonus (0 = off); the dashboard's value replaces it once set |
 | `RAID_SOLO_CLEARS_PER_KILL` | `1` | clears of a raid's hardest stage per boss kill |

@@ -187,7 +187,7 @@ overrides them:
 | `COOP_HOST`, `COOP_PORT` | `127.0.0.1`, `18888` |
 | `CDN_DIR`, `CN_CDN_DIR`, `CN_TRANSLATED_DIR` | `data/.cdn`, `data/.cdn/cn`, `data/.cdn/cn_text` |
 | `CN_GENERATED_DIR` | `data/.generated` |
-| `SERVER_START_DATE` | `2019-12-01T05:00:00Z` |
+| `SERVER_START_DATE` | `2021-10-26T02:00:00Z` |
 | `STARPOINT_COMPANION` | `1` (hides the dashboard's PC-only "Play on a phone over Wi-Fi" box) |
 
 The rest match the PC's `.env.example`. Daily paid beads, the never-ending mails and the drop amount

@@ -31,8 +31,14 @@ function slimTable(key) {
     return fs.existsSync(file) ? fs.readFileSync(file) : null
 }
 
-/** The newest copy of a file (by logical path) from the CN archives (or a slim folder's tables), or null. */
-async function readCn(logical) {
+/** The newest copy of a file (by logical path) from the CN archives (or a slim folder's tables), or null; on CN's
+ *  real calendar (scripts/cn_calendar.cjs) unless { raw: true }. */
+async function readCn(logical, opts = {}) {
+    const buf = await readCnRaw(logical)
+    return opts.raw ? buf : require("./cn_calendar.cjs").applyToBuffer(hashed(logical), buf)
+}
+
+async function readCnRaw(logical) {
     const key = hashed(logical)
     const version = cnIndex().get(key)
     if (!version) return slimTable(key)
@@ -49,9 +55,9 @@ async function readCn(logical) {
     return slimTable(key)
 }
 
-/** A data table as { "key/key": csv text }. */
-async function readCnTable(logical) {
-    const buf = await readCn(logical)
+/** A data table as { "key/key": csv text } (on CN's real calendar unless { raw: true }). */
+async function readCnTable(logical, opts = {}) {
+    const buf = await readCn(logical, opts)
     if (buf === null) return null
     const out = {}
     for (const { path: keys, leaf } of leaves(decodeFile(buf))) out[keys.join("/")] = leaf.text

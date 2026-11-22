@@ -51,8 +51,8 @@ Updating (no need to install again)
 
 Dashboard
   With the server running, open http://127.0.0.1:8000 in your browser:
-  - Server time: visit past and future content. New installs start on 2019-12-01, just before the
-    CN game's first banners and events. Units play with the kit they had on that date.
+  - Server time: visit past and future content. New installs start on 2021-10-26, the CN game's
+    launch; events CN never ran are in 2020. Units play with the kit they had on that date.
   - Quest drop amount: 1x (the default) is the base game's own amounts; original StarPoint gave
     10x. Raise it (up to 100x) for less grind.
   - Daily paid beads and free mails: the paid beads with each daily login bonus (150 by default),

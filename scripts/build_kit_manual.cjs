@@ -15,10 +15,12 @@ const { readCnTable } = require("./cn_read.cjs")
 
 const KIT_FILE = path.join(__dirname, "..", "assets", "kit_dates.json")
 const AB = "master/ability/ability.orderedmap", LD = "master/ability/leader_ability.orderedmap", SOUL = "master/ability/ability_soul.orderedmap"
-const P2022 = { until: "2022-05-31 06:00:00", source: "global news 1241 (live 2022-05-31)" }
-const P2022A = { until: "2022-05-31 06:00:00", source: "global news 1242 (live 2022-05-31)" }
-const P2023 = { until: "2023-09-12 06:00:00", source: "global news 2610 (live 2023-09-12)" }
-const P2024 = { until: "2024-05-27 06:00:00", source: "global 2.1.108 game files (2024-05-27)" }
+// on CN's calendar: each stage 6 weeks before global's date (CN had the 2022 multiball rework on 2022-04-19, global on
+// 2022-05-31; the later two keep that lead, decided 2026-11-22). The sources name global's posts.
+const P2022 = { until: "2022-04-19 06:00:00", source: "global news 1241 (live 2022-05-31)" }
+const P2022A = { until: "2022-04-19 06:00:00", source: "global news 1242 (live 2022-05-31)" }
+const P2023 = { until: "2023-08-01 06:00:00", source: "global news 2610 (live 2023-09-12)" }
+const P2024 = { until: "2024-04-15 06:00:00", source: "global 2.1.108 game files (2024-05-27)" }
 
 // cols: { column: value } for the first line of a row of any table, kept as a column patch;
 // drop: line indexes to leave out; set: { line: { column: value } } (indexes of the starting row)
