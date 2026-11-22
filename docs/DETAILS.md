@@ -21,13 +21,15 @@ The server's date decides how units play, the way they did on that date.
   Mana Board 2 keeps it, whatever the date. The waves are in `assets/mb2_jp_waves.json`.
 - **Awakening and EX Boost** open on CN's own date for each unit. The CN app does this by itself.
 - **Global's balance patches** (live 2022-05-31, 2023-09-12 and 2024-05-27): before each one, the
-  units and armaments it changed use their old numbers. That covers 98 units and 49 armaments,
-  taken from global's patch notes and, for 2024, global's own game files. When the date passes, the
-  game's own kit comes back by itself.
-- **What can't go back:** a skill's behavior. Where a patch changed what a skill does (not just its
-  numbers), the unit keeps today's skill. The 2023-09-12 reworks (Amelia, Pecorine, Mormia and
-  others) are mostly left as they are for that reason; Deep-Sea Princess Amelia is the exception,
-  with her old abilities, leader skill, class and stats but today's skill.
+  units and armaments it changed use their old leader skills and abilities. That covers 142 units
+  and 60 armaments: every one the three patches changed, except Adventurous Pup Lou, whose only
+  change was his skill. They come from global's patch notes and, for 2024, global's own game files.
+  When the date passes, the game's own kit comes back by itself.
+- **What can't go back:** a skill's behavior, and numbers the notes don't give. Where a patch changed
+  what a skill does, or only said "reduces skill gauge" or "adjusted skill weight", the unit keeps
+  today's skill. So the 2023-09-12 reworks (Pecorine, Mormia, Arum and the others) have their old
+  abilities and leader skills with today's skill; Deep-Sea Princess Amelia also has her old class and
+  stats. Mad Scientist Renoir keeps today's ability 1, since the note's old text is cut off.
 
 The units and their dates are in `assets/kit_dates.json`. To change a unit for good, see
 [Changing an existing unit](CUSTOM_UNITS.md#changing-an-existing-unit) (the Unit editor, or [by hand](MAKING_UNITS.md#changing-an-existing-unit-by-hand)).
