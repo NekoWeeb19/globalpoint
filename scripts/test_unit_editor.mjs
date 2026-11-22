@@ -198,6 +198,37 @@ try {
 
     const unknownPiece = [...line]; unknownPiece[47] = "704"
     check("a line with a part it can't word yet gives null (the page keeps its own sentence)", TX.lineText(unknownPiece, "low", pieces, CODES) === null)
+
+    // 中文: the same line with CN's own Chinese pieces: element and "unit" words from CN's table, not English
+    const zh = {
+        ability_description_instant_trigger_kind_myself: "自身是::constraint::", ability_description_instant_trigger_kind_elapsed_time: "::second::秒经过::if once::::else::::end::",
+        ability_description_instant_content_add_combo: "连击数::count::", ability_description_count_up: "::if (0 <= count)::+::count::::else::-::(-count)::::end::",
+        ability_description_target_ally: "角色", element_kind_blue: "水",
+    }
+    const zhLine = TX.lineText(line, "low", zh, CODES)
+    check("a line in CN's Chinese words: ⟨水⟩角色, no English", /⟨水⟩角色/.test(zhLine ?? "") && !/[A-Za-z]{3}/.test(zhLine ?? ""), zhLine)
+    check("... and English again right after (the Chinese words don't stick)", TX.lineText(line, "low", pieces, CODES) === "When this unit is a/the ⟨Water⟩ unit → 6 seconds have passed → +50 Combo")
+    check("the unit list has CN's name and title fields (search by CN names)", (await UE.listUnits()).every(u => "cnName" in u && "cnTitle" in u))
+
+    // the page's Chinese table (web/public/js/unit-editor-zh.js): exact strings, patterns, effect names built from parts
+    globalThis.window = {}
+    require("../web/public/js/unit-editor-zh.js")
+    const Z = globalThis.window.UNIT_EDITOR_ZH
+    const tr = (s) => {
+        const m = s.match(/^(\s*)([\s\S]*?)(\s*)$/), core = m[2]
+        let out = Z.exact[core]
+        if (out === undefined) for (const [re, to] of Z.patterns) { const x = core.match(re); if (x) { out = typeof to === "function" ? to(x, tr) : core.replace(re, to); if (out !== undefined) break } }
+        return out === undefined ? s : m[1] + out + m[3]
+    }
+    check("中文: exact strings", tr("Reset unit to game") === "将角色还原为游戏原版" && tr(" Unit ") === " 角色 ")
+    check("中文: patterns with numbers", tr("Ability 3") === "能力 3" && tr("Saved 2 changed row(s). The CN game update is rebuilding: close and reopen the game to get it.").startsWith("已保存 2 行"))
+    check("中文: effect names built from parts", tr("damage up vs fire-resistance-down enemies (skills)") === "对火属性耐性下降的敌人伤害提升（技能）", tr("damage up vs fire-resistance-down enemies (skills)"))
+    check("中文: a server message with a code name inside", tr("Unused effect \"barrier\": may not work or crash the game.") === "未使用过的效果“护盾”：可能无效，甚至导致游戏崩溃。")
+    check("中文: text it doesn't know stays as it is", tr("battle/action/skill/x") === "battle/action/skill/x" && tr("StopBall") === "StopBall")
+    const W = require("../assets/unit_editor/words.json"), wordList = []
+    for (const [k, v] of Object.entries(W)) if (!["_note", "percentEffects", "scaledEffects"].includes(k)) wordList.push(...Object.values(v).filter(x => typeof x === "string"))
+    const untranslated = wordList.filter(w => tr(w) === w && /[A-Za-z]/.test(w) && Z.exact[w] === undefined)
+    check("中文: every plain word for the game's codes has Chinese", untranslated.length === 0, untranslated)
 } finally {
     fs.rmSync(dir, { recursive: true, force: true })
 }

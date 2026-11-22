@@ -91,9 +91,13 @@ const num = n => String(Math.round(n * 1000) / 1000)
 const at = (c, cols, level) => Number(c[level === "high" ? cols[1] : cols[0]] || 0)
 const percentUpDown = (strings, v) => v >= 0 ? piece(strings, "percent_up", { percent: num(v) }) : piece(strings, "percent_down", { percent: num(-v) })
 const countUp = (strings, n) => piece(strings, "count_up", { count: Math.round(n) })
-const groupWord = g => ELEMENT[g] ? `⟨${ELEMENT[g]}⟩` : g
+// CN's own Chinese pieces (the unit editor's 中文 option): element words and "unit" from CN's table, set per call
+let zh = null
+const isZh = strings => /[一-鿿]/.test(String(strings?.ability_description_target_ally ?? ""))
+const elementWord = g => zh?.[`element_kind_${g.toLowerCase()}`] ?? ELEMENT[g]
+const groupWord = g => ELEMENT[g] ? `⟨${elementWord(g)}⟩` : g
 // "⟨Water⟩ unit" for an element (the game draws an icon), "Dragonunit" for a race (as the game writes it)
-const unitWord = g => ELEMENT[g] ? `⟨${ELEMENT[g]}⟩ unit` : `${g ?? ""}unit`
+const unitWord = g => zh ? `${ELEMENT[g] ? `⟨${elementWord(g)}⟩` : g ?? ""}${zh.ability_description_target_ally}` : ELEMENT[g] ? `⟨${ELEMENT[g]}⟩ unit` : `${g ?? ""}unit`
 
 /** "this unit", "party", "Leader"... for an effect target (target code + its group column). */
 function targetText(strings, code, group) {
@@ -408,6 +412,7 @@ const finish = (s, mark) => { s = s.replace(/([A-Za-z])⟨/g, "$1 ⟨").replace(
  */
 // onMissing(i): what to put for line i when it can't be worded yet (default null), e.g. { line: i } so a page can word it itself
 function abilityText(lines, level, strings, codes, onMissing = () => null) {
+    zh = isZh(strings) ? strings : null
     const parts = lines.map(c => lineParts(c, level, strings, codes))
     // lines with the same conditions and trigger are one sentence, wherever they are in the ability (first one's place)
     const groups = []

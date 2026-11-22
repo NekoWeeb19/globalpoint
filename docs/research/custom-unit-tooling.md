@@ -119,6 +119,9 @@ the editor does it as "remove the lines the rework added, add the old ones back"
 - `assets/unit_editor/words.json`: plain words, and which effects are percentages or on the base scale.
 - `scripts/unit_editor_text.cjs`: lines in the game's own words (a copy of the game's template engine, and its
   wording rules for the common triggers, conditions and effects).
+- `web/public/js/unit-editor-zh.js`: the page's Chinese (中文 switch): exact strings, patterns, and effect names built
+  from their parts. CN names come from CN's own `character_text` / `equipment` tables and the Chinese wording from
+  CN's own `ui_string` pieces (`cnTable` in `scripts/unit_editor.cjs`).
 - `scripts/test_unit_editor.mjs` (`npm test`): offline test.
 
 ## Unit editor: tested (2026-11-03, StarPointTest emulator, companion 0.6.24 server)

@@ -50,6 +50,19 @@ async function gameTable(logical) {
     return out
 }
 
+/** CN's own (Chinese) copy of a table, as gameTable gives it, or null: for the page's Chinese option and CN-name search. */
+const cnCache = new Map()
+async function cnTable(logical) {
+    if (cnCache.has(logical)) return cnCache.get(logical)
+    let out = null
+    try {
+        const buf = await require("./cn_read.cjs").readCn(logical, { raw: true })
+        if (buf) { out = {}; for (const { path: keys, leaf } of R.leaves(R.decodeFile(buf))) out[keys.join("/")] = leaf.text.replace(/\n$/, "") }
+    } catch { out = null }
+    cnCache.set(logical, out)
+    return out
+}
+
 let base = null
 /** The six tables the editor reads, from the game (cached: they only change with a game or translation update). */
 async function baseTables() {
@@ -130,6 +143,8 @@ async function catalog() {
         templates, groups: [...groups].sort(), lines: all.length,
         // the game's English text pieces (ability_description_*), for lines in the game's own words
         strings: await gameTable("master/string/ui_string.orderedmap").catch(() => ({})),
+        // CN's own Chinese pieces, for the same lines in Chinese (the page's 中文 option; null without CN's files)
+        stringsZh: await cnTable("master/string/ui_string.orderedmap"),
     }
     return catalogCache
 }
@@ -145,12 +160,14 @@ const ROLES = ["Attacker", "Tank", "Healer", "Supporter", "Jammer", "Balance"]
 async function listUnits() {
     const b = await baseTables()
     const edited = new Set(editorFiles().map(f => f.id))
+    const zh = (await cnTable(T.text)) ?? {}
     const out = []
     for (const [id, text] of Object.entries(b.character)) {
         if (id.includes("/")) continue
-        const c = lines(text)[0], t = lines(b.text[id] ?? "")[0] ?? []
+        const c = lines(text)[0], t = lines(b.text[id] ?? "")[0] ?? [], z = lines(zh[id] ?? "")[0] ?? []
         if (!b.ability[`${id}1`] && !b.leader[id]) continue
-        out.push({ id, name: t[0] || c[0], title: t[3] ?? "", rarity: Number(c[2]), element: ELEMENTS[Number(c[3])] ?? "", custom: false, edited: edited.has(id) })
+        // cnName/cnTitle: CN's own Chinese name and title (search by them; shown in the page's 中文 option)
+        out.push({ id, name: t[0] || c[0], title: t[3] ?? "", cnName: z[0] ?? "", cnTitle: z[3] ?? "", rarity: Number(c[2]), element: ELEMENTS[Number(c[3])] ?? "", custom: false, edited: edited.has(id) })
     }
     for (const unit of CU.readCustomUnits().units) out.push({ id: unit.id, name: unit.name, title: "custom unit", rarity: unit.character?.rarity, element: ELEMENTS[unit.character?.element] ?? "", custom: true, edited: false })
     return out.sort((a, b) => a.name.localeCompare(b.name))
@@ -441,14 +458,17 @@ async function checkEdit(edit, advanced = false) {
     for (const a of edit.abilities ?? []) out.abilities.push(a.lines.map(withText))
     if (edit.leader) out.leader = edit.leader.lines.map(withText)
     // each whole ability in the game's words (lines with the same trigger joined with "&", as the unit page shows them)
-    const whole = ls => { try { return { low: TEXT.abilityText(ls.map(pad), "low", cat.strings, CODES, i => ({ line: i })), high: TEXT.abilityText(ls.map(pad), "high", cat.strings, CODES, i => ({ line: i })) } } catch { return null } }
+    const whole = (ls, strings) => { try { return { low: TEXT.abilityText(ls.map(pad), "low", strings, CODES, i => ({ line: i })), high: TEXT.abilityText(ls.map(pad), "high", strings, CODES, i => ({ line: i })) } } catch { return null } }
     // a leader line's awakening tag (leader column 1, here column 3): 0 always, 1 only before awakening, 2 only after
     // a line the game's wording can't cover yet comes back as { line: n } (its place in the ability), for the page's own words
-    const wholeLeader = ls => { try {
+    const wholeLeader = (ls, strings) => { try {
         const at = drop => ls.map((c, i) => [pad(c), i]).filter(([c]) => c[3] !== drop)
-        const words = (list, level) => TEXT.abilityText(list.map(x => x[0]), level, cat.strings, CODES, i => ({ line: list[i][1] }))
+        const words = (list, level) => TEXT.abilityText(list.map(x => x[0]), level, strings, CODES, i => ({ line: list[i][1] }))
         return { low: words(at("2"), "low"), high: words(at("1"), "high") } } catch { return null } }
-    out.texts = { abilities: (edit.abilities ?? []).map(a => whole(a.lines)), leader: edit.leader ? wholeLeader(edit.leader.lines) : null }
+    const texts = strings => ({ abilities: (edit.abilities ?? []).map(a => whole(a.lines, strings)), leader: edit.leader ? wholeLeader(edit.leader.lines, strings) : null })
+    out.texts = texts(cat.strings)
+    // the same in CN's own Chinese words (the page's 中文 option)
+    if (cat.stringsZh) out.textsZh = texts(cat.stringsZh)
     for (const s of edit.stats ?? []) out.stats.push(Number.isInteger(s.hp) && Number.isInteger(s.atk) && s.hp >= 0 && s.atk >= 0 ? [] : ["HP and ATK must be whole numbers, 0 or more"])
     if (edit.details) {
         const d = edit.details, e = []
@@ -662,6 +682,6 @@ async function importKits(data) {
 }
 
 // shared with the armament editor (scripts/armament_editor.cjs)
-const _internal = { gameTable, lines, rowText, pad, uniqueIds, uniqueName, soulToAbility, abilityToSoul, ABILITY_COLUMNS }
+const _internal = { gameTable, cnTable, lines, rowText, pad, uniqueIds, uniqueName, soulToAbility, abilityToSoul, ABILITY_COLUMNS }
 
 module.exports = { MODES, _internal, exportKits, importKits, CLASSES, ROLES, MAX_LINES, listUnits, getUnit, checkEdit, checkLine, saveUnit, resetUnit, editorData, unitLines, catalog, leaderToAbility, abilityToLeader, contradictions, _setBase: b => { base = b; catalogCache = null } }

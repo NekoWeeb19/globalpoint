@@ -14,7 +14,7 @@ const path = require("path")
 const UE = require("./unit_editor.cjs")
 const CU = require("./custom_units.cjs")
 const TEXT = require("./unit_editor_text.cjs")
-const { gameTable, lines, rowText, pad, uniqueIds, uniqueName, soulToAbility, abilityToSoul } = UE._internal
+const { gameTable, cnTable, lines, rowText, pad, uniqueIds, uniqueName, soulToAbility, abilityToSoul } = UE._internal
 const CODES = require(path.join(__dirname, "..", "assets", "unit_editor", "ability_codes.json"))
 
 const T = { equipment: "master/item/equipment.orderedmap", status: "master/item/equipment_status.orderedmap", soul: "master/ability/ability_soul.orderedmap" }
@@ -40,9 +40,11 @@ const editorFiles = () => {
 async function listArmaments() {
     const b = await baseTables()
     const edited = new Set(editorFiles().map(f => f.id))
+    const zh = (await cnTable(T.equipment)) ?? {}
     return Object.entries(b.equipment).filter(([id]) => !id.includes("/")).map(([id, text]) => {
-        const c = lines(text)[0]
-        return { id, name: c[1] || c[0], rarity: Number(c[5]), maxLevel: Number(c[8]) || 1, edited: edited.has(id) }
+        const c = lines(text)[0], z = lines(zh[id] ?? "")[0] ?? []
+        // cnName: CN's own Chinese name (search by it; shown in the page's 中文 option)
+        return { id, name: c[1] || c[0], cnName: z[1] ?? "", rarity: Number(c[5]), maxLevel: Number(c[8]) || 1, edited: edited.has(id) }
     }).sort((a, b) => a.name.localeCompare(b.name))
 }
 
@@ -138,8 +140,11 @@ async function checkArmament(id, edit, advanced = false) {
     })
     out.tooMany = [...(out.tooMany ?? []).filter(t => !t.startsWith("Leader")), ...problems]
     out.ok = out.ok && problems.length === 0 && out.abilities.flat().every(x => x.errors.length === 0)
-    const strings = (await UE.catalog()).strings
-    try { out.texts = { abilities: [armamentTextGroup(edit.abilities ?? [], maxLevel, strings)], leader: null, armament: true } } catch { out.texts = null }
+    const { strings, stringsZh } = await UE.catalog()
+    const texts = s => { try { return { abilities: [armamentTextGroup(edit.abilities ?? [], maxLevel, s)], leader: null, armament: true } } catch { return null } }
+    out.texts = texts(strings)
+    // the same in CN's own Chinese words (the page's 中文 option)
+    if (stringsZh) out.textsZh = texts(stringsZh)
     return out
 }
 const armamentTextGroup = (abilities, maxLevel, strings) => armamentText(abilities.map(a => a.lines.map(pad)), maxLevel, strings)

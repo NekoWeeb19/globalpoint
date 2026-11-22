@@ -221,6 +221,27 @@ it (7 MB). At max level, Protostar Bident's page read "Protostar Bident (Edited)
 armament page lists the version reached and tags a later version "Awakening Lv5". The files were then removed
 (update 1.4.967, the game's own rows).
 
+## Chinese (中文) and searching by CN names
+
+- **Search by CN names**: the Unit and Armament boxes (and "From unit" when copying) also find a unit by CN's own
+  Chinese name and title (瓦格纳, 狱炎龙王...) and an armament by its CN name (百物语...), in either language. They
+  come from CN's own `character_text` and `equipment` tables, so every CN unit and armament has them (custom units
+  have only their own name).
+- **中文 switch** (next to Mode): the page in Simplified Chinese, remembered in this browser; **English** switches
+  back. It reloads the page, so it asks first if there are unsaved changes. In Chinese:
+  - the page's labels, notes, messages and the plain words for the game's codes are in Chinese, using CN's own
+    game terms (角色, 装备, 能力, 技能槽, 强化弹射, 协力球, 合击, 玛纳板, 觉醒...);
+  - **In game** shows each ability in CN's own Chinese wording (CN's `ui_string` pieces, filled in the same way as
+    the English), e.g. "⟨火⟩角色攻击力 + 75 %";
+  - the unit's heading shows its CN name and title, with the English name after it.
+- What stays as it is: the unit's own text (name, title, description, skill text: the Details and Skill tabs edit
+  the English text the game ships), skill script command names (`CreateHitArea`...), effect file paths, and the
+  client's raw names for codes CN's units never use (Unrestricted mode). Race groups (Dragon, Beast...) show their
+  codes: CN's tables have no Chinese for them.
+- The Chinese text is in `web/public/js/unit-editor-zh.js`: an English string → Chinese table plus patterns for
+  text with numbers or names in it. Text it has no entry for stays in English, so a missing line never breaks the
+  page; add the English as a key to translate it.
+
 ## More
 
 The editor's code files, its offline tests and the in-game test logs are in
