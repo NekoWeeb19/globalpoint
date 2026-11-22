@@ -17,7 +17,7 @@ way the game names them. It doesn't depend on GlobalPoint's database, update num
  "111051": {
   "name": "Unit editor: Zeta",
   "rows": {
-   "master/skill/action_skill.orderedmap#zeta/1": { "cols": { "0": "New skill name", "1": "First line\nSecond line" } },
+   "master/skill/action_skill.orderedmap#zeta/1": { "cols": { "0": "New skill name", "1": "First line\nSecond line", "7": "battle/action/skill/action/custom/111051_1_10d24bbbf1" } },
    "master/character/character_status.orderedmap#111051/80": "3000,620",
    "master/ability/ability.orderedmap#1110511": "<the whole row>",
    "master/ability/ability.orderedmap#1110512": "<the whole row>"
@@ -31,7 +31,8 @@ way the game names them. It doesn't depend on GlobalPoint's database, update num
 
 - **`_format`**: `globalpoint-unit-kits` (units) or `globalpoint-armament-kits` (armaments). Keys starting with `_`
   aren't entries; ignore them.
-- **Every other key** is a CN unit id or armament id, as a string. Its entry has:
+- **Every other key** is a CN unit id or armament id, as a string (key order doesn't matter: JSON puts number-like
+  keys first). Its entry has:
   - **`name`** (optional): a label for people. It isn't game data.
   - **`rows`**: the changed rows (below).
   - **`scripts`** (units only, optional): edited skill scripts the rows point at (below).
