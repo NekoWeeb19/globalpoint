@@ -66,6 +66,19 @@ const { uploadPath: fileOf } = require("./cdn_hash.cjs")
 const CAL = require("./cn_calendar.cjs")
 // story scripts CN's own files cut short, shipped as global's complete English copies (assets/cn_story_fixes)
 const STORY_FIXES_DIR = path.join(__dirname, "..", "assets", "cn_story_fixes")
+// cells still in Japanese (events CN never ran), with their English: global's (scripts/gen_cn_jp_text_fixes.cjs ->
+// assets/cn_jp_text_fixes.json) and our own where global never had the text (the Black Clover collab:
+// assets/cn_jp_translations.json). stored path -> row key -> column -> [Japanese, English]; a cell changes only while it
+// still holds that Japanese
+const JP_TEXT_FIXES = (() => {
+    const out = {}
+    for (const name of ["cn_jp_text_fixes.json", "cn_jp_translations.json"]) {
+        let tables = {}
+        try { tables = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "assets", name), "utf8")).tables } catch { }
+        for (const [file, rows] of Object.entries(tables)) for (const [key, cells] of Object.entries(rows)) Object.assign(((out[file] ??= {})[key] ??= {}), cells)
+    }
+    return out
+})()
 const STORY_FIXES = (() => { try { return JSON.parse(fs.readFileSync(path.join(STORY_FIXES_DIR, "index.json"), "utf8")).files } catch { return {} } })()
 // the yearly free pull copies this update has (.database/cn_schedule_built.json): the server never sends the
 // CN client a used copy it doesn't have (an unknown campaign id stops it with C8601)
@@ -647,7 +660,7 @@ async function main() {
     const custom = CU.readCustomUnits()
     for (const p of custom.problems) console.log(`Custom unit skipped: ${p}`)
     const customTables = CU.unitTables(custom.units)
-    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...(globalItemTable ? [globalItemTable] : []), ...(starGrainTable ? [starGrainTable] : []), ...(voiceActorTable ? [voiceActorTable] : []), ...kitTables, ...CAL.FILES, ...Object.keys(STORY_FIXES), MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES), ...customTables, ...changes.rows.keys(), ...enemyTables, ...rateFiles.keys(), ...lastChanged])].sort()
+    const fileList = [...new Set([...Object.keys(catalog.tables), ...EOS_TABLES, ...Object.values(CAMPAIGN_TABLES), PASS_BANNER.banner, PASS_BANNER.pass, ...(globalItemTable ? [globalItemTable] : []), ...(starGrainTable ? [starGrainTable] : []), ...(voiceActorTable ? [voiceActorTable] : []), ...kitTables, ...CAL.FILES, ...Object.keys(STORY_FIXES), ...Object.keys(JP_TEXT_FIXES), MB2_OPEN, TOWER_QUESTS, ...Object.keys(DUNGEON_FIXES), ...customTables, ...changes.rows.keys(), ...enemyTables, ...rateFiles.keys(), ...lastChanged])].sort()
     const featureFile = fileOf("master/gacha/gacha_feature_content.orderedmap")
     const cn = await cnFiles(new Set([...fileList, featureFile]))
     // art StarPoint's patches added (scripts/gen_cn_banner_art.cjs) counts too: their file names and
@@ -769,6 +782,22 @@ async function main() {
             if (leaf.text.includes("2025-08-14 23:59:59")) R.setLeafText(leaf, leaf.text.split("2025-08-14 23:59:59").join("2199-12-31 23:59:59"))
         }
         if (file === CAMPAIGN_TABLES.login) { fillNormalLoginBonusGaps(tree); loginBonusUnitIcons(tree) }
+        if (JP_TEXT_FIXES[file]) {
+            let fixed = 0
+            for (const { path: keys, leaf } of R.leaves(tree)) {
+                const cells = JP_TEXT_FIXES[file][keys.join("/")]
+                if (!cells) continue
+                const end = leaf.text.endsWith("\n") ? "\n" : ""
+                const lines = R.splitCsvLines(leaf.text.replace(/\n$/, "")), c = R.splitCsv(lines[0])
+                let changed = false
+                for (const [col, [japanese, english]] of Object.entries(cells)) if (c[col] === japanese) { c[col] = english; changed = true }
+                if (!changed) continue
+                lines[0] = c.map(R.csvField).join(",")
+                R.setLeafText(leaf, lines.join("\n") + end)
+                fixed++
+            }
+            if (fixed) console.log(`Japanese text: ${fixed} row(s) given their English in ${file}`)
+        }
         if (DUNGEON_FIXES[file]) {
             let fixed = 0
             for (const { path: keys, leaf } of R.leaves(tree)) {

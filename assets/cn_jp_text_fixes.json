@@ -1,0 +1,317 @@
+{
+ "_note": "Cells of the CN game's tables still in Japanese (events CN never ran, above all the Black Clover collab), with global's English for the same row and column (scripts/gen_cn_jp_text_fixes.cjs). scripts/gen_cn_event_schedule.cjs replaces a cell only while it still holds that Japanese. table (stored path) -> row key -> column -> [Japanese, English].",
+ "tables": {
+  "production/upload/15/83d96aad4b9a46d19d19b6555d3f4232b29e25": {
+   "800000": {
+    "1": [
+     "スターヒーローズガチャ",
+     "Star Heroes Portal"
+    ]
+   },
+   "800001": {
+    "1": [
+     "スターヒーローズガチャ",
+     "Star Heroes Portal"
+    ]
+   },
+   "800002": {
+    "1": [
+     "スターヒーローズガチャ",
+     "Star Heroes Portal"
+    ]
+   },
+   "800003": {
+    "1": [
+     "スターヒーローズガチャ",
+     "Star Heroes Portal"
+    ]
+   },
+   "800004": {
+    "1": [
+     "スターヒーローズガチャ",
+     "Star Heroes Portal"
+    ]
+   },
+   "800005": {
+    "1": [
+     "スターヒーローズガチャ",
+     "Star Heroes Portal"
+    ]
+   },
+   "800006": {
+    "1": [
+     "スターヒーローズガチャ",
+     "Star Heroes Portal"
+    ]
+   },
+   "800008": {
+    "1": [
+     "スターヒーローズガチャ",
+     "Star Heroes Portal"
+    ]
+   }
+  },
+  "production/upload/23/42b64dbbc30952eda56b61310191ea5beea7fa": {
+   "funnel_holy_sphere_red_crystal_single/100": {
+    "60": [
+     "クリスタルブレイク",
+     "Crystal Break"
+    ]
+   }
+  },
+  "production/upload/33/12fe29bb65e17203008c1f025ae262faaa0cb0": {
+   "smr_v22/1": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/2": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/3": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/4": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/5": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/6": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/7": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/8": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/9": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/10": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/11": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/12": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/13": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/14": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/15": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/16": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/17": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/18": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/19": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/20": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/21": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/22": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/23": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/24": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/25": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/26": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/27": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/28": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/29": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/30": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   },
+   "smr_v22/31": {
+    "3": [
+     "サマーシーズンログインボーナス",
+     "Summer Login Perks"
+    ]
+   }
+  },
+  "production/upload/69/bb6ccf19b48beaf6436f51cdbe4e5444dde432": {
+   "257": {
+    "0": [
+     "スペシャルウィーク",
+     "Special Week"
+    ]
+   },
+   "258": {
+    "0": [
+     "サイレンススズカ",
+     "Silence Suzuka"
+    ]
+   },
+   "259": {
+    "0": [
+     "ゴールドシップ",
+     "Gold Ship"
+    ]
+   }
+  },
+  "production/upload/6c/601b8fa82fab734b452cf1d42c8ab3750b20e3": {
+   "20001": {
+    "1": [
+     "マテリアルトレーダー",
+     "Material Trader"
+    ]
+   }
+  },
+  "production/upload/79/d0efa595c0ccc8a964c8721dff608bc9e04be3": {
+   "10008": {
+    "4": [
+     "单人挑战讨伐战斗挑战次数\n对象关卡：Uタロス君∞ 超级+",
+     "Tharros Ultimate ∞ Godly+ Solo Boss Challenge Attempt(s)"
+    ],
+    "6": [
+     "单人挑战讨伐战斗的挑战次数\n对象关卡：Uタロス君∞ 超级+\n※挑战次数将在5:00重置",
+     "Tharros Ultimate ∞ Godly+ Solo Boss Challenge Attempt(s)\nAttempts reset at 5 am"
+    ]
+   }
+  },
+  "production/upload/92/dcd1cc81f29794f0606ffe39f68d4e8740c8fa": {
+   "rector_sorcerer_playable": {
+    "0": [
+     "ニルヤーナ",
+     "Nihilyana"
+    ]
+   },
+   "super_robot_unknown": {
+    "0": [
+     "テクト",
+     "Techtus "
+    ]
+   }
+  },
+  "production/upload/ec/d8f66b60947ca05643c4080a6cc925c750b9d6": {
+   "chocolate_bird_ex/100": {
+    "80": [
+     "スイートメガレイ",
+     "Sugar High"
+    ],
+    "101": [
+     "カカオトルネード",
+     "Fudgenado"
+    ]
+   }
+  }
+ }
+}

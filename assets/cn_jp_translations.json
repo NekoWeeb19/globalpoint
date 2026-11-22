@@ -1,0 +1,2383 @@
+{
+ "_note": "Our own English for text still in Japanese that global never had (above all the Black Clover collab, a JP-only event: its stories, chapter titles, items, missions, titles and unit text), with canon names (Asta, Yuno, Noelle Silva, the Clover Kingdom, Water Creation Magic: Sea Dragon's Cradle) and WF's own terms. Same format as cn_jp_text_fixes.json, applied the same way by scripts/gen_cn_event_schedule.cjs: table -> row key -> column -> [current Japanese, English].",
+ "tables": {
+  "production/upload/1d/ef67df8aad7282d38d8b05260555abcf6a52a0": {
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/8": {
+    "5": [
+     "――きゃぁああああ！！\\n何ここ！？どうなってるの！？！？",
+     "—Eeeeeeek!!\\nWhat is this place?!\\nWhat's going on?!?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/13": {
+    "5": [
+     "おおおお落ち着けノエルゥゥ！\\nユノ！魔法で飛べねぇか！？",
+     "C-c-calm down, Noelle!\\nYuno! Can't you fly us outta here\\nwith your magic?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/17": {
+    "5": [
+     "……いや、無理だな。\\nこの空間じゃどっちが上かも分からん。",
+     "...No, I can't.\\nIn this space, I can't even tell\\nwhich way is up."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/22": {
+    "5": [
+     "何でそんなに落ち着いてるのよ！？\\nまずいわよアスタ！このままじゃ――！",
+     "How are you so calm?!\\nThis is bad, Asta! At this rate—!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/26": {
+    "5": [
+     "まだだァァァ！！\\nこんなところで諦めてたまるかァァ！！",
+     "Not yet!!\\nNo way I'm giving up in\\na place like this!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/31": {
+    "5": [
+     "おらおらおらァァァァ――！！",
+     "Hraaaaaaaaaaah—!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/35": {
+    "5": [
+     "ちょっと！剣振り回しても\\nどうにもならないじゃない！",
+     "Hey! Swinging your sword around\\nisn't going to help!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/38": {
+    "5": [
+     "何もしないで\\n落ちるよりはマシだぁぁぁ！！",
+     "Beats falling without\\ndoing anything!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/46": {
+    "5": [
+     "――どぁあっ！？",
+     "—Gwah?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/50": {
+    "5": [
+     "『魔宮（ダンジョン）』……じゃないな。\\nどこだ、ここは？",
+     "This isn't a dungeon...\\nWhere are we?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/54": {
+    "5": [
+     "――う、うわぁあああああ！？！？",
+     "—W-waaaaaaaah?!?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/57": {
+    "5": [
+     "アスタ！？",
+     "Asta?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/62": {
+    "5": [
+     "なんかやばそーだ！助けに行く！！！",
+     "Sounds like trouble!\\nI'm gonna go help!!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/67": {
+    "5": [
+     "行くって、場所分かんないでしょ！\\n待ちなさいよ、バカスタ！",
+     "Go where?! You don't even know\\nwhere it's coming from!\\nWait up, Asta, you idiot!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/71": {
+    "5": [
+     "オレたちも行くぞ！",
+     "We're going too!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/75": {
+    "5": [
+     "出口まであと一息です！\\nもう少しだけ頑張って……！",
+     "We're almost at the exit!\\nJust hang on a little longer...!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/78": {
+    "5": [
+     "お、俺の事はもういい……\\nあんたらだけでも逃げてくれ……。",
+     "D-don't worry about me...\\nJust get yourselves out of here..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/80": {
+    "5": [
+     "諦めるんじゃない！\\nここさえ乗り切れれば――",
+     "Don't you dare give up!\\nIf we can just get through this—"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/85": {
+    "5": [
+     "うおぉぉぉッ――！！",
+     "Raaaaaaaah—!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/89": {
+    "5": [
+     "増援……？\\n他に冒険者なんて――",
+     "Backup...?\\nBut there weren't any other\\nadventurers around here—"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/94": {
+    "5": [
+     "怪我はないか！？\\nてかアンタら誰！？どこの騎士団！？\\nあとここどこ！？",
+     "You guys okay?!\\nWait, who are you?! Which Magic\\nKnight squad are you from?!\\nAnd where even are we?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/98": {
+    "5": [
+     "ちょ、ちょっと待って……！\\nせめて一つずつ――",
+     "W-wait a second...!\\nOne question at a time, please—"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/102": {
+    "5": [
+     "一人で突っ走るんじゃないわよ！！",
+     "Stop charging off on your own!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/106": {
+    "5": [
+     "怪我してんのか。なら――",
+     "You're hurt. Then—"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/110": {
+    "5": [
+     "僕達が出口まで誘導する！\\n一緒に来てほしい！",
+     "We'll lead you to the exit!\\nCome with us!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/115": {
+    "5": [
+     "あぁ！\\nユノ、ノエル、行くぞ！",
+     "Got it!\\nYuno, Noelle, let's go!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/121": {
+    "5": [
+     "さっきは本当にありがとう……！\\nあの人も、無事に帰れたって。",
+     "Thanks so much for back there...!\\nThat man made it home safely, too."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/126": {
+    "5": [
+     "困った時はお互い様だろ！",
+     "Hey, when someone's in trouble,\\nyou help 'em out!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/129": {
+    "5": [
+     "僕はアルク。それにライトとステラだよ。\\n一応、ここで冒険者をやってるけど……。\\n君達は？",
+     "I'm Alk, and these are Light and\\nStella. We're adventurers here,\\nmore or less... And you are?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/133": {
+    "5": [
+     "オレはアスタ。\\nんで、こっちがユノとノエルな！\\nオレたちはクローバー王国の魔道士だ！",
+     "I'm Asta!\\nAnd this is Yuno and Noelle!\\nWe're mages from the\\nClover Kingdom!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/137": {
+    "5": [
+     "クローバー王国……。\\nやはり、知らない名前だな……。",
+     "The Clover Kingdom...\\nNo, I'm afraid that's not a name\\nI know..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/142": {
+    "5": [
+     "えぇぇぇ！？",
+     "Whaaaaaat?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/147": {
+    "5": [
+     "……落ち着いて聞いてほしいんだけど\\n多分、君達は別の世界から\\n来てしまったんだと思う。",
+     "...Try to stay calm, but...\\nI think you've probably come here\\nfrom another world."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/150": {
+    "5": [
+     "『揺らぎ』と言ってな。\\nあの迷宮では時折起こる事なんだ。\\n世界の境界が、揺れてしまうんだよ。",
+     "It's called a distortion.\\nThey happen in that labyrinth from\\ntime to time. The boundary between\\nworlds starts to waver."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/155": {
+    "5": [
+     "……いや、全然わかんねぇ！\\nつまりどういう事！？！？",
+     "...Nope, I don't get it at all!\\nSo what's that mean?!?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/160": {
+    "5": [
+     "ここはクローバー王国では\\nないみたいだな……。\\n元の世界に帰る方法はないのか？",
+     "So this isn't the Clover Kingdom...\\nIs there a way back to our\\nown world?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/165": {
+    "5": [
+     "……我々も、その方法を探しているんだ。\\nしかし、迷宮の奥から来たとなると――",
+     "...We're searching for one as well.\\nBut if you came from the depths of\\nthe labyrinth—"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/170": {
+    "5": [
+     "よっしゃあ！帰る方法探すぞぉぉぉ！！\\nこの位の試練乗り越えられなかったら\\n魔法帝になんてなれねぇ！",
+     "All right! Let's find a way home!!\\nIf I can't get past a trial like\\nthis, I'll never become\\nthe Wizard King!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/174": {
+    "5": [
+     "ふふ……よい心意気だな。\\nしかし、その魔法帝というのは？",
+     "Heh... That's the spirit.\\nBut what is this Wizard King?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/178": {
+    "5": [
+     "オレ達の国で一番強い魔道士なんだ！",
+     "The strongest mage in our kingdom!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/181": {
+    "5": [
+     "魔道士？\\n君は剣士のように見えるのだが……\\n魔法を――？",
+     "A mage? You look more like\\na swordsman to me...\\nCan you use magic?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/186": {
+    "5": [
+     "使えないッス！\\nでも、オレは魔法帝になるんだ！",
+     "Nope, not one bit!\\nBut I'm still gonna become\\nthe Wizard King!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/190": {
+    "5": [
+     "言いきれるんだ……凄いな……。",
+     "He said that without a shred of\\ndoubt... That's amazing..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/194": {
+    "5": [
+     "さすがだな、アスタ。\\n暑苦しいぞ。",
+     "That's Asta for you.\\nToo intense, as usual."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/198": {
+    "5": [
+     "そんなズバっと……。",
+     "That's pretty blunt..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/202": {
+    "5": [
+     "魔法帝になるのはオレだ。",
+     "I'm the one who'll become\\nthe Wizard King."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/207": {
+    "5": [
+     "ぐぬぬっ……！\\nそれでも魔法帝になるのはオレだ！！",
+     "Grrr...!\\nNo, I'm the one who's gonna\\nbe the Wizard King!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/211": {
+    "5": [
+     "いや、オレだ。",
+     "No, it's me."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/215": {
+    "5": [
+     "気にしないで、いつもの事よ。",
+     "Don't mind them.\\nThey're always like this."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/219": {
+    "5": [
+     "やあ、二人は\\nいいライバルなんだねえ……。",
+     "Wow, you two must be\\nreal rivals, huh..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/224": {
+    "5": [
+     "急報！北部の山岳地帯にて\\nドラゴンハザードの兆しあり！",
+     "Urgent news! Signs of a Dragon\\nHazard in the northern mountains!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/229": {
+    "5": [
+     "至急、調査隊を編成します！\\n依頼の無い冒険者の方々は\\nこちらへ集まってください！",
+     "We're forming a survey team right\\naway! Any adventurers without a\\ncommission, please gather here!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/233": {
+    "5": [
+     "な、なんだよ？\\n急にどうしたんだ！？",
+     "Wh-what's going on?\\nWhat's with all the commotion?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/237": {
+    "5": [
+     "敵が近づいているんだ。\\nドラゴン――人を襲う怪物なのだが\\nそれが群れを成しているらしい。",
+     "An enemy is drawing near.\\nDragons—monsters that attack\\npeople. And apparently, they're\\nmoving in a pack."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/242": {
+    "5": [
+     "このままだと街のみんなが……。",
+     "At this rate, everyone in town..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/247": {
+    "5": [
+     "ま、待て！\\n君も行くつもりなのか！？",
+     "W-wait!\\nYou're going too?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/252": {
+    "5": [
+     "街が襲われるかもしれないんスよね！？\\nみんなが苦しむかもしれないんスよね！？",
+     "The town might get attacked,\\nright?! People might get hurt,\\nright?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/256": {
+    "5": [
+     "なんだかよく分かんねーけど\\n誰かが助けを求めてんなら\\nオレは戦う！",
+     "I don't really get what's going on,\\nbut if someone needs help,\\nI'm gonna fight!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/260": {
+    "5": [
+     "あ！ちょっと…！",
+     "Ah! Hey, wait...!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/264": {
+    "5": [
+     "場所も分かっていないだろうに……。\\n……まったく。\\n呆れるほど真っ直ぐな少年だな。",
+     "He doesn't even know where they\\nare... Honestly. What a remarkably\\nstraightforward young man."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/269": {
+    "5": [
+     "なんだか、ちょっと似てるかもね？",
+     "Kinda reminds me of someone,\\ndoesn't he?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/273": {
+    "5": [
+     "ギルドには私から伝えておく。\\nひとまず彼と合流してくれ。\\nアルク、ステラ。頼んだぞ！",
+     "I'll let the guild know.\\nFor now, go and meet up with him.\\nAlk, Stella, I'm counting on you!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/277": {
+    "5": [
+     "了解！ユノ、ノエル！\\n僕らに付いてきて！",
+     "Got it! Yuno, Noelle!\\nFollow us!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/282": {
+    "5": [
+     "ええ！",
+     "Right!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/287": {
+    "5": [
+     "分かった。",
+     "Understood."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/298": {
+    "5": [
+     "どこだァァ！！\\n出てきやがれー！",
+     "Where are youuuu?!\\nCome on out!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/302": {
+    "5": [
+     "……いませんね。\\nドラゴンさん。",
+     "...They're not here.\\nThe dragons."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/306": {
+    "5": [
+     "……そうね。\\n本当にドラゴンなんているのかしら。",
+     "...True.\\nAre there really any dragons\\naround here?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/311": {
+    "5": [
+     "うーん……。\\n調査隊の人達の報告だから\\n間違いではないと思うんだけど……。",
+     "Hmm...\\nThe survey team reported it,\\nso I doubt it's a mistake..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/315": {
+    "5": [
+     "ごめん。もう少し調べてみたいんだ。\\nいいかな……？",
+     "Sorry. I'd like to look around a\\nlittle longer. Is that okay...?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/320": {
+    "5": [
+     "分かった。\\nオレも手伝う。",
+     "All right.\\nI'll help too."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/324": {
+    "5": [
+     "上から探してみる。\\nドラゴンを見つけても\\n手は出さずに報告……でいいか？",
+     "I'll search from above.\\nIf I find the dragons, I don't\\nengage, I just report back. Right?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/328": {
+    "5": [
+     "ありがとう……！",
+     "Thank you...!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/334": {
+    "5": [
+     "――あれは……？",
+     "—What's that...?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/337": {
+    "5": [
+     "ドラゴンの群れを見つけた！\\nこっちだ。ついて来い！",
+     "I found the pack of dragons!\\nThis way. Follow me!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/342": {
+    "5": [
+     "想定より数が多いな……\\n我々だけでは対処できんぞ……。",
+     "There are more than we expected...\\nWe can't handle this on our own..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/346": {
+    "5": [
+     "そうだね……。\\n一度、戻って報告を――",
+     "Yeah...\\nLet's head back and report—"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/349": {
+    "5": [
+     "助けてぇぇぇー！",
+     "Heeeeelp meeeee!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/354": {
+    "5": [
+     "子供っ……！？",
+     "A kid...?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_01/scenario/358": {
+    "5": [
+     "あぶねぇぇぇッッーーー！！",
+     "Look ouuuuuut—!!!"
+    ]
+   }
+  },
+  "production/upload/d7/edb53e152f953e905b4e117206b805f9878bd9": {
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/5": {
+    "5": [
+     "うおぉぉらああーーーッッ！",
+     "Raaaaaaaaaaah—!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/9": {
+    "5": [
+     "アスタ！ユノ！\\nさっきの子は……！？",
+     "Asta! Yuno!\\nWhat about that kid...?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/15": {
+    "5": [
+     "おう、間に合ったぜ！！",
+     "Yeah, we made it in time!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/19": {
+    "5": [
+     "怪我もしていない。大丈夫だ。",
+     "Not a scratch on him. He's fine."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/23": {
+    "5": [
+     "そっか、よかった……。",
+     "I see. Thank goodness..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/27": {
+    "5": [
+     "もう大丈夫だよ。\\n……でも、どうしてこんな所に？",
+     "You're safe now.\\n...But what are you doing out here?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/31": {
+    "5": [
+     "妙だな。近くに集落は無かった筈だ。\\n少なくとも子供の足で来れる距離では――",
+     "Strange. There shouldn't be any\\nsettlements nearby. At least none\\na child could walk to—"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/34": {
+    "5": [
+     "よく分かんないけど……\\n僕の家なら、すぐそこだよ？",
+     "I don't really get it...\\nBut my house is right over there?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/37": {
+    "5": [
+     "今、この辺りはあぶねーんだ。\\nオレ達が送ってやるよ！",
+     "It's dangerous around here right\\nnow. We'll walk you home!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/40": {
+    "5": [
+     "帰り道は分かる？",
+     "Do you know the way back?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/43": {
+    "5": [
+     "うん！こっちだよ！",
+     "Yeah! It's this way!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/49": {
+    "5": [
+     "待ってて！爺ちゃん呼んでくる！",
+     "Wait here! I'll go get Grandpa!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/52": {
+    "5": [
+     "初めて見る集落だ……。\\nドラゴンの群れと、かなり近いぞ……。",
+     "A village I've never seen before...\\nAnd it's awfully close to the\\npack of dragons..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/56": {
+    "5": [
+     "ヤベェな！？\\nドラゴンの群れが\\nこの村まで来ちまったら……。",
+     "That's bad!\\nIf those dragons make it all\\nthe way to this village..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/61": {
+    "5": [
+     "……そうだね。\\nまずは村の人達に\\n事情を説明しよう。",
+     "...Yeah.\\nFirst, let's explain the situation\\nto the villagers."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/65": {
+    "5": [
+     "パルペブラの冒険者です。\\n付近でドラゴンの群れが出没したとの\\n報告があり、その調査に来ました。",
+     "We're adventurers from Palpebra.\\nThere've been reports of a pack of\\ndragons nearby, and we came\\nto investigate."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/68": {
+    "5": [
+     "ドラゴンが……？",
+     "Dragons...?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/71": {
+    "5": [
+     "近くにドラゴンの大群がいるんです。\\nいつこちらに来てもおかしくありません。",
+     "There's a huge pack of dragons\\nnearby. They could come here\\nat any moment."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/74": {
+    "5": [
+     "僕らはこれから調査報告と\\n救援の要請に戻るつもりです。\\n避難の準備をお願いできますか？",
+     "We're about to head back to report\\nand call for help. Could you start\\npreparing to evacuate?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/77": {
+    "5": [
+     "忠告は感謝するがね……\\n私達の事は放っておいてくれ。",
+     "I appreciate the warning, but...\\nleave us be."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/80": {
+    "5": [
+     "え……？い、いやでもっ！",
+     "Huh...? B-but—!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/82": {
+    "5": [
+     "ドラゴンによって滅びるなら\\nそれがこの村の運命なのだ……。",
+     "If the dragons destroy us,\\nthen that is simply this village's\\nfate..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/85": {
+    "5": [
+     "何で逃げようとしねぇんだよ！\\n村のみんなが危ないんだぞ！？",
+     "Why won't you run?!\\nEveryone in this village is\\nin danger!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/88": {
+    "5": [
+     "黙れ！！冒険者の……\\nパルペブラの手なぞ\\n借りられるものか！",
+     "Silence!! As if we would ever\\naccept help from adventurers...\\nfrom Palpebra!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/90": {
+    "5": [
+     "…………す、すまない。\\n孫を助けてくれた事は感謝している。",
+     "............F-forgive me.\\nI am grateful that you saved\\nmy grandson."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/92": {
+    "5": [
+     "……だが、救援は出さなくていい。\\nどうして我らがこんな辺境に\\n隠れ住んでいるか考えてくれないか……。",
+     "...But there's no need to send for\\nhelp. Think about why we live\\nhidden away out here in the\\nwilds, would you...?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/96": {
+    "5": [
+     "なんだよあのジーサン！！！\\n全然話聞いてくんねぇえーーー！！",
+     "What's with that old geezer?!!\\nHe won't listen to a word\\nwe say!!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/100": {
+    "5": [
+     "訳あり……って感じだったわね。\\nでも、どうする……？",
+     "Seems like they've got their\\nreasons... But what now...?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/105": {
+    "5": [
+     "どうしたもこうしたもねぇ！\\n絶対にこの村のみんなを護る！",
+     "What now? Nothing to think about!\\nI'm protecting everyone in this\\nvillage, no matter what!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/108": {
+    "5": [
+     "やあ、やっぱりそうだよねえ。",
+     "Heh, I figured you'd say that."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/112": {
+    "5": [
+     "そうだな。",
+     "Agreed."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/115": {
+    "5": [
+     "でも、どうするの……？\\nあの数をちまちま倒してたら\\nキリがないわ。",
+     "But how...? If we just pick them\\noff one by one, there'll be no\\nend to it."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/121": {
+    "5": [
+     "……恐らく、この村はギルドにも\\n知られていない村だ。\\n救援要請が通らない可能性もあるな……。",
+     "...This village probably isn't\\nknown to the guild, either. Our\\nrequest for help might not\\ngo through..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/126": {
+    "5": [
+     "やってみなきゃ分かんないだろ！\\nとにかくできる事なんでも\\nするっきゃねー！！",
+     "You won't know till you try!\\nWe just gotta do whatever\\nwe can!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/132": {
+    "5": [
+     "はい。そうしましょう。",
+     "Yes. Let's do that."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/137": {
+    "5": [
+     "ひとまず、二手に分かれよう。\\n残って村を護る組と……\\nギルドに報告する組にね。",
+     "Let's split up for now. One group\\nstays to protect the village...\\nand one reports to the guild."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/142": {
+    "5": [
+     "オレはアスタとココで村を護る。",
+     "Asta and I will stay here\\nand protect the village."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/147": {
+    "5": [
+     "アルク、君はここに残ってくれ。\\n土地勘がある人間が一人残った方がいい。\\n私とステラは報告に戻るよ。",
+     "Alk, you stay here as well. Better\\nto have someone who knows the area.\\nStella and I will head back\\nand report."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/152": {
+    "5": [
+     "それなら、私も行くわ。\\nドラゴンもうろうろしてるし\\n護衛が必要でしょ？",
+     "Then I'll go with you.\\nThere are dragons wandering around,\\nso you'll need an escort,\\nwon't you?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/157": {
+    "5": [
+     "っしゃぁ！そうと決まれば\\n早速行動だァァ！！",
+     "All right! Now that it's decided,\\nlet's get moving!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/160": {
+    "5": [
+     "頼むぜノエル！\\n超つえー増援を連れてきてくれ！",
+     "I'm counting on you, Noelle!\\nBring back some super-strong\\nbackup!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/164": {
+    "5": [
+     "し、仕方ないわね……！\\n私に任せなさい！",
+     "I-I suppose I have no choice...!\\nLeave it to me!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/169": {
+    "5": [
+     "アルクって、すげーよな？\\n全然動じてねーって感じでさ。",
+     "Alk, you're pretty amazing, huh?\\nYou don't get rattled at all."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/173": {
+    "5": [
+     "やあ、見よう見まねだけどね……？\\nそれに正直、これで護り切れるかって\\n不安も――",
+     "Heh, I'm just copying what I've\\nseen others do...? And honestly,\\nI'm worried we won't be able\\nto protect—"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/178": {
+    "5": [
+     "大丈夫だ！\\nみんなを護るためにオレはここにいる！！",
+     "It'll be fine!\\nI'm here to protect everyone!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/181": {
+    "5": [
+     "アルク、オレと\\n一緒に村を護ってくれるか？",
+     "Alk, will you protect this\\nvillage with me?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/185": {
+    "5": [
+     "アスタ……。",
+     "Asta..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/189": {
+    "5": [
+     "アルク、気を付けろよ。\\nコイツは落ち着きないから割と迂闊だぞ。",
+     "Careful, Alk. He's got no patience,\\nso he can be pretty reckless."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/194": {
+    "5": [
+     "うぉぉぉい！\\n今いいところだったじゃねーか！！",
+     "Heyyyy!\\nI was having a moment there!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/199": {
+    "5": [
+     "分かった。後ろは僕がフォローする。\\nだから、二人は好きにやってよ。",
+     "Got it. I'll watch your backs.\\nSo you two go all out."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/204": {
+    "5": [
+     "……分かった！！行くぞ！",
+     "...Got it!! Let's go!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/209": {
+    "5": [
+     "後ろは頼むぞ、アルク。",
+     "Cover us, Alk."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/215": {
+    "5": [
+     "あの剣……呪具なのか……？\\n上はなにをしている……？",
+     "That sword... Is it a cursed\\ntool...? What are my superiors\\ndoing...?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/217": {
+    "5": [
+     "転移に必要な竜の血は集まった。\\nこれ以上の用はないが……。",
+     "I have gathered all the dragon\\nblood I need for the transfer.\\nI have no further use for this\\nplace, but..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_02/scenario/219": {
+    "5": [
+     "……想定外は、早めに\\n排除しておくに限るな。",
+     "...The unexpected is best\\ndealt with early."
+    ]
+   }
+  },
+  "production/upload/b8/e34240b8c6d91a1af665e362671a19492ebd8a": {
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/5": {
+    "5": [
+     "……未認可の集落ですか。\\nさすがに想定外でしたね。",
+     "...An unauthorized settlement?\\nI must admit, I didn't see that\\none coming."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/8": {
+    "5": [
+     "集落はドラゴンの群れから\\nかなり近かったわ。\\nすぐにでも助けを寄越しなさい！",
+     "The settlement was very close to\\nthe pack of dragons.\\nSend help at once!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/12": {
+    "5": [
+     "ドラゴンの位置が報告と違う。\\nある筈の無い集落が存在している。\\nまずは確認――という事になります。",
+     "The dragons aren't where the\\nreport said, and there's a village\\nwhere none should be. We'll need\\nto confirm the situation first."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/16": {
+    "5": [
+     "避難誘導にあてられる人員を\\n派遣するのは、その後になるかと――",
+     "Sending people to lead an\\nevacuation would have to come\\nafter that—"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/19": {
+    "5": [
+     "そんな悠長な事……！",
+     "There's no time to be\\nso leisurely...!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/24": {
+    "5": [
+     "いいから、すぐに助けを寄越しなさい！\\n私は王族よ――",
+     "Just send help at once!\\nI am royalty—"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/32": {
+    "5": [
+     "ま、まぁ……\\nこの世界の王族じゃないんだけど……。",
+     "W-well...\\nNot royalty of this world, but..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/38": {
+    "5": [
+     "たとえここが\\nクローバー王国じゃなくても……！\\nすべての民は、私が護る！",
+     "Even if this isn't the\\nClover Kingdom...! I will protect\\nevery last one of its people!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/42": {
+    "5": [
+     "アイツに負けてられないわ……！",
+     "I can't let him outdo me...!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/47": {
+    "5": [
+     "……では、どうしますか？",
+     "...Then what should we do?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/51": {
+    "5": [
+     "ギルドが動くだけの理由が\\nあればいいのよね？\\nなら、こういうのはどうかしら？",
+     "All you need is a good enough\\nreason for the guild to act,\\nright? Then how about this?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/57": {
+    "5": [
+     "なるほど……。\\n分かりました。多少のアレは、私の方で\\nなんとかなりますので★",
+     "I see...\\nUnderstood. Any little details,\\nI can take care of myself★"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/64": {
+    "5": [
+     "ああぁーー！いくら説得しても\\n誰も避難しようとしてくれねぇー！",
+     "Aaaargh! No matter how hard we\\ntry to convince them, nobody\\nwants to evacuate!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/67": {
+    "5": [
+     "ここまで聞く耳を持たないとは……。",
+     "I never thought they'd refuse\\nto listen this much..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/70": {
+    "5": [
+     "えい！えい！\\n……うわっ！？",
+     "Hyah! Hyah!\\n...Whoa?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/76": {
+    "5": [
+     "てて……うん……平気。\\nいつもこうなるんだ。\\nどうしてだろう……。",
+     "Ow ow... Yeah... I'm okay.\\nThis always happens.\\nI wonder why..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/78": {
+    "5": [
+     "剣の重さに振り回されちまってたな。\\nそういうときは――",
+     "The weight of the sword was\\nthrowing you around.\\nWhen that happens—"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/82": {
+    "5": [
+     "こんな感じだ！",
+     "You do it like this!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/85": {
+    "5": [
+     "……うん！",
+     "...Okay!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/87": {
+    "5": [
+     "で、できた！できたよ！！\\nありがとうお兄ちゃん！",
+     "I-I did it! I did it!!\\nThanks, big bro!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/89": {
+    "5": [
+     "いやいや、スゲーなオマエ！\\n一発でできるなんてセンスあるなぁー！",
+     "Whoa, you're amazing!\\nYou got it on your first try?\\nYou've got talent!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/93": {
+    "5": [
+     "……アスタって\\n子供の相手も得意なんだね？",
+     "...So Asta's good with kids, too?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/97": {
+    "5": [
+     "いや、単に精神年齢が\\n近いだけだと思う。",
+     "No, I think they're just about\\nthe same age on the inside."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/100": {
+    "5": [
+     "お兄ちゃん！これなら\\n僕でも冒険者になれるかな？",
+     "Big bro! With this, do you think\\neven I could be an adventurer?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/102": {
+    "5": [
+     "オマエ、冒険者になりてーのか？",
+     "You wanna be an adventurer?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/105": {
+    "5": [
+     "僕も、かっこいい冒険者になるんだ！\\n昔この村を作った人達みたいに！\\nそれでみんなを助けるの！",
+     "I'm gonna be a cool adventurer,\\ntoo! Like the people who built\\nthis village long ago! And then\\nI'll help everyone!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/108": {
+    "5": [
+     "……冒険者が、この村を？",
+     "...Adventurers built this village?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/111": {
+    "5": [
+     "うん！最初にここに住んだ人達が\\n冒険者だったんだって！\\nもうやめちゃったらしいけど。",
+     "Yeah! The first people who lived\\nhere were adventurers!\\nThey quit a long time ago, though."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/114": {
+    "5": [
+     "なあ、それって――",
+     "Hey, does that mean—"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/118": {
+    "5": [
+     "こんなところにいたのか。\\n不用意に出歩くなと言っただろう？",
+     "So this is where you were.\\nDidn't I tell you not to\\nwander off?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/121": {
+    "5": [
+     "アンタが、この村を作った\\n元冒険者か？",
+     "Are you the former adventurer\\nwho built this village?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/124": {
+    "5": [
+     "……やっぱりな。\\nでは、どうして元冒険者なのに\\n古巣への救援を拒む？",
+     "...I knew it.\\nThen why would a former adventurer\\nrefuse help from his old home?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/128": {
+    "5": [
+     "確かに、村を作ったのは私達だ。\\nだが、冒険者などというのは\\n子供らについた方便にすぎん……。",
+     "Yes, we built this village.\\nBut that talk of adventurers is\\nnothing but a story we told\\nthe children..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/130": {
+    "5": [
+     "私達は、罪人だ。\\nパルペブラから逃げ、隠れ\\nそうして生きていた人間なんだよ……。",
+     "We are criminals.\\nPeople who fled Palpebra and have\\nlived in hiding ever since..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/132": {
+    "5": [
+     "救援など来る筈がない。\\n……いや、例え来たとして\\nそこに、私達の居場所などあると思うか？",
+     "No help would ever come.\\n...And even if it did, do you think\\nthere'd be a place for us there?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/135": {
+    "5": [
+     "だけどこのままじゃ\\nあの子達にも危険が及びます。",
+     "But at this rate, those kids\\nwill be in danger too."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/138": {
+    "5": [
+     "今更、パルペブラには戻れん……\\n我々はもう終わった人間だ。\\nここしか居場所はないのだよ……。",
+     "We can't go back to Palpebra now...\\nOur lives are already over.\\nThis is the only place we have..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/142": {
+    "5": [
+     "――ふざけんな！",
+     "—Don't give me that!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/145": {
+    "5": [
+     "なにも知らん余所者が……！\\nまだ口を出すつもりか！？",
+     "An outsider who knows nothing...!\\nYou still intend to butt in?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/148": {
+    "5": [
+     "いや！！！\\nオレはアンタらのつらさは知らねぇし\\nなんならこの世界の事もよく知らん！",
+     "Nope!!!\\nI don't know what you've been\\nthrough, and I barely know anything\\nabout this world!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/151": {
+    "5": [
+     "だからアンタの言い分に\\nあれこれ口出しする気はねぇ！\\n部外者に言われたくないもんな！！",
+     "So I'm not gonna argue with your\\nreasons! I bet you don't wanna\\nhear it from some outsider!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/154": {
+    "5": [
+     "でもな……！！",
+     "But...!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/159": {
+    "5": [
+     "あの子には夢があんだよ！\\n人を助ける冒険者になるって夢が！",
+     "That kid has a dream!\\nA dream of being an adventurer\\nwho helps people!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/163": {
+    "5": [
+     "その夢まで、アンタらの都合で\\n勝手に諦めさせるんじゃねぇ！！",
+     "Don't you dare make him give up\\non that dream just because it\\nsuits you!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/167": {
+    "5": [
+     "夢……？あの子が……？",
+     "A dream...? That boy...?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/170": {
+    "5": [
+     "来た……！\\nアスタ、ユノ！！",
+     "They're here...!\\nAsta, Yuno!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/173": {
+    "5": [
+     "まて、私の村で勝手は――！！",
+     "Wait! You won't do as you please\\nin my village—!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/176": {
+    "5": [
+     "……ど、どうして、私を――？",
+     "...Wh-why would you save me—?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/178": {
+    "5": [
+     "……な、なぜそこまでする！\\n我々を護ったところで\\n貴様には、なんの得も……！",
+     "...Wh-why go so far?!\\nProtecting us does you no good\\nwhatsoever...!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/181": {
+    "5": [
+     "なんにならなくても護るんだよ！！！",
+     "I'm protecting you whether it does\\nme any good or not!!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/186": {
+    "5": [
+     "誰一人死なせねぇって決めた！！\\nアンタが何言おうと知らん！！\\n分かったら早くみんなを連れて逃げろ！！",
+     "I decided I won't let a single\\nperson die!! I don't care what you\\nsay!! Now hurry up and get\\neveryone out of here!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/190": {
+    "5": [
+     "……アスタって、いつもああなの？",
+     "...Is Asta always like that?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/194": {
+    "5": [
+     "ああ。……あのバカが\\nオレのライバルだ。",
+     "Yeah. ...That idiot is\\nmy rival."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/198": {
+    "5": [
+     "そっか……強敵だね？",
+     "I see... Tough rival, huh?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/203": {
+    "5": [
+     "って何してんだぁぁぁぁ！！\\nドラゴンが襲ってきてるんだぜ！？\\nモタモタしてらんねーだろ！",
+     "Hey, what are you guys doing?!\\nThe dragons are attacking!\\nWe can't stand around!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/207": {
+    "5": [
+     "オレが先行する。\\n残りのドラゴンはすべてオレが倒す。\\n……ゆっくり来てもいいぞ。",
+     "I'll go on ahead. I'll take down\\nevery last dragon myself.\\n...Take your time."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/212": {
+    "5": [
+     "待てユノ！オレも負けねーからな！！",
+     "Wait, Yuno! I'm not gonna\\nlose to you!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/217": {
+    "5": [
+     "はぁぁぁぁっ……！",
+     "Haaaaaah...!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/221": {
+    "5": [
+     "敵は多い。\\nちんたらするなよ、チビスタ。",
+     "There are a lot of them.\\nDon't fall behind, shorty."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/226": {
+    "5": [
+     "はぁあぁあああ！？\\n絶対オマエより多く倒してやる！",
+     "Whaaaat?!\\nI'm totally gonna take down\\nmore than you!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/229": {
+    "5": [
+     "ありえねー。",
+     "Not a chance."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/233": {
+    "5": [
+     "……っ！こっちはダメだ！\\nいったん、戻って……！",
+     "...Ngh! It's no good this way!\\nLet's fall back for now...!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/237": {
+    "5": [
+     "ドラゴンってこんなに\\n狂暴なもんなのか！？\\n倒しても倒してもキリがねぇ！",
+     "Are dragons always this vicious?!\\nNo matter how many we beat,\\nthey just keep coming!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/241": {
+    "5": [
+     "……いや、おかしいよ。\\nこいつら、まるで僕達を\\n狙ってきているような――",
+     "...No, something's off.\\nIt's almost as if they're\\ncoming after us—"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/245": {
+    "5": [
+     "――誰かが、裏で操っている？",
+     "—Someone's controlling them\\nfrom the shadows?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/249": {
+    "5": [
+     "やはり、あのガキの持つ剣が\\n魔法を打ち消しているのか。",
+     "Just as I thought... That brat's\\nsword is cancelling out magic."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/251": {
+    "5": [
+     "我が呪具がある限り、竜を傀儡にするのは\\n容易い事だが……\\nやはり、捨ておけんな。",
+     "With my cursed tool, making puppets\\nof dragons is child's play... But\\nhe can't be left alone after all."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/257": {
+    "5": [
+     "うおぉぉぉ！なんだコイツ！？\\nデカすぎだろ！",
+     "Whoaaaa! What is this thing?!\\nIt's way too big!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/261": {
+    "5": [
+     "――水創成魔法、海竜の揺り篭！",
+     "—Water Creation Magic:\\nSea Dragon's Cradle!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/264": {
+    "5": [
+     "なにピンチになってんのよ、バカスタ！\\nしゃきっとしなさいよ！",
+     "What are you doing getting yourself\\ncornered, Asta, you idiot?!\\nPull yourself together!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/269": {
+    "5": [
+     "ノエル！？\\n助けはどうなったんだ！？",
+     "Noelle?!\\nWhat happened with the backup?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_03/scenario/274": {
+    "5": [
+     "……来るぞ！！",
+     "...Here it comes!!"
+    ]
+   }
+  },
+  "production/upload/5a/e86a2e0420076bb95445022831ddc1853292d6": {
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/8": {
+    "5": [
+     "ぉおおおおおおお！！",
+     "Raaaaaaaaaah!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/15": {
+    "5": [
+     "食らえェェェェェェ！！！",
+     "Take thiiiiiis!!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/20": {
+    "5": [
+     "どれだけ来るの……！？",
+     "How many more are coming...?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/25": {
+    "5": [
+     "上等だ！音を上げるまで\\nまとめてぶった斬ってやる……！！",
+     "Bring it on! I'll cut every\\nlast one of you down till you\\ncry uncle...!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/30": {
+    "5": [
+     "やっと来たの？\\nひやひやさせないでよね！",
+     "So you finally made it?\\nDon't give me a scare like that!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/33": {
+    "5": [
+     "冒険者達だ……！！",
+     "It's the adventurers...!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/37": {
+    "5": [
+     "助け、間に合ったんだな！？",
+     "So the backup made it in time?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/41": {
+    "5": [
+     "……正しくは助けじゃないけどね。",
+     "...Technically, they're not backup."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/44": {
+    "5": [
+     "異世界から来た黒い大きな剣を\\n持った謎の魔術師が暴れていて、\\n緊急配備された冒険者よ！",
+     "They're adventurers called out\\nin an emergency: a mysterious\\nmagician from another world with\\na big black sword is on a rampage!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/50": {
+    "5": [
+     "異世界から来た……\\n謎の魔術師……？",
+     "From another world...\\nA mysterious magician...?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/55": {
+    "5": [
+     "オイ……まさか\\nオレの事を――？",
+     "Hey... don't tell me\\nthat's supposed to be me—?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/59": {
+    "5": [
+     "そ、そういう名目じゃないと\\nギルドを動かせなかったの！",
+     "I-I couldn't get the guild to move\\nunless I put it that way!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/63": {
+    "5": [
+     "でも、リリエのお陰で\\n本当の事はみんな分かってるの！\\n力を貸してくれるって！！",
+     "But thanks to Lilie, everyone knows\\nthe truth! They said they'll lend\\nus their strength!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/67": {
+    "5": [
+     "言いたいことはあるけど……\\nさすがだな、ノエル！",
+     "I've got some things to say about\\nthat... but nice one, Noelle!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/71": {
+    "5": [
+     "わ、私は王族よ？\\n民の動かし方ぐらい\\n思いついて当然でしょ！",
+     "I-I'm royalty, you know?\\nOf course I know how to get\\nthe people moving!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/76": {
+    "5": [
+     "村は大丈夫そうだな。",
+     "Looks like the village is safe."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/81": {
+    "5": [
+     "…………感じる。\\n気配の流れは……こっちか。",
+     "..........I sense it.\\nThe flow of that presence...\\nIt's this way."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/85": {
+    "5": [
+     "ちょ、ちょっと！\\nどこ行くのよ！？",
+     "H-hey!\\nWhere are you going?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/88": {
+    "5": [
+     "大元を叩きに行く。みんなついて来い。",
+     "To strike at the source.\\nEveryone, follow me."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/92": {
+    "5": [
+     "ドラゴンを操っていたのは\\nオマエだな？",
+     "So you're the one who's been\\ncontrolling the dragons."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/96": {
+    "5": [
+     "追い詰めたぜ元凶ぉおおお！！\\n観念しやがれ！！",
+     "We've got you cornered, you\\nmastermiiiind!! Give it up!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/99": {
+    "5": [
+     "こちらの台詞だ。\\nここで、その厄介な剣ごと\\n竜の餌になるがいい！",
+     "That's my line.\\nYou'll become dragon feed here,\\nalong with that troublesome sword!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/101": {
+    "5": [
+     "無駄だ！この呪具がある限り\\n傀儡の竜は幾らでも呼び出せる！\\nいい加減諦めろ――！",
+     "It's useless! As long as I have\\nthis cursed tool, I can summon as\\nmany puppet dragons as I please!\\nJust give up already—!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/103": {
+    "5": [
+     "…………まだだ……！！",
+     "..........Not yet...!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/108": {
+    "5": [
+     "あいつの持つ杖を狙って！",
+     "Go for that staff of his!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/113": {
+    "5": [
+     "任せろォォォォ！！",
+     "Leave it to meeeee!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/120": {
+    "5": [
+     "――諦めないのが、オレの魔法だ！！！",
+     "—Not giving up is my magic!!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/125": {
+    "5": [
+     "なんだ……この男の力は……！？",
+     "What... What is this boy's\\npower...?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/127": {
+    "5": [
+     "クソ……！\\nここで竜血を使う事となるとは――！",
+     "Curses...!\\nTo think I'd be forced to use the\\ndragon blood here—!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/129": {
+    "5": [
+     "その顔……覚えたぞ……！\\n異界の者達よ……！",
+     "I'll remember those faces...!\\nYou outworlders...!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/132": {
+    "5": [
+     "今の……転移した……？",
+     "Did he just... teleport...?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/136": {
+    "5": [
+     "おいこらァァアアアア！！\\n出てきやがれぇぇぇ！！",
+     "Hey, get back heeeere!!\\nCome on out!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/141": {
+    "5": [
+     "気配が途切れた。\\n……逃げられたか。",
+     "His presence is gone.\\n...He got away."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/145": {
+    "5": [
+     "……でも、黒幕はいなくなった。\\nもうドラゴンも来ないと思う。",
+     "...But the mastermind's gone.\\nI don't think any more dragons\\nwill come."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/150": {
+    "5": [
+     "じゃあ、村のみんなは大丈夫なんだな！？",
+     "So everyone in the village is\\ngonna be okay?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/155": {
+    "5": [
+     "うん……。\\nあとはあっち次第だね……。",
+     "Yeah...\\nThe rest is up to them..."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/162": {
+    "5": [
+     "――うわあー、すごい……！\\nこれが、冒険者ギルド……！！",
+     "—Wooow, amazing...!\\nSo this is the\\nAdventurers' Guild...!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/165": {
+    "5": [
+     "あんまりはしゃぐと転ぶぞー？",
+     "You'll trip if you get too\\nexcited, y'know?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/168": {
+    "5": [
+     "分かってるよー！",
+     "I knooow!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/171": {
+    "5": [
+     "――話の続きを聞かせてくれ\\nあの村の人達、これからどうなるんだ？",
+     "—So tell me the rest.\\nWhat's gonna happen to the people\\nfrom that village?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/176": {
+    "5": [
+     "もう、大丈夫です。",
+     "It's all right now."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/181": {
+    "5": [
+     "彼らの罪は、とっくの昔に時効だそうだ。\\nそんな事より、勝手に住み着くな。\\nちゃんと許可を得ろという話だったよ。",
+     "Apparently their crimes expired\\nlong ago. The guild only minded\\nthat they settled there without\\nproper permission."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/185": {
+    "5": [
+     "つ、つまり……？",
+     "S-so, that means...?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/190": {
+    "5": [
+     "あの村もパルペブラの一部として\\n認められたって事。\\nこれも、アスタのおかげだよ。",
+     "That village has been recognized as\\npart of Palpebra.\\nAnd it's all thanks to you, Asta."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/194": {
+    "5": [
+     "あの村長さん、アスタの言葉が\\nかなり響いたらしいよ？",
+     "Sounds like your words really got\\nthrough to that village head."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/198": {
+    "5": [
+     "愚かな自分を護ってくれた冒険者に\\n恥となるような行いはしたくない。\\nってさ？",
+     "He said he doesn't want to\\nshame the adventurers who\\nprotected a fool like him."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/202": {
+    "5": [
+     "なに言ってんだよ。",
+     "What're you talking about?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/206": {
+    "5": [
+     "ユノもノエルも……それにアルク達も！\\n冒険者の人達や、みんなが\\n力を貸してくれたからだ！",
+     "Yuno, Noelle... and you guys too,\\nAlk! It's 'cause the adventurers\\nand everyone lent us a hand!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/211": {
+    "5": [
+     "手伝ってくれてありがとな！\\nおかげであの人達を護れた！",
+     "Thanks for helping out!\\nBecause of you, we protected\\nthose people!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/215": {
+    "5": [
+     "やあ、手伝ってもらったのは\\nこっちの方な気がするけどね～。",
+     "Heh, I feel like we're the ones\\nwho got all the help, though~"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/220": {
+    "5": [
+     "本当に助かったよ……！",
+     "You really saved us...!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/223": {
+    "5": [
+     "僕、これからもっと修行して\\nお兄ちゃん達みたいに強くなって\\n凄い冒険者になるよ！",
+     "I'm gonna train even harder, get\\nstrong like you guys, and become\\nan amazing adventurer!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/226": {
+    "5": [
+     "ああ、諦めんじゃねぇぞ！",
+     "Yeah, don't you ever give up!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/230": {
+    "5": [
+     "そうだ！早くクローバー王国に\\n戻る方法を見つけないと……！",
+     "That's right! We need to find\\na way back to the Clover\\nKingdom, fast...!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/234": {
+    "5": [
+     "僕達も、できる事があれば\\n協力するから。気軽に声をかけてよ。",
+     "If there's anything we can do,\\nwe'll help too. Just say the word."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/238": {
+    "5": [
+     "ありがとう！オマエ優しいなぁ！！！",
+     "Thanks! You're a real nice guy!!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/243": {
+    "5": [
+     "やあ、まあその代わりじゃないけど\\n僕らの事も手伝ってくれると\\n助かるかなー。",
+     "Heh, well, not that it's a trade,\\nbut it'd be great if you could help\\nus out too."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/248": {
+    "5": [
+     "当然！！未来の魔法帝が\\nなんでも力になってやるぜ！！",
+     "You bet!! The future Wizard King\\nwill help out with anything!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/253": {
+    "5": [
+     "それは違う。\\n未来の魔法帝はオレだからな。",
+     "Wrong.\\nI'm the future Wizard King."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/257": {
+    "5": [
+     "……困った事があれば\\nいつでも言ってくれ。",
+     "...If you're ever in trouble,\\njust let me know."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/262": {
+    "5": [
+     "ありがとう！\\nやー、ユノが力を貸してくれるなら\\n超助かるよ！！",
+     "Thanks!\\nWow, if Yuno's lending a hand,\\nthat's a huge help!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/267": {
+    "5": [
+     "アレェ！？オレはァァ！？！？",
+     "Huh?! What about meeeee?!?!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/272": {
+    "5": [
+     "私は王族……\\n借りを返すのは当然よ。",
+     "I am royalty...\\nOf course I repay my debts."
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/277": {
+    "5": [
+     "それは、王族と関係あるのか……？",
+     "What does that have to do with\\nbeing royalty...?"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/281": {
+    "5": [
+     "とにかく、だ……！！",
+     "Anyway...!!"
+    ]
+   },
+   "story/advent_event/bcollabo/event_chapter_00_04/scenario/285": {
+    "5": [
+     "これからもよろしくな！！",
+     "Let's keep at it together\\nfrom here on out!!"
+    ]
+   }
+  },
+  "production/upload/0b/8c70a0cbd18fc6bc6a1e6ea2d890ef2f42482f": {
+   "story/character_story_quest/stella_copy_4anv_003/scenario/5": {
+    "5": [
+     "――というわけで！",
+     "—And so, there you have it!"
+    ]
+   }
+  },
+  "production/upload/6b/ef338822b2c963eb40c67b3d43a3b3f911ad73": {
+   "300001/1": {
+    "2": [
+     "アスタ、異世界へ",
+     "Asta in Another World"
+    ],
+    "127": [
+     "迷宮で怪我人を背に防衛を続けていたアルク達は、異世界からの来訪者である『アスタ』、『ユノ』、『ノエル』と出会う。協力して迷宮から脱出し、アスタ達にここが異世界である旨を説明していたアルク達は、急報を受けて共にドラゴンの討伐に向かう",
+     "While defending an injured adventurer deep in the labyrinth, Alk and his friends meet three visitors from another world: Asta, Yuno, and Noelle. After escaping the labyrinth together and explaining that this is another world, Alk's group gets urgent news and sets out with them to deal with the dragons."
+    ]
+   },
+   "300001/2": {
+    "2": [
+     "訳ありの村",
+     "A Village with Secrets"
+    ],
+    "127": [
+     "ドラゴンに襲われていた少年を救ったアルク達は、少年の住む村へと向かい避難の準備を要請するも断られてしまう。パルペブラを敵視し救援を拒む村長を見かねたアルク達は、村のみんなを護るべくギルドへの報告組と村の防衛組の二組に分かれて行動を開始する",
+     "After saving a boy from the dragons, Alk's group heads to his village and asks the villagers to prepare to evacuate, but they refuse. Unable to stand by while the village head, who resents Palpebra, turns down all help, the group splits in two to protect everyone: one team reports to the guild, while the other stays to defend the village."
+    ]
+   },
+   "300001/3": {
+    "2": [
+     "ドラゴンハザード",
+     "Dragon Hazard"
+    ],
+    "127": [
+     "村に残り村人達への説得を続けていたアスタ達は、ドラゴンから助けた少年にこの村の成り立ちを聞く。そして全てを諦めている村長を叱咤したアスタは、アルク達と共に村に来襲したドラゴンから村の防衛を続け、合流したノエルと共に大型ドラゴンに立ち向かう",
+     "Staying behind to keep persuading the villagers, Asta's group learns from the boy how the village came to be. After Asta scolds the village head for giving up on everything, he goes on defending the village from the attacking dragons with Alk's group, and faces a giant dragon alongside Noelle, who has just rejoined them."
+    ]
+   },
+   "300001/4": {
+    "2": [
+     "ブラックドラゴン ::quest_rank::",
+     "Black Dragon ::quest_rank::"
+    ]
+   },
+   "300001/5": {
+    "2": [
+     "諦めの悪い男",
+     "The Boy Who Never Gives Up"
+    ],
+    "127": [
+     "駆け付けた冒険者に村の防衛を任せて、騒動の黒幕である黒衣の魔術師を撃退したアスタ達。後日、少年とギルドに訪れたアスタ達は、パルペブラの一部として認められたあの村の処遇を喜び、今しばらくアルク達と共に協力し合うことを決めるのだった",
+     "Leaving the village's defense to the adventurers who rushed to help, Asta's group drives off the sorcerer in black behind it all. Later, visiting the guild with the boy, they celebrate as the village is recognized as part of Palpebra, and decide to keep working alongside Alk's group for a while."
+    ]
+   },
+   "300001/6": {
+    "2": [
+     "ブラックドラゴン ::quest_rank::",
+     "Black Dragon ::quest_rank::"
+    ]
+   },
+   "300001/7": {
+    "2": [
+     "ブラックドラゴン ::quest_rank::",
+     "Black Dragon ::quest_rank::"
+    ]
+   },
+   "300001/8": {
+    "2": [
+     "ブラックドラゴン ::quest_rank::",
+     "Black Dragon ::quest_rank::"
+    ]
+   }
+  },
+  "production/upload/a4/731a843d4dc0c84120bf8c88784c1e74c03baa": {
+   "51000": {
+    "2": [
+     "三つ葉のクローバー",
+     "Three-Leaf Clover"
+    ],
+    "5": [
+     "少量の魔力を内包する為に触媒として用いられる三つ葉のクローバー。ギルド経由で魔法学院が買い取っている",
+     "A three-leaf clover holding a small amount of magic, used as a catalyst. The magic academy buys them up through the guild."
+    ]
+   },
+   "51001": {
+    "2": [
+     "四つ葉のクローバー",
+     "Four-Leaf Clover"
+    ],
+    "5": [
+     "稀に発見される豊富な魔力を内包する四つ葉のクローバー。伝承によると、四枚目の葉には、幸運が宿るとされている",
+     "A rare four-leaf clover brimming with magic. Legend has it that good fortune dwells in its fourth leaf."
+    ]
+   },
+   "51002": {
+    "2": [
+     "五つ葉のクローバー",
+     "Five-Leaf Clover"
+    ],
+    "5": [
+     "極稀に発生する特殊な魔力を内包する五つ葉のクローバー。伝承によると、五枚目の葉には、悪魔が棲むとされている",
+     "An exceedingly rare five-leaf clover holding a strange magic. Legend has it that a devil dwells in its fifth leaf."
+    ]
+   },
+   "10000137": {
+    "2": [
+     "迎春の福餅",
+     "Lucky Rice Cake"
+    ]
+   }
+  },
+  "production/upload/87/220b4d797a23acca0491ada95dee23faf5478d": {
+   "2169": {
+    "3": [
+     "スタミナを累計 100 消費する",
+     "Use up a total of 100 stamina"
+    ]
+   },
+   "2170": {
+    "3": [
+     "三つ葉のクローバーを獲得する::x_count::",
+     "Obtain at least ::x_count:: Three-Leaf Clovers"
+    ]
+   },
+   "2171": {
+    "3": [
+     "オーバーリミットをする",
+     "Perform a Limit Break"
+    ]
+   },
+   "2172": {
+    "3": [
+     "協力バトルをクリア ::x_count:: times",
+     "Clear ::x_count:: multiplayer battles"
+    ]
+   },
+   "2173": {
+    "3": [
+     "装備覚醒をする::x_count::",
+     "Perform an armament awakening ::x_count:: time(s)"
+    ]
+   },
+   "2174": {
+    "3": [
+     "累計マナボード強化数::x_count::",
+     "Advance on the Mana Board ::x_count:: time(s)"
+    ]
+   },
+   "2175": {
+    "3": [
+     "【不諦の魔道士】ブラックドラゴンを討伐 ::x_count:: times",
+     "[The Unyielding Mages] Defeat the Black Dragon ::x_count:: time(s)"
+    ]
+   },
+   "2176": {
+    "3": [
+     "フィーバー発動::x_count:: (バトルクリア時加算)",
+     "Activate Fever Mode ::x_count:: times (Cleared battles only)"
+    ]
+   },
+   "2177": {
+    "3": [
+     "スキルを発動させる::x_count:: (バトルクリア時加算)",
+     "Use skills ::x_count:: times (Cleared battles only)"
+    ]
+   },
+   "2178": {
+    "3": [
+     "初級のミッションをすべてクリア",
+     "Clear all Novice missions"
+    ]
+   },
+   "2179": {
+    "3": [
+     "スタミナを累計 150 消費する",
+     "Use up a total of 150 stamina"
+    ]
+   },
+   "2180": {
+    "3": [
+     "四つ葉のクローバーを獲得する::x_count::",
+     "Obtain at least ::x_count:: Four-Leaf Clovers"
+    ]
+   },
+   "2181": {
+    "3": [
+     "スキルを発動させる::x_count:: (バトルクリア時加算)",
+     "Use skills ::x_count:: times (Cleared battles only)"
+    ]
+   },
+   "2182": {
+    "3": [
+     "バトル中にダッシュを使用 ::x_count:: (バトルクリア時加算)",
+     "Dash ::x_count:: times (Cleared battles only)"
+    ]
+   },
+   "2183": {
+    "3": [
+     "パワーフリップを発動する::x_count:: (バトルクリア時加算)",
+     "Activate ::x_count:: Power Flips (Cleared battles only)"
+    ]
+   },
+   "2184": {
+    "3": [
+     "敵討伐数::x_count:: (バトルクリア時加算)",
+     "Defeat ::x_count:: foes (Cleared battles only)"
+    ]
+   },
+   "2185": {
+    "3": [
+     "6スキルチェイン以上を発動してバトルをクリアする",
+     "Clear a battle with a skill chain of 6 or more"
+    ]
+   },
+   "2186": {
+    "3": [
+     "中級のミッションをすべてクリア",
+     "Clear all Intermediate missions"
+    ]
+   },
+   "2187": {
+    "3": [
+     "【不諦の魔道士】ブラックドラゴンを討伐 ::x_count:: times",
+     "[The Unyielding Mages] Defeat the Black Dragon ::x_count:: time(s)"
+    ]
+   },
+   "2188": {
+    "3": [
+     "スタミナを累計 200 消費する",
+     "Use up a total of 200 stamina"
+    ]
+   },
+   "2189": {
+    "3": [
+     "協力バトルをクリア ::x_count:: times",
+     "Clear ::x_count:: multiplayer battles"
+    ]
+   },
+   "2190": {
+    "3": [
+     "五つ葉のクローバーを獲得する::x_count::",
+     "Obtain at least ::x_count:: Five-Leaf Clovers"
+    ]
+   },
+   "2191": {
+    "3": [
+     "9スキルチェインを発動してバトルをクリアする",
+     "Clear a battle with a skill chain of 9"
+    ]
+   },
+   "2192": {
+    "3": [
+     "上級のミッションをすべてクリア",
+     "Clear all Advanced missions"
+    ]
+   },
+   "2193": {
+    "3": [
+     "ミッションをすべてクリア",
+     "Clear all missions"
+    ]
+   }
+  },
+  "production/upload/92/dcd1cc81f29794f0606ffe39f68d4e8740c8fa": {
+   "asta": {
+    "0": [
+     "アスタ",
+     "Asta"
+    ]
+   },
+   "asta_noname": {
+    "0": [
+     "黒いローブの少年",
+     "Boy in a Black Robe"
+    ]
+   },
+   "mob_boy_voice_bcollabo": {
+    "0": [
+     "少年の声",
+     "Boy's Voice"
+    ]
+   },
+   "noelle_silva": {
+    "0": [
+     "ノエル",
+     "Noelle"
+    ]
+   },
+   "noelle_silva_noname": {
+    "0": [
+     "黒いローブの少女",
+     "Girl in a Black Robe"
+    ]
+   },
+   "noelle_silva_voice": {
+    "0": [
+     "ノエルの声",
+     "Noelle's Voice"
+    ]
+   },
+   "yuno": {
+    "0": [
+     "ユノ",
+     "Yuno"
+    ]
+   },
+   "mob_black_garment_magician": {
+    "0": [
+     "黒衣の魔術師",
+     "Sorcerer in Black"
+    ]
+   }
+  },
+  "production/upload/80/2761ae9d4128367f37ab8e8737438b0ae7ed5b": {
+   "59700": {
+    "2": [
+     "降临讨伐 通关不諦の魔道士10次",
+     "Clear The Unyielding Mages 10 times"
+    ]
+   },
+   "59701": {
+    "2": [
+     "降临讨伐 通关不諦の魔道士100次",
+     "Clear The Unyielding Mages 100 times"
+    ]
+   },
+   "59702": {
+    "2": [
+     "降临讨伐 通关不諦の魔道士500次",
+     "Clear The Unyielding Mages 500 times"
+    ]
+   },
+   "123001": {
+    "2": [
+     "将ノエル・シルヴァ升到Lv100并获得信赖之证",
+     "Level Noelle Silva to 100 and obtain her Amity Scroll"
+    ]
+   },
+   "141129": {
+    "2": [
+     "将ユノ升到Lv100并获得信赖之证",
+     "Level Yuno to 100 and obtain his Amity Scroll"
+    ]
+   },
+   "161141": {
+    "2": [
+     "将アスタ升到Lv100并获得信赖之证",
+     "Level Asta to 100 and obtain his Amity Scroll"
+    ]
+   },
+   "1123001": {
+    "2": [
+     "将ノエル・シルヴァ的第二枚玛纳板全部强化完成",
+     "Fully augment Noelle Silva's Mana Board 2"
+    ]
+   },
+   "1141129": {
+    "2": [
+     "将ユノ的第二枚玛纳板全部强化完成",
+     "Fully augment Yuno's Mana Board 2"
+    ]
+   },
+   "1161141": {
+    "2": [
+     "将アスタ的第二枚玛纳板全部强化完成",
+     "Fully augment Asta's Mana Board 2"
+    ]
+   }
+  },
+  "production/upload/fe/1035fdd920d54f65f6797bad2d4ac054feb10d": {
+   "380004": {
+    "7": [
+     "ノエル・シルヴァ",
+     "Noelle Silva"
+    ],
+    "11": [
+     "遠い世界から来た、魔道士の少女。高い魔力を有する王族の出身だが、魔力のコントロールが苦手で落ちこぼれ扱いを受けていたが、アスタや仲間との出会いにより徐々に自分を認められるようになっていった。",
+     "A young mage from a faraway world. Born into royalty with immense magic power, she struggled to control her mana and was treated as a failure, but meeting Asta and her comrades slowly taught her to believe in herself."
+    ]
+   },
+   "380005": {
+    "7": [
+     "ノエル・シルヴァ",
+     "Noelle Silva"
+    ],
+    "11": [
+     "遠い世界から来た、魔道士の少女。高い魔力を有する王族の出身だが、魔力のコントロールが苦手で落ちこぼれ扱いを受けていたが、アスタや仲間との出会いにより徐々に自分を認められるようになっていった。",
+     "A young mage from a faraway world. Born into royalty with immense magic power, she struggled to control her mana and was treated as a failure, but meeting Asta and her comrades slowly taught her to believe in herself."
+    ]
+   },
+   "380006": {
+    "7": [
+     "ノエル・シルヴァ",
+     "Noelle Silva"
+    ],
+    "11": [
+     "遠い世界から来た、魔道士の少女。高い魔力を有する王族の出身だが、魔力のコントロールが苦手で落ちこぼれ扱いを受けていたが、アスタや仲間との出会いにより徐々に自分を認められるようになっていった。",
+     "A young mage from a faraway world. Born into royalty with immense magic power, she struggled to control her mana and was treated as a failure, but meeting Asta and her comrades slowly taught her to believe in herself."
+    ]
+   },
+   "380007": {
+    "7": [
+     "ノエル・シルヴァ",
+     "Noelle Silva"
+    ],
+    "11": [
+     "遠い世界から来た、魔道士の少女。高い魔力を有する王族の出身だが、魔力のコントロールが苦手で落ちこぼれ扱いを受けていたが、アスタや仲間との出会いにより徐々に自分を認められるようになっていった。",
+     "A young mage from a faraway world. Born into royalty with immense magic power, she struggled to control her mana and was treated as a failure, but meeting Asta and her comrades slowly taught her to believe in herself."
+    ]
+   },
+   "380080": {
+    "7": [
+     "四つ葉のクローバー × 5",
+     "Four-Leaf Clover × 5"
+    ],
+    "11": [
+     "稀に発見される豊富な魔力を内包する四つ葉のクローバー。伝承によると、四枚目の葉には、幸運が宿るとされている",
+     "A rare four-leaf clover brimming with magic. Legend has it that good fortune dwells in its fourth leaf."
+    ]
+   },
+   "380081": {
+    "7": [
+     "五つ葉のクローバー × 3",
+     "Five-Leaf Clover × 3"
+    ],
+    "11": [
+     "極稀に発生する特殊な魔力を内包する五つ葉のクローバー。伝承によると、五枚目の葉には、悪魔が棲むとされている",
+     "An exceedingly rare five-leaf clover holding a strange magic. Legend has it that a devil dwells in its fifth leaf."
+    ]
+   }
+  },
+  "production/upload/fd/ae6dfc098ef83a71660641e5d01974e64c9410": {
+   "change_skill_yuno/2": {
+    "0": [
+     "ダメージ強化",
+     "Damage Up"
+    ]
+   },
+   "change_skill_yuno/3": {
+    "0": [
+     "ダメージ強化",
+     "Damage Up"
+    ]
+   },
+   "change_skill_yuno/4": {
+    "0": [
+     "ダメージ強化",
+     "Damage Up"
+    ]
+   },
+   "change_skill_yuno/5": {
+    "0": [
+     "ダメージ強化",
+     "Damage Up"
+    ]
+   },
+   "change_skill_yuno/6": {
+    "0": [
+     "ダメージ強化",
+     "Damage Up"
+    ]
+   }
+  },
+  "production/upload/07/0c6e214359ccf27b1cb8078d3fc51aecfe0149": {
+   "change_skill_yuno": {
+    "0": [
+     "『スピリット・ストーム』の威力を強化",
+     "Increases the power of Spirit Storm"
+    ]
+   }
+  },
+  "production/upload/61/408ec4cc67e1bcf9b4d74722f57ee2f95bd995": {
+   "1123001/1": {
+    "20": [
+     "遠い世界から来た、魔道士の少女。\n高い魔力を有する王族の出身だが、\n魔力のコントロールが苦手で落ちこぼれ扱いを\n受けていたが、アスタや仲間との出会いにより\n徐々に自分を認められるようになっていった。",
+     "A young mage from a faraway world.\nBorn into royalty with immense magic\npower, she struggled to control her\nmana and was treated as a failure, but\nmeeting Asta and her comrades slowly\ntaught her to believe in herself."
+    ]
+   },
+   "1141129/1": {
+    "20": [
+     "遠い世界から来た、風を操る天才魔道士。\nいつか魔法帝になる夢をもつ。\nクールで寡黙だが、内に秘めた熱い思いで\n困難や問題を乗り越えていく。",
+     "A genius mage from a faraway world\nwho commands the wind. He dreams of\none day becoming the Wizard King.\nCool and quiet, he overcomes every\nhardship with the burning passion\nhe keeps inside."
+    ]
+   },
+   "1161141/1": {
+    "20": [
+     "遠い世界から来た、魔道士の少年。\n魔法が全ての世界で、魔力を一切\n持たずに生まれたが、鍛えた身体と\n反（アンチ）魔法の剣、諦めない強い心で\n困難に立ち向かっていく。",
+     "A young mage from a faraway world.\nBorn without a drop of magic in a world\nwhere magic is everything, he takes on\nevery hardship with his trained body,\nhis anti-magic swords, and a heart\nthat never gives up."
+    ]
+   }
+  },
+  "production/upload/ec/d8f66b60947ca05643c4080a6cc925c750b9d6": {
+   "b_collabo_boss/79": {
+    "1": [
+     "ブラックドラゴン",
+     "Black Dragon"
+    ],
+    "69": [
+     "アサルトクロー",
+     "Assault Claw"
+    ],
+    "70": [
+     "エクスプロード",
+     "Explode"
+    ],
+    "71": [
+     "スウィープブレス",
+     "Sweep Breath"
+    ],
+    "79": [
+     "バニッシュストーカー",
+     "Vanish Stalker"
+    ],
+    "80": [
+     "バニッシュロア",
+     "Vanish Roar"
+    ],
+    "89": [
+     "ドラゴネットコール",
+     "Dragonet Call"
+    ],
+    "99": [
+     "ウォーロア",
+     "War Roar"
+    ]
+   },
+   "b_collabo_boss/100": {
+    "1": [
+     "ブラックドラゴン",
+     "Black Dragon"
+    ],
+    "69": [
+     "アサルトクロー",
+     "Assault Claw"
+    ],
+    "70": [
+     "エクスプロード",
+     "Explode"
+    ],
+    "71": [
+     "スウィープブレス",
+     "Sweep Breath"
+    ],
+    "79": [
+     "バニッシュストーカー",
+     "Vanish Stalker"
+    ],
+    "80": [
+     "バニッシュロア",
+     "Vanish Roar"
+    ],
+    "89": [
+     "ドラゴネットコール",
+     "Dragonet Call"
+    ],
+    "99": [
+     "ウォーロア",
+     "War Roar"
+    ]
+   }
+  },
+  "production/upload/6c/601b8fa82fab734b452cf1d42c8ab3750b20e3": {
+   "13001": {
+    "1": [
+     "キャンペーンミッション",
+     "Campaign Missions"
+    ]
+   }
+  },
+  "production/upload/76/bc536a599e39f890bb8de4b255ac70f529fffa": {
+   "129003": {
+    "1": [
+     "期間限定のデイリーミッションをすべて達成",
+     "Complete all limited-time daily missions"
+    ]
+   }
+  },
+  "production/upload/ac/de425a8da0664edad2bf99feddc5e97ae6741d": {
+   "103001": {
+    "1": [
+     "【不諦の魔道士】ブラックドラゴンを討伐 ::x_count:: times",
+     "[The Unyielding Mages] Defeat the Black Dragon ::x_count:: time(s)"
+    ]
+   },
+   "103002": {
+    "1": [
+     "【不諦の魔道士】ブラックドラゴンを討伐 ::x_count:: times",
+     "[The Unyielding Mages] Defeat the Black Dragon ::x_count:: time(s)"
+    ]
+   },
+   "103003": {
+    "1": [
+     "【不諦の魔道士】ブラックドラゴンを討伐 ::x_count:: times",
+     "[The Unyielding Mages] Defeat the Black Dragon ::x_count:: time(s)"
+    ]
+   },
+   "103004": {
+    "1": [
+     "【不諦の魔道士】ブラックドラゴンを討伐 ::x_count:: times",
+     "[The Unyielding Mages] Defeat the Black Dragon ::x_count:: time(s)"
+    ]
+   },
+   "103005": {
+    "1": [
+     "【不諦の魔道士】ブラックドラゴンを討伐 ::x_count:: times",
+     "[The Unyielding Mages] Defeat the Black Dragon ::x_count:: time(s)"
+    ]
+   },
+   "103006": {
+    "1": [
+     "【不諦の魔道士】ブラックドラゴンを討伐 ::x_count:: times",
+     "[The Unyielding Mages] Defeat the Black Dragon ::x_count:: time(s)"
+    ]
+   },
+   "103007": {
+    "1": [
+     "【不諦の魔道士】ブラックドラゴンを討伐 ::x_count:: times",
+     "[The Unyielding Mages] Defeat the Black Dragon ::x_count:: time(s)"
+    ]
+   },
+   "103008": {
+    "1": [
+     "【不諦の魔道士】ブラックドラゴンを討伐 ::x_count:: times",
+     "[The Unyielding Mages] Defeat the Black Dragon ::x_count:: time(s)"
+    ]
+   },
+   "103009": {
+    "1": [
+     "【不諦の魔道士】ブラックドラゴンを討伐 ::x_count:: times",
+     "[The Unyielding Mages] Defeat the Black Dragon ::x_count:: time(s)"
+    ]
+   }
+  },
+  "production/upload/33/12fe29bb65e17203008c1f025ae262faaa0cb0": {
+   "bcollab_01/1": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   },
+   "bcollab_01/2": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   },
+   "bcollab_01/3": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   },
+   "bcollab_01/4": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   },
+   "bcollab_01/5": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   },
+   "bcollab_01/6": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   },
+   "bcollab_01/7": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   },
+   "bcollab_01/8": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   },
+   "bcollab_01/9": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   },
+   "bcollab_01/10": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   },
+   "bcollab_01/11": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   },
+   "bcollab_01/12": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   },
+   "bcollab_01/13": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   },
+   "bcollab_01/14": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   },
+   "bcollab_01/15": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   },
+   "bcollab_01/16": {
+    "3": [
+     "不諦の魔道士記念ログインボーナス",
+     "Unyielding Mages Login Perks"
+    ]
+   }
+  }
+ }
+}

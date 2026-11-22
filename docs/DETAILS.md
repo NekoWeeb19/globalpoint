@@ -86,6 +86,15 @@ from global where it did. The rules:
 5. **The original's shape.** Line breaks, symbols (♡, ★, ——) and pacing are kept so text fits its
    boxes.
 
+**Text CN kept in Japanese.** Events CN never ran still had JP's text in CN's files. Each game
+update gives those cells English: global's where global had the same row
+(`assets/cn_jp_text_fixes.json`, from `scripts/gen_cn_jp_text_fixes.cjs`), and our own where global
+never had the event (`assets/cn_jp_translations.json`). That's above all the **Black Clover collab**
+(The Unyielding Mages, a JP-only event): its four story chapters, chapter titles, items, missions, profile titles
+and unit text, with Black Clover's official names and terms (Asta, Yuno, Noelle Silva, the Clover
+Kingdom, the Wizard King, Water Creation Magic: Sea Dragon's Cradle) and WF's own (Palpebra, the
+guild, distortion, labyrinth).
+
 English art: the title screen, menu labels, BGM thumbnails, the pause menu, world banners (Worlds
 1-11 and EX 1-11) and sprite labels. Old summon banners got their full rerun art. Login
 announcements, pop-ups and home-screen banners use global's pictures where global had one
