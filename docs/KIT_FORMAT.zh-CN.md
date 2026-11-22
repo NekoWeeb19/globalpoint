@@ -41,6 +41,11 @@
 一个文件可以包含多个条目。这个结构与 GlobalPoint 的“修改文件”（change file）格式相同，所以把配置包直接放进
 GlobalPoint 的 `custom_units/changes/` 文件夹也能生效。
 
+**编码：** 请将文件保存为**不带字节顺序标记（BOM）**的 UTF-8。一些 Windows 编辑器（记事本的“带有 BOM 的 UTF-8”、
+PowerShell 5 的 `Out-File`）会加上 BOM，而严格的 JSON 解析器（例如 Node 的 `JSON.parse`）会拒绝这样的文件。
+GlobalPoint 的网页控制台导入时可以接受 BOM 和 UTF-16（读取前会去掉），但直接放进 `custom_units/changes/` 的
+带 BOM 的配置包会被报告为损坏的文件并被跳过。其他分支的读取程序为保险起见，可以自行去掉文件开头的 BOM。
+
 ## 行
 
 `rows` 的每个键都是 `<数据表>#<行键>`：

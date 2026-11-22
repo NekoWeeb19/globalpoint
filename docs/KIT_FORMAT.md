@@ -42,6 +42,12 @@ way the game names them. It doesn't depend on GlobalPoint's database, update num
 One file can hold many entries. The same layout is GlobalPoint's "change file" format, so a kit also works dropped into
 GlobalPoint's `custom_units/changes/` folder.
 
+**Encoding:** write the file as UTF-8 **without a byte-order mark (BOM)**. Some Windows editors (Notepad's "UTF-8 with
+BOM", PowerShell 5's `Out-File`) add one, and a strict JSON parser such as Node's `JSON.parse` rejects the file.
+GlobalPoint's dashboard import accepts a BOM and UTF-16 anyway (it strips them before reading), but a kit with a BOM
+dropped straight into `custom_units/changes/` is reported as a broken file and skipped. A reader on another fork may
+want to strip a leading BOM itself, to be safe.
+
 ## Rows
 
 Each key of `rows` is `<table>#<row key>`:
