@@ -66,18 +66,21 @@ type ScriptResult = { code: number, stdout: string, stderr: string }
 const { runScript } = require(path.join(__dirname, "..", "..", "scripts", "run_script.cjs")) as { runScript: (file: string, options?: { args?: string[] }) => Promise<ScriptResult> }
 
 /**
- * Builds the slim CN folder (<CDN_DIR>/cn_slim: CN's tables and file names, ~110 MB) at start-up when the full
- * CN game files are here and it's missing. A phone copying from this PC needs it for dashboard schedule edits
- * (src/routes/companion.ts); it can't come from GitHub, since it's made from the game's own files.
+ * Builds the slim CN folder (<CDN_DIR>/cn_slim: CN's tables and file names, and the skill preview's art, ~145 MB) at
+ * start-up when the full CN game files are here and it's missing, or was made before the art was added (no
+ * preview_art.txt, or an older one: scripts/gen_cn_slim.cjs ART_VERSION). A phone copying from this PC needs it
+ * for dashboard schedule edits and the Unit editor's skill preview (src/routes/companion.ts); it can't come from GitHub, since it's made from the game's own files.
  */
+const CN_SLIM_ART_VERSION = 1 // scripts/gen_cn_slim.cjs ART_VERSION
+const artVersion = (dir: string) => { try { return parseInt(readFileSync(path.join(dir, "preview_art.txt"), "utf8"), 10) || 0 } catch { return 0 } }
 function buildCnSlimIfMissing() {
     const root = cnCdnRoot()
     const isSlim = (dir: string) => existsSync(path.join(dir, "tables")) && existsSync(path.join(dir, "names.txt"))
     if (!existsSync(root) || isSlim(root)) return // no CN files, or this server runs on the slim set itself (the phone)
     if (process.env.CN_SLIM_DIR && isSlim(path.resolve(process.env.CN_SLIM_DIR))) return
     const out = path.join(cdnDir(), "cn_slim")
-    if (isSlim(out)) return
-    console.log("[cn] building the slim CN folder for phones (.cdn/cn_slim, about a minute)")
+    if (isSlim(out) && artVersion(out) >= CN_SLIM_ART_VERSION) return
+    console.log(`[cn] ${isSlim(out) ? "adding the skill preview's art to" : "building"} the slim CN folder for phones (.cdn/cn_slim, a few minutes)`)
     runScript(path.join(__dirname, "..", "..", "scripts", "gen_cn_slim.cjs"), { args: [out] }).then(({ code, stdout, stderr }) => {
         if (code !== 0) console.error(`[cn] the slim CN folder could not be built: ${lastLines(stderr || stdout, 3)}`)
         else console.log(`[cn] ${lastLines(stdout, 1)}`)

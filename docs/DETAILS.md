@@ -141,8 +141,9 @@ For working on GlobalPoint rather than playing it:
   ours to host.
 - `scripts/build_cn_obb.cjs` (optional): builds the OBB for setup 1 from a server's game files.
   See [docs/CN_CLIENT_SETUP.md](CN_CLIENT_SETUP.md#9-optional-an-obb-for-phones).
-- `scripts/gen_cn_slim.cjs`: the small CN data set the companion needs for schedule edits. The
-  server runs it by itself at start when the CN game files are there and the set is missing.
+- `scripts/gen_cn_slim.cjs`: the small CN data set the companion needs for schedule edits, plus the
+  art the Unit editor's skill preview draws (unit sprites, skill effects; ~35 MB). The server runs it by
+  itself at start when the CN game files are there and the set is missing or has no art yet.
 - `scripts/build_kit_*.cjs`, `scripts/kit_dates.cjs`: build and read `assets/kit_dates.json`, the
   old unit kits for [Balance by date](#balance-by-date).
 - `scripts/custom_units.cjs`, `assets/custom_units/`: new units for the CN app from data and files only,

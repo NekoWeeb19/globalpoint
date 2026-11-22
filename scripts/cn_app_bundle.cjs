@@ -45,4 +45,4 @@ async function hasAppFile(logical) {
     return (await bundleEntries()).has(hashName(logical))
 }
 
-module.exports = { appApk, readAppFile, hasAppFile }
+module.exports = { appApk, readAppFile, hasAppFile, bundleEntries }

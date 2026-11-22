@@ -58,6 +58,8 @@ const TRANSLATED = process.argv[2] ?? require("./cn_archives.cjs").cnTextDir()
 const { cdnDir, dataDir } = require("./cn_archives.cjs")
 const { scheduleFingerprint } = require("./schedule_fingerprint.cjs")
 const ES = require("./enemy_scaling.cjs")
+// the banners that take the general tickets instead of their own (scripts/gen_cn_gacha_tickets.cjs)
+const GENERAL_TICKET_BANNERS = new Set(JSON.parse(fs.readFileSync(path.join(__dirname, "..", "assets", "cn_general_ticket_banners.json"), "utf8")).banners)
 const GO = require("./gacha_odds.cjs")
 const { uploadPath: fileOf } = require("./cdn_hash.cjs")
 // the yearly free pull copies this update has (.database/cn_schedule_built.json): the server never sends the
@@ -511,6 +513,17 @@ async function main() {
             // the JP-era 3, normal_equipment_3). Set true: their rates stay loaded and the Exchange button shows
             // (the server has /gacha/exchange_equipment).
             if (c[22] && c[22] !== "(None)" && !(c[14] && c[14] !== "(None)") && c[44] === "false") { c[44] = "true"; changed = true }
+            // the old unit and armament banners' own tickets cleared: the client offers the general tickets (999001/999003,
+            // 999004/999005) only on banners without their own and with their general-ticket column on (a unit banner's 20,
+            // an armament banner's 26: off on most 2019-2020 ones, on for the later ones that showed the general tickets), and flag 32 on
+            // (CN leaves it off on a few, e.g. banner 3); /load turns a save's own tickets for them into general ones (assets/
+            // cn_general_ticket_banners.json, scripts/gen_cn_gacha_tickets.cjs; Launch Gala keeps its own)
+            const unitBanner = c[14] && c[14] !== "(None)"
+            const generalColumn = unitBanner ? 20 : 26
+            if (GENERAL_TICKET_BANNERS.has(Number(key.split("/")[0])) && (c[27] !== "(None)" || c[28] !== "(None)" || c[32] !== "true" || c[generalColumn] !== "true")) {
+                c[27] = "(None)"; c[28] = "(None)"; c[32] = "true"; c[generalColumn] = "true"
+                changed = true
+            }
             if (key !== "61" || c[0] !== "newnormal_1") return changed
             const i = c.indexOf("2011-12-24 12:00:00")
             if (i < 0) return false

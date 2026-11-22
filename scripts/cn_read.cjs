@@ -58,4 +58,7 @@ async function readCnTable(logical) {
     return out
 }
 
-module.exports = { hashed, cnIndex, readCn, readCnTable }
+/** Whether a slim CN folder has a file (a table, or the skill preview's art: scripts/gen_cn_slim.cjs). */
+const inSlim = logical => fs.existsSync(path.join(cnDir(), "tables", hashed(logical)))
+
+module.exports = { hashed, cnIndex, readCn, readCnTable, inSlim }

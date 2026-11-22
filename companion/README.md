@@ -56,7 +56,8 @@ how to build it.
   `192.168.1.20:8000`) and tick what to bring:
   - **My save** (account, units, progress)
   - **Game updates** (~2 GB; only if the game still has to download them)
-  - **Event schedule editing** (~140 MB; lets the dashboard move events)
+  - **Event schedule editing** (~175 MB; lets the dashboard move events, and has the art the Unit editor's
+    skill preview draws)
   - **Dashboard pictures** (~80 MB)
   - **Comics** (~1.4 GB)
   - **Full game files** (~10 GB), for a phone whose game has never downloaded its files. See below.
@@ -216,7 +217,7 @@ companion/
 | Comics (optional) | `.cdn/comics/` | 1.4 GB |
 | Dashboard pictures (optional) | `.cdn/dashboard_images/` | 81 MB |
 | A game that's behind (optional) | `.cdn/cn_patches/<version>/...` patch zips | ~2 GB |
-| Dashboard schedule edits (optional) | the slim CN folder (`tables/`, `names.txt`, from `scripts/gen_cn_slim.cjs`) as `.cdn/cn/`, the English tables as `.cdn/cn_text/` | ~140 MB |
+| Dashboard schedule edits and the skill preview's art (optional) | the slim CN folder (`tables/`, `names.txt`, from `scripts/gen_cn_slim.cjs`) as `.cdn/cn/`, the English tables as `.cdn/cn_text/` | ~175 MB |
 | A game with no files yet (optional; the server doesn't keep them) | `/sdcard/StarPoint/game/` (`info.json` + `download/production/...`) | ~10 GB |
 
 ## The PC side: `/companion` routes

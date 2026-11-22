@@ -67,7 +67,7 @@ public class DataActivity extends Activity {
         save = u.check("My save (account, units, progress)", prefs.getBoolean("optSave", true));
         images = u.check("Dashboard pictures (~80 MB)", prefs.getBoolean("optImages", true));
         comics = u.check("Comics (~1.4 GB)", prefs.getBoolean("optComics", false));
-        schedule = u.check("Event schedule editing (~140 MB; lets the dashboard move events)", prefs.getBoolean("optSchedule", true));
+        schedule = u.check("Event schedule editing (~175 MB; lets the dashboard move events, and shows the Unit editor's skill preview art)", prefs.getBoolean("optSchedule", true));
         patches = u.check("Game updates (~2 GB; only if the game still has to download them)", prefs.getBoolean("optPatches", false));
         game = u.check("Full game files (~10 GB; first install, game not installed yet or never downloaded)", prefs.getBoolean("optGame", false));
         u.text("Full game files go in StarPoint/game on the phone's storage. The game (build 21 or newer) moves "

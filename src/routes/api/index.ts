@@ -20,6 +20,7 @@ import { refillPeriodicRewardPointsSync } from "../../nya/periodicReward";
 import { catchUpQuestJoinUnitsSync } from "../../nya/storyJoin";
 import { COUNTER_KINDS } from "../../lib/mission";
 import { addCnLoadFields, isCnRequest } from "../../lib/cnClient";
+import { swapOldBannerTicketsSync } from "../../nya/generalTickets";
 
 interface LoadBody {
     app_secret: string,
@@ -107,6 +108,12 @@ const routes = async (fastify: FastifyInstance) => {
         refillPeriodicRewardPointsSync(playerId)
         // yearly seasonal free pulls: back once a real day
         refreshFreePullCopiesSync(playerId)
+
+        // CN: old banners' own tickets become general tickets (those banners take only the general ones now)
+        if (cn) {
+            const swapped = swapOldBannerTicketsSync(playerId)
+            if (swapped > 0) console.log(`[tickets] Player ${playerId}: ${swapped} old banner ticket(s) turned into general summon tickets.`)
+        }
 
         // CN unit awake missions: pay stages reached before their rewards were automatic
         if (cn) payPendingAwakeStagesSync(playerId)

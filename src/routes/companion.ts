@@ -2,7 +2,7 @@
 // server over Wi-Fi: the game must already have its files, so this is the slim set (CN version
 // files, schedules, news), plus what the player picks: their save, the game updates (patch zips),
 // dashboard pictures, comics, and the data dashboard schedule edits need (the slim CN folder from
-// scripts/gen_cn_slim.cjs and the English tables, ~140 MB).
+// scripts/gen_cn_slim.cjs, which also has the Unit editor's skill preview art, and the English tables, ~175 MB).
 // With game=1 it also lists the game's full set of files, for a phone that doesn't have the game yet
 // (~138k files, ~10 GB). They go in the game's drop-off folder (/sdcard/StarPoint/game/), which game
 // build 21+ moves into its own storage at its next start. They are the entries of the CN zips and

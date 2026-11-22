@@ -29,11 +29,22 @@ const LIMITS = {
 const isScriptPath = p => typeof p === "string" && /^battle\/action\/skill\/[\w$\/.-]+$/.test(p) && !p.includes("..")
 const customFile = logical => path.join(CU.customUnitsDir(), "skills", logical + SUFFIX)
 
+// Every CN unit's skill script, shipped with the server (scripts/gen_skill_scripts_bundle.cjs): the phone companion has
+// only CN's data tables, and the hero's scripts are built into the game app, which a server may not have.
+let shipped = null
+function shippedScript(logical) {
+    if (shipped === null) {
+        try { shipped = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "assets", "skill_editor", "game_scripts.json"), "utf8")) } catch { shipped = {} }
+    }
+    return typeof shipped[logical] === "string" ? Buffer.from(shipped[logical], "base64") : null
+}
+
 /** A skill script as JSON (["ActionDsl", 1, ..., ["Block", [...]]]), or null when there is no such file. */
 async function readScript(logical) {
     if (!isScriptPath(logical)) throw new Error(`not a skill script path: ${logical}`)
     const own = customFile(logical)
-    const buf = fs.existsSync(own) ? fs.readFileSync(own) : await require("./cn_read.cjs").readCn(logical + SUFFIX)
+    const buf = fs.existsSync(own) ? fs.readFileSync(own)
+        : (await require("./cn_read.cjs").readCn(logical + SUFFIX).catch(() => null)) ?? (await APP.readAppFile(logical + SUFFIX)) ?? shippedScript(logical)
     if (!buf) return null
     let raw
     try { raw = zlib.inflateRawSync(buf) } catch { raw = zlib.inflateSync(buf) }
@@ -227,7 +238,8 @@ const amfFile = buf => { let raw; try { raw = zlib.inflateRawSync(buf) } catch {
 const effectBase = (p, colour) => { const name = p.split("/").pop(); return colour ? `${p}/${name}_${colour}/${name}_${colour}` : p }
 // a game file: the update files, else the app's built-in ones (scripts/cn_app_bundle.cjs: e.g. the Fine and Coarse hits)
 const APP = require("./cn_app_bundle.cjs")
-const hasGameFile = async logical => { const R = require("./cn_read.cjs"); return R.cnIndex().has(R.hashed(logical)) || APP.hasAppFile(logical) }
+// (a slim CN folder also keeps the built-in files the skill preview needs: scripts/gen_cn_slim.cjs)
+const hasGameFile = async logical => { const R = require("./cn_read.cjs"); return R.cnIndex().has(R.hashed(logical)) || R.inSlim(logical) || APP.hasAppFile(logical) }
 const readGameFile = async logical => (await require("./cn_read.cjs").readCn(logical)) ?? APP.readAppFile(logical)
 
 /** An effect's animation (parts, atlas, timeline) and the colours it comes in; null when the game has no such effect. */
