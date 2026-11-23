@@ -473,6 +473,9 @@ async function main() {
     // campaign mission groups take their missions' window when CN's calendar moved the missions but not the group
     // (scripts/cn_campaign_windows.cjs): filled from the mission table before the tables are written
     const CW = require("./cn_campaign_windows.cjs")
+    // ways into the promo mission groups (scripts/cn_promo_entries.cjs): carousel banners, the Events badge, no home icon
+    const PROMO = require("./cn_promo_entries.cjs")
+    const SECONDARY_BANNERS = fileOf("master/feature_banner/feature_banner_secondary.orderedmap")
     const CAMPAIGN_GROUPS = fileOf("master/reward/event/collect_item_event.orderedmap")
     const CAMPAIGN_MISSIONS = fileOf("master/mission/collect_item_event_mission.orderedmap")
     let campaignWindows = {}
@@ -504,8 +507,9 @@ async function main() {
             return changed
         },
         [CAMPAIGN_GROUPS]: (key, c) => {
+            const promo = PROMO.fixGroup(key, c)
             const window = CW.alignedWindow(c[20], c[21], campaignWindows[key])
-            if (!window) return false
+            if (!window) return promo
             c[20] = window[0]; c[21] = window[1]
             return true
         },
@@ -602,7 +606,7 @@ async function main() {
             }
             return hideBannerWithoutPicture(c) || changed
         },
-        [fileOf("master/feature_banner/feature_banner_secondary.orderedmap")]: (key, c) => hideBannerWithoutPicture(c),
+        [SECONDARY_BANNERS]: (key, c) => { const linked = PROMO.fixBanner(key, c); return hideBannerWithoutPicture(c) || linked },
         [GUIDE_DIALOGS]: (key, c) => {
             if (c[3] && c[3] !== "(None)" && cnHasPicture(c[3])) return false
             const i = c.findIndex(v => /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/.test(v))
@@ -798,6 +802,13 @@ async function main() {
         for (const unit of customUnits) {
             const rows = Object.entries(unit.rows).filter(([ref]) => CU.tableFile(ref) === file)
             for (const [, r] of rows) CU.addRows(tree, r)
+        }
+        if (file === SECONDARY_BANNERS) {
+            const template = tree.entries.find(e => e.key === PROMO.BANNER_TEMPLATE)?.node
+            const rows = template?.kind === "leaf" ? PROMO.newBanners(R.splitCsv(R.splitCsvLines(template.text.replace(/\n$/, ""))[0])) : {}
+            const end = template?.text.endsWith("\n") ? "\n" : ""
+            const added = CU.addRows(tree, Object.fromEntries(Object.entries(rows).map(([k, c]) => [k, c.map(R.csvField).join(",") + end])))
+            if (added > 0) console.log(`Promo mission banners added: ${Object.keys(rows).join(", ")}`)
         }
         if (file === globalItemTable) {
             const have = new Set(tree.entries.map(e => e.key))

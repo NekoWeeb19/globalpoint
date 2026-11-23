@@ -198,5 +198,15 @@
   "path": "production/medium_upload/16/4cbbff18c75b00cc76eb6451a475b1c443cd61",
   "from": "character/cat_fighter_ny20/pixelart/sprite_sheet.png",
   "why": "character/cat_fighter_ny20/ui/login_bonus_icon.png: a login bonus day gives this unit; its pixel sprite at item-icon size"
+ },
+ {
+  "path": "production/upload/e5/7938e7b81b7a278bf74a749a433c9790d7858f",
+  "from": "quest/event/banner/collect_item_event/1stanv_mission_event_001.png",
+  "why": "quest/event/banner/collect_item_event/b_collabo_mission_event_001.png: Japanese lettering; global's \"Promo Missions\" lettering in its place (offset 0,-6; a promo mission carousel banner)"
+ },
+ {
+  "path": "production/upload/cf/02c93bb1584ca9a5fa81ad5b04ce46f4be2020",
+  "from": "global",
+  "why": "quest/event/banner/collect_item_event/special_mission_event_001.png: CN's has Chinese lettering; global's English (a promo mission carousel banner)"
  }
 ]

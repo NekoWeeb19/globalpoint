@@ -207,6 +207,30 @@ const key = p => p.replace(/^production\/[a-z_]+\//, "production/upload/")
         }
     }
 
+    // 5. the promo mission pictures the update builder gives a home carousel banner (scripts/cn_promo_entries.cjs:
+    // Black Clover, Summer 2020) carry Japanese/Chinese lettering in CN's files. Global's English copy where it has
+    // one (Summer 2020); else (Black Clover, never on global) CN's picture with global's "Promo Missions" lettering put
+    // in place of the Japanese (scripts/promo_icon_lettering.cjs), from 1st Anniversary's icon in both languages.
+    {
+        const { decodePng, encodePng } = require("./cn_sprite_merge.cjs")
+        const { englishLettering } = require("./promo_icon_lettering.cjs")
+        const { NEW_BANNERS } = require("./cn_promo_entries.cjs")
+        const png = b => decodePng(Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47]), b.subarray(4)]))
+        const B = "quest/event/banner/collect_item_event/"
+        const [jp, en, en2] = await Promise.all([cnGet(B + "1stanv_mission_event_001.png"), globalGet(B + "1stanv_mission_event_001.png"), globalGet(B + "special_mission_event_001.png")])
+        for (const { image } of NEW_BANNERS) {
+            const target = await cnGet(image + ".png")
+            if (!target) { console.log(`${image}: not in CN's files`); continue }
+            const english = await globalGet(image + ".png")
+            if (english) { fixes.push({ path: target.stored, data: english, from: "global", why: `${image}.png: CN's has Chinese lettering; global's English (a promo mission carousel banner)` }); continue }
+            if (!jp || !en || !en2) { console.log(`${image}: the lettering references are missing`); continue }
+            const out = englishLettering(png(target.data), png(jp.data), png(en), png(en2))
+            if (!out) { console.log(`${image}: its lettering doesn't line up with the reference's; left Japanese`); continue }
+            fixes.push({ path: target.stored, data: encodePng(out, target.data.subarray(0, 8)), from: B + "1stanv_mission_event_001.png",
+                why: `${image}.png: Japanese lettering; global's "Promo Missions" lettering in its place (offset ${out.offset.dx},${out.offset.dy}; a promo mission carousel banner)` })
+        }
+    }
+
     fs.rmSync(DIR, { recursive: true, force: true })
     for (const fix of fixes) {
         const out = path.join(DIR, fix.path)
