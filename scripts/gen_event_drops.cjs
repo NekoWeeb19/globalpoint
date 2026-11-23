@@ -23,6 +23,9 @@ const { ROOT, readTable, readRows, parseCsvLine, str, int } = require("./cdn_mas
 // dates are China time (UTC+8) and are written as UTC like global's
 const CN = process.env.MASTER_SOURCE === "cn"
 const OUT = path.join(ROOT, "assets", CN ? "event_drops_cn.json" : "event_drops.json")
+// CN: campaign groups whose missions CN's calendar moved take their missions' window (scripts/cn_campaign_windows.cjs)
+const CW = require("./cn_campaign_windows.cjs")
+let campaignWindows = {}
 const toUtc = text => {
     if (!CN) return text
     const ms = Date.parse(text.replace(" ", "T") + "+08:00")
@@ -53,6 +56,7 @@ const positive = (value, what) => {
 }
 
 ;(async () => {
+    if (CN) campaignWindows = CW.missionWindows((await require("./cn_read.cjs").readCnTable("master/mission/collect_item_event_mission.orderedmap")) ?? {})
     // drop groups
     const groups = {}
     for (const [groupId, rows] of Object.entries(await readTable("master/reward/event/additional_reward.orderedmap", true))) {
@@ -117,7 +121,9 @@ const positive = (value, what) => {
                 return { level: Number(level), groupId: Number(groupId) }
             }).sort((x, y) => x.level - y.level)
             if (thresholds.length === 0) throw new Error(`event ${eventId} relation ${sequence}: reward ${r[5]} has no tiers.`)
-            rules.push({ eventId: Number(eventId), start: toUtc(e[20]), end: toUtc(e[21]), prerequisite, range: [rangeKind, str(r[2]), str(r[3]), str(r[4])], thresholds })
+            // CN: the group's window as the game gets it (its missions' when CN's calendar moved only those)
+            const window = (CN && CW.alignedWindow(e[20], e[21], campaignWindows[eventId])) || [e[20], e[21]]
+            rules.push({ eventId: Number(eventId), start: toUtc(window[0]), end: toUtc(window[1]), prerequisite, range: [rangeKind, str(r[2]), str(r[3]), str(r[4])], thresholds })
         }
     }
 

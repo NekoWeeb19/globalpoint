@@ -467,5 +467,15 @@ check("condition: Eisen (100000001) without Light resistance down counts for 900
 check("condition: an S (not SS) clear sends nothing", battleMissionEvents(finish({ isMulti: true, questCategory: 26, questId: 3001, clearRank: 4, statistics: { zones: [zone(0, [])] }, clearTimeMs: 100_000 })).every(e => e.kind !== 82))
 check("condition: a solo SS clear doesn't count (these missions are co-op)", !counterMatches(ev3(600003), steam({ zones: [zone(0, [])] }, { questId: 3001, clearTimeMs: 100_000, isMulti: false })))
 
+// "Use up N stamina": the battle's stamina cost, from the CN game's tables for the CN app (CN-only battles too, like
+// the Black Clover collab's Black Dragon), from global's for the global app
+{
+    const { questStaminaCost } = await import("../out/nya/mission.js")
+    const { runInCnContext } = await import("../out/lib/cnClient.js")
+    const cn = fn => { let r; runInCnContext(true, () => { r = fn() }); return r }
+    check("stamina: the Black Dragon (CN-only) costs 10 in the CN app", cn(() => questStaminaCost(7, 300001004)) === 10)
+    check("stamina: global's table has no Black Dragon (the global app gets 0)", questStaminaCost(7, 300001004) === 0)
+}
+
 console.log(failures === 0 ? "\nAll mission tests passed." : `\n${failures} mission test(s) failed.`)
 process.exit(failures === 0 ? 0 : 1)

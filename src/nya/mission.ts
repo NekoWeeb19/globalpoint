@@ -13,6 +13,7 @@ import { readFileSync, statSync } from "fs"
 import { inCnRequest } from "../lib/cnClient"
 import { cnGeneratedFile } from "../lib/cnGenerated"
 import questStamina from "../../assets/quest_stamina.json"
+import questStaminaCn from "../../assets/quest_stamina_cn.json"
 import mainQuests from "../../assets/main_quest.json"
 import exQuests from "../../assets/ex_quest.json"
 import getDatabase, { Database } from "../data"
@@ -92,11 +93,15 @@ function missionSet(): { data: MissionData, dbId: (category: number, id: number)
     if (cn === null) return { data: globalData, dbId: (_category, id) => id }
     return { data: cn.data, dbId: (category, id) => cn.distinct.get(category)?.has(id) ? id + CN_DISTINCT_OFFSET : id }
 }
-const staminaCosts = questStamina as unknown as Record<string, Record<string, number> | string>
+type StaminaCosts = Record<string, Record<string, number> | string>
 
-/** A quest's battle stamina cost (assets/quest_stamina.json, from the global quest tables), or 0. */
+/**
+ * A quest's battle stamina cost, or 0: the CN app's from the CN game's quest tables (assets/quest_stamina_cn.json:
+ * CN-only battles like the Black Clover collab's too), the global app's from global's (assets/quest_stamina.json).
+ * "Use up N stamina" missions count it.
+ */
 export function questStaminaCost(questCategory: number, questId: number): number {
-    const costs = staminaCosts[String(questCategory)]
+    const costs = ((inCnRequest() ? questStaminaCn : questStamina) as unknown as StaminaCosts)[String(questCategory)]
     const cost = typeof costs === "object" ? costs[String(questId)] : undefined
     return typeof cost === "number" && cost > 0 ? cost : 0
 }

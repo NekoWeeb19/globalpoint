@@ -470,6 +470,12 @@ async function main() {
         ability_description_instant_content_delete_unique_condition: ["::if !withoutTarget::::target::の::end::「::name::」を消去", "remove 「::name::」::if !withoutTarget:: from ::target::::end::"],
     }
     const UI_TEXT = "production/upload/d6/88e4a5f7d84cc422357cc8acbdb72817bc8670"
+    // campaign mission groups take their missions' window when CN's calendar moved the missions but not the group
+    // (scripts/cn_campaign_windows.cjs): filled from the mission table before the tables are written
+    const CW = require("./cn_campaign_windows.cjs")
+    const CAMPAIGN_GROUPS = fileOf("master/reward/event/collect_item_event.orderedmap")
+    const CAMPAIGN_MISSIONS = fileOf("master/mission/collect_item_event_mission.orderedmap")
+    let campaignWindows = {}
     const NAME_FIXES = require("./cn_name_fixes.cjs")
     const DUNGEON_FIXES = {
         // event names the translation took from another event (scripts/cn_name_fixes.cjs)
@@ -495,6 +501,22 @@ async function main() {
             if (fix && typeof c[0] === "string" && c[0].includes(fix[0])) { c[0] = c[0].replace(fix[0], fix[1]); changed = true }
             const problem = templateProblem(c[0])
             if (problem) console.log(`UI text ${key}: template still broken (${problem}): ${c[0].slice(0, 120)}`)
+            return changed
+        },
+        [CAMPAIGN_GROUPS]: (key, c) => {
+            const window = CW.alignedWindow(c[20], c[21], campaignWindows[key])
+            if (!window) return false
+            c[20] = window[0]; c[21] = window[1]
+            return true
+        },
+        // two "answer a help request" missions for boss event 2 (Inferno Dragon) kept JP's 2020 run: on CN's first run
+        [fileOf("master/mission/regular_mission.orderedmap")]: (key, c) => {
+            if (key !== "88" && key !== "89") return false
+            let changed = false
+            for (let i = 0; i < c.length; i++) {
+                if (c[i] === "2020-02-15 12:00:00") { c[i] = "2021-12-30 12:00:00"; changed = true }
+                else if (c[i] === "2020-02-29 11:59:59") { c[i] = "2022-01-13 11:59:59"; changed = true }
+            }
             return changed
         },
         [fileOf("master/quest/event/daily_week_event.orderedmap")]: (key, c) => {
@@ -755,6 +777,14 @@ async function main() {
                 if (!unit.art?.files?.length) console.log(`Custom unit ${unit.id}: no files listed (art.files), shipped anyway`)
                 customUnits.push(unit)
             }
+        }
+    }
+    {
+        const buf = await tableBuffer(CAMPAIGN_MISSIONS)
+        if (buf) {
+            const tree = R.decodeFile(buf)
+            CAL.applyToTree(CAMPAIGN_MISSIONS, tree)
+            campaignWindows = CW.missionWindows(Object.fromEntries(R.leaves(tree).map(l => [l.path.join("/"), l.leaf.text])))
         }
     }
     for (const file of fileList) {
