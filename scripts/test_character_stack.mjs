@@ -4,7 +4,7 @@
 //   npx tsc
 //   node scripts/test_character_stack.mjs
 
-import { selectBulkConversions, selectBulkOverLimits, stackConversion } from "../out/lib/characterStack.js"
+import { overLimitGemFits, selectBulkConversions, selectBulkOverLimits, stackConversion } from "../out/lib/characterStack.js"
 
 let failures = 0
 const check = (name, ok, detail) => {
@@ -39,6 +39,12 @@ check("uncap all: 5* at 2/4 with 3 copies goes to 4/4 and keeps 1 copy", uncaps[
 check("uncap all: a 4* at 0/6 with 2 copies goes to 2/6 with 0 left", JSON.stringify(selectBulkOverLimits([unit(7, 4, 2, 0)], MAX)) === JSON.stringify([{ characterId: 7, overLimitStep: 2, stack: 0 }]))
 check("uncap all: a locked unit still uncaps (locking only stops conversion)", selectBulkOverLimits([unit(8, 5, 1, 0, true)], MAX).length === 1)
 check("uncap all: never past the max", selectBulkOverLimits([unit(9, 2, 50, 3)], MAX)[0].overLimitStep === 10)
+
+// Astral Gems by rarity, as the item table says (3★ gem: 3★ and below; 4★ gem: 4★ and below; 5★ gem: 5★ only)
+const fits = [[10001, 3], [10001, 2], [10001, 1], [10002, 4], [10002, 3], [10003, 5]]
+const refused = [[10001, 4], [10001, 5], [10002, 5], [10003, 4], [10003, 3], [12001, 4], [99999, 3]]
+check("each gem uncaps the rarities the item table allows", fits.every(([id, r]) => overLimitGemFits(id, r)), fits.filter(([id, r]) => !overLimitGemFits(id, r)))
+check("a 3★ gem can't uncap a 4★, a 5★ gem only a 5★, other items nothing", refused.every(([id, r]) => !overLimitGemFits(id, r)), refused.filter(([id, r]) => overLimitGemFits(id, r)))
 
 console.log(failures === 0 ? "\nAll character stack tests passed." : `\n${failures} character stack test(s) failed.`)
 process.exit(failures === 0 ? 0 : 1)

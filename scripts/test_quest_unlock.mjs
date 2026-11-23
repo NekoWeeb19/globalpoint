@@ -28,6 +28,16 @@ try {
     const { getQuestFromCategorySync } = await import(new URL("lib/assets.js", out))
     const questRoutes = (await import(new URL("routes/api/quest.js", out))).default
     const fastify = require("fastify")()
+
+    // CN-only units' stories (category 3): finishing one answered H400 ("Invalid quest ID") and sent the game back to
+    // the title (a player's log, 2026-11-23: Kazuma's first episode 26301501, and 12112301), as the server only knew
+    // global's episodes. scripts/gen_cn_quests.cjs now adds CN's.
+    for (const id of [26301501, 26301503, 12112301]) {
+        const quest = getQuestFromCategorySync(3, id)
+        check(`unit story episode ${id} is a story quest the server knows`, quest !== null && !("sPlusReward" in quest) && quest.clearReward !== undefined, quest)
+    }
+    const characterQuests = JSON.parse(fs.readFileSync(new URL("../assets/character_quest.json", import.meta.url), "utf8"))
+    check("all 1,318 of CN's unit-story episodes are in the server's list", Object.keys(characterQuests).length >= 1318, Object.keys(characterQuests).length)
     // the real server sends msgpack (its own serializer); JSON here
     fastify.addHook("onSend", async (request, reply, payload) => payload && typeof payload === "object" && !Buffer.isBuffer(payload) ? JSON.stringify(payload) : payload)
     await fastify.register(questRoutes.default ?? questRoutes)

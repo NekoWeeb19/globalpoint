@@ -40,7 +40,13 @@ const FILES = {
     hard_multi_event_quest: "hard_multi_event_quest",
     // a full logical path when the table isn't an event quest table
     boss_battle_quest: "master/quest/boss_battle_quest",
+    // units' stories (category 3): CN-only units' episodes (Kazuma, Megumin, Aqua, Darkness, CN's 2023+ units) were
+    // unknown, so finishing one answered H400 and sent the game back to the title (a player's log, 2026-11-23)
+    character_quest: "master/quest/character_quest",
 }
+// files whose quest id is the table's own key, not column 0 (character_quest: column 0 is the unit's story id); their
+// numbers aren't events, so the "different event under the same number" check doesn't apply to them
+const KEYED_BY_ROW = new Set(["character_quest"])
 
 const num = v => (v === undefined || v === "" || v === "(None)" ? null : Number(v))
 const TRANSFORMS = {
@@ -100,7 +106,7 @@ function learn(entries, cnRows, keyOf) {
         // entries this script added before are made again
         for (const [id, e] of Object.entries(entries)) if (e.cn) delete entries[id]
         const rows = Object.entries(cn).map(([p, line]) => ({ p, cols: R.splitCsv(line.replace(/\n$/, "")) }))
-        const keyOf = r => r.cols[0]
+        const keyOf = KEYED_BY_ROW.has(file) ? r => r.p : r => r.cols[0]
         // battle quests (with rewards) and story quests (name + clear reward only) are learned apart
         const battle = Object.fromEntries(Object.entries(entries).filter(([, e]) => "rankPointReward" in e))
         const story = Object.fromEntries(Object.entries(entries).filter(([, e]) => !("rankPointReward" in e)))
@@ -121,7 +127,7 @@ function learn(entries, cnRows, keyOf) {
         const clashEvents = new Set()
         for (const r of rows) {
             const id = keyOf(r)
-            if (!/^\d+$/.test(id) || entries[id] === undefined || entries[id].cn) continue
+            if (KEYED_BY_ROW.has(file) || !/^\d+$/.test(id) || entries[id] === undefined || entries[id].cn) continue
             const ours = entries[id], battle = cnIsBattle(r), cn = cnEntry(r, battle)
             const differs = battle !== ("rankPointReward" in ours)
                 || ["scoreRewardGroup", "clearRewardId", "sPlusRewardId"].some(f => (cn[f] ?? 0) !== (ours[f] ?? 0))

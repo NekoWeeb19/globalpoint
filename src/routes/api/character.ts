@@ -12,7 +12,7 @@ import { trackActiveMissionProgress } from "../../nya/activeMissionProgress";
 import { withMissionRewards } from "../../nya/mission";
 import { COUNTER_KINDS } from "../../lib/mission";
 import { evolutionLevelFromManaNodes, evolutionResponse } from "../../lib/characterEvolution";
-import { selectBulkOverLimits } from "../../lib/characterStack";
+import { overLimitGemFits, selectBulkOverLimits } from "../../lib/characterStack";
 
 interface OverLimitBody {
     viewer_id: number
@@ -579,12 +579,9 @@ const routes = async (fastify: FastifyInstance) => {
             // item uncapping
             const itemId = body.item_id
 
-            // ensure that the item trying to be used is valid
-            // 5* characters can only be uncapped by item 10003 (awaking_crystal_5)
-            // 4* characters and below can only be uncapped by items 10002 (awaking_crystal_4) and 10001 (awaking_crystal_3)
-            if ((characterRarity === 5 && itemId !== 10003)
-                || (4 >= characterRarity && (itemId !== 10002 && itemId !== 10001))
-            ) return reply.status(400).send({
+            // ensure that the item trying to be used is valid: an Astral Gem for this rarity, as the item table says
+            // (src/lib/characterStack.ts: 3★ gem on 3★ and below, 4★ gem on 4★ and below, 5★ gem on 5★ only)
+            if (!overLimitGemFits(itemId, characterRarity)) return reply.status(400).send({
                 "error": "Bad Request",
                 "message": "Attempted to use invalid item."
             })

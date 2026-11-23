@@ -8,6 +8,23 @@ export const STACK_CONVERT_EXP: Readonly<Record<number, number>> = Object.freeze
 export const STACK_CONVERT_ITEMS: Readonly<Record<number, number>> = Object.freeze({ 1: 2, 2: 2, 3: 2, 4: 10, 5: 30 })
 export const STACK_CONVERT_ITEM_ID = 990008
 
+/**
+ * Astral Gems (uncapping without duplicates): the rarity each gem is for, and whether lower rarities may use it, from
+ * the item table (CN and global agree: CN columns 9/11, global 8/10; the game checks the same pair). The 3★ gem works
+ * on 3★ and below, the 4★ gem on 4★ and below, the 5★ gem on 5★ units only.
+ */
+export const OVER_LIMIT_GEMS: Readonly<Record<number, { rarity: number, lowerRarities: boolean }>> = Object.freeze({
+    10001: { rarity: 3, lowerRarities: true },
+    10002: { rarity: 4, lowerRarities: true },
+    10003: { rarity: 5, lowerRarities: false },
+})
+
+/** Whether an Astral Gem can uncap a unit of this rarity. */
+export function overLimitGemFits(itemId: number, rarity: number): boolean {
+    const gem = OVER_LIMIT_GEMS[itemId]
+    return gem !== undefined && (rarity === gem.rarity || (gem.lowerRarities && rarity < gem.rarity))
+}
+
 export interface StackedCharacter {
     characterId: number
     rarity: number
