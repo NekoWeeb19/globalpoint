@@ -52,6 +52,15 @@ for (const b of P.NEW_BANNERS) {
     check(`${b.image.split("/").pop()}: an English picture in the art fixes`, fix && /English|"Promo Missions"/.test(fix.why) && fs.existsSync(new URL("../assets/cn_art_fixes/" + fix.path, import.meta.url)), fix)
 }
 
+// the colorless middle-cannon enemy shot CN's files lack (Black Clover's Black Dragon battle stopped loading with
+// "Insufficient data"): its four files from global (scripts/gen_cn_art_fixes.cjs rule 6)
+{
+    const base = "battle/effect/enemy_general/enemy_shot_middle_cannon/enemy_shot_middle_cannon_colorless/enemy_shot_middle_cannon_colorless"
+    const paths = [".png", ".atlas.amf3.deflate", ".parts.amf3.deflate", ".timeline.amf3.deflate"].map(e => uploadPath(base + e))
+    const shipped = paths.filter(p => art.some(x => x.path === p) && fs.existsSync(new URL("../assets/cn_art_fixes/" + p, import.meta.url)))
+    check("the colorless middle-cannon shot's four files are in the art fixes", shipped.length === 4, paths.filter(p => !shipped.includes(p)))
+}
+
 // the lettering swap on a made-up picture: the "Japanese" lettering (a red bar) replaced by the "English" (a blue bar)
 const { englishLettering } = require("./promo_icon_lettering.cjs")
 const W = 200, H = 200

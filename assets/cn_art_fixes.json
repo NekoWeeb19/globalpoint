@@ -208,5 +208,25 @@
   "path": "production/upload/cf/02c93bb1584ca9a5fa81ad5b04ce46f4be2020",
   "from": "global",
   "why": "quest/event/banner/collect_item_event/special_mission_event_001.png: CN's has Chinese lettering; global's English (a promo mission carousel banner)"
+ },
+ {
+  "path": "production/upload/63/1a4cc453f39494a03ef8ddc0d2f8a201cee7b1",
+  "from": "global",
+  "why": "battle/effect/enemy_general/enemy_shot_middle_cannon/enemy_shot_middle_cannon_colorless/enemy_shot_middle_cannon_colorless.png: missing in CN's files (a battle effect its battles use)"
+ },
+ {
+  "path": "production/upload/a8/0f009310b5a9be8410e4fd3d66b12198b065eb",
+  "from": "global",
+  "why": "battle/effect/enemy_general/enemy_shot_middle_cannon/enemy_shot_middle_cannon_colorless/enemy_shot_middle_cannon_colorless.atlas.amf3.deflate: missing in CN's files (a battle effect its battles use)"
+ },
+ {
+  "path": "production/upload/88/298f89dbd1f971cfbacfcb6820d0c032d6f1a6",
+  "from": "global",
+  "why": "battle/effect/enemy_general/enemy_shot_middle_cannon/enemy_shot_middle_cannon_colorless/enemy_shot_middle_cannon_colorless.parts.amf3.deflate: missing in CN's files (a battle effect its battles use)"
+ },
+ {
+  "path": "production/upload/62/aa7f030782304e94f54042170bc5433a923092",
+  "from": "global",
+  "why": "battle/effect/enemy_general/enemy_shot_middle_cannon/enemy_shot_middle_cannon_colorless/enemy_shot_middle_cannon_colorless.timeline.amf3.deflate: missing in CN's files (a battle effect its battles use)"
  }
 ]

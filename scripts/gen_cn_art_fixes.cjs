@@ -231,6 +231,18 @@ const key = p => p.replace(/^production\/[a-z_]+\//, "production/upload/")
         }
     }
 
+    // 6. battle effects CN's battles use but CN's files lack: global's copy (the colorless "middle cannon" enemy shot,
+    // enemy_shot_middle_cannon_colorless; found 2026-11-23 in a CN fork contributor's fix zip, "BC&cn fix")
+    for (const base of ["battle/effect/enemy_general/enemy_shot_middle_cannon/enemy_shot_middle_cannon_colorless/enemy_shot_middle_cannon_colorless"]) {
+        for (const ext of [".png", ".atlas.amf3.deflate", ".parts.amf3.deflate", ".timeline.amf3.deflate"]) {
+            const logical = base + ext
+            if (cn.has(hashed(logical))) continue
+            const data = await globalGet(logical)
+            if (!data) { console.log(`${logical}: missing in CN's files and global's`); continue }
+            fixes.push({ path: hashed(logical), data, from: "global", why: `${logical}: missing in CN's files (a battle effect its battles use)` })
+        }
+    }
+
     fs.rmSync(DIR, { recursive: true, force: true })
     for (const fix of fixes) {
         const out = path.join(DIR, fix.path)
