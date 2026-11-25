@@ -1,5 +1,7 @@
 # Making a skill with the Skill tab
 
+> 中文版：[SKILL_GUIDE.zh-CN.md](SKILL_GUIDE.zh-CN.md)
+
 > Written by Claude (AI) in a Claude Code session, with the repository owner choosing how it works.
 
 The Unit editor's **Skill tab** (dashboard → **Unit editor** → pick a unit → **Skill**) lets you change what a unit's

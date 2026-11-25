@@ -1,5 +1,7 @@
 # Skill script commands (research, 2026-11-16)
 
+> 中文版：[skill-commands.zh-CN.md](skill-commands.zh-CN.md)
+
 > [!IMPORTANT]
 > ## 🤖 Written by AI
 > Written by **Claude** (Anthropic's AI) in a Claude Code session. The command list and parameter types come from the

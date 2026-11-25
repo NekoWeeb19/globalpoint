@@ -1,11 +1,14 @@
 # GlobalPoint details
 
+> 中文版：[DETAILS.zh-CN.md](DETAILS.zh-CN.md)
+
 Reference material moved out of the [README](../README.md): how units follow the server's date, the
 harmless errors in the log, how the game was translated, the server's settings, and pointers for
 developers.
 
 - [Balance by date](#balance-by-date)
 - [Errors and 404s](#errors-and-404s)
+- [Co-op partners](#co-op-partners)
 - [Translation](#translation)
 - [Settings (.env)](#settings-env)
 - [Building it yourself](#building-it-yourself-for-developers)
@@ -71,7 +74,7 @@ effect in the next room.
 ## Translation
 
 The CN app's text was translated into English from scratch where global didn't have it, and taken
-from global where it did. The rules:
+from global where it did. (The game can also play in CN's own Chinese: [CHINESE.en.md](CHINESE.en.md).) The rules:
 
 1. **Global's English comes first.** Where global had the same text (unit, item, quest,
    Flipperpedia), its official English is reused word for word, so the game reads like global.
@@ -131,7 +134,8 @@ anywhere, the picture is hidden rather than left in Chinese or blank.
 | `CN_SLIM_DIR` | `.cdn/cn_slim` | the small CN data set phones copy for schedule edits (the server builds it at start if missing) |
 | `CUSTOM_UNITS_DIR` | `assets/custom_units` | the folder of custom unit files and unit change files ([MAKING_UNITS.md](MAKING_UNITS.md)) |
 
-The quest drop amount, summon rates and the never-ending mails are set on the dashboard, not in `.env`.
+The quest drop amount, summon rates, the never-ending mails and the game language are set on the dashboard, not in
+`.env`.
 `.env.example` also lists a few settings that are only for rebuilding the translation and art
 patches (see [docs/contributing.md](contributing.md)); playing never needs them.
 

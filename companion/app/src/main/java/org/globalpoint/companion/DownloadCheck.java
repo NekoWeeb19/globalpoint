@@ -31,6 +31,8 @@ final class DownloadCheck {
             {"7409b79cbe56c8c7ff05e48755904c7c35fb9677914925607a474f5a33424174", 1427068120L, "starpoint-comics.zip (comics pack)"},
             {"4e70bfda526106a0f12fc9288e8a20c417b3246cdd3a2894051d5dfc5d03450c", 36791493L, "starpoint-skill-preview-art.zip (skill preview art pack; not needed with the 1.0 data pack, which has these pictures)"},
             {"198f2b4fb31568e2050ca5e1989d711ff63077494b21ff990562263c0ff0774e", 139394817L, "World Flipper (game) APK, build 25"},
+            {"447f2d13baa649133fa1f9472becc76ef19f3e457bcb1d907dbc960fc0dee391", 139730689L, "World Flipper (game) APK in Chinese, build 25"},
+            {"9283e3bc8b0e112d765f459fcf38ce80adbd6976a59be99ac9a60922f597086e", 1598950113L, "starpoint-chinese-art-pack.zip (Chinese art pack, for the game in Chinese)"},
     };
 
     interface Progress { void update(String message, long done, long total); }

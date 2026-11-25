@@ -7,7 +7,7 @@ import java.util.Map;
 final class ZhStrings {
     private ZhStrings() { }
 
-    private static final Map<String, String> MAP = new HashMap<>(452);
+    private static final Map<String, String> MAP = new HashMap<>(456);
 
     static {
         Map<String, String> m = MAP;
@@ -201,6 +201,7 @@ final class ZhStrings {
         m.put("Wait: the game update is being rebuilt. Open the game when this turns green.", "请稍候：游戏更新正在重建。变绿后再打开游戏。");
         m.put("Wait: the server is starting...", "请稍候：服务器正在启动……");
         m.put("Working...", "正在处理……");
+        m.put("World Flipper (game) APK in Chinese, build 25", "世界弹射物语（游戏）中文版 APK，build 25");
         m.put("World Flipper (game) APK, build 25", "世界弹射物语（游戏）APK，build 25");
         m.put("World Flipper can read its game files (All files access is on).", "世界弹射物语可以读取其游戏文件（已开启所有文件访问权限）。");
         m.put("World Flipper is installed (%s).", "已安装世界弹射物语（%s）。");
@@ -216,6 +217,7 @@ final class ZhStrings {
         m.put("no .database/, .cdn/ or .env files in this zip", "此压缩包中没有 .database/、.cdn/ 或 .env 文件");
         m.put("no wdfp_data.db in this zip", "此压缩包中没有 wdfp_data.db");
         m.put("not enough free space to copy %s (%s)", "空间不足，无法复制 %s（%s）");
+        m.put("starpoint-chinese-art-pack.zip (Chinese art pack, for the game in Chinese)", "starpoint-chinese-art-pack.zip（中文图片包，用于中文游戏）");
         m.put("starpoint-comics.zip (comics pack)", "starpoint-comics.zip（漫画包）");
         m.put("starpoint-data.zip (data pack for GlobalPoint 1.0, game files 1.4.800)", "starpoint-data.zip（GlobalPoint 1.0 的数据包，游戏文件 1.4.800）");
         m.put("starpoint-skill-preview-art.zip (skill preview art pack; not needed with the 1.0 data pack, which has these pictures)", "starpoint-skill-preview-art.zip（技能预览图片包；1.0 数据包已包含这些图片，无需再导入）");

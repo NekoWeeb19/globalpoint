@@ -1,5 +1,7 @@
 # Installing GlobalPoint
 
+> 中文版：[INSTALL.zh-CN.md](INSTALL.zh-CN.md)
+
 Every setup in full, with what to do when something goes wrong. The [README](../README.md) has the
 short version. **Most people want setup 1**: the game and its server on one Android phone or
 emulator, with nothing on a PC.
@@ -11,6 +13,7 @@ emulator, with nothing on a PC.
 - [3. PC only: an emulator with a PC server](#3-pc-only-an-emulator-with-a-pc-server) (custom units, development)
 - [Installing the server on a PC](#installing-the-server-on-a-pc) (for setups 2 and 3)
 - [Updating the server on a PC](#updating-the-server-on-a-pc)
+- Playing in Chinese: [CHINESE.en.md](CHINESE.en.md)
 
 ## Which setup
 
@@ -37,10 +40,13 @@ StarPoint's mitmproxy route, which only worked for the global app.
 | **OBB in 3 parts** (`main.1008001.com.leiting.wf.part1of3.obb`, `part2of3`, `part3of3`) | every game file (game files 1.4.800, up to date), for every setup; download all three | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 3.6 GB each |
 | **`starpoint-data.zip`** | GlobalPoint's English tables, CN's tables, schedule files, dashboard pictures and news (the game's own files come from the OBB). Setup 1 imports it into the companion; a PC server unzips it into its folder | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 221 MB |
 | **Comics zip** (optional) | the in-game comics, used the same way as `starpoint-data.zip` | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 1.4 GB |
+| **Chinese game APK** (optional) | the game app with CN's own Chinese labels, for [playing in Chinese](CHINESE.en.md); installs over the English one | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 133 MB |
+| **Chinese art pack** (optional), `starpoint-chinese-art-pack.zip` | CN's pictures with Chinese words on them, for [playing in Chinese](CHINESE.en.md) on a phone | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 1.5 GB |
 | **CN game files** (CN CDN 1.4.54) | the official CN game's files, for a PC server (setups 2 and 3): six parts `cn-cdn.tar.part.00` to `05`, plus `SHA256SUMS.txt` | [dennis96292/.cdn, release cdn-1.4.54](https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54) | ~10.1 GB |
 | **GlobalPoint** (this repository) | the server, the dashboard and the scripts | `git clone`, or **Code > Download ZIP** on GitHub | small |
 
 Everything except the CN game files and the repository is on [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO), and all of it is also on [MEGA](https://mega.nz/folder/fWRATYbJ#z8wtDI7krmKgBn2HL_s0jg).
+In mainland China, use the [Baidu Netdisk mirror](https://pan.baidu.com/s/1e_OhBTvGzM9OLFQnAozUkg?pwd=3625) (code `3625`; its file names are in Chinese, see [INSTALL.zh-CN.md](INSTALL.zh-CN.md#下载)).
 
 You can also build the OBB yourself on a PC with the server installed.
 
@@ -56,6 +62,9 @@ b3676a2042c945b26b7c0bfa1bd1127cb15e07984d7b2b47971c8b0d4aa9e412  main.1008001.c
 b863c94735c93d2afa169d3e0b3e09d2735fd259abef94150023866fe458f2e1  starpoint-data.zip
 7409b79cbe56c8c7ff05e48755904c7c35fb9677914925607a474f5a33424174  starpoint-comics.zip
 198f2b4fb31568e2050ca5e1989d711ff63077494b21ff990562263c0ff0774e  World Flipper (game) APK, build 25
+447f2d13baa649133fa1f9472becc76ef19f3e457bcb1d907dbc960fc0dee391  Chinese game APK, build 25
+9283e3bc8b0e112d765f459fcf38ce80adbd6976a59be99ac9a60922f597086e  starpoint-chinese-art-pack.zip
+061f16e88a73a94817235ee7d60e8f7ba2606f61e265e94b0777671132f5542a  StarPoint Companion APK 1.0
 ```
 
 ## 1. Phone or emulator
@@ -74,7 +83,7 @@ The phone plays on its own: the game's files come from the **OBB** (every game f
 with one button (**Set up everything**); the [steps by hand](#by-hand) still work the same way.
 
 **Downloads** (from the [Google Drive folder](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO)):
-- the **game** APK (build 25) and the **StarPoint Companion** APK (0.8.5 or newer);
+- the **game** APK (build 25) and the **StarPoint Companion** APK (1.0 or newer);
 - the **OBB**: the 3 parts `part1of3` / `part2of3` / `part3of3` (~3.6 GB each, game files 1.4.800, up to
   date). The old single 10 GB `.obb` (game files 1.4.203) isn't supported any more: the updates it needed
   aren't in `starpoint-data.zip` since GlobalPoint 1.0;

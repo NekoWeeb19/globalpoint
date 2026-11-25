@@ -1,5 +1,7 @@
 # Unit editor (dashboard)
 
+> 中文版：[UNIT_EDITOR.zh-CN.md](UNIT_EDITOR.zh-CN.md)
+
 > Written by Claude (AI) in a Claude Code session, with the repository owner choosing how it works.
 
 Change what a unit's abilities and skill do, and its numbers, from the dashboard: **Unit editor** in the menu
@@ -46,6 +48,10 @@ level 1 to the highest. Numbers are shown in plain units (%, seconds, points, co
 "(game value)".
 
 - **Skill tab**: the skill's and Skill+'s name and description, and what they do, from their scripts (below).
+
+![The Numbers tab: stats, skill gauge, ability numbers](images/dashboard-unit-numbers.png)
+
+![The Details tab: name, title, description, class, role](images/dashboard-unit-details.png)
 
 Not editable here: ability text (the game writes it itself from the rows, so
 it always matches), element and rarity (the server keeps its own copy), Mana Board costs.
@@ -227,15 +233,17 @@ armament page lists the version reached and tags a later version "Awakening Lv5"
   Chinese name and title (瓦格纳, 狱炎龙王...) and an armament by its CN name (百物语...), in either language. They
   come from CN's own `character_text` and `equipment` tables, so every CN unit and armament has them (custom units
   have only their own name).
-- **中文 switch** (next to Mode): the page in Simplified Chinese, remembered in this browser; **English** switches
-  back. It reloads the page, so it asks first if there are unsaved changes. In Chinese:
+- **Language:** the page follows the dashboard's language (the sidebar's **Dashboard language**). The **中文** /
+  **English** switch next to Mode overrides it for this page, remembered in this browser. It reloads the page, so it
+  asks first if there are unsaved changes. In Chinese:
   - the page's labels, notes, messages and the plain words for the game's codes are in Chinese, using CN's own
     game terms (角色, 装备, 能力, 技能槽, 强化弹射, 协力球, 合击, 玛纳板, 觉醒...);
   - **In game** shows each ability in CN's own Chinese wording (CN's `ui_string` pieces, filled in the same way as
     the English), e.g. "⟨火⟩角色攻击力 + 75 %";
   - the unit's heading shows its CN name and title, with the English name after it.
-- What stays as it is: the unit's own text (name, title, description, skill text: the Details and Skill tabs edit
-  the English text the game ships), skill script command names (`CreateHitArea`...), effect file paths, and the
+- What stays as it is: the unit's own text (name, title, description, skill text: the Details and Skill tabs show
+  the game's own text in the game's language: English, or CN's Chinese with the game set to Chinese; what you type
+  there, in either language, is what the game shows), skill script command names (`CreateHitArea`...), effect file paths, and the
   client's raw names for codes CN's units never use (Unrestricted mode). Race groups (Dragon, Beast...) show their
   codes: CN's tables have no Chinese for them.
 - The Chinese text is in `web/public/js/unit-editor-zh.js`: an English string → Chinese table plus patterns for

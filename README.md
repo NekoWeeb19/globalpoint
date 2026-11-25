@@ -1,5 +1,7 @@
 # GlobalPoint
 
+> 中文版：[README.zh-CN.md](README.zh-CN.md)
+
 **World Flipper, in English, fully offline.** GlobalPoint runs the Chinese (CN) version of World Flipper
 (app 1.8.1) on [StarPoint](https://github.com/duosii/starpoint), a private server, with global's English
 text and art put into the game. Everything CN had, including the units, events and summons global never
@@ -19,7 +21,8 @@ got, plays on your own PC or phone.
 ## Status
 
 **The CN app is functionally complete.** Story, events, summons, missions, co-op with COM partners,
-comics and the rest have been confirmed working in the game, all in English. The phone setups are
+comics and the rest have been confirmed working in the game, all in English. The game can also run in
+CN's own Simplified Chinese ([below](#playing-in-chinese-简体中文)). The phone setups are
 tested on an Android 9 emulator, a Samsung Android 16 phone and an Android 16 tablet.
 
 ## Quick start (phone or emulator)
@@ -29,7 +32,8 @@ PC, do the same in an Android emulator; no server on the PC is needed. Most mode
 game (it's ARM64): LDPlayer 9 is tested, and MuMu works with an Android 12 instance (a player saw
 hiccups on its Android 15 one).
 
-1. Download the files from the [Google Drive folder](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) (or [MEGA](https://mega.nz/folder/fWRATYbJ#z8wtDI7krmKgBn2HL_s0jg)): the two APKs,
+1. Download the files from the [Google Drive folder](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) (or [MEGA](https://mega.nz/folder/fWRATYbJ#z8wtDI7krmKgBn2HL_s0jg); in mainland China,
+   [Baidu Netdisk](https://pan.baidu.com/s/1e_OhBTvGzM9OLFQnAozUkg?pwd=3625), code `3625`): the two APKs,
    `starpoint-data.zip`, the comics zip if you want comics, and the game files: the three
    `.obb` parts. Leave them in the phone's **Download**
    folder and don't unzip anything.
@@ -59,6 +63,12 @@ and a few Command Prompt steps), with the official
 CN game files (~10 GB) from the [CN CDN 1.4.54 release](https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54).
 The [installation guide](docs/INSTALL.md) has every setup in full, every download with its size and
 checksum, and [how to update a PC server](docs/INSTALL.md#updating-the-server-on-a-pc).
+
+## Playing in Chinese (简体中文)
+
+Dashboard > **Game settings** > **Game language** > **简体中文**, then reopen the game. For the labels built into
+the app and the pictures with words on them, add the optional **Chinese game app** and **Chinese art pack**
+(1.5 GB). The dashboard and the companion app have their own Chinese too. Steps: [docs/CHINESE.en.md](docs/CHINESE.en.md).
 
 ## Features
 
@@ -134,6 +144,7 @@ also play as they did on any date ([balance by date](docs/DETAILS.md#balance-by-
 
 - [docs/INSTALL.md](docs/INSTALL.md): every setup in full, downloads, checksums and troubleshooting.
 - [docs/DASHBOARD.md](docs/DASHBOARD.md): the dashboard, tab by tab and job by job.
+- [docs/CHINESE.en.md](docs/CHINESE.en.md): playing in Simplified Chinese.
 - [docs/DETAILS.md](docs/DETAILS.md): balance by date, the harmless errors in the log, how the game was
   translated, the server's settings (`.env`), and pointers for developers.
 - [docs/UNIT_EDITOR.md](docs/UNIT_EDITOR.md) and [docs/CUSTOM_UNITS.md](docs/CUSTOM_UNITS.md): changing
@@ -150,7 +161,8 @@ also play as they did on any date ([balance by date](docs/DETAILS.md#balance-by-
 - [wfax](https://github.com/blead/wfax) for making modding possible.
 - [nodejs-mobile](https://github.com/digidem/nodejs-mobile) (digidem fork), which runs the server
   inside the companion app.
-- The World Flipper community, for names and sources used in the translation.
+- The World Flipper community, for names and sources used in the translation, and **晓之车**, for the Chinese fixes
+  in Chinese mode (see [docs/CHINESE.en.md](docs/CHINESE.en.md#the-chinese-communitys-fixes)).
 
 ## License
 
