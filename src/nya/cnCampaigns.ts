@@ -25,7 +25,12 @@ const globalLogin = loginBonusData as LoginBonusData
 // the same group objects as global's (the schedules change those in place), plus CN's own
 // CN's own returning-player groups (assets/cn_comeback_bonuses.json, src/nya/comeback.ts) replace global's of the same ids
 const cnComebackGroups = (cnComebackData as unknown as { groups: Record<string, LoginBonusGroup> }).groups
-const cnLogin: LoginBonusData = { ...globalLogin, groups: { ...globalLogin.groups, ...cnCampaigns.loginBonuses, ...cnComebackGroups } }
+// global's groups the CN game's login bonus table doesn't have: sending one stops the CN game at login with C8601
+// ("key=goodbye_login": global's end-of-service farewell, 2024-05-28 to 07-25, found 2026-11-24 on the emulator).
+// The only one (checked against CN's master/bonus/login_bonus table, whose files never change).
+export const GLOBAL_ONLY_LOGIN_GROUPS: readonly string[] = ["goodbye_login"]
+const sharedGlobalGroups = Object.fromEntries(Object.entries(globalLogin.groups).filter(([id]) => !GLOBAL_ONLY_LOGIN_GROUPS.includes(id)))
+const cnLogin: LoginBonusData = { ...globalLogin, groups: { ...sharedGlobalGroups, ...cnCampaigns.loginBonuses, ...cnComebackGroups } }
 
 /** The login bonus groups for the client making the request. */
 export function loginBonusDataFor(): LoginBonusData {
@@ -37,7 +42,9 @@ export function loginBonusDataFor(): LoginBonusData {
  * step with the yearly schedule); null puts global's group back.
  */
 export function setCnLoginGroup(id: string, group: LoginBonusGroup | null) {
-    cnLogin.groups[id] = group ?? cnComebackGroups[id] ?? globalLogin.groups[id]
+    const restored = group ?? cnComebackGroups[id] ?? (GLOBAL_ONLY_LOGIN_GROUPS.includes(id) ? undefined : globalLogin.groups[id])
+    if (restored === undefined) delete cnLogin.groups[id]
+    else cnLogin.groups[id] = restored
 }
 
 /** The group the CN client gets for an id (its CN copy when there is one). */

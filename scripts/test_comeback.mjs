@@ -45,6 +45,13 @@ try {
     const load = (p, iso, inCn = true) => { realDay += DAY; const run = () => { const paid = settleLoginBonusSync(p, ms(iso), realDay); confirmLoginBonusShownSync(p); return paid }; return inCn ? cn(run) : run() }
     const comebacks = paid => paid.filter(id => groups[id] !== undefined)
 
+    // global's end-of-service farewell bonus isn't in the CN game's login bonus table: sending it stopped the CN game
+    // at login with C8601 ("key=goodbye_login") on 2024-05-28 to 07-25; the global app still gets it
+    check("the CN app doesn't get global's goodbye_login (C8601)", cn(() => loginBonusDataFor().groups.goodbye_login) === undefined)
+    check("the global app still has goodbye_login", loginBonusDataFor().groups.goodbye_login !== undefined)
+    const cnPaidAtGoodbye = load(newPlayer(), "2024-07-15T12:00:00Z")
+    check("a CN login on 2024-07-15 pays no goodbye_login", !cnPaidAtGoodbye.includes("goodbye_login"), cnPaidAtGoodbye)
+
     // ---- the data ----
     check("CN's four returning-player groups", ["comeback_01", "comebackpresent", "cn_comeback", "anv3_comeback"].every(id => groups[id]), Object.keys(groups))
     check("comeback_01: 15 days, 1,500 beads in all, 30 days away", groups.comeback_01.days.length === 15 && groups.comeback_01.daysAway === 30

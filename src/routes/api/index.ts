@@ -2,7 +2,7 @@ import { addMissingBoardTwoBondTokensSync } from "../../lib/character";
 import { favoritePartyGroupList } from "../../lib/profile";
 import { getFavoritePartySync } from "../../nya/profile";
 import { getFundReceiveListSync } from "../../nya/growthFund";
-import { specialExchangeListSync, startDashListSync } from "../../nya/exchangeCampaigns";
+import { issueFreeExchangeTicketsSync, specialExchangeListSync, startDashListSync } from "../../nya/exchangeCampaigns";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { SessionType } from "../../data/types";
 import { getClientSerializedData } from "../../data/utils";
@@ -100,6 +100,8 @@ const routes = async (fastify: FastifyInstance) => {
         // Daily login bonus: pay today's (once per real day), before the player data so the new
         // totals go out with it. The popup is listed until the client calls /bonus/shown.
         settleLoginBonusSync(playerId)
+        // CN's free exchange campaigns: their ticket, given once while each runs (src/nya/exchangeCampaigns.ts)
+        if (cn) issueFreeExchangeTicketsSync(playerId)
 
         // Boss Boost: back to 3 after the daily reset (once per real day), before the player data
         refillBossBoostSync(playerId)

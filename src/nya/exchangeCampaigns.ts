@@ -71,6 +71,30 @@ export function specialExchangeListSync(playerId: number) {
 }
 
 /**
+ * The free exchange campaigns (price 0: the 2024-07 Dream Armament Exchange Ticket Promo, the Gift Unit Exchange
+ * Ticket promos) sell no ticket: CN issued it directly, once per player during the campaign (its posts: 「…会直接发放」,
+ * 「每人仅可获取1次」). Without it the exchange page opened with Trade greyed out (a player's report, 2026-11-24).
+ * Gives each running free campaign's ticket once (the campaign's status moves to TICKET); call before the /load data is
+ * built so the ticket shows. A ticket kept past the exchange end can still be traded (the exchange routes don't check
+ * the window), as CN's game sends a player holding one to the exchange page.
+ * @returns the campaign ids whose ticket was given.
+ */
+export function issueFreeExchangeTicketsSync(playerId: number): number[] {
+    const now = getServerDate().getTime()
+    const given: number[] = []
+    for (const [id, c] of Object.entries(data.special)) {
+        if (c.price !== 0 || !(ms(c.campaignStart) <= now && now < ms(c.campaignEnd ?? c.exchangeEnd))) continue
+        const row = rowOf(playerId, "special", Number(id))
+        if (row !== undefined && row.status !== STATUS.ENTERED) continue
+        givePlayerItemSync(playerId, c.ticketItem, 1)
+        setRow(playerId, "special", { campaign_id: Number(id), status: STATUS.TICKET, period_start: 0, gacha_id: 0 })
+        given.push(Number(id))
+        console.log(`[exchange] Player ${playerId}: free ticket ${c.ticketItem} of special exchange ${id} (${c.name}) given`)
+    }
+    return given
+}
+
+/**
  * The client's start_dash_exchange_campaign_list. A Start Dash campaign running now gets the player's window on
  * their first look (now to `days` later, the start dash portal running now).
  */
