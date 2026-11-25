@@ -122,7 +122,7 @@
 - **日程重建是难点。** 其中七个数据表（character、character_status、ability、leader_ability、action_skill、
   encyclopedia、mana_board2_open_condition）会被每次日程构建（`scripts/gen_cn_event_schedule.cjs`）用国服自己的行重新
   发送，所以新行在下次重建时就会消失，含有该角色的存档随后会出现 C8601。按日期切换配置的机制（`assets/kit_dates.json`）
-  只会*替换*已有的行。**此后已解决：** 自制角色（[../CUSTOM_UNITS.md](../CUSTOM_UNITS.md)（英文））把行保存在
+  只会*替换*已有的行。**此后已解决：** 自制角色（[../CUSTOM_UNITS.zh-CN.md](../CUSTOM_UNITS.zh-CN.md)）把行保存在
   `assets/custom_units/<id>.json` 中，每次日程构建都会把它们加进 19 个数据表（总是发送）；服务器在启动时把该角色合并进
   它的角色、能力学习和扭蛋数据。
 
@@ -223,7 +223,7 @@
 - `assets/mana_node_cn.json`：两个盘，节点 ID → 道具、玛纳消耗（解锁节点需要它）。
 - 可选：`assets/gacha.json` 卡池（放在该档位列表的第一个，或重新调整权重；见扭蛋一节）。
 - 对于要长期保留的角色，这三项都改写进它的自制角色文件（`character`、`manaNodes`、`banners`，权重在启动时重新调整；
-  见 [../CUSTOM_UNITS.md](../CUSTOM_UNITS.md)（英文））：自带的 assets 保持不变。
+  见 [../CUSTOM_UNITS.zh-CN.md](../CUSTOM_UNITS.zh-CN.md)）：自带的 assets 保持不变。
 
 ### 5. 发送
 
@@ -232,7 +232,7 @@
   （`clone_cn_unit.cjs` → `art_files.json`）。
 - 数据表的行放进 `assets/custom_units/<id>.json`：每次日程构建都会把它们加进随后发送的全部 19 个数据表，所以重建时不会
   丢失（以前，日程重建的 7 个数据表会丢失这些行，含有该角色的存档就无法加载，C8601）。见
-  [../CUSTOM_UNITS.md](../CUSTOM_UNITS.md)（英文）。
+  [../CUSTOM_UNITS.zh-CN.md](../CUSTOM_UNITS.zh-CN.md)。
 - 手机和获取其他更新一样获取它（Wi-Fi 复制，勾选游戏更新）。
 
 ### 6. 过程中遇到的错误代码
@@ -248,7 +248,7 @@
 1. **行。** 用一个小 JSON 文件描述角色（ID、字符串 ID、稀有度、属性、属性数值、能力行、队长特性、技能行、能力学习），
    编译成 19 个数据表的行。能力/队长特性的列已经解码（内部笔记 kit-rows-decode，`scripts/build_kit_*.cjs`），
    `*Values.as` 写明了每个数据表每一列的名称。
-2. **与日程集成。** 已完成：[../CUSTOM_UNITS.md](../CUSTOM_UNITS.md)（英文）（`assets/custom_units/`，每次日程构建都加入
+2. **与日程集成。** 已完成：[../CUSTOM_UNITS.zh-CN.md](../CUSTOM_UNITS.zh-CN.md)（`assets/custom_units/`，每次日程构建都加入
    这些行，启动时合并服务器数据）。
 3. **美术流程。** 像素精灵图做成精灵表 + `.atlas`（帧的矩形，AMF3）+ `.frame`/`.timeline`（动画序列，例如
    `special_land`/`special_pose`）；固定尺寸的立绘和图标（上面的 `ui/` 列表）；`trimmed_image`/`character_image` 的
@@ -262,7 +262,7 @@
    测量、哪些 atlas 字段是必需的）；可以复制一个模板角色的来对比。
 4. **技能。** 已完成（2026-11-16/17）：角色编辑器的**技能页（Skill tab）**以指令的形式编辑技能脚本（一棵 AMF3 树，
    `["ActionDsl", 1, …, ["Block", [["Command", ["StopBall", …]], …]]]`），用国服的每个脚本来检查它们，提供预览，并发送它们
-   （[../UNIT_EDITOR.md](../UNIT_EDITOR.md#skill-tab)、[../SKILL_GUIDE.md](../SKILL_GUIDE.md)（英文））。每条指令都记录在
+   （[../UNIT_EDITOR.zh-CN.md](../UNIT_EDITOR.zh-CN.md#技能标签页)、[../SKILL_GUIDE.zh-CN.md](../SKILL_GUIDE.zh-CN.md)）。每条指令都记录在
    [skill-commands.zh-CN.md](skill-commands.zh-CN.md) 中；特效、它们的文件和动画格式见
    [skill-effects.md](skill-effects.md)（英文）。新技能可以组合已有的指令，复用任何角色的特效和任何协力球（按 ID）。新的
    *特效*动画仍然属于美术：格式已经清楚（网页控制台也能播放），但还没有制作工具。

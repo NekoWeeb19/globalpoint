@@ -3,7 +3,7 @@
 > 本页是 [KIT_FORMAT.md](KIT_FORMAT.md) 的中文版，由 Claude（AI）翻译。两者内容相同；如有出入，以英文版为准。
 
 **配置包（kit）** 是 GlobalPoint 网页控制台的角色编辑器（Unit editor）在下载已编辑的角色或装备（armament）时生成的文件
-（见 [UNIT_EDITOR.md](UNIT_EDITOR.md)）。本页说明这个文件本身的格式，让其他国服（CN）《弹射世界》（World Flipper）服务器
+（见 [UNIT_EDITOR.zh-CN.md](UNIT_EDITOR.zh-CN.md)）。本页说明这个文件本身的格式，让其他国服（CN）《弹射世界》（World Flipper）服务器
 或分支（fork）能够读取它，并把同样的修改放进自己的游戏更新里。修改怎样发送给游戏由各分支自己决定；描述修改所需的
 一切都在文件里。
 
