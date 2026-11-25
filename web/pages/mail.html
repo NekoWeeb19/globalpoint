@@ -111,7 +111,7 @@
             </section>
             <section id="cn-gifts" class="flex flex-col p-5 border border-outline-variant rounded-3xl w-full gap-3">
                 <h3 class="text-xl text-on-background font-semibold">CN's gifts</h3>
-                <p class="text-sm text-on-surface-variant">The gifts and compensation mails CN sent its players from launch (2021-10-26) to its end (2025-07-22), from CN's official posts: beads, summon tickets, materials, stamina potions, a unit and an armament. They arrive in the CN app's mailbox on CN's dates, for every save; one mail per item, each claimable for 30 days. A gift more than 30 days old when a save first looks isn't sent, so moving the date far ahead doesn't pour out years of gifts. Profile titles, exchange tickets and one-day battle tries aren't included.</p>
+                <p class="text-sm text-on-surface-variant">The gifts and compensation mails CN sent its players from launch (2021-10-26) to its end (2025-07-22), from CN's official posts: beads, summon tickets, materials, stamina potions, a unit and an armament. They arrive in the CN app's mailbox on CN's dates, for every save; one mail per item, each claimable for 30 days. A gift more than 30 days old when a save first looks isn't sent, so moving the date far ahead doesn't pour out years of gifts. Profile titles and one-day battle tries aren't included.</p>
                 <label class="flex gap-2 items-center text-on-surface"><input type="checkbox" id="cn-on" class="w-5 h-5"> Send CN's gifts</label>
                 <p id="cn-summary" class="text-sm text-on-surface-variant"></p>
                 <details id="cn-details" class="text-sm">
@@ -319,8 +319,12 @@
             }
             $("cn-on").addEventListener("change", () => cnGiftPost({ on: $("cn-on").checked }))
             function renderCnGifts() {
+                // before the server's answer arrives (the item names can come first) there's nothing to show yet:
+                // leave the section as it is, don't hide it for good
+                if (!("cnGifts" in data)) return
                 const cn = data.cnGifts
-                if (!cn) { show($("cn-gifts"), false); return }
+                show($("cn-gifts"), !!cn)
+                if (!cn) return
                 $("cn-on").checked = cn.on
                 const now = Date.parse(data.serverTime)
                 const kept = cn.gifts.filter(g => !g.removed)

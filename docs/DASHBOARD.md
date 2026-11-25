@@ -176,8 +176,8 @@ unit Eloise (Indomitable Lady) and The Carrot Sword of Imagination.
 - **Send CN's gifts** turns them all off or on. **All gifts** lists every gift with its items and status;
   **Remove** stops one (**Put back** undoes it). The settings are in `.database/cn_gift_mails.json`, the
   gifts in `assets/cn_gift_mails.json`.
-- Not included: profile titles, exchange tickets (CN gave those through an exchange event, not by mail),
-  one-day battle tries and bonus points, gift codes, and mails only some players got.
+- Not included: profile titles, one-day battle tries and bonus points, gift codes, and mails only some
+  players got. Exchange tickets CN gave for free come with their exchange promo instead, not by mail.
 - CN sent most of them only to Rank 5+ players; here every save gets them.
 
 ## Back up or move a save
