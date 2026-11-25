@@ -26,8 +26,8 @@ down; it takes you back to the top.
 | **Summons** | [schedule summon banners](#schedule-a-summon-banner) |
 | **Campaigns** | [yearly login bonuses, free pulls and stamina/reward campaigns](#repeat-a-yearly-campaign) |
 | **News** | [posts on the in-game News board](#post-news) |
-| **Mail** | [gifts that arrive at a set time, once or repeating](#schedule-mail) |
-| **Players** | [gifts](#give-a-unit-an-item-an-armament-or-beads), [saves](#back-up-or-move-a-save), the active account, removing a unit |
+| **Mail** | [gifts, right away or at a set time, once or repeating](#schedule-mail) |
+| **Players** | [saves](#back-up-or-move-a-save), the active account, [removing a unit and other player tools](#player-page-tools) |
 | **Unit editor** | [change units' and armaments' abilities and numbers, and units' skills](#edit-a-unit-or-an-armament) |
 
 ---
@@ -103,19 +103,13 @@ name to list the banners that feature it, e.g. **Bianca**.
 year on its dates (untick to stop), then **Save**. Where two picked ones overlap, the longer one runs
 that year.
 
-## Give a unit, an item, an armament or beads
+## Player page tools
 
-![A player's page: save download and upload, Give](images/dashboard-player.png)
+To give a unit, an item, an armament or beads, use the **Mail** tab: pick **Once** and **Now**
+([Schedule mail](#schedule-mail)).
 
-**Players** > a player > **Give**: choose **Character**, **Item**, **Equipment** (armament), **Paid
-beads** or **Free beads**, find it with **Search by name** (or type its ID), type the amount and press
-**Send Mail (in session)**. It arrives in the in-game mailbox. These mails last only while the server
-runs, so claim them before restarting it; the **Mail** tab's are saved.
-
-The player page also has **Unlock** / **Reset** a mission's reward, **Remove
-a unit** (close the game first; it can't be undone, see
-[CUSTOM_UNITS.md](CUSTOM_UNITS.md#removing-a-unit-safely)), and **Link my reinstalled game to this
-player** (press it, then open the reinstalled game within 30 minutes).
+The player page has **Unlock** / **Reset** a mission's reward and **Remove a unit** (close the game
+first; it can't be undone, see [CUSTOM_UNITS.md](CUSTOM_UNITS.md#removing-a-unit-safely)).
 
 **Story and rank** on the player page (close the game first, then reopen it; neither can be undone):
 - **Unlock all chapters:** marks every main story stage cleared, so all chapters are open. Stages already
@@ -144,7 +138,7 @@ DETAILS.md, Co-op partners). The picks are kept in the save, so they move with s
 
 ![A new scheduled mail: paid beads every day, 4 times](images/feature-scheduled-mail.png)
 
-**Mail**: gifts that arrive at a set server time, like the game's own maintenance gifts.
+**Mail**: gifts that arrive right away or at a set server time, like the game's own maintenance gifts.
 1. Pick what to send (beads, mana, EXP, or an item, unit or armament by name or ID) and the amount.
    Title and message are optional.
 2. Set the **First send** (**Now** fills in the server's time) and **Repeat**: **Once**, or **Every** N
@@ -191,6 +185,7 @@ unit Eloise (Indomitable Lady) and The Carrot Sword of Imagination.
 - **Players** > a player > **Download Save** gives a JSON file; **Upload Save** puts one back. It works
   between any two servers.
 - **Players** > **Active account** picks which player each app plays on (reopen the game to switch).
+  After reinstalling the game, pick your player here and the reinstalled game opens it.
 
   ![Active account: which player each app plays on](images/dashboard-active-account.png)
 

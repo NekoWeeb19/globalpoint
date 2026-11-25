@@ -190,47 +190,6 @@
             </script>
             <form
                 class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5"
-                method="get" action="/api/server/give">
-                <div class="flex flex-row items-center justify-center">
-                    <span>Give</h3>
-                        <input id="playerId" name="playerId" value="{{playerId}}" type="hidden" />
-                        <select class="my-select" id="type" name="type" required>
-                            <option value="chara">Character</option>
-                            <option value="item">Item</option>
-                            <option value="equip">Equipment</option>
-                            <option value="beads_paid">Paid beads</option>
-                            <option value="beads_free">Free beads</option>
-                        </select>
-                        <input class="my-input" id="typeId" name="typeId" type="number" placeholder="id" required />
-                        <span>x</span>
-                        <input class="my-input" id="number" name="number" type="number" value="1" required />
-                </div>
-                <div class="flex flex-col gap-2" style="width: 100%; max-width: 28rem;">
-                    <input class="my-input" style="width: 100%;" name="subject" maxlength="60" placeholder="Title (optional)" />
-                    <input class="my-input" style="width: 100%;" name="message" maxlength="300" placeholder="Message (optional; else &quot;From Web API&quot;)" />
-                </div>
-                <button type="submit"
-                    class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity">
-                    Send Mail (in session)
-                </button>
-            </form>
-            <script src="/public/js/name-search.js"></script>
-            <script>
-                // beads are currency, not an item: no id, just an amount
-                (function () {
-                    const type = document.getElementById("type"), id = document.getElementById("typeId")
-                    const sync = () => { const beads = type.value.startsWith("beads"); id.hidden = beads; id.required = !beads; id.disabled = beads }
-                    type.addEventListener("change", sync)
-                    sync()
-                    // search units, armaments and items by name (web/public/js/name-search.js)
-                    const searchBox = document.createElement("div")
-                    searchBox.style.cssText = "width: 100%; max-width: 28rem;"
-                    id.closest("div").after(searchBox)
-                    attachNameSearch(type, id, searchBox)
-                })()
-            </script>
-            <form
-                class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5"
                 method="get" action="/api/server/removeCharacter"
                 onsubmit="return confirm('Remove unit ' + this.characterId.value + ' from this save? Its level, Mana Boards and party places go with it. This can't be undone (download the save first to keep a copy).')">
                 <h3 class="text-xl text-on-background font-semibold mt-2">Remove a unit</h3>
@@ -443,39 +402,6 @@
                     saveButton.addEventListener("click", () => save(selects.map(select => select.value === "" ? null : Number(select.value))))
                     clearButton.addEventListener("click", () => save([null, null]))
                     load()
-                })()
-            </script>
-            <section
-                class="mt-5 flex flex-col items-center justify-center p-5 border border-outline-variant bg-surface-container rounded-3xl w-full gap-5">
-                <h3 class="text-xl text-on-background font-semibold mt-2">Reinstalled game</h3>
-                <p class="text-on-surface-variant text-center">After reinstalling the game (for example the StarPoint-patched app), it logs in as a new guest. Press this first: the next new guest login within 30 minutes loads this player instead of starting over.</p>
-                <button type="button" id="accountClaim" data-player-id="{{playerId}}"
-                    class="text-base bg-primary text-on-primary h-[40px] px-[24px] rounded-full flex items-center justify-center relative before:transition-opacity before:absolute before:w-full before:h-full before:left-0 before:top-0 before:rounded-full before:opacity-0 before:hover:bg-on-primary before:hover:opacity-[0.12] transition-opacity disabled:opacity-40 disabled:pointer-events-none">
-                    Link my reinstalled game to this player
-                </button>
-                <p id="accountClaimMessage" class="text-sm text-on-surface-variant text-center" role="status"></p>
-            </section>
-            <script>
-                (function () {
-                    const button = document.getElementById("accountClaim")
-                    const message = document.getElementById("accountClaimMessage")
-                    button.addEventListener("click", async () => {
-                        button.disabled = true
-                        message.textContent = "Working..."
-                        try {
-                            const response = await fetch("/api/server/account/claim", {
-                                method: "POST", headers: { "content-type": "application/json" },
-                                body: JSON.stringify({ playerId: Number(button.dataset.playerId) })
-                            })
-                            const reply = await response.json().catch(() => ({}))
-                            if (!response.ok) throw new Error(reply.message || response.statusText)
-                            message.textContent = reply.message
-                        } catch (error) {
-                            message.textContent = "Error: " + error.message
-                        } finally {
-                            button.disabled = false
-                        }
-                    })
                 })()
             </script>
         </article>
