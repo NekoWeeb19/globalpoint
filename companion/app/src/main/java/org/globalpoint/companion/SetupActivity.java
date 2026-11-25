@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * is ready. What only the person can do (installing the game, Android's permission switches) it opens the right
  * screen for.
  *
- * "Set up everything" does it all in one go for players who'd rather not follow steps: it asks for the two
+ * Tr.t("Set up everything") does it all in one go for players who'd rather not follow steps: it asks for the two
  * permissions (this app's and the game's All files access), then checks and moves the OBB, imports the data pack and
  * the comics pack (optional) found in Download and the like, removes leftovers and starts the server.
  */
@@ -69,7 +69,7 @@ public class SetupActivity extends Activity {
     private TextView status;
     private ProgressBar bar;
     private boolean busy, visible;
-    /** "Set up everything" waiting for a permission screen: 1 this app's storage, 2 the game's All files access */
+    /** Tr.t("Set up everything") waiting for a permission screen: 1 this app's storage, 2 the game's All files access */
     private int autoStage;
     /** set when this screen is left while autoStage waits, so it only carries on after a real trip to the settings */
     private boolean wentAway;
@@ -77,13 +77,11 @@ public class SetupActivity extends Activity {
     @Override
     protected void onCreate(Bundle saved) {
         super.onCreate(saved);
-        setTitle("Setup check");
+        setTitle(Tr.t("Setup check"));
         Ui u = new Ui(this);
-        u.text("Everything needed to play on this phone. Green is done; yellow and red say what's left, "
-                + "with a button where this app can do it for you.", 14);
-        u.text("Or let this app do it all: put the downloads (the OBB, starpoint-data.zip and, if you want comics, the "
-                + "comics zip) in Download, then press the button below and allow what Android asks.", 14);
-        Button all = u.button("Set up everything", this::setUpEverything);
+        u.text(Tr.t("Everything needed to play on this phone. Green is done; yellow and red say what's left, with a button where this app can do it for you."), 14);
+        u.text(Tr.t("Or let this app do it all: put the downloads (the OBB, starpoint-data.zip and, if you want comics, the comics zip) in Download, then press the button below and allow what Android asks."), 14);
+        Button all = u.button(Tr.t("Set up everything"), this::setUpEverything);
         all.setTextSize(17);
         list = u.add(new LinearLayout(this));
         list.setOrientation(LinearLayout.VERTICAL);
@@ -92,7 +90,7 @@ public class SetupActivity extends Activity {
         bar.setVisibility(View.GONE);
         u.add(bar);
         status = u.text("", 13);
-        u.button("Check again", this::refresh);
+        u.button(Tr.t("Check again"), this::refresh);
         ScrollView scroll = new ScrollView(this);
         scroll.addView(u.root);
         setContentView(scroll);
@@ -103,12 +101,12 @@ public class SetupActivity extends Activity {
         super.onResume();
         visible = true;
         refresh();
-        // back from a permission screen that "Set up everything" opened: carry on
+        // back from a permission screen that Tr.t("Set up everything") opened: carry on
         if (!wentAway) return;
         wentAway = false;
         if (autoStage == 1) {
             if (ownStorage()) setUpEverything();
-            else { autoStage = 0; status.setText("\"All files access\" for StarPoint Companion is still off, so it can't find the downloads. Press Set up everything again and turn it on."); }
+            else { autoStage = 0; status.setText(Tr.t("\"All files access\" for StarPoint Companion is still off, so it can't find the downloads. Press Set up everything again and turn it on.")); }
         } else if (autoStage == 2) {
             setUpEverything();
         }
@@ -119,7 +117,7 @@ public class SetupActivity extends Activity {
         super.onRequestPermissionsResult(requestCode, permissions, results);
         if (requestCode != 1 || autoStage != 1) return;
         if (ownStorage()) setUpEverything();
-        else { autoStage = 0; status.setText("Storage access is off, so this app can't find the downloads. Press Set up everything again and allow it."); }
+        else { autoStage = 0; status.setText(Tr.t("Storage access is off, so this app can't find the downloads. Press Set up everything again and allow it.")); }
     }
 
     @Override
@@ -175,21 +173,21 @@ public class SetupActivity extends Activity {
         PackageInfo game = null;
         try { game = getPackageManager().getPackageInfo(GAME, 0); } catch (Exception ignored) { }
         out.add(game != null
-                ? new Line(GREEN, "World Flipper is installed (" + game.versionName + ").", null, null)
-                : new Line(RED, "World Flipper isn't installed: install the game APK (build 25) from the downloads.", null, null));
+                ? new Line(GREEN, Tr.t("World Flipper is installed (%s).", game.versionName), null, null)
+                : new Line(RED, Tr.t("World Flipper isn't installed: install the game APK (build 25) from the downloads."), null, null));
 
         // 2. this app may look at the phone's storage (to find, check and move the OBB)
         boolean storage = ownStorage();
         out.add(storage
-                ? new Line(GREEN, "This app can use the phone's storage.", null, null)
-                : new Line(RED, "Allow \"All files access\" for StarPoint Companion, so it can find and move the game files.", "Allow", this::askOwnStorage));
+                ? new Line(GREEN, Tr.t("This app can use the phone's storage."), null, null)
+                : new Line(RED, Tr.t("Allow \"All files access\" for StarPoint Companion, so it can find and move the game files."), Tr.t("Allow"), this::askOwnStorage));
 
         // 3. the game may read its files from shared storage
         if (game != null) {
             Boolean access = gameStorage();
-            if (Boolean.TRUE.equals(access)) out.add(new Line(GREEN, "World Flipper can read its game files (All files access is on).", null, null));
-            else if (access == null) out.add(new Line(YELLOW, "Can't tell whether World Flipper has \"All files access\": check it's on, and the storage permissions (Photos and videos, Music and audio).", "Open World Flipper's settings", this::openGameAccess));
-            else out.add(new Line(RED, "Turn on \"All files access\" for World Flipper, and allow its storage permissions (Photos and videos, Music and audio). Without them it can't see the OBB.", "Open World Flipper's settings", this::openGameAccess));
+            if (Boolean.TRUE.equals(access)) out.add(new Line(GREEN, Tr.t("World Flipper can read its game files (All files access is on)."), null, null));
+            else if (access == null) out.add(new Line(YELLOW, Tr.t("Can't tell whether World Flipper has \"All files access\": check it's on, and the storage permissions (Photos and videos, Music and audio)."), Tr.t("Open World Flipper's settings"), this::openGameAccess));
+            else out.add(new Line(RED, Tr.t("Turn on \"All files access\" for World Flipper, and allow its storage permissions (Photos and videos, Music and audio). Without them it can't see the OBB."), Tr.t("Open World Flipper's settings"), this::openGameAccess));
         }
 
         // 4. the OBB and 5. loose files left in the drop-off folders
@@ -198,44 +196,44 @@ public class SetupActivity extends Activity {
             if (inPlace.any()) {
                 String where = inPlace.folder;
                 boolean obbFolder = where.contains("Android/obb");
-                out.add(new Line(obbFolder ? YELLOW : GREEN, "OBB in place (" + inPlace.describe() + ", in " + where + "). The game unpacks it when it starts."
-                        + (obbFolder ? " Some phones' file apps leave files there unreadable for the game; if it asks to download ~10 GB, move it to starpoint_game." : ""), null, null));
+                out.add(new Line(obbFolder ? YELLOW : GREEN, Tr.t("OBB in place (%s, in %s). The game unpacks it when it starts.", inPlace.describe(), where)
+                        + (obbFolder ? Tr.t(" Some phones' file apps leave files there unreadable for the game; if it asks to download ~10 GB, move it to starpoint_game.") : ""), null, null));
             } else if (elsewhere.any()) {
-                out.add(new Line(YELLOW, "Found the OBB (" + elsewhere.describe() + ") in " + elsewhere.folder + ". This app can check it's undamaged and move it to starpoint_game for the game (moving is instant, no extra space).",
-                        "Check and move it", () -> checkAndMove(elsewhere)));
+                out.add(new Line(YELLOW, Tr.t("Found the OBB (%s) in %s. This app can check it's undamaged and move it to starpoint_game for the game (moving is instant, no extra space).", elsewhere.describe(), elsewhere.folder),
+                        Tr.t("Check and move it"), () -> checkAndMove(elsewhere)));
             } else {
-                out.add(new Line(GREY, "No OBB found. If the game already has its files (it got past its title screen before), nothing to do. Otherwise download the OBB (the 3 parts, or the single file) into Download and check again.", null, null));
+                out.add(new Line(GREY, Tr.t("No OBB found. If the game already has its files (it got past its title screen before), nothing to do. Otherwise download the OBB (the 3 parts, or the single file) into Download and check again."), null, null));
             }
             long[] loose = looseFiles();
             if (loose[0] > 0) {
                 boolean obb = inPlace.any() || elsewhere.any();
-                String what = loose[0] + " loose game file(s) (" + gb(loose[1]) + ") in the drop-off folders";
+                String what = Tr.t("%d loose game file(s) (%s) in the drop-off folders", loose[0], gb(loose[1]));
                 out.add(obb
-                        ? new Line(YELLOW, what + ", from an earlier setup. With the OBB they aren't needed, and the game would spend a long time listing them before it starts.", "Remove them", this::removeLoose)
-                        : new Line(GREY, what + ". The game moves these in when it starts (e.g. after Download from PC with Full game files). Keep the game open until it's done.", null, null));
+                        ? new Line(YELLOW, what + Tr.t(", from an earlier setup. With the OBB they aren't needed, and the game would spend a long time listing them before it starts."), Tr.t("Remove them"), this::removeLoose)
+                        : new Line(GREY, what + Tr.t(". The game moves these in when it starts (e.g. after Download from PC with Full game files). Keep the game open until it's done."), null, null));
             }
         }
 
         // 6. the server's data
         boolean data = new File(ServerFiles.dataDir(this), ".cdn/cn/path").exists();
         out.add(data
-                ? new Line(GREEN, "The server has its data (" + DataTransfer.summary(this).split("\n")[0] + ").", null, null)
-                : new Line(RED, "The server needs its data: import starpoint-data.zip (Game data > Import pack...), or Download from PC.", "Game data", () -> startActivity(new Intent(this, DataActivity.class))));
+                ? new Line(GREEN, Tr.t("The server has its data (%s).", DataTransfer.summary(this).split("\n")[0]), null, null)
+                : new Line(RED, Tr.t("The server needs its data: import starpoint-data.zip (Game data > Import pack...), or Download from PC."), Tr.t("Game data"), () -> startActivity(new Intent(this, DataActivity.class))));
 
         // 6b. comics (optional): the comics pack, or Download from PC with Comics
         File comicsDir = new File(ServerFiles.dataDir(this), ".cdn/comics");
         String[] comicFiles = comicsDir.list();
         out.add(comicFiles != null && comicFiles.length > 0
-                ? new Line(GREEN, "Comics are in (Menu > Other > Comics in the game).", null, null)
-                : new Line(GREY, "Comics: not added (optional). Import the comics zip (Game data > Import pack...), or Download from PC with Comics ticked.", "Game data", () -> startActivity(new Intent(this, DataActivity.class))));
+                ? new Line(GREEN, Tr.t("Comics are in (Menu > Other > Comics in the game)."), null, null)
+                : new Line(GREY, Tr.t("Comics: not added (optional). Import the comics zip (Game data > Import pack...), or Download from PC with Comics ticked."), Tr.t("Game data"), () -> startActivity(new Intent(this, DataActivity.class))));
 
         // 7. the server
         boolean up = ServerProbe.running(), own = ServerProbe.ownProcess(this);
         Boolean rebuilding = up ? ServerProbe.updateRebuilding() : null;
-        if (own && up && Boolean.TRUE.equals(rebuilding)) out.add(new Line(YELLOW, "Server running, but the game update is being rebuilt: wait before opening the game.", null, null));
-        else if (own && up) out.add(new Line(GREEN, "Server ready: open the game.", null, null));
-        else if (own) out.add(new Line(YELLOW, "Server starting...", null, null));
-        else out.add(new Line(RED, "Server stopped.", data ? "Start" : null, data ? () -> { ServerService.start(this); ui.postDelayed(this::refresh, 3000); } : null));
+        if (own && up && Boolean.TRUE.equals(rebuilding)) out.add(new Line(YELLOW, Tr.t("Server running, but the game update is being rebuilt: wait before opening the game."), null, null));
+        else if (own && up) out.add(new Line(GREEN, Tr.t("Server ready: open the game."), null, null));
+        else if (own) out.add(new Line(YELLOW, Tr.t("Server starting..."), null, null));
+        else out.add(new Line(RED, Tr.t("Server stopped."), data ? Tr.t("Start") : null, data ? () -> { ServerService.start(this); ui.postDelayed(this::refresh, 3000); } : null));
         return out;
     }
 
@@ -300,8 +298,8 @@ public class SetupActivity extends Activity {
             return f;
         }
         String describe() {
-            if (parts != null) return partCount + " parts, " + gb(total(files()));
-            return "the single file, " + gb(single.length());
+            if (parts != null) return Tr.t("%d parts, %s", partCount, gb(total(files())));
+            return Tr.t("the single file, %s", gb(single.length()));
         }
     }
 
@@ -384,27 +382,27 @@ public class SetupActivity extends Activity {
             int i = 0;
             for (File f : files) {
                 i++;
-                String step = "Checking " + i + " of " + files.size() + ": " + f.getName();
+                String step = Tr.t("Checking %d of %d: %s", i, files.size(), f.getName());
                 DownloadCheck.Result r = DownloadCheck.check(f, (m, done, total) -> progress(step, done, total));
-                if (!r.good) return "Nothing was moved.\n\n" + r.message;
-                if (r.what == null || !r.what.contains("OBB")) return "Nothing was moved: " + f.getName() + " is " + r.what + ", not an OBB. Rename it back, or download the OBB.";
+                if (!r.good) return Tr.t("Nothing was moved.") + "\n\n" + r.message;
+                if (r.what == null || !r.what.contains("OBB")) return Tr.t("Nothing was moved: %s is %s, not an OBB. Rename it back, or download the OBB.", f.getName(), r.what == null ? "?" : Tr.t(r.what));
             }
-            if (!TARGET.isDirectory() && !TARGET.mkdirs()) throw new java.io.IOException("couldn't make " + shortPath(TARGET));
+            if (!TARGET.isDirectory() && !TARGET.mkdirs()) throw new java.io.IOException(Tr.t("couldn't make %s", shortPath(TARGET)));
             i = 0;
             for (File f : files) {
                 i++;
                 File to = new File(TARGET, realName(f));
-                if (to.exists() && !to.delete()) throw new java.io.IOException("couldn't replace " + shortPath(to));
-                if (!f.renameTo(to)) copyThenDelete(f, to, "Moving " + i + " of " + files.size() + ": " + f.getName());
+                if (to.exists() && !to.delete()) throw new java.io.IOException(Tr.t("couldn't replace %s", shortPath(to)));
+                if (!f.renameTo(to)) copyThenDelete(f, to, Tr.t("Moving %d of %d: %s", i, files.size(), f.getName()));
             }
-            return "Checked and moved " + files.size() + " file(s) to starpoint_game. Open the game: it unpacks them by itself (keep it open until it's done).";
+            return Tr.t("Checked and moved %d file(s) to starpoint_game. Open the game: it unpacks them by itself (keep it open until it's done).", files.size());
         }
     }
 
     /** When a move can't be a rename (another storage): copy, then delete the original. */
     private void copyThenDelete(File from, File to, String step) throws Exception {
         long size = from.length();
-        if (TARGET.getUsableSpace() < size + (64L << 20)) throw new java.io.IOException("not enough free space to copy " + from.getName() + " (" + gb(size) + ")");
+        if (TARGET.getUsableSpace() < size + (64L << 20)) throw new java.io.IOException(Tr.t("not enough free space to copy %s (%s)", from.getName(), gb(size)));
         try (InputStream in = new FileInputStream(from); OutputStream out = new FileOutputStream(to)) {
             byte[] buf = new byte[1 << 20];
             long done = 0, shown = 0;
@@ -418,7 +416,7 @@ public class SetupActivity extends Activity {
             to.delete();
             throw e;
         }
-        if (to.length() != size) { to.delete(); throw new java.io.IOException("the copy of " + from.getName() + " came out short"); }
+        if (to.length() != size) { to.delete(); throw new java.io.IOException(Tr.t("the copy of %s came out short", from.getName())); }
         from.delete();
     }
 
@@ -444,11 +442,10 @@ public class SetupActivity extends Activity {
 
     private void removeLoose() {
         new AlertDialog.Builder(this)
-                .setTitle("Remove the loose game files?")
-                .setMessage("They're left from an earlier setup. The OBB has every game file, so they aren't needed. "
-                        + "OBB files and server.txt stay.")
-                .setPositiveButton("Remove", (d, w) -> run(() -> "Removed " + removeLooseNow() + " loose file(s)."))
-                .setNegativeButton("Keep", null)
+                .setTitle(Tr.t("Remove the loose game files?"))
+                .setMessage(Tr.t("They're left from an earlier setup. The OBB has every game file, so they aren't needed. OBB files and server.txt stay."))
+                .setPositiveButton(Tr.t("Remove"), (d, w) -> run(() -> Tr.t("Removed %d loose file(s).", removeLooseNow())))
+                .setNegativeButton(Tr.t("Keep"), null)
                 .show();
     }
 
@@ -480,7 +477,7 @@ public class SetupActivity extends Activity {
 
     // ---- set up everything ----
 
-    /** What "Set up everything" found before it starts. */
+    /** What Tr.t("Set up everything") found before it starts. */
     private static final class Plan {
         boolean game;
         Obb inPlace, elsewhere;
@@ -496,19 +493,19 @@ public class SetupActivity extends Activity {
         if (!ownStorage()) {
             autoStage = 1;
             wentAway = false;
-            status.setText("Turn on \"All files access\" for StarPoint Companion, then come back here: setup carries on by itself.");
+            status.setText(Tr.t("Turn on \"All files access\" for StarPoint Companion, then come back here: setup carries on by itself."));
             askOwnStorage();
             return;
         }
         if (gameInstalled() && autoStage < 2 && Boolean.FALSE.equals(gameStorage())) {
             autoStage = 2;
             wentAway = false;
-            status.setText("Turn on \"All files access\" for World Flipper (and its storage permissions if listed), then come back here: setup carries on by itself.");
+            status.setText(Tr.t("Turn on \"All files access\" for World Flipper (and its storage permissions if listed), then come back here: setup carries on by itself."));
             openGameAccess();
             return;
         }
         autoStage = 0;
-        status.setText("Looking for the downloads...");
+        status.setText(Tr.t("Looking for the downloads..."));
         worker.execute(() -> {
             Plan plan = plan();
             ui.post(() -> confirm(plan));
@@ -552,21 +549,21 @@ public class SetupActivity extends Activity {
     /** Says what's about to happen, then does it. */
     private void confirm(Plan p) {
         StringBuilder todo = new StringBuilder();
-        if (!p.inPlace.any() && p.elsewhere.any()) todo.append("• Check the OBB (").append(p.elsewhere.describe()).append(") and move it to starpoint_game. Checking takes a few minutes.\n");
+        if (!p.inPlace.any() && p.elsewhere.any()) todo.append(Tr.t("• Check the OBB (%s) and move it to starpoint_game. Checking takes a few minutes.\n", p.elsewhere.describe()));
         boolean obbAfter = p.inPlace.any() || p.elsewhere.any();
-        if (obbAfter && p.loose[0] > 0) todo.append("• Remove ").append(p.loose[0]).append(" leftover game file(s) (").append(gb(p.loose[1])).append(") from an earlier setup.\n");
-        if (p.importData) todo.append("• Import the data pack (").append(p.dataPack.getName()).append(", ").append(gb(p.dataPack.length())).append("). Your save isn't touched.\n");
-        if (p.importComics) todo.append("• Import the comics pack (").append(p.comicsPack.getName()).append(", ").append(gb(p.comicsPack.length())).append(").\n");
-        if ((p.data || p.importData) && !ServerProbe.ownProcess(this)) todo.append("• Start the server.\n");
+        if (obbAfter && p.loose[0] > 0) todo.append(Tr.t("• Remove %d leftover game file(s) (%s) from an earlier setup.\n", p.loose[0], gb(p.loose[1])));
+        if (p.importData) todo.append(Tr.t("• Import the data pack (%s, %s). Your save isn't touched.\n", p.dataPack.getName(), gb(p.dataPack.length())));
+        if (p.importComics) todo.append(Tr.t("• Import the comics pack (%s, %s).\n", p.comicsPack.getName(), gb(p.comicsPack.length())));
+        if ((p.data || p.importData) && !ServerProbe.ownProcess(this)) todo.append(Tr.t("• Start the server.\n"));
         if (todo.length() == 0) {
-            status.setText(finalReport(p, "Nothing left for this app to do."));
+            status.setText(finalReport(p, Tr.t("Nothing left for this app to do.")));
             return;
         }
         new AlertDialog.Builder(this)
-                .setTitle("Set up everything")
-                .setMessage("This will:\n\n" + todo + "\nKeep this screen open until it's done.")
-                .setPositiveButton("Go", (d, w) -> run(() -> doAll(p)))
-                .setNegativeButton("Cancel", null)
+                .setTitle(Tr.t("Set up everything"))
+                .setMessage(Tr.t("This will:\n\n%s\nKeep this screen open until it's done.", todo))
+                .setPositiveButton(Tr.t("Go"), (d, w) -> run(() -> doAll(p)))
+                .setNegativeButton(Tr.t("Cancel"), null)
                 .show();
     }
 
@@ -574,37 +571,37 @@ public class SetupActivity extends Activity {
         StringBuilder done = new StringBuilder();
         // 1. the OBB
         if (!p.inPlace.any() && p.elsewhere.any()) {
-            try { done.append("OBB: ").append(moveObb(p.elsewhere)).append("\n\n"); }
-            catch (Exception e) { done.append("OBB: not moved (").append(e.getMessage()).append(").\n\n"); }
+            try { done.append(Tr.t("OBB: ")).append(moveObb(p.elsewhere)).append("\n\n"); }
+            catch (Exception e) { done.append(Tr.t("OBB: not moved (%s).\n\n", e.getMessage())); }
         }
         // 2. leftovers, once an OBB is in place
         if (findObb(DROP, false).any() && looseFiles()[0] > 0) {
-            progress("Removing leftover game files...", 0, -1);
-            done.append("Removed ").append(removeLooseNow()).append(" leftover game file(s).\n\n");
+            progress(Tr.t("Removing leftover game files..."), 0, -1);
+            done.append(Tr.t("Removed %d leftover game file(s).\n\n", removeLooseNow()));
         }
         // 3. the data pack (the server is stopped while its files are replaced)
         List<File> imported = new ArrayList<>();
         if (p.importData) {
             try {
                 if (ServerProbe.ownProcess(this)) {
-                    progress("Stopping the server first...", 0, -1);
+                    progress(Tr.t("Stopping the server first..."), 0, -1);
                     ServerProbe.stopAndWait(this);
                 }
                 DataTransfer.PackResult r = DataTransfer.importDataPack(this, Uri.fromFile(p.dataPack), this::progress);
-                done.append("Data pack imported (game files version ").append(r.version).append("). Your save wasn't touched.\n\n");
+                done.append(Tr.t("Data pack imported (game files version %s). Your save wasn't touched.\n\n", r.version));
                 imported.add(p.dataPack);
             } catch (Exception e) {
-                done.append("Data pack: failed (").append(e.getMessage()).append("). Try Game data > Import pack, or download it again.\n\n");
+                done.append(Tr.t("Data pack: failed (%s). Try Game data > Import pack, or download it again.\n\n", e.getMessage()));
             }
         }
         // 4. the comics pack (optional)
         if (p.importComics) {
             try {
                 DataTransfer.importComicsPack(this, Uri.fromFile(p.comicsPack), this::progress);
-                done.append("Comics imported (Menu > Other > Comics in the game).\n\n");
+                done.append(Tr.t("Comics imported (Menu > Other > Comics in the game).\n\n"));
                 imported.add(p.comicsPack);
             } catch (Exception e) {
-                done.append("Comics pack: failed (").append(e.getMessage()).append("). The game works without it.\n\n");
+                done.append(Tr.t("Comics pack: failed (%s). The game works without it.\n\n", e.getMessage()));
             }
         }
         // 5. the server
@@ -616,19 +613,19 @@ public class SetupActivity extends Activity {
         return finalReport(plan(), done.toString().trim());
     }
 
-    /** What's done and what the player still has to do, after "Set up everything". */
+    /** What's done and what the player still has to do, after Tr.t("Set up everything"). */
     private String finalReport(Plan p, String done) {
         List<String> left = new ArrayList<>();
-        if (!p.game) left.add("Install World Flipper (the game APK, build 25), then press Set up everything again so it gets its file access.");
-        else if (Boolean.FALSE.equals(gameStorage())) left.add("Turn on \"All files access\" for World Flipper (press Set up everything again).");
-        if (!p.inPlace.any() && p.elsewhere.any()) left.add("The OBB is still in " + p.elsewhere.folder + ", not moved: see the message above (download it again if it's damaged).");
-        if (!p.data) left.add(p.dataPack == null ? "No data pack found: download starpoint-data.zip into Download (or use Game data > Download from PC)." : "The server still has no data: see the message above.");
+        if (!p.game) left.add(Tr.t("Install World Flipper (the game APK, build 25), then press Set up everything again so it gets its file access."));
+        else if (Boolean.FALSE.equals(gameStorage())) left.add(Tr.t("Turn on \"All files access\" for World Flipper (press Set up everything again)."));
+        if (!p.inPlace.any() && p.elsewhere.any()) left.add(Tr.t("The OBB is still in %s, not moved: see the message above (download it again if it's damaged).", p.elsewhere.folder));
+        if (!p.data) left.add(Tr.t(p.dataPack == null ? "No data pack found: download starpoint-data.zip into Download (or use Game data > Download from PC)." : "The server still has no data: see the message above."));
         String head = done.isEmpty() ? "" : done + "\n\n";
         // this app can't see whether the game already unpacked its files (they're in its private storage), so no OBB is only a note
         String noObb = !p.inPlace.any() && !p.elsewhere.any()
-                ? "\n\nNo OBB found: fine if the game has got past its title screen before. If not, download the OBB (the 3 parts or the single file) into Download and press the button again." : "";
-        if (left.isEmpty()) return head + "All set. Open the game once the server line above says ready." + (p.comics ? "" : " Comics are optional: put the comics zip in Download and press the button again to add them.") + noObb;
-        StringBuilder s = new StringBuilder(head).append("Still to do:");
+                ? Tr.t("\n\nNo OBB found: fine if the game has got past its title screen before. If not, download the OBB (the 3 parts or the single file) into Download and press the button again.") : "";
+        if (left.isEmpty()) return head + Tr.t("All set. Open the game once the server line above says ready.") + (p.comics ? "" : Tr.t(" Comics are optional: put the comics zip in Download and press the button again to add them.")) + noObb;
+        StringBuilder s = new StringBuilder(head).append(Tr.t("Still to do:"));
         for (String l : left) s.append("\n• ").append(l);
         return s.append(noObb).toString();
     }
@@ -638,14 +635,14 @@ public class SetupActivity extends Activity {
         long bytes = 0;
         for (File f : packs) bytes += f.length();
         new AlertDialog.Builder(this)
-                .setTitle("Delete the imported packs?")
-                .setMessage("They're unpacked, so the zip file(s) (" + gb(bytes) + ") aren't needed any more.")
-                .setPositiveButton("Delete", (d, w) -> {
+                .setTitle(Tr.t("Delete the imported packs?"))
+                .setMessage(Tr.t("They're unpacked, so the zip file(s) (%s) aren't needed any more.", gb(bytes)))
+                .setPositiveButton(Tr.t("Delete"), (d, w) -> {
                     int n = 0;
                     for (File f : packs) if (f.delete()) n++;
-                    status.append(n == packs.size() ? "\n\nThe packs were deleted." : "\n\nCouldn't delete every pack; delete them in your Files app.");
+                    status.append(Tr.t(n == packs.size() ? "\n\nThe packs were deleted." : "\n\nCouldn't delete every pack; delete them in your Files app."));
                 })
-                .setNegativeButton("Keep", null)
+                .setNegativeButton(Tr.t("Keep"), null)
                 .show();
     }
 
@@ -658,11 +655,11 @@ public class SetupActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         bar.setVisibility(View.VISIBLE);
         bar.setIndeterminate(true);
-        status.setText("Working...");
+        status.setText(Tr.t("Working..."));
         refreshButtons();
         worker.execute(() -> {
             String result;
-            try { result = job.run(); } catch (Exception e) { result = "Failed: " + e.getMessage(); }
+            try { result = job.run(); } catch (Exception e) { result = Tr.t("Failed: %s", e.getMessage()); }
             String message = result;
             List<Line> lines = checks();
             ui.post(() -> {
@@ -697,5 +694,5 @@ public class SetupActivity extends Activity {
 
     private static String gb(long bytes) { return String.format(Locale.US, "%.2f GB", bytes / 1073741824.0); }
 
-    private static String shortPath(File f) { return f.getAbsolutePath().replace("/sdcard", "Internal storage").replace("/storage/emulated/0", "Internal storage"); }
+    private static String shortPath(File f) { return f.getAbsolutePath().replace("/sdcard", Tr.t("Internal storage")).replace("/storage/emulated/0", Tr.t("Internal storage")); }
 }

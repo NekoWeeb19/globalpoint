@@ -89,7 +89,7 @@ final class DataTransfer {
         }
         if (size >= 0 && part.length() != size) {
             part.delete();
-            throw new IOException(label + ": got " + part.length() + " of " + size + " bytes");
+            throw new IOException(Tr.t("%s: got %d of %d bytes", label, part.length(), size));
         }
         beforeWrite(out);
         out.delete();
@@ -128,7 +128,7 @@ final class DataTransfer {
                 p.update(name, counted.count, total);
             }
         }
-        if (count == 0) throw new IOException("no .database/, .cdn/ or .env files in this zip");
+        if (count == 0) throw new IOException(Tr.t("no .database/, .cdn/ or .env files in this zip"));
         return count;
     }
 
@@ -225,9 +225,9 @@ final class DataTransfer {
              CountingStream counted = new CountingStream(new BufferedInputStream(raw, 1 << 20));
              ZipInputStream zip = new ZipInputStream(counted)) {
             ZipEntry first = zip.getNextEntry();
-            if (first == null || !DATA_MARKER.equals(first.getName())) throw new IOException("this isn't a data pack");
+            if (first == null || !DATA_MARKER.equals(first.getName())) throw new IOException(Tr.t("this isn't a data pack"));
             info = new JSONObject(new String(readAll(zip), "UTF-8"));
-            if (!"starpoint-data-pack".equals(info.optString("kind"))) throw new IOException("this isn't a data pack");
+            if (!"starpoint-data-pack".equals(info.optString("kind"))) throw new IOException(Tr.t("this isn't a data pack"));
             result.version = info.optString("gameFilesVersion");
             JSONObject replaces = info.optJSONObject("replaces");
             java.util.Set<String> databaseFiles = new java.util.HashSet<>();
@@ -236,7 +236,7 @@ final class DataTransfer {
             long free = new StatFs(data.getPath()).getAvailableBytes();
             long need = info.optLong("bytes", 0) + (64L << 20);
             if (free < need) {
-                throw new IOException(String.format(Locale.US, "Not enough free space: the pack needs up to %.1f GB, %.1f GB free.", need / 1073741824.0, free / 1073741824.0));
+                throw new IOException(Tr.t("Not enough free space: the pack needs up to %.1f GB, %.1f GB free.", need / 1073741824.0, free / 1073741824.0));
             }
             ZipEntry entry;
             long last = 0;
@@ -258,7 +258,7 @@ final class DataTransfer {
                 }
                 long now = System.currentTimeMillis();
                 if (now - last > 250) {
-                    p.update("Data: " + (result.written + result.skipped) + " / " + info.optInt("files") + " files", counted.count, total);
+                    p.update(Tr.t("Data: %d / %d files", result.written + result.skipped, info.optInt("files")), counted.count, total);
                     last = now;
                 }
             }
@@ -272,9 +272,9 @@ final class DataTransfer {
                 result.removed += removeOthers(new File(data, folder), folder, inPack);
             }
         }
-        if (result.written + result.skipped == 0) throw new IOException("the pack holds no data");
+        if (result.written + result.skipped == 0) throw new IOException(Tr.t("the pack holds no data"));
         c.getSharedPreferences("companion", Context.MODE_PRIVATE).edit().putString("dataPackVersion", result.version).apply();
-        p.update("Done", total, total);
+        p.update(Tr.t("Done"), total, total);
         return result;
     }
 
@@ -315,7 +315,7 @@ final class DataTransfer {
              ZipInputStream zip = new ZipInputStream(counted)) {
             ZipEntry first = zip.getNextEntry();
             if (first == null || !COMICS_MARKER.equals(first.getName())) {
-                throw new IOException("this isn't a comics pack (make one on the PC with: node scripts/build_comics_pack.cjs comics.zip)");
+                throw new IOException(Tr.t("this isn't a comics pack (make one on the PC with: node scripts/build_comics_pack.cjs comics.zip)"));
             }
             JSONObject info = new JSONObject(new String(readAll(zip), "UTF-8"));
             if (!"starpoint-comics-pack".equals(info.optString("kind"))) throw new IOException("this isn't a comics pack");
@@ -326,7 +326,7 @@ final class DataTransfer {
             long free = new StatFs(data.getPath()).getAvailableBytes();
             long need = Math.max(0, bytes - have) + (64L << 20);
             if (free < need) {
-                throw new IOException(String.format(Locale.US, "Not enough free space: the comics need %.1f GB, %.1f GB free.", need / 1073741824.0, free / 1073741824.0));
+                throw new IOException(Tr.t("Not enough free space: the comics need %.1f GB, %.1f GB free.", need / 1073741824.0, free / 1073741824.0));
             }
             ZipEntry entry;
             long last = 0;
@@ -346,13 +346,13 @@ final class DataTransfer {
                 }
                 long now = System.currentTimeMillis();
                 if (now - last > 250) {
-                    p.update("Comics: " + (result.written + result.skipped) + " / " + info.optInt("files") + " files", counted.count, total);
+                    p.update(Tr.t("Comics: %d / %d files", result.written + result.skipped, info.optInt("files")), counted.count, total);
                     last = now;
                 }
             }
         }
-        if (result.written + result.skipped == 0) throw new IOException("the pack holds no comics");
-        p.update("Done", total, total);
+        if (result.written + result.skipped == 0) throw new IOException(Tr.t("the pack holds no comics"));
+        p.update(Tr.t("Done"), total, total);
         return result;
     }
 
@@ -371,19 +371,19 @@ final class DataTransfer {
         PackResult result = new PackResult();
         result.packBytes = total;
         if (!new File(data, ".cdn/cn/tables").isDirectory()) {
-            throw new IOException("import the data pack first (or Download from PC with Event schedule editing ticked): the art goes with its CN tables");
+            throw new IOException(Tr.t("import the data pack first (or Download from PC with Event schedule editing ticked): the art goes with its CN tables"));
         }
         try (InputStream raw = c.getContentResolver().openInputStream(uri);
              CountingStream counted = new CountingStream(new BufferedInputStream(raw, 1 << 20));
              ZipInputStream zip = new ZipInputStream(counted)) {
             ZipEntry first = zip.getNextEntry();
-            if (first == null || !ART_MARKER.equals(first.getName())) throw new IOException("this isn't an art pack");
+            if (first == null || !ART_MARKER.equals(first.getName())) throw new IOException(Tr.t("this isn't an art pack"));
             JSONObject info = new JSONObject(new String(readAll(zip), "UTF-8"));
-            if (!"starpoint-art-pack".equals(info.optString("kind"))) throw new IOException("this isn't an art pack");
+            if (!"starpoint-art-pack".equals(info.optString("kind"))) throw new IOException(Tr.t("this isn't an art pack"));
             long free = new StatFs(data.getPath()).getAvailableBytes();
             long need = info.optLong("bytes", 0) + (64L << 20);
             if (free < need) {
-                throw new IOException(String.format(Locale.US, "Not enough free space: the art needs %.0f MB, %.0f MB free.", need / 1048576.0, free / 1048576.0));
+                throw new IOException(Tr.t("Not enough free space: the art needs %.0f MB, %.0f MB free.", need / 1048576.0, free / 1048576.0));
             }
             ZipEntry entry;
             long last = 0;
@@ -403,13 +403,13 @@ final class DataTransfer {
                 }
                 long now = System.currentTimeMillis();
                 if (now - last > 250) {
-                    p.update(("zh-art".equals(info.optString("content")) ? "Chinese pictures: " : "Skill preview art: ") + (result.written + result.skipped) + " / " + info.optInt("files") + " files", counted.count, total);
+                    p.update(Tr.t("zh-art".equals(info.optString("content")) ? "Chinese pictures: %d / %d files" : "Skill preview art: %d / %d files", result.written + result.skipped, info.optInt("files")), counted.count, total);
                     last = now;
                 }
             }
         }
-        if (result.written + result.skipped == 0) throw new IOException("the pack holds no art");
-        p.update("Done", total, total);
+        if (result.written + result.skipped == 0) throw new IOException(Tr.t("the pack holds no art"));
+        p.update(Tr.t("Done"), total, total);
         return result;
     }
 
@@ -428,7 +428,7 @@ final class DataTransfer {
         System.setProperty("http.keepAlive", "true");
         System.setProperty("http.maxConnections", String.valueOf(THREADS + 2));
         String base = "http://" + host.trim().replaceFirst("^https?://", "").replaceAll("/+$", "");
-        p.update("Asking " + base + " for the file list...", 0, -1);
+        p.update(Tr.t("Asking %s for the file list...", base), 0, -1);
         String query = "?save=" + (o.save ? 1 : 0) + "&patches=" + (o.patches ? 1 : 0) + "&images=" + (o.images ? 1 : 0) + "&comics=" + (o.comics ? 1 : 0)
                 + "&schedule=" + (o.schedule ? 1 : 0) + "&game=" + (o.game ? 1 : 0);
 
@@ -493,7 +493,7 @@ final class DataTransfer {
             long size = Long.parseLong(f[1]);
             File out = place(data, path);
             if (out == null) continue;
-            if (++checked % 2000 == 0) p.update("Checking what's already here... " + checked + " / " + files.size(), 0, -1);
+            if (++checked % 2000 == 0) p.update(Tr.t("Checking what's already here... %d / %d", checked, files.size()), 0, -1);
             Item item = new Item(path, size, out);
             if (path.equals("game/info.json")) { gameInfo = item; continue; }
             // the update list names this phone's own schedule updates, whose zips are only here: the PC's list
@@ -530,7 +530,7 @@ final class DataTransfer {
             });
             checks.shutdown();
             while (!checks.awaitTermination(300, TimeUnit.MILLISECONDS)) {
-                p.update("Checking the files already here... " + sized.get() + " / " + unsure.size(), 0, -1);
+                p.update(Tr.t("Checking the files already here... %d / %d", sized.get(), unsure.size()), 0, -1);
             }
             java.util.Set<Item> matched = new java.util.HashSet<>(same);
             for (Item item : unsure) {
@@ -543,11 +543,11 @@ final class DataTransfer {
         if (gameInfo != null) {
             File dir = gameDropOff();
             dir.mkdirs();
-            if (!dir.isDirectory()) throw new IOException("Can't make " + dir + ": allow this app \"All files access\" first.");
+            if (!dir.isDirectory()) throw new IOException(Tr.t("Can't make %s: allow this app \"All files access\" first.", dir));
             long free = new StatFs(dir.getPath()).getAvailableBytes();
             // the game later moves the files into its own storage, so it needs the room once more at that point
             if (free < gameMissing + (512L << 20)) {
-                throw new IOException(String.format(Locale.US, "Not enough free space for the game files: %.1f GB more needed, %.1f GB free.",
+                throw new IOException(Tr.t("Not enough free space for the game files: %.1f GB more needed, %.1f GB free.",
                         gameMissing / 1073741824.0, free / 1073741824.0));
             }
             new File(dir, "info.json").delete();
@@ -574,7 +574,7 @@ final class DataTransfer {
         long lastFlush = System.currentTimeMillis();
         try {
             while (!pool.awaitTermination(300, TimeUnit.MILLISECONDS)) {
-                p.update("Copying " + count.get() + " / " + todo.size() + " files", done.get(), t);
+                p.update(Tr.t("Copying %d / %d files", count.get(), todo.size()), done.get(), t);
                 // kept on disk as it goes, so a stopped copy still knows what it finished
                 if (System.currentTimeMillis() - lastFlush > 5000) { record.flush(); lastFlush = System.currentTimeMillis(); }
             }
@@ -587,7 +587,7 @@ final class DataTransfer {
 
         if (!env.isEmpty()) mergeEnv(new File(data, ".env"), env);
         removeOldCustomUnits(data, files);
-        p.update("Done", total, total);
+        p.update(Tr.t("Done"), total, total);
         return count.get();
     }
 
@@ -673,7 +673,7 @@ final class DataTransfer {
                 return;
             } catch (IOException e) {
                 if (attempt >= 3) throw new IOException(item.path + ": " + e.getMessage(), e);
-                try { Thread.sleep(1000L * attempt); } catch (InterruptedException ie) { throw new IOException("stopped"); }
+                try { Thread.sleep(1000L * attempt); } catch (InterruptedException ie) { throw new IOException(Tr.t("stopped")); }
             }
         }
     }
@@ -695,7 +695,7 @@ final class DataTransfer {
         if (size >= 0 && got != size) {
             done.addAndGet(-got);
             part.delete();
-            throw new IOException("got " + got + " of " + size + " bytes");
+            throw new IOException(Tr.t("got %d of %d bytes", got, size));
         }
         beforeWrite(out);
         out.delete();
@@ -753,7 +753,7 @@ final class DataTransfer {
         boolean patches = new File(data, ".cdn/cn_patches/patches.json").exists();
         boolean save = new File(data, ".database/wdfp_data.db").exists();
         File comics = new File(data, ".cdn/comics");
-        if (!path || !patches) return "Game data: missing (copy it from your PC or a zip in \"Game data\").";
-        return "Game data: ready" + (save ? ", save present" : ", no save yet (a new account is made)") + (comics.isDirectory() ? ", comics" : "");
+        if (!path || !patches) return Tr.t("Game data: missing (copy it from your PC or a zip in \"Game data\").");
+        return Tr.t("Game data: ready") + Tr.t(save ? ", save present" : ", no save yet (a new account is made)") + (comics.isDirectory() ? Tr.t(", comics") : "");
     }
 }

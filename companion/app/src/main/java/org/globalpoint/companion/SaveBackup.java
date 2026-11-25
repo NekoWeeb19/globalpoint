@@ -57,7 +57,7 @@ final class SaveBackup {
                 }
             } else {
                 File[] local = databaseDir(c).listFiles();
-                if (local == null || local.length == 0) throw new IOException("there is no save on this phone yet");
+                if (local == null || local.length == 0) throw new IOException(Tr.t("there is no save on this phone yet"));
                 // the database first, then its -wal/-shm, so an import puts them back in order
                 java.util.Arrays.sort(local, (a, b) -> a.getName().compareTo(b.getName()));
                 for (File f : local) {
@@ -116,14 +116,14 @@ final class SaveBackup {
         }
         if (!hasDatabase) {
             deleteDir(incoming);
-            throw new IOException("no wdfp_data.db in this zip");
+            throw new IOException(Tr.t("no wdfp_data.db in this zip"));
         }
         File old = new File(ServerFiles.dataDir(c), ".database.old");
         deleteDir(old);
-        if (db.exists() && !db.renameTo(old)) throw new IOException("can't move the old save aside");
+        if (db.exists() && !db.renameTo(old)) throw new IOException(Tr.t("can't move the old save aside"));
         if (!incoming.renameTo(db)) {
             old.renameTo(db);
-            throw new IOException("can't put the new save in place");
+            throw new IOException(Tr.t("can't put the new save in place"));
         }
         return count;
     }

@@ -151,7 +151,7 @@ public class ServerService extends Service {
         NotificationManager nm = getSystemService(NotificationManager.class);
         Notification.Builder b;
         if (Build.VERSION.SDK_INT >= 26) {
-            nm.createNotificationChannel(new NotificationChannel(CHANNEL, "Server", NotificationManager.IMPORTANCE_LOW));
+            nm.createNotificationChannel(new NotificationChannel(CHANNEL, Tr.t("Server"), NotificationManager.IMPORTANCE_LOW));
             b = new Notification.Builder(this, CHANNEL);
         } else {
             b = new Notification.Builder(this);
@@ -160,12 +160,12 @@ public class ServerService extends Service {
         PendingIntent stop = PendingIntent.getService(this, 1, new Intent(this, ServerService.class).setAction(ACTION_STOP), PendingIntent.FLAG_IMMUTABLE);
         PendingIntent toggle = PendingIntent.getService(this, 2, new Intent(this, ServerService.class).setAction(ACTION_WAKE_TOGGLE), PendingIntent.FLAG_IMMUTABLE);
         boolean awake = keepAwake();
-        Notification n = b.setContentTitle("StarPoint server is running")
-                .setContentText(awake ? "127.0.0.1:8000 - kept awake - tap to open the companion" : "127.0.0.1:8000 - tap to open the companion")
+        Notification n = b.setContentTitle(Tr.t("StarPoint server is running"))
+                .setContentText(Tr.t(awake ? "127.0.0.1:8000 - kept awake - tap to open the companion" : "127.0.0.1:8000 - tap to open the companion"))
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentIntent(open)
-                .addAction(new Notification.Action.Builder(null, "Stop", stop).build())
-                .addAction(new Notification.Action.Builder(null, awake ? "Allow sleep" : "Keep awake", toggle).build())
+                .addAction(new Notification.Action.Builder(null, Tr.t("Stop"), stop).build())
+                .addAction(new Notification.Action.Builder(null, Tr.t(awake ? "Allow sleep" : "Keep awake"), toggle).build())
                 .setOngoing(true)
                 .build();
         try {

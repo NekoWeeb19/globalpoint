@@ -48,37 +48,34 @@ public class DataActivity extends Activity {
     @Override
     protected void onCreate(Bundle saved) {
         super.onCreate(saved);
-        setTitle("Game data");
+        setTitle(Tr.t("Game data"));
         prefs = getSharedPreferences("companion", MODE_PRIVATE);
         Ui u = new Ui(this);
 
-        u.text("The game keeps its own ~10 GB of files. The server on this phone only needs a small "
-                + "set (~25 MB) from the StarPoint you set the game up with, plus anything you pick below.", 14);
+        u.text(Tr.t("The game keeps its own ~10 GB of files. The server on this phone only needs a small set (~25 MB) from the StarPoint you set the game up with, plus anything you pick below."), 14);
         summary = u.text("", 15);
 
-        u.heading("Copy from your PC's StarPoint (same Wi-Fi)");
-        u.text("Start StarPoint on the PC, then enter its address as the phone sees it.", 13);
+        u.heading(Tr.t("Copy from your PC's StarPoint (same Wi-Fi)"));
+        u.text(Tr.t("Start StarPoint on the PC, then enter its address as the phone sees it."), 13);
         host = new EditText(this);
         host.setHint("192.168.1.20:8000");
         host.setSingleLine(true);
         host.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
         host.setText(prefs.getString("pcHost", ""));
         u.add(host);
-        save = u.check("My save (account, units, progress)", prefs.getBoolean("optSave", true));
-        images = u.check("Dashboard pictures (~80 MB)", prefs.getBoolean("optImages", true));
-        comics = u.check("Comics (~1.4 GB)", prefs.getBoolean("optComics", false));
-        schedule = u.check("Event schedule editing (~175 MB; lets the dashboard move events, and shows the Unit editor's skill preview art)", prefs.getBoolean("optSchedule", true));
-        patches = u.check("Game updates (~2 GB; only if the game still has to download them)", prefs.getBoolean("optPatches", false));
-        game = u.check("Full game files (~10 GB; first install, game not installed yet or never downloaded)", prefs.getBoolean("optGame", false));
-        u.text("Full game files go in StarPoint/game on the phone's storage. The game (build 21 or newer) moves "
-                + "them into its own storage when it starts, so it needs no download. This app and the game both need "
-                + "\"All files access\" for it. Keep this screen open until it's done.", 13);
-        download = u.button("Download from PC", this::startDownload);
-        u.button("Allow World Flipper \"All files access\"", this::openGameAccess);
+        save = u.check(Tr.t("My save (account, units, progress)"), prefs.getBoolean("optSave", true));
+        images = u.check(Tr.t("Dashboard pictures (~80 MB)"), prefs.getBoolean("optImages", true));
+        comics = u.check(Tr.t("Comics (~1.4 GB)"), prefs.getBoolean("optComics", false));
+        schedule = u.check(Tr.t("Event schedule editing (~175 MB; lets the dashboard move events, and shows the Unit editor's skill preview art)"), prefs.getBoolean("optSchedule", true));
+        patches = u.check(Tr.t("Game updates (~2 GB; only if the game still has to download them)"), prefs.getBoolean("optPatches", false));
+        game = u.check(Tr.t("Full game files (~10 GB; first install, game not installed yet or never downloaded)"), prefs.getBoolean("optGame", false));
+        u.text(Tr.t("Full game files go in StarPoint/game on the phone's storage. The game (build 21 or newer) moves them into its own storage when it starts, so it needs no download. This app and the game both need \"All files access\" for it. Keep this screen open until it's done."), 13);
+        download = u.button(Tr.t("Download from PC"), this::startDownload);
+        u.button(Tr.t("Allow World Flipper \"All files access\""), this::openGameAccess);
 
-        u.heading("Or import a data zip");
-        u.text("A zip with .database/ and .cdn/ folders (and optionally .env), e.g. from the shared package.", 13);
-        importZip = u.button("Choose zip...", () -> {
+        u.heading(Tr.t("Or import a data zip"));
+        u.text(Tr.t("A zip with .database/ and .cdn/ folders (and optionally .env), e.g. from the shared package."), 13);
+        importZip = u.button(Tr.t("Choose zip..."), () -> {
             Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             i.addCategory(Intent.CATEGORY_OPENABLE);
             i.setType("*/*");
@@ -86,12 +83,9 @@ public class DataActivity extends Activity {
             startActivityForResult(i, PICK_ZIP);
         });
 
-        u.heading("No PC? Import a pack");
-        u.text("A data pack (~1.8 GB: everything above except your save and the full game files), a comics pack "
-                + "(~1.4 GB) or the skill preview art pack (~35 MB: the Unit editor's skill preview pictures; import it after a data pack), "
-                + "copied to this phone, e.g. into Downloads. Packs are made on a PC with "
-                + "scripts/build_pack.cjs. A pack never touches your save.", 13);
-        comicsPack = u.button("Import pack...", () -> {
+        u.heading(Tr.t("No PC? Import a pack"));
+        u.text(Tr.t("A data pack (~1.8 GB: everything above except your save and the full game files), a comics pack (~1.4 GB), the skill preview art pack (~35 MB: the Unit editor's skill preview pictures; import it after a data pack) or the Chinese art pack (~1.6 GB: the game's pictures in Chinese; import it after a data pack), copied to this phone, e.g. into Downloads. Packs are made on a PC with scripts/build_pack.cjs. A pack never touches your save."), 13);
+        comicsPack = u.button(Tr.t("Import pack..."), () -> {
             Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             i.addCategory(Intent.CATEGORY_OPENABLE);
             i.setType("*/*");
@@ -99,10 +93,9 @@ public class DataActivity extends Activity {
             startActivityForResult(i, PICK_COMICS);
         });
 
-        u.heading("Check a download");
-        u.text("Is a downloaded file whole and undamaged? Pick an OBB, the data pack, the comics pack or the game APK: this reads it "
-                + "(a minute or two for a few GB) and compares it with the GlobalPoint downloads. Nothing is changed.", 13);
-        checkFile = u.button("Check a file...", () -> {
+        u.heading(Tr.t("Check a download"));
+        u.text(Tr.t("Is a downloaded file whole and undamaged? Pick an OBB, the data pack, the comics pack or the game APK: this reads it (a minute or two for a few GB) and compares it with the GlobalPoint downloads. Nothing is changed."), 13);
+        checkFile = u.button(Tr.t("Check a file..."), () -> {
             Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             i.addCategory(Intent.CATEGORY_OPENABLE);
             i.setType("*/*");
@@ -156,7 +149,7 @@ public class DataActivity extends Activity {
 
     private void startDownload() {
         String address = host.getText().toString().trim();
-        if (address.isEmpty()) { status.setText("Enter the PC's address first."); return; }
+        if (address.isEmpty()) { status.setText(Tr.t("Enter the PC's address first.")); return; }
         prefs.edit().putString("pcHost", address).putBoolean("optSave", save.isChecked()).putBoolean("optImages", images.isChecked())
                 .putBoolean("optComics", comics.isChecked()).putBoolean("optPatches", patches.isChecked()).putBoolean("optSchedule", schedule.isChecked())
                 .putBoolean("optGame", game.isChecked()).apply();
@@ -171,12 +164,9 @@ public class DataActivity extends Activity {
         run(() -> {
             int n = DataTransfer.downloadFromPc(this, address, o, this::progress);
             String next = o.game
-                    ? "\n\nThe game files are in " + DataTransfer.gameDropOff() + ". Next:\n"
-                      + "1. Install World Flipper (build 21 or newer) if it isn't yet.\n"
-                      + "2. Allow it \"All files access\" (button above; the game never asks by itself).\n"
-                      + "3. Start the server here, then open the game: it moves the files in (a few minutes) and needs no download."
-                    : " Back on the main screen the server starts.";
-            return "Downloaded " + n + " file(s)." + next + (o.notes.isEmpty() ? "" : "\n\nNote from the PC:\n" + o.notes);
+                    ? Tr.t("\n\nThe game files are in %s. Next:\n1. Install World Flipper (build 21 or newer) if it isn't yet.\n2. Allow it \"All files access\" (button above; the game never asks by itself).\n3. Start the server here, then open the game: it moves the files in (a few minutes) and needs no download.", DataTransfer.gameDropOff())
+                    : Tr.t(" Back on the main screen the server starts.");
+            return Tr.t("Downloaded %d file(s).", n) + next + (o.notes.isEmpty() ? "" : Tr.t("\n\nNote from the PC:\n") + o.notes);
         });
     }
 
@@ -197,7 +187,7 @@ public class DataActivity extends Activity {
             startDownload();
         } else if (waitingForStorage) {
             waitingForStorage = false;
-            status.setText("\"All files access\" is still off, so the game files can't be copied. Allow it, or untick Full game files.");
+            status.setText(Tr.t("\"All files access\" is still off, so the game files can't be copied. Allow it, or untick Full game files."));
         }
     }
 
@@ -207,20 +197,20 @@ public class DataActivity extends Activity {
         if (requestCode != 2) return;
         waitingForStorage = false;
         if (canWriteStorage()) startDownload();
-        else status.setText("Storage access is off, so the game files can't be copied. Allow it, or untick Full game files.");
+        else status.setText(Tr.t("Storage access is off, so the game files can't be copied. Allow it, or untick Full game files."));
     }
 
     private void askStorage() {
         waitingForStorage = Build.VERSION.SDK_INT >= 30;
         if (Build.VERSION.SDK_INT >= 30) {
-            status.setText("Allow \"All files access\" for StarPoint Companion, come back and press Download again.");
+            status.setText(Tr.t("Allow \"All files access\" for StarPoint Companion, come back and press Download again."));
             try {
                 startActivity(new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + getPackageName())));
             } catch (ActivityNotFoundException e) {
                 startActivity(new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION));
             }
         } else {
-            status.setText("Allow storage access, then press Download again.");
+            status.setText(Tr.t("Allow storage access, then press Download again."));
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
         }
     }
@@ -230,14 +220,14 @@ public class DataActivity extends Activity {
         try {
             getPackageManager().getPackageInfo(GAME, 0);
         } catch (PackageManager.NameNotFoundException e) {
-            status.setText("World Flipper isn't installed yet: install it first, then press this again.");
+            status.setText(Tr.t("World Flipper isn't installed yet: install it first, then press this again."));
             return;
         }
         try {
             if (Build.VERSION.SDK_INT >= 30) {
                 startActivity(new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + GAME)));
             } else {
-                status.setText("In the game's app info, open Permissions and allow Storage.");
+                status.setText(Tr.t("In the game's app info, open Permissions and allow Storage."));
                 startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + GAME)));
             }
         } catch (ActivityNotFoundException e) {
@@ -258,32 +248,32 @@ public class DataActivity extends Activity {
         if (requestCode == PICK_COMICS) {
             run(() -> {
                 String kind = DataTransfer.packKind(this, uri);
-                if (kind == null) throw new java.io.IOException("this isn't a StarPoint pack (make one on a PC with: node scripts/build_pack.cjs data|comics|art <out.zip>)");
+                if (kind == null) throw new java.io.IOException(Tr.t("this isn't a StarPoint pack (make one on a PC with: node scripts/build_pack.cjs data|comics|art <out.zip>)"));
                 DataTransfer.PackResult r;
                 String done;
                 if (kind.equals("data")) {
                     // the schedules and patches are replaced: the server must not be running meanwhile
                     if (ServerProbe.ownProcess(this)) {
-                        progress("Stopping the server first...", 0, -1);
+                        progress(Tr.t("Stopping the server first..."), 0, -1);
                         ServerProbe.stopAndWait(this);
                     }
                     r = DataTransfer.importDataPack(this, uri, this::progress);
-                    done = "Data pack imported (game files version " + r.version + "): " + r.written + " file(s) unpacked"
-                            + (r.skipped > 0 ? ", " + r.skipped + " already here" : "") + (r.removed > 0 ? ", " + r.removed + " old file(s) removed" : "")
-                            + ". Your save wasn't touched. Back on the main screen the server starts.";
+                    done = Tr.t("Data pack imported (game files version %s): %d file(s) unpacked", r.version, r.written)
+                            + (r.skipped > 0 ? Tr.t(", %d already here", r.skipped) : "") + (r.removed > 0 ? Tr.t(", %d old file(s) removed", r.removed) : "")
+                            + Tr.t(". Your save wasn't touched. Back on the main screen the server starts.");
                 } else if (kind.equals("art")) {
                     org.json.JSONObject info = DataTransfer.packInfo(this, uri);
                     boolean chinese = info != null && "zh-art".equals(info.optString("content"));
                     r = DataTransfer.importArtPack(this, uri, this::progress);
                     done = chinese
-                            ? "Chinese pictures ready: " + r.written + " file(s) unpacked" + (r.skipped > 0 ? ", " + r.skipped + " already here" : "")
-                                + ". With Game language set to 简体中文 on the dashboard, stop and start the server, then reopen the game (about 1.6 GB to take in)."
-                            : "Skill preview art ready: " + r.written + " file(s) unpacked" + (r.skipped > 0 ? ", " + r.skipped + " already here" : "")
-                                + ". The Unit editor's skill preview now shows the unit and its effects.";
+                            ? Tr.t("Chinese pictures ready: %d file(s) unpacked", r.written) + (r.skipped > 0 ? Tr.t(", %d already here", r.skipped) : "")
+                                + Tr.t(". With Game language set to 简体中文 on the dashboard, stop and start the server, then reopen the game (about 1.6 GB to take in).")
+                            : Tr.t("Skill preview art ready: %d file(s) unpacked", r.written) + (r.skipped > 0 ? Tr.t(", %d already here", r.skipped) : "")
+                                + Tr.t(". The Unit editor's skill preview now shows the unit and its effects.");
                 } else {
                     r = DataTransfer.importComicsPack(this, uri, this::progress);
-                    done = "Comics ready: " + r.written + " file(s) unpacked" + (r.skipped > 0 ? ", " + r.skipped + " already here" : "")
-                            + ". They show in the game under Menu > Other > Comics.";
+                    done = Tr.t("Comics ready: %d file(s) unpacked", r.written) + (r.skipped > 0 ? Tr.t(", %d already here", r.skipped) : "")
+                            + Tr.t(". They show in the game under Menu > Other > Comics.");
                 }
                 DataTransfer.PackResult finished = r;
                 ui.post(() -> offerDelete(uri, finished.packBytes));
@@ -294,7 +284,7 @@ public class DataActivity extends Activity {
         if (requestCode != PICK_ZIP) return;
         run(() -> {
             int n = DataTransfer.importZip(this, uri, this::progress);
-            return "Imported " + n + " file(s). Press Start on the main screen.";
+            return Tr.t("Imported %d file(s). Press Start on the main screen.", n);
         });
     }
 
@@ -306,18 +296,18 @@ public class DataActivity extends Activity {
         } catch (Exception ignored) { }
         String size = bytes <= 0 ? "" : bytes < (1L << 30) ? String.format(Locale.US, " (%.0f MB)", bytes / 1048576.0) : String.format(Locale.US, " (%.1f GB)", bytes / 1073741824.0);
         if (!canDelete) {
-            status.append("\n\nThe pack" + size + " can be deleted now. This app isn't allowed to delete it there, so delete it in your Files app.");
+            status.append(Tr.t("\n\nThe pack%s can be deleted now. This app isn't allowed to delete it there, so delete it in your Files app.", size));
             return;
         }
         new android.app.AlertDialog.Builder(this)
-                .setTitle("Delete the pack?")
-                .setMessage("It's unpacked, so the pack" + size + " isn't needed any more.")
-                .setPositiveButton("Delete", (d, w) -> {
+                .setTitle(Tr.t("Delete the pack?"))
+                .setMessage(Tr.t("It's unpacked, so the pack%s isn't needed any more.", size))
+                .setPositiveButton(Tr.t("Delete"), (d, w) -> {
                     boolean deleted = false;
                     try { deleted = android.provider.DocumentsContract.deleteDocument(getContentResolver(), uri); } catch (Exception ignored) { }
-                    status.append(deleted ? "\n\nThe pack was deleted." : "\n\nCouldn't delete the pack; delete it in your Files app.");
+                    status.append(Tr.t(deleted ? "\n\nThe pack was deleted." : "\n\nCouldn't delete the pack; delete it in your Files app."));
                 })
-                .setNegativeButton("Keep", null)
+                .setNegativeButton(Tr.t("Keep"), null)
                 .show();
     }
 
@@ -333,12 +323,12 @@ public class DataActivity extends Activity {
             String result;
             try {
                 if (stopServer && ServerProbe.ownProcess(this)) {
-                    progress("Stopping the server first...", 0, -1);
+                    progress(Tr.t("Stopping the server first..."), 0, -1);
                     ServerProbe.stopAndWait(this);
                 }
                 result = job.run();
             } catch (Exception e) {
-                result = "Failed: " + e.getMessage();
+                result = Tr.t("Failed: %s", e.getMessage());
             }
             String message = result;
             ui.post(() -> { busy(false); status.setText(message); refresh(); });

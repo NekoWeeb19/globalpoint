@@ -169,6 +169,14 @@ try {
     const names = require(path.join(scripts, "..", "assets", "event_names_zh.json")).names
     check("CN's own event names are there (boss event 1, banner 1)", /[一-鿿]/.test(names["advent_event:1"] ?? "") && /[一-鿿]/.test(names["gacha:1"] ?? ""), [names["advent_event:1"], names["gacha:1"]])
 
+    // the dashboard's dictionary and the companion's table: every text has its Chinese
+    const { execFileSync } = require("child_process")
+    let companion = ""
+    try { companion = execFileSync(process.execPath, [path.join(scripts, "gen_companion_zh.cjs"), "--check"], { encoding: "utf8" }) } catch (e) { companion = String(e.stdout) + " FAILED" }
+    check("companion app: every text has its Chinese", / 0 problem\(s\)/.test(companion) && !companion.includes("FAILED"), companion.trim().split("\n").slice(-3).join(" | "))
+    const dashboard = execFileSync(process.execPath, [path.join(scripts, "dashboard_strings.cjs")], { encoding: "utf8" })
+    check("dashboard: every text has its Chinese", / 0 without Chinese/.test(dashboard), dashboard.trim().split("\n")[0])
+
     lang.setGameLanguage("en")
     check("back to English removes the file and the fingerprint matches English again", !fs.existsSync(path.join(dataDir, "game_language.json")) && scheduleFingerprint(dataDir) === english)
 } catch (error) {

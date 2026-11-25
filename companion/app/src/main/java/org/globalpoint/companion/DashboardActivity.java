@@ -42,7 +42,7 @@ public class DashboardActivity extends Activity {
     @Override
     protected void onCreate(Bundle saved) {
         super.onCreate(saved);
-        setTitle("Dashboard");
+        setTitle(Tr.t("Dashboard"));
         web = new WebView(this);
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
@@ -226,9 +226,9 @@ public class DashboardActivity extends Activity {
                     } finally {
                         c.disconnect();
                     }
-                    message = "Saved";
+                    message = Tr.t("Saved");
                 } catch (Exception e) {
-                    message = "Not saved: " + e.getMessage();
+                    message = Tr.t("Not saved: %s", e.getMessage());
                 }
                 String m = message;
                 runOnUiThread(() -> Toast.makeText(this, m, Toast.LENGTH_SHORT).show());

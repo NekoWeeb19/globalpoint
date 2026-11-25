@@ -47,36 +47,36 @@ public class MainActivity extends Activity {
         status = u.text("", 16);
         data = u.text("", 14);
         // first time here, or something isn't working: a checklist that fixes what it can
-        u.button("Setup (set up everything, or check)", () -> startActivity(new Intent(this, SetupActivity.class)));
+        u.button(Tr.t("Setup (set up everything, or check)"), () -> startActivity(new Intent(this, SetupActivity.class)));
 
         LinearLayout row1 = row(u);
-        row1.addView(button("Start", () -> ServerService.start(this)));
-        row1.addView(button("Stop", () -> ServerService.stop(this)));
-        row1.addView(button("Dashboard", () -> startActivity(new Intent(this, DashboardActivity.class))));
+        row1.addView(button(Tr.t("Start"), () -> ServerService.start(this)));
+        row1.addView(button(Tr.t("Stop"), () -> ServerService.stop(this)));
+        row1.addView(button(Tr.t("Dashboard"), () -> startActivity(new Intent(this, DashboardActivity.class))));
         LinearLayout row2 = row(u);
-        row2.addView(button("Game data", () -> startActivity(new Intent(this, DataActivity.class))));
-        row2.addView(button("Open in browser", () -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(ServerProbe.URL_ROOT)))));
+        row2.addView(button(Tr.t("Game data"), () -> startActivity(new Intent(this, DataActivity.class))));
+        row2.addView(button(Tr.t("Open in browser"), () -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(ServerProbe.URL_ROOT)))));
 
         LinearLayout row3 = row(u);
-        row3.addView(button("Export save", this::exportSave));
-        row3.addView(button("Import save", this::importSave));
+        row3.addView(button(Tr.t("Export save"), this::exportSave));
+        row3.addView(button(Tr.t("Import save"), this::importSave));
         // for bug reports: one text file with the game's crash reports and the server's logs, to send
-        u.button("Save logs (for a bug report)", this::saveLogs);
+        u.button(Tr.t("Save logs (for a bug report)"), this::saveLogs);
 
-        battery = u.button("Let the server run in the background", this::askBattery);
+        battery = u.button(Tr.t("Let the server run in the background"), this::askBattery);
         // some phones' battery savers stop the server unless the app has usage access (as with Termux)
-        usage = u.button("Allow usage access (if the server still stops in the background)", this::askUsage);
-        CheckBox auto = u.check("Start the server when this app opens", prefs.getBoolean("autoStart", true));
+        usage = u.button(Tr.t("Allow usage access (if the server still stops in the background)"), this::askUsage);
+        CheckBox auto = u.check(Tr.t("Start the server when this app opens"), prefs.getBoolean("autoStart", true));
         auto.setOnCheckedChangeListener((b, on) -> prefs.edit().putBoolean("autoStart", on).apply());
         // for phones whose battery saver still stops the server while the game is in front (like Termux's wake lock)
-        awakeBox = u.check("Keep the server awake while it runs (for strict battery savers; uses more battery)", prefs.getBoolean(ServerService.KEEP_AWAKE, false));
+        awakeBox = u.check(Tr.t("Keep the server awake while it runs (for strict battery savers; uses more battery)"), prefs.getBoolean(ServerService.KEEP_AWAKE, false));
         awakeBox.setOnCheckedChangeListener((b, on) -> {
             if (syncingAwake) return;
             prefs.edit().putBoolean(ServerService.KEEP_AWAKE, on).commit();
             ServerService.applyWake(this);
         });
         // where phone makers keep "Unrestricted" battery use and auto-start
-        u.button("Battery and auto-start settings", this::openAppSettings);
+        u.button(Tr.t("Battery and auto-start settings"), this::openAppSettings);
 
         logScroll = new ScrollView(this);
         log = new TextView(this);
@@ -136,16 +136,15 @@ public class MainActivity extends Activity {
 
     private void importSave() {
         new android.app.AlertDialog.Builder(this)
-                .setTitle("Import a save?")
-                .setMessage("This replaces the save on this phone (account, units, progress) with the one in the zip you pick. "
-                        + "The server restarts. Export your current save first if you may want it back.")
-                .setPositiveButton("Choose zip...", (d, w) -> {
+                .setTitle(Tr.t("Import a save?"))
+                .setMessage(Tr.t("This replaces the save on this phone (account, units, progress) with the one in the zip you pick. The server restarts. Export your current save first if you may want it back."))
+                .setPositiveButton(Tr.t("Choose zip..."), (d, w) -> {
                     Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                     i.addCategory(Intent.CATEGORY_OPENABLE);
                     i.setType("*/*");
                     startActivityForResult(i, IMPORT_SAVE);
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(Tr.t("Cancel"), null)
                 .show();
     }
 
@@ -155,38 +154,38 @@ public class MainActivity extends Activity {
         if (resultCode != RESULT_OK || result == null || result.getData() == null) return;
         Uri uri = result.getData();
         if (requestCode == EXPORT_SAVE) {
-            toast("Exporting the save...");
+            toast(Tr.t("Exporting the save..."));
             worker.execute(() -> {
                 try {
                     int n = SaveBackup.export(this, uri);
-                    toast("Save exported (" + n + " files)");
+                    toast(Tr.t("Save exported (%d files)", n));
                 } catch (Exception e) {
                     // don't leave an empty or half-written file behind
                     try { android.provider.DocumentsContract.deleteDocument(getContentResolver(), uri); } catch (Exception ignored) { }
-                    toast("Export failed: " + e.getMessage());
+                    toast(Tr.t("Export failed: %s", e.getMessage()));
                 }
             });
         } else if (requestCode == SAVE_LOGS) {
             worker.execute(() -> {
                 try {
                     writeLogs(uri);
-                    toast("Logs saved: send that file with your bug report");
+                    toast(Tr.t("Logs saved: send that file with your bug report"));
                 } catch (Exception e) {
                     try { android.provider.DocumentsContract.deleteDocument(getContentResolver(), uri); } catch (Exception ignored) { }
-                    toast("Saving the logs failed: " + e.getMessage());
+                    toast(Tr.t("Saving the logs failed: %s", e.getMessage()));
                 }
             });
         } else if (requestCode == IMPORT_SAVE) {
-            toast("Importing the save...");
+            toast(Tr.t("Importing the save..."));
             worker.execute(() -> {
                 try {
                     ServerProbe.stopAndWait(this);
                     int n = SaveBackup.importSave(this, uri);
                     ServerFiles.log(this, "[companion] save imported (" + n + " files)");
                     ServerService.start(this);
-                    toast("Save imported (" + n + " files); server restarting");
+                    toast(Tr.t("Save imported (%d files); server restarting", n));
                 } catch (Exception e) {
-                    toast("Import failed: " + e.getMessage());
+                    toast(Tr.t("Import failed: %s", e.getMessage()));
                 }
             });
         }
@@ -293,11 +292,11 @@ public class MainActivity extends Activity {
             String tail = tail(ServerFiles.logFile(this), 6000);
             ui.post(() -> {
                 // the ready light: green = open the game; yellow = wait (starting, or the game update is being rebuilt); red = stopped
-                if (own && up && Boolean.TRUE.equals(rebuilding)) light(YELLOW, "Wait: the game update is being rebuilt. Open the game when this turns green.");
-                else if (own && up) light(GREEN, "Ready: open the game. (Server on 127.0.0.1:8000)");
-                else if (own) light(YELLOW, "Wait: the server is starting...");
-                else if (up) light(YELLOW, "Stopped here (another server answers on port 8000, e.g. a PC through adb)");
-                else light(RED, "Stopped: press Start.");
+                if (own && up && Boolean.TRUE.equals(rebuilding)) light(YELLOW, Tr.t("Wait: the game update is being rebuilt. Open the game when this turns green."));
+                else if (own && up) light(GREEN, Tr.t("Ready: open the game. (Server on 127.0.0.1:8000)"));
+                else if (own) light(YELLOW, Tr.t("Wait: the server is starting..."));
+                else if (up) light(YELLOW, Tr.t("Stopped here (another server answers on port 8000, e.g. a PC through adb)"));
+                else light(RED, Tr.t("Stopped: press Start."));
                 boolean atEnd = logScroll.getChildAt(0).getBottom() <= logScroll.getHeight() + logScroll.getScrollY() + 40;
                 log.setText(tail);
                 if (atEnd) logScroll.post(() -> logScroll.fullScroll(ScrollView.FOCUS_DOWN));

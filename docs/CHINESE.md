@@ -19,6 +19,12 @@ rates, the unit and armament editor, fixes, the companion app.
 
 Back to English: pick **English** the same way (and reinstall the English game app if you changed it).
 
+The dashboard and the companion app have their own language, apart from the game's:
+
+- **Dashboard**: the **Dashboard language** menu in the sidebar (English or 简体中文). Kept per
+  browser; with none picked it follows the browser's language, so inside the companion it follows the phone.
+- **Companion app**: follows the phone's language (Chinese on a phone set to Chinese, English otherwise).
+
 ## What turns Chinese
 
 | Part | In Chinese | How |
@@ -30,6 +36,8 @@ Back to English: pick **English** the same way (and reinstall the English game a
 | GlobalPoint's own game messages (OBB unpacking, server.txt) | With the Chinese game app | scripts/client_mod/as3_zh.json |
 | Pictures with words on them (home buttons, bottom bar, banners, labels drawn into sheets) | With CN's full files (PC) or the Chinese art pack (phone) | assets/cn_lang_art.json, see below |
 | Text you type on the dashboard (mail titles, news posts) | As typed | |
+| The dashboard itself | With its Dashboard language set to 简体中文 | web/public/js/i18n.js, web/public/i18n/zh.json (built from scripts/i18n/zh by scripts/build_dashboard_i18n.cjs) |
+| The companion app's screens and notification | On a phone set to Chinese | companion/i18n/zh.json, made into ZhStrings.java by scripts/gen_companion_zh.cjs |
 | Unit editor and armament editor text (names, titles, descriptions, skills), custom units | As typed, in either language; the cells you didn't edit turn Chinese | the builder puts the edits back after the Chinese step |
 | Cells CN left in Japanese (the Black Clover collab's story, items, shop names, missions...) | Yes: the Chinese community's translations, and GlobalPoint's own for the rest | assets/cn_zh_fixes.json, assets/cn_zh_own.json, see below |
 | The three summer stories CN cut short | Yes, complete (the English game ships global's complete English) | assets/cn_story_fixes_zh (晓之车's complete copies) |

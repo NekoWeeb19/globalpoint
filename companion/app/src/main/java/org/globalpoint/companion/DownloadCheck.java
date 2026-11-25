@@ -43,7 +43,7 @@ final class DownloadCheck {
 
     /** Game data > Check a file: a file picked in the system file picker. */
     static String check(Context c, Uri uri, Progress progress) throws Exception {
-        String name = "the file";
+        String name = Tr.t("the file");
         long size = -1;
         try (Cursor cur = c.getContentResolver().query(uri, new String[]{OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE}, null, null, null)) {
             if (cur != null && cur.moveToFirst()) {
@@ -72,19 +72,18 @@ final class DownloadCheck {
         while ((n = in.read(buf)) > 0) {
             sha.update(buf, 0, n);
             done += n;
-            if (done - shown >= 32L << 20) { shown = done; progress.update("Checking " + name + "...", done, size); }
+            if (done - shown >= 32L << 20) { shown = done; progress.update(Tr.t("Checking %s...", name), done, size); }
         }
         StringBuilder hex = new StringBuilder();
         for (byte b : sha.digest()) hex.append(String.format(Locale.US, "%02x", b));
         String hash = hex.toString();
-        String detail = "\n\n" + name + "\n" + String.format(Locale.US, "%,d bytes (%.2f GB)", done, done / 1073741824.0) + "\nSHA-256: " + hash;
+        String detail = "\n\n" + name + "\n" + Tr.t("%,d bytes (%.2f GB)", done, done / 1073741824.0) + "\nSHA-256: " + hash;
 
         for (Object[] k : KNOWN)
-            if (k[0].equals(hash)) return new Result(true, (String) k[2], "OK: this is " + k[2] + ". It's complete and undamaged." + detail);
+            if (k[0].equals(hash)) return new Result(true, (String) k[2], Tr.t("OK: this is %s. It's complete and undamaged.", Tr.t((String) k[2])) + detail);
         for (Object[] k : KNOWN)
-            if ((Long) k[1] == done) return new Result(false, (String) k[2], "DAMAGED: this is the size of " + k[2] + ", but its contents are different. Download it again." + detail);
-        if (size > 0 && done != size) return new Result(false, null, "INCOMPLETE: only " + done + " of " + size + " bytes could be read. Copy or download it again." + detail);
-        return new Result(false, null, "Not one of the known GlobalPoint downloads. It may be damaged, cut short, or a different version than this app knows: "
-                + "compare its SHA-256 with the list in the README, or download it again." + detail);
+            if ((Long) k[1] == done) return new Result(false, (String) k[2], Tr.t("DAMAGED: this is the size of %s, but its contents are different. Download it again.", Tr.t((String) k[2])) + detail);
+        if (size > 0 && done != size) return new Result(false, null, Tr.t("INCOMPLETE: only %d of %d bytes could be read. Copy or download it again.", done, size) + detail);
+        return new Result(false, null, Tr.t("Not one of the known GlobalPoint downloads. It may be damaged, cut short, or a different version than this app knows: compare its SHA-256 with the list in the README, or download it again.") + detail);
     }
 }
