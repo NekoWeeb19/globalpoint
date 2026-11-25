@@ -80,6 +80,11 @@ const JP_TEXT_FIXES = (() => {
     return out
 })()
 const STORY_FIXES = (() => { try { return JSON.parse(fs.readFileSync(path.join(STORY_FIXES_DIR, "index.json"), "utf8")).files } catch { return {} } })()
+// ...and complete in Chinese for the game in Chinese (assets/cn_story_fixes_zh, 晓之车's: scripts/gen_cn_story_fixes_zh.cjs)
+const STORY_FIXES_ZH_DIR = path.join(__dirname, "..", "assets", "cn_story_fixes_zh")
+const STORY_FIXES_ZH = require("./game_language.cjs").readGameLanguage(dataDir()) === "zh"
+    ? (() => { try { return JSON.parse(fs.readFileSync(path.join(STORY_FIXES_ZH_DIR, "index.json"), "utf8")).files } catch { return {} } })()
+    : {}
 // the yearly free pull copies this update has (.database/cn_schedule_built.json): the server never sends the
 // CN client a used copy it doesn't have (an unknown campaign id stops it with C8601)
 const builtFreePullCopyIds = []
@@ -757,6 +762,7 @@ async function main() {
     }
     // files.json's paths are the PC's; on a phone the copy sits in the dir itself (src/routes/companion.ts)
     const tableBuffer = async file => {
+        if (STORY_FIXES_ZH[file]) return fs.readFileSync(path.join(STORY_FIXES_ZH_DIR, STORY_FIXES_ZH[file].file))
         if (STORY_FIXES[file]) return fs.readFileSync(path.join(STORY_FIXES_DIR, STORY_FIXES[file].file))
         const from = translatedFrom.get(file)
         const translated = from && fs.existsSync(from) ? from : path.join(TRANSLATED, file)
@@ -1176,7 +1182,8 @@ async function main() {
         const originals = await CL.readCnOriginals(CN_DIR, [...trees.keys()])
         for (const [p, tree] of trees) {
             const cnBuf = originals.get(p)
-            if (!cnBuf) continue
+            // the cut stories are complete in Chinese already (CN's own copies lack rows, so their rows don't line up)
+            if (!cnBuf || STORY_FIXES_ZH[p]) continue
             try {
                 const cnRoot = R.decodeFile(cnBuf)
                 chineseCells += CL.chineseTree(tree, cnRoot)
@@ -1184,7 +1191,9 @@ async function main() {
                 communityCells += CL.applyZhFixes(p, tree, cnRoot)
             } catch { }
         }
-        if (communityCells > 0) console.log(`game language zh: ${communityCells} cells from the Chinese community's fixes (晓之车)`)
+        if (communityCells > 0) console.log(`game language zh: ${communityCells} cells from the Chinese community's fixes (晓之车) and GlobalPoint's own`)
+        // rows the builder adds that CN doesn't have (global-only items): their text in Chinese
+        for (const [file, byKey] of Object.entries(zhFixes.rows ?? {})) if (trees.has(file)) replaceRows(trees.get(file), new Map(Object.entries(byKey)))
         // what the Unit editor (and kit files in changes/) changed in existing units and armaments wins over CN's text:
         // their edited cells go back in (in English or Chinese, as typed); the cells they didn't touch stay CN's
         let kept = 0

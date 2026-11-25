@@ -1,0 +1,21 @@
+{
+ "_note": "Built by scripts/gen_cn_story_fixes_zh.cjs: the story scripts CN cut short, complete in Chinese from 晓之车's CN tables, shipped instead of assets/cn_story_fixes when the game is set to Chinese.",
+ "credit": "晓之车 (Chinese community), 2026-11-22",
+ "files": {
+  "production/upload/3a/bf5ee08049340fab63826386ca04ba8b807e8e": {
+   "table": "master/story/story_event_quest/smr20/smr_event_003/scenario.orderedmap",
+   "file": "production__upload__3a__bf5ee08049340fab63826386ca04ba8b807e8e",
+   "rows": 271
+  },
+  "production/upload/5a/86669884fe0e33c67acde437fa878c2739afce": {
+   "table": "master/story/character_story_quest/casino_dealer_smr20_001/scenario.orderedmap",
+   "file": "production__upload__5a__86669884fe0e33c67acde437fa878c2739afce",
+   "rows": 187
+  },
+  "production/upload/f3/4fc2e90e55ab9908050ba4a144b67f250803b2": {
+   "table": "master/story/character_story_quest/casino_dealer_smr20_002/scenario.orderedmap",
+   "file": "production__upload__f3__4fc2e90e55ab9908050ba4a144b67f250803b2",
+   "rows": 171
+  }
+ }
+}

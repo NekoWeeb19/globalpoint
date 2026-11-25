@@ -73,6 +73,17 @@ try {
     CL.applyZhFixes(profiles, profile, table({}))
     check("unit profile text keeps 生命值", texts(profile)["111001"] === "a,生命值很高\n")
 
+    // ---- GlobalPoint's own Chinese (assets/cn_zh_own.json) and the cut stories in Chinese ----
+    const own = JSON.parse(fs.readFileSync(path.join(scripts, "..", "assets", "cn_zh_own.json"), "utf8"))
+    const ownCells = Object.values(own.cells).flatMap(rows => Object.values(rows).flatMap(c => Object.values(c)))
+    check("our own cells: Chinese with no kana left, made from CN's Japanese or blank cells", ownCells.length > 0
+        && ownCells.every(([was, zh]) => /[一-鿿]/.test(zh) && !/[ぁ-ゖァ-ヺ]/.test(zh) && (/[ぁ-ゖァ-ヺ]/.test(was) || was === "--")))
+    check("the loader merges the community's fixes and ours, with the rows CN lacks", Object.keys(CL.zhFixes().rows ?? {}).length > 0
+        && Object.values(CL.zhFixes().cells).some(rows => Object.values(rows).some(c => Object.values(c).some(([, zh]) => zh.startsWith("【至")))))
+    const storiesZh = JSON.parse(fs.readFileSync(path.join(scripts, "..", "assets", "cn_story_fixes_zh", "index.json"), "utf8")).files
+    const storiesEn = JSON.parse(fs.readFileSync(path.join(scripts, "..", "assets", "cn_story_fixes", "index.json"), "utf8")).files
+    check("each cut story has a complete Chinese copy with global's row count", Object.keys(storiesEn).every(k => storiesZh[k]?.rows === storiesEn[k].rows))
+
     // ---- updates built in Chinese aren't English copies ----
     const patchDir = path.join(temp, "cn_patches")
     fs.mkdirSync(patchDir, { recursive: true })

@@ -31,7 +31,9 @@ Back to English: pick **English** the same way (and reinstall the English game a
 | Pictures with words on them (home buttons, bottom bar, banners, labels drawn into sheets) | With CN's full files (PC) or the Chinese art pack (phone) | assets/cn_lang_art.json, see below |
 | Text you type on the dashboard (mail titles, news posts) | As typed | |
 | Unit editor and armament editor text (names, titles, descriptions, skills), custom units | As typed, in either language; the cells you didn't edit turn Chinese | the builder puts the edits back after the Chinese step |
-| Cells CN left in Japanese (the Black Clover collab's story, items, shop names, missions...) | Yes, from the Chinese community's translations | assets/cn_zh_fixes.json, see below |
+| Cells CN left in Japanese (the Black Clover collab's story, items, shop names, missions...) | Yes: the Chinese community's translations, and GlobalPoint's own for the rest | assets/cn_zh_fixes.json, assets/cn_zh_own.json, see below |
+| The three summer stories CN cut short | Yes, complete (the English game ships global's complete English) | assets/cn_story_fixes_zh (晓之车's complete copies) |
+| Voice actors CN left blank, items only global has | Yes (谷山纪章..., 北极熊饼干, CN's own name for the exchange tickets) | assets/cn_zh_own.json |
 
 ## How the game update does it
 
@@ -62,6 +64,19 @@ Only edits on the same row as CN's are taken: every cell that isn't text (ids, n
 aside. Their tables also hold their own rows and rows that moved to other ids (689 edits); those are left out. A
 fixed cell changes only while CN's own copy still has the text the fix was made from. Edits made in the Unit editor
 still win over these.
+
+## GlobalPoint's own Chinese
+
+What the community's fixes don't cover is in `assets/cn_zh_own.json` (`node --env-file=.env scripts/gen_cn_zh_own.cjs`),
+in CN's wording and the community's names:
+
+- the boss coin shop's limited-time labels in CN's own form (【2月8日まで】 -> 【至2月8日】, 466 cells);
+- the rest of the Black Clover collab (quest names and summaries, Noelle's shop entries, the clovers), 25 collection
+  missions, three banner names, the collab pack dialogs;
+- the four voice actors CN left blank, in Chinese characters, and the four items only global has.
+
+The payment packs' Japanese names aren't covered: the server lists no payment products, so the game never shows them.
+The titles' third column (a kana reading used for sorting) stays as it is; it isn't shown.
 
 ## The Chinese game app
 

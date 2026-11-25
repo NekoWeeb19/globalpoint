@@ -156,13 +156,19 @@ let zhFixesCache = null
 /** The community fixes: { cells: table -> row key -> "rec:col" -> [CN's text, theirs], rules: [{ from, to, except }], hash }. */
 function zhFixes() {
     if (zhFixesCache) return zhFixesCache
-    try {
-        const text = fs.readFileSync(path.join(__dirname, "..", "assets", "cn_zh_fixes.json"), "utf8")
-        const data = JSON.parse(text)
-        zhFixesCache = { cells: data.cells ?? {}, rules: data.rules ?? [], hash: require("crypto").createHash("sha1").update(text).digest("hex").slice(0, 12) }
-    } catch {
-        zhFixesCache = { cells: {}, rules: [], hash: "" }
+    // the community's fixes, then GlobalPoint's own for what they don't cover (assets/cn_zh_own.json, scripts/gen_cn_zh_own.cjs)
+    const cells = {}, rows = {}, rules = [], hash = require("crypto").createHash("sha1")
+    for (const name of ["cn_zh_fixes.json", "cn_zh_own.json"]) {
+        try {
+            const text = fs.readFileSync(path.join(__dirname, "..", "assets", name), "utf8")
+            const data = JSON.parse(text)
+            hash.update(text)
+            for (const [table, rows] of Object.entries(data.cells ?? {})) for (const [key, at] of Object.entries(rows)) Object.assign(((cells[table] ??= {})[key] ??= {}), at)
+            for (const [table, byKey] of Object.entries(data.rows ?? {})) Object.assign((rows[table] ??= {}), byKey)
+            rules.push(...(data.rules ?? []))
+        } catch { }
     }
+    zhFixesCache = { cells, rows, rules, hash: Object.keys(cells).length ? hash.digest("hex").slice(0, 12) : "" }
     return zhFixesCache
 }
 /** The tables the community fixes touch: their cells' tables, and every table a rule applies to that isn't excepted. */
