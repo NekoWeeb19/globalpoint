@@ -10,8 +10,9 @@
 //     Same marker as the comics pack, with content "zh", so the companion puts it beside the English comics.
 //   node scripts/build_pack.cjs art <out.zip> [--from <server folder>] [--slim <folder>]
 //     the Unit editor's skill preview art from the slim CN folder (unit sprites and skill effects in tables/, which
-//     scripts/gen_cn_slim.cjs adds by their hashed names, plus preview_art.txt; ~35 MB), for phones that already
-//     have the data pack, so the 1.8 GB data pack needn't be downloaded again. Marker: starpoint-art-pack.json.
+//     scripts/gen_cn_slim.cjs adds by their hashed names, plus preview_art.txt; ~35 MB), for phones with a data pack
+//     made before the art (0.8.98); a data pack made from a slim folder with the art (the 1.0 one) has it already.
+//     Marker: starpoint-art-pack.json.
 //     Import it after a data pack: a data pack replaces .cdn/cn/tables and removes what it doesn't hold.
 //   node scripts/build_pack.cjs zh-art <out.zip> [--from <server folder>]
 //     CN's own pictures for the game in Chinese (docs/CHINESE.md): CN's originals of every picture and sprite layout

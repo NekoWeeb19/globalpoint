@@ -42,7 +42,7 @@ final class ZhStrings {
         m.put(". Your save wasn't touched. Back on the main screen the server starts.", "。你的存档未被改动。回到主界面后服务器会启动。");
         m.put("127.0.0.1:8000 - kept awake - tap to open the companion", "127.0.0.1:8000 - 保持唤醒 - 点按打开 Companion");
         m.put("127.0.0.1:8000 - tap to open the companion", "127.0.0.1:8000 - 点按打开 Companion");
-        m.put("A data pack (~220 MB: everything above except your save, the game updates and the full game files, which the OBB has), a comics pack (~1.4 GB), the skill preview art pack (~35 MB: the Unit editor's skill preview pictures; import it after a data pack) or the Chinese art pack (~1.6 GB: the game's pictures in Chinese; import it after a data pack), copied to this phone, e.g. into Downloads. Packs are made on a PC with scripts/build_pack.cjs. A pack never touches your save.", "数据包（约 220 MB：除存档、游戏更新和完整游戏文件（这些在 OBB 中）外的上述全部内容）、漫画包（约 1.4 GB）、技能预览图片包（约 35 MB：角色编辑器的技能预览图片；请在数据包之后导入）或中文图片包（约 1.6 GB：游戏的中文图片；请在数据包之后导入），复制到这台手机上，例如放进「下载」。资源包在电脑上用 scripts/build_pack.cjs 制作。资源包不会改动你的存档。");
+        m.put("A data pack (~220 MB: everything above except your save, the game updates and the full game files, which the OBB has; the Unit editor's skill preview pictures too), a comics pack (~1.4 GB) or the Chinese art pack (~1.6 GB: the game's pictures in Chinese; import it after a data pack), copied to this phone, e.g. into Downloads. Packs are made on a PC with scripts/build_pack.cjs. A pack never touches your save.", "数据包（约 220 MB：除存档、游戏更新和完整游戏文件（这些在 OBB 中）外的上述全部内容，也包括角色编辑器的技能预览图片）、漫画包（约 1.4 GB）或中文图片包（约 1.6 GB：游戏的中文图片；请在数据包之后导入），复制到这台手机上，例如放进「下载」。资源包在电脑上用 scripts/build_pack.cjs 制作。资源包不会改动你的存档。");
         m.put("A zip with .database/ and .cdn/ folders (and optionally .env), e.g. from the shared package.", "包含 .database/ 和 .cdn/ 文件夹（可选 .env）的压缩包，例如来自分享包。");
         m.put("All set. Open the game once the server line above says ready.", "全部完成。等上方的服务器状态显示已就绪后，打开游戏。");
         m.put("Allow", "允许");
@@ -218,7 +218,7 @@ final class ZhStrings {
         m.put("not enough free space to copy %s (%s)", "空间不足，无法复制 %s（%s）");
         m.put("starpoint-comics.zip (comics pack)", "starpoint-comics.zip（漫画包）");
         m.put("starpoint-data.zip (data pack for GlobalPoint 1.0, game files 1.4.800)", "starpoint-data.zip（GlobalPoint 1.0 的数据包，游戏文件 1.4.800）");
-        m.put("starpoint-skill-preview-art.zip (skill preview art pack)", "starpoint-skill-preview-art.zip（技能预览图片包）");
+        m.put("starpoint-skill-preview-art.zip (skill preview art pack; not needed with the 1.0 data pack, which has these pictures)", "starpoint-skill-preview-art.zip（技能预览图片包；1.0 数据包已包含这些图片，无需再导入）");
         m.put("stopped", "已停止");
         m.put("the copy of %s came out short", "%s 的副本不完整");
         m.put("the file", "该文件");

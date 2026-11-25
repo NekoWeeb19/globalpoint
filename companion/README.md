@@ -109,7 +109,8 @@ same size, so it resumes), and then offers to delete the pack.
 - **Skill preview art pack** (~35 MB, `starpoint-skill-preview-art.zip`), made with
   `node scripts/build_pack.cjs art <out.zip> [--from <server folder>] [--slim <slim CN folder>]`: the unit
   sprites and skill effects the Unit editor's skill preview draws (0.8.98+), from the slim CN folder, for a phone
-  that already has the data pack (data packs made before 0.8.98 don't have the art). Import it after a data pack:
+  that has an older data pack (made before 0.8.98, without the art). The 1.0 data pack already has these pictures,
+  so it isn't needed with it. Import it after a data pack:
   a data pack replaces `.cdn/cn/tables` and removes what it doesn't hold. The server keeps running meanwhile.
   - If the game's files are older than the pack (an older OBB, say), the game downloads the
     difference from the phone once.

@@ -84,7 +84,7 @@ public class DataActivity extends Activity {
         });
 
         u.heading(Tr.t("No PC? Import a pack"));
-        u.text(Tr.t("A data pack (~220 MB: everything above except your save, the game updates and the full game files, which the OBB has), a comics pack (~1.4 GB), the skill preview art pack (~35 MB: the Unit editor's skill preview pictures; import it after a data pack) or the Chinese art pack (~1.6 GB: the game's pictures in Chinese; import it after a data pack), copied to this phone, e.g. into Downloads. Packs are made on a PC with scripts/build_pack.cjs. A pack never touches your save."), 13);
+        u.text(Tr.t("A data pack (~220 MB: everything above except your save, the game updates and the full game files, which the OBB has; the Unit editor's skill preview pictures too), a comics pack (~1.4 GB) or the Chinese art pack (~1.6 GB: the game's pictures in Chinese; import it after a data pack), copied to this phone, e.g. into Downloads. Packs are made on a PC with scripts/build_pack.cjs. A pack never touches your save."), 13);
         comicsPack = u.button(Tr.t("Import pack..."), () -> {
             Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             i.addCategory(Intent.CATEGORY_OPENABLE);

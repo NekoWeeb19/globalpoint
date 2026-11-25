@@ -29,7 +29,7 @@ final class DownloadCheck {
             {"b863c94735c93d2afa169d3e0b3e09d2735fd259abef94150023866fe458f2e1", 231690110L, "starpoint-data.zip (data pack for GlobalPoint 1.0, game files 1.4.800)"},
             {"8637a682ab1439e8c62040ebe9a4ce47b3b3ec28b4f1f65c4ba00f5332a6e393", 2358543886L, "an older starpoint-data.zip (before GlobalPoint 1.0; the 1.0 one is smaller and lists the tables for the game language switch)"},
             {"7409b79cbe56c8c7ff05e48755904c7c35fb9677914925607a474f5a33424174", 1427068120L, "starpoint-comics.zip (comics pack)"},
-            {"4e70bfda526106a0f12fc9288e8a20c417b3246cdd3a2894051d5dfc5d03450c", 36791493L, "starpoint-skill-preview-art.zip (skill preview art pack)"},
+            {"4e70bfda526106a0f12fc9288e8a20c417b3246cdd3a2894051d5dfc5d03450c", 36791493L, "starpoint-skill-preview-art.zip (skill preview art pack; not needed with the 1.0 data pack, which has these pictures)"},
             {"198f2b4fb31568e2050ca5e1989d711ff63077494b21ff990562263c0ff0774e", 139394817L, "World Flipper (game) APK, build 25"},
     };
 
