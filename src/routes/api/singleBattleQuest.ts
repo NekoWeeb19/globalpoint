@@ -22,6 +22,7 @@ import { giveQuestJoinUnitsSync } from "../../nya/storyJoin";
 import { spendBoostPoint } from "../../lib/bossBoost";
 import { campaignRates, itemDropMultiplier, RewardCampaign } from "../../lib/rewardCampaign";
 import rewardCampaignData from "../../../assets/reward_campaign.json";
+import { multiPickupFor } from "../../lib/multiPickup";
 import { rewardCampaignsFor } from "../../nya/cnCampaigns";
 import eventDropData from "../../../assets/event_drops.json";
 import cnEventDropData from "../../../assets/event_drops_cn.json";
@@ -187,6 +188,16 @@ const routes = async (fastify: FastifyInstance) => {
 
         // reward campaigns ("2x drops"...) running at the server date for this quest
         const campaign = campaignRates(rewardCampaignsFor(rewardCampaigns), getServerDate().getTime(), questCategory, questId)
+        // CN's Multi Boss Pick-up: co-op on the day's featured boss pays boss coins (the score drops), EXP and mana
+        // x the promo's rate; like campaigns of one kind, the highest rate wins (src/lib/multiPickup.ts)
+        const pickup = activeQuestData.coop === true && questCategory === QuestCategory.BOSS_BATTLE && inCnRequest()
+            ? multiPickupFor(getServerDate().getTime(), questId) : null
+        if (pickup !== null) {
+            campaign.items = Math.max(campaign.items, pickup.rate)
+            campaign.exp = Math.max(campaign.exp, pickup.rate)
+            campaign.mana = Math.max(campaign.mana, pickup.rate)
+            console.log(`[multi pickup] Quest ${questId}: featured boss of promo ${pickup.event}, co-op rewards x${pickup.rate}.`)
+        }
         const rewardMana = Math.floor(questData.manaReward * campaign.mana)
         const rewardPoolExp = Math.floor(questData.poolExpReward * campaign.exp)
         if (campaign.ids.length > 0) console.log(`[campaign] Quest ${questId}: items x${campaign.items}, EXP x${campaign.exp}, mana x${campaign.mana} (campaigns ${campaign.ids.join(", ")}).`)
