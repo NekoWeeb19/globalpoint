@@ -3,9 +3,10 @@
 //
 // Rule, per table: a cell that CN's own copy (CN_CDN_DIR, newest original) has in Chinese (scripts/gen_cn_text.cjs
 // isCnText: Chinese characters, no kana) and that the update changed goes back to CN's cell. Other cells stay as the
-// update has them: dates, numbers, ids, rows GlobalPoint added, and cells CN left in Japanese (those keep their
-// English). Rows are matched by their keys; inside a key, records by position, or by their first cell when the
-// update added or removed records. Tested on the emulator 2026-11-25 (195,190 cells in 1,865 tables).
+// update has them: dates, numbers, ids, and cells CN left in Japanese (those keep their English). Rows are matched
+// by their keys; inside a key, records by position, or by their first cell when the update added or removed records.
+// Rows CN doesn't have (GlobalPoint's copies: the Haunt's extra months, yearly free pulls) take the Chinese of the
+// same English cell elsewhere in the table; their other text stays as it is. Tested on the emulator 2026-11-25 (195,190 cells in 1,865 tables).
 //
 // Switching language (or a game that is ahead of this server, whose copies can't be known) needs more than the
 // tables this update edits: every table GlobalPoint's translation touched (CN_TRANSLATED_DIR files.json) ships too,
@@ -26,33 +27,54 @@ const encodeRecords = (recs, trailing) => {
     return rows.map(r => r.map(R.csvField).join(",")).join("\n") + (trailing ? "\n" : "")
 }
 
-/** One record back to CN's Chinese cells; returns how many cells changed. */
-function revertRecord(rec, cn) {
+/**
+ * One record back to CN's Chinese cells; returns how many cells changed. learned: English cell -> CN's Chinese
+ * (null when one English text had two Chinese ones), for the rows GlobalPoint copies.
+ */
+function revertRecord(rec, cn, learned) {
     if (!cn || rec.length !== cn.length) return 0
     let n = 0
-    for (let c = 0; c < rec.length; c++) if (rec[c] !== cn[c] && isCnText(cn[c])) { rec[c] = cn[c]; n++ }
+    for (let c = 0; c < rec.length; c++) if (rec[c] !== cn[c] && isCnText(cn[c])) {
+        // only text (an empty or number cell CN filled in says nothing about other rows)
+        if (learned && /[A-Za-z]{2}/.test(rec[c])) learned.set(rec[c], learned.has(rec[c]) && learned.get(rec[c]) !== cn[c] ? null : cn[c])
+        rec[c] = cn[c]; n++
+    }
     return n
 }
 
 /**
  * Puts CN's Chinese text back into a decoded table (in place). cnRoot: CN's own copy, decoded.
+ * Rows CN doesn't have that GlobalPoint copies from CN's (the Haunt's extra months, yearly free pull copies) get
+ * the Chinese of the same English cell in this table.
  * @returns the number of cells changed
  */
 function chineseTree(root, cnRoot) {
     const cnLeaves = new Map(R.leaves(cnRoot).map(({ path: keys, leaf }) => [keys.join("/"), leaf.text]))
+    const learned = new Map(), added = []
     let changed = 0
     for (const { path: keys, leaf } of R.leaves(root)) {
         const cnText = cnLeaves.get(keys.join("/"))
+        if (typeof leaf.text === "string" && cnText === undefined) added.push(leaf)
         if (typeof leaf.text !== "string" || cnText === undefined || cnText === leaf.text) continue
         const recs = recordsOf(leaf.text), cnRecs = recordsOf(cnText)
         let n = 0
         if (recs.length === cnRecs.length) {
-            for (let r = 0; r < recs.length; r++) n += revertRecord(recs[r], cnRecs[r])
+            for (let r = 0; r < recs.length; r++) n += revertRecord(recs[r], cnRecs[r], learned)
         } else {
             // records added or removed: match by the first cell when it's unique in CN's copy
             const byFirst = new Map()
             for (const rec of cnRecs) byFirst.set(rec[0], byFirst.has(rec[0]) ? null : rec)
-            for (const rec of recs) n += revertRecord(rec, byFirst.get(rec[0]) ?? undefined)
+            for (const rec of recs) n += revertRecord(rec, byFirst.get(rec[0]) ?? undefined, learned)
+        }
+        if (n > 0) { R.setLeafText(leaf, encodeRecords(recs, leaf.text.endsWith("\n"))); changed += n }
+    }
+    // the rows CN doesn't have: a cell whose English the table has as one Chinese text takes it
+    for (const leaf of added) {
+        const recs = recordsOf(leaf.text)
+        let n = 0
+        for (const rec of recs) for (let c = 0; c < rec.length; c++) {
+            const zh = learned.get(rec[c])
+            if (typeof zh === "string") { rec[c] = zh; n++ }
         }
         if (n > 0) { R.setLeafText(leaf, encodeRecords(recs, leaf.text.endsWith("\n"))); changed += n }
     }

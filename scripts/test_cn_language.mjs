@@ -35,6 +35,7 @@ try {
         "2": "unit_b,Hello,こんにちは\n",                               // CN left Japanese: stays English
         "3": "unit_c,Only GlobalPoint has this row\n",                 // a row CN doesn't have
         "4": "x,First,1\ny,Second,2\nz,Added by GlobalPoint,3\n",       // a record added: matched by first cell
+        "5": "unit_a,Dragon Lord,2023-01-01 00:00:00,5\n",            // a copy GlobalPoint made of row 1 (the Haunt's months, yearly free pulls)
     })
     const cn = table({
         "1": "unit_a,龙王,2020-01-01 00:00:00,5\n",
@@ -47,7 +48,8 @@ try {
     check("CN's Japanese cells keep their English", t["2"] === "unit_b,你好,こんにちは\n", t["2"])
     check("rows only GlobalPoint has stay as they are", t["3"] === "unit_c,Only GlobalPoint has this row\n", t["3"])
     check("records matched by their first cell when GlobalPoint added one", t["4"] === "x,第一,1\ny,第二,2\nz,Added by GlobalPoint,3\n", t["4"])
-    check("the number of cells changed is counted", changed === 4, changed)
+    check("a row GlobalPoint copied takes the Chinese of the same English in the table", t["5"] === "unit_a,龙王,2023-01-01 00:00:00,5\n", t["5"])
+    check("the number of cells changed is counted", changed === 5, changed)
     check("a second pass changes nothing", CL.chineseTree(update, cn) === 0)
 
     // ---- the Chinese community's fixes (assets/cn_zh_fixes.json) ----
