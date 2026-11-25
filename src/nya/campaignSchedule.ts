@@ -22,6 +22,7 @@ import {
     CampaignSchedule,
     currentOrNextRun,
     describeRun,
+    describeRunZh,
     KnownRuns,
     runCopies,
     TimedCampaign,
@@ -365,6 +366,8 @@ export interface RunOverview {
     key: string,
     name: string,
     description: string,
+    /** the description in Chinese, for the dashboard in Chinese */
+    descriptionZh: string,
     original: { start: string, end: string },
     cn: { start: string, end: string } | null, // its own dates in CN's data (when the CN game runs it)
     yearly: boolean,
@@ -491,7 +494,7 @@ export function getCampaignOverview(): CampaignOverview {
             const next = own.find(c => Date.parse(c.end.replace(" ", "T") + "Z") >= now)
             const rows = table.rows.filter(row => run.ids.includes(row.id))
             return {
-                key: run.key, name: runName(kind, run), description: describeRun(kind, rows),
+                key: run.key, name: runName(kind, run), description: describeRun(kind, rows), descriptionZh: describeRunZh(kind, rows),
                 original: { start: masterIso(run.start), end: masterIso(run.end) },
                 cn: run.ids.map(i => cnOf(`${kind}:${i}`)).find(w => w !== null) ?? null,
                 yearly, skippedYears,

@@ -33,8 +33,19 @@
             <span data-status="real" class="text-on-surface">...</span>
         </div>
         <span data-status="reset" class="text-on-surface-variant"></span>
-        <span data-status="update" role="status" class="px-3 py-2 rounded-2xl bg-surface-container-high text-on-surface">Checking the game update...</span>`
+        <span data-status="update" role="status" class="px-3 py-2 rounded-2xl bg-surface-container-high text-on-surface">Checking the game update...</span>
+        <label class="flex items-center justify-between gap-2 text-on-surface-variant">
+            <span>Dashboard language</span>
+            <select data-status="language" data-no-i18n class="bg-surface-container rounded-xl border border-outline-variant px-2 py-1 text-on-surface">
+                <option value="en">English</option>
+                <option value="zh" lang="zh-Hans">简体中文</option>
+            </select>
+        </label>`
     nav.appendChild(block)
+    // the dashboard's own language (web/public/js/i18n.js); the game's is on Game settings
+    const languagePick = block.querySelector('[data-status="language"]')
+    languagePick.value = window.dashboardLanguage === "zh" ? "zh" : "en"
+    languagePick.addEventListener("change", () => { if (window.setDashboardLanguage) window.setDashboardLanguage(languagePick.value) })
     const part = (name) => block.querySelector(`[data-status="${name}"]`)
 
     // ---- phones: top bar, drawer and the dimmed page behind it ----

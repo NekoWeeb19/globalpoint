@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <script src="/public/js/i18n.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/public/tailwind.css">
     <title>Starpoint</title>
@@ -231,6 +232,9 @@
             }
             const KIND = { beads_paid: "Paid beads", beads_free: "Free beads", mana: "Mana", exp: "EXP", item: "Item", chara: "Unit", equip: "Armament" }
             const UNIT = { day: ["day", "days"], week: ["week", "weeks"], month: ["month", "months"], year: ["year", "years"] }
+            // the dashboard in Chinese (web/public/js/i18n.js): sentences built here are written in Chinese directly
+            const ZH = window.dashboardLanguage === "zh"
+            const UNIT_ZH = { day: "天", week: "周", month: "个月", year: "年" }
             const show = (el, on) => { el.style.display = on ? "" : "none" }
             const needsId = (kind) => kind === "item" || kind === "chara" || kind === "equip"
             let data = { schedules: [], serverTime: new Date().toISOString(), days: 30 }, editing = null, busy = false
@@ -240,10 +244,11 @@
             const defaultTitle = (kind, id, amount) => KIND[kind] + (needsId(kind) && id ? " " + id : "") + " * " + amount
             function whenText(s) {
                 if (s.every === 0) return onceText(s)
+                if (ZH) return "从 " + fmt(s.start) + " UTC 起，每" + (s.every === 1 ? "" : " " + s.every + " ") + UNIT_ZH[s.unit] + "一次，" + (s.times === null ? "永久" : "共 " + s.times + " 次") + (s.yearly ? "，每年重复" : "")
                 const unit = UNIT[s.unit][s.every === 1 ? 0 : 1]
                 return "from " + fmt(s.start) + " UTC, every " + (s.every === 1 ? "" : s.every + " ") + unit + ", " + (s.times === null ? "forever" : s.times + " times in all") + (s.yearly ? ", again every year" : "")
             }
-            function onceText(s) { return "once, " + fmt(s.start) + " UTC" + (s.yearly ? ", again every year" : "") }
+            function onceText(s) { if (ZH) return "一次，" + fmt(s.start) + " UTC" + (s.yearly ? "，每年重复" : ""); return "once, " + fmt(s.start) + " UTC" + (s.yearly ? ", again every year" : "") }
 
             let names = null
             function syncForm() {
@@ -262,6 +267,11 @@
                 $("message-text").placeholder = data.defaultMessage || ""
                 const s = formValue()
                 const past = s.start && Date.parse(s.start) < Date.parse(data.serverTime) - 60000
+                if (ZH) {
+                    $("preview").textContent = !s.start ? "" : "发送：" + whenText({ ...s, start: s.start }) + "。" +
+                        (!past ? "" : s.every === 0 ? "该时间已过：会立即发送。" : "首次时间已过：会立即发送一封，然后按这些时间继续（错过的不会全部补发）。")
+                    return
+                }
                 $("preview").textContent = !s.start ? "" : "Sends " + whenText({ ...s, start: s.start }) + "." +
                     (!past ? "" : s.every === 0 ? " That time has passed: it sends right away."
                         : " The first time has passed: one sends right away, then it keeps these times (missed ones aren't all sent).")
@@ -297,11 +307,13 @@
             let giftNames = null
             fetch("/api/unit-editor/names").then(r => r.ok ? r.json() : null).then(n => {
                 if (!n) return
-                giftNames = { item: new Map(n.item.map(x => [String(x.id), x.name])), chara: new Map(n.chara.map(x => [String(x.id), x.name])), equip: new Map(n.equip.map(x => [String(x.id), x.name])) }
+                // in Chinese, CN's own names where it has them
+                const nameOf = x => window.dashboardLanguage === "zh" && x.cnName ? x.cnName : x.name
+                giftNames = { item: new Map(n.item.map(x => [String(x.id), nameOf(x)])), chara: new Map(n.chara.map(x => [String(x.id), nameOf(x)])), equip: new Map(n.equip.map(x => [String(x.id), nameOf(x)])) }
                 renderCnGifts()
             }).catch(() => { })
             const GIFT_KIND = { beads_free: "Free beads", beads_paid: "Paid beads", mana: "Mana", exp: "EXP" }
-            const giftItemText = (x) => (GIFT_KIND[x.kind] ?? (giftNames?.[x.kind]?.get(String(x.typeId)) ?? (KIND[x.kind] + " " + x.typeId))) + " × " + x.amount.toLocaleString("en")
+            const giftItemText = (x) => (GIFT_KIND[x.kind] ? window.t(GIFT_KIND[x.kind]) : (giftNames?.[x.kind]?.get(String(x.typeId)) ?? (window.t(KIND[x.kind]) + " " + x.typeId))) + " × " + x.amount.toLocaleString("en")
             async function cnGiftPost(body) {
                 busy = true
                 try {
@@ -332,7 +344,11 @@
                 const beads = kept.reduce((n, g) => n + g.items.filter(x => x.kind === "beads_free").reduce((a, x) => a + x.amount, 0), 0)
                 const next = kept.find(g => Date.parse(g.at) > now)
                 const delivered = cn.gifts.reduce((n, g) => n + g.delivered, 0), waiting = cn.gifts.reduce((n, g) => n + g.waiting, 0)
-                $("cn-summary").textContent = !cn.on ? "Off: no CN gifts are sent (mails already in a mailbox stay until claimed or expired)."
+                if (ZH) $("cn-summary").textContent = !cn.on ? "已关闭：不发送国服礼物（已在邮箱中的邮件会保留到领取或过期）。"
+                    : kept.length + " 个礼物（" + mails + " 封邮件，" + beads.toLocaleString("en") + " 免费星导石）" + (kept.length < cn.gifts.length ? "，已移除 " + (cn.gifts.length - kept.length) + " 个" : "") + "。" +
+                    (next ? "下一个：" + (next.titleZh || next.title) + "，" + fmt(next.at) + " UTC。" : "已全部发送：服务器日期已过国服最后一个礼物。") +
+                    "已送达 " + delivered + " 封邮件，" + waiting + " 封待领取" + (data.activePlayer ? "（当前存档）。" : "（所有存档）。")
+                else $("cn-summary").textContent = !cn.on ? "Off: no CN gifts are sent (mails already in a mailbox stay until claimed or expired)."
                     : kept.length + " gifts (" + mails + " mails, " + beads.toLocaleString("en") + " free beads)" + (kept.length < cn.gifts.length ? ", " + (cn.gifts.length - kept.length) + " removed" : "") + ". " +
                     (next ? "Next: " + next.title + ", " + fmt(next.at) + " UTC. " : "All sent: the server date is past CN's last gift. ") +
                     "Delivered " + delivered + " mails, " + waiting + " waiting to be claimed" + (data.activePlayer ? " (the active save)." : " (all saves).")
@@ -344,14 +360,14 @@
                     if (g.removed) li.style.opacity = "0.6"
                     const head = document.createElement("span")
                     head.className = "text-on-surface font-semibold"
-                    head.textContent = fmt(g.at) + " UTC · " + g.title
+                    head.textContent = fmt(g.at) + " UTC · " + (window.dashboardLanguage === "zh" && g.titleZh ? g.titleZh : g.title)
                     const what = document.createElement("span")
                     what.className = "text-on-surface-variant"
                     what.textContent = g.items.map(giftItemText).join(", ")
                     const status = document.createElement("span")
                     status.className = "text-on-surface-variant"
                     status.textContent = g.removed ? "Removed: won't be sent."
-                        : g.waiting > 0 ? "Arrived: " + g.waiting + " mail" + (g.waiting === 1 ? "" : "s") + " waiting to be claimed."
+                        : g.waiting > 0 ? (ZH ? "已送达：" + g.waiting + " 封邮件待领取。" : "Arrived: " + g.waiting + " mail" + (g.waiting === 1 ? "" : "s") + " waiting to be claimed.")
                         : g.delivered > 0 ? "Arrived and claimed (or expired)."
                         : Date.parse(g.at) > now ? "Upcoming."
                         : "Past: not sent (more than 30 days before the save looked, or before it existed)."
@@ -390,10 +406,11 @@
                     title.append(tick, document.createTextNode(s.title || defaultTitle(s.kind, s.typeId, s.amount)))
                     const what = document.createElement("span")
                     what.className = "text-sm text-on-surface-variant"
-                    what.textContent = KIND[s.kind] + (s.typeId ? " " + s.typeId : "") + " × " + s.amount + " — " + whenText(s) + (s.everyone ? ", to every save" : "")
+                    what.textContent = window.t(KIND[s.kind]) + (s.typeId ? " " + s.typeId : "") + " × " + s.amount + " — " + whenText(s) + (s.everyone ? (ZH ? "，发给所有存档" : ", to every save") : "")
                     const status = document.createElement("span")
                     status.className = "text-sm text-on-surface-variant"
-                    status.textContent = (s.next ? "Next: " + fmt(s.next) + " UTC" : "Done: nothing left to send") +
+                    if (ZH) status.textContent = (s.next ? "下次：" + fmt(s.next) + " UTC" : "已完成：没有要发送的了") + " · 已送达 " + s.delivered + "，待领取 " + s.waiting
+                    else status.textContent = (s.next ? "Next: " + fmt(s.next) + " UTC" : "Done: nothing left to send") +
                         " · delivered " + s.delivered + ", waiting to be claimed " + s.waiting
                     const message = document.createElement("span")
                     message.className = "text-sm text-on-surface-variant italic"
@@ -483,7 +500,8 @@
                 try {
                     await send("/api/server/mail/import", { data: pending, mode })
                     const r = data.imported ?? { added: 0, refused: [] }
-                    $("share-message").textContent = "Imported " + r.added + " mail" + (r.added === 1 ? "" : "s") + "." +
+                    if (ZH) $("share-message").textContent = "已导入 " + r.added + " 封邮件。" + (r.refused.length ? "未导入：" + r.refused.map(x => "“" + x.title + "”（" + x.why + "）").join("；") : "")
+                    else $("share-message").textContent = "Imported " + r.added + " mail" + (r.added === 1 ? "" : "s") + "." +
                         (r.refused.length ? " Not imported: " + r.refused.map(x => "“" + x.title + "” (" + x.why + ")").join("; ") : "")
                 } catch (error) {
                     $("share-message").textContent = "Error: " + error.message

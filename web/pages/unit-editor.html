@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <script src="/public/js/i18n.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/public/tailwind.css">
     <title>Starpoint · Unit editor</title>
@@ -219,7 +220,8 @@
             // Text is written in English as before; in Chinese every text node, placeholder, title and option label the
             // page shows is swapped for its Chinese when the table has it. Typed values (inputs, text areas) never change.
             const Z = window.UNIT_EDITOR_ZH
-            const ZH = () => Boolean(Z) && prefs.get("unit-editor-lang") === "zh"
+            // with no choice made here, it follows the dashboard's language (web/public/js/i18n.js)
+            const ZH = () => Boolean(Z) && (prefs.get("unit-editor-lang") ?? (window.dashboardLanguage === "zh" ? "zh" : "en")) === "zh"
             function tr(s) {
                 if (!ZH() || typeof s !== "string") return s
                 const m = s.match(/^(\s*)([\s\S]*?)(\s*)$/), core = m[2]

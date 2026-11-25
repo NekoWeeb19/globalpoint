@@ -160,7 +160,7 @@ window.UNIT_EDITOR_ZH = (function () {
         "skill gauge +": "技能槽 +", "Fever gauge +": "FEVER 槽 +", "combo +": "连击 +", "barrier": "护盾", "second skill gauge +": "第二技能槽 +", "ability damage up": "能力伤害提升",
         "combo boost": "连击加成", "switch skill": "切换技能", "number": "数值", "second number": "第二数值", "starting number": "起始数值", "times (max)": "次数（上限）",
         "cooldown": "冷却时间", "value": "数值", "second value": "第二数值", "duration": "持续时间", "count": "次数", "who": "对象", "for": "作用于", "group": "群组",
-        "flips (max)": "弹射次数（上限）", "Power Flips (max)": "强化弹射次数（上限）", "ends after Power Flips": "强化弹射后结束", "cancelable": "可解除",
+        "flips (max)": "弹射次数（上限）", "Power Flips (max)": "强化弹射次数（上限）", "ends after Power Flips": "强化弹射后结束", "cancelable": "可解除", "end power flip accepted levels": "可使其结束的强化弹射等级",
         "separately for each unit that meets it": "每个符合条件的角色分别计算", "starting multiplier": "起始倍率", "multiplier trigger": "倍率触发", "unit-specific id": "角色专属 id",
         "multiball group": "协力球群组", "element": "属性", "time": "时间", "id": "id", "action": "动作",
         "effects whose value (strength) is a percent: stored ×1000 (15000 = 15%). Others show the stored number as it is.": "数值（强度）为百分比的效果：以 ×1000 保存（15000 = 15%）。其他效果直接显示保存的数值。",

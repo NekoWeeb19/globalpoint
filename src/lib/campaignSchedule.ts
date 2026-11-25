@@ -465,6 +465,28 @@ export function describeRun(kind: "reward" | "stamina", rows: readonly TimedCamp
     return [...parts].map(([head, names]) => `${head}: ${names.join(", ")}`).join(" · ")
 }
 
+// the same in Chinese, for the dashboard in Chinese (web/public/js/i18n.js)
+const RANGE_NAMES_ZH: Readonly<Record<number, string>> = Object.freeze({
+    0: "主线剧情", 1: "EX 关卡", 2: "领主战", 3: "万花筒属性关卡", 4: "万花筒经验值和玛纳关卡",
+    5: "讨伐活动", 6: "剧情活动", 7: "死者之都", 8: "竞速活动", 9: "世界剧情活动",
+    10: "世界剧情领主战", 12: "万花筒",
+})
+const REWARD_NAMES_ZH = ["道具增加", "经验值增加", "玛纳增加"]
+
+/** describeRun in Chinese: "体力 x0.5：主线剧情、万花筒属性关卡". */
+export function describeRunZh(kind: "reward" | "stamina", rows: readonly TimedCampaign[]): string {
+    const parts = new Map<string, string[]>()
+    for (const row of rows) {
+        const head = kind === "stamina" ? `体力 x${row.rate}` : `${REWARD_NAMES_ZH[row.rewardKind ?? 0] ?? "奖励"} x${row.rate}`
+        const rangeKind = Number(row.range[0])
+        const name = RANGE_NAMES_ZH[rangeKind] ?? `关卡分组 ${rangeKind}`
+        const list = parts.get(head) ?? []
+        if (!list.includes(name)) list.push(name)
+        parts.set(head, list)
+    }
+    return [...parts].map(([head, names]) => `${head}：${names.join("、")}`).join(" · ")
+}
+
 /** Whether dates (Japan time, as written) are on at a moment (ms). */
 export function isWindowOn(window: { start: string, end: string }, ms: number): boolean {
     const start = parseMasterDate(window.start), end = parseMasterDate(window.end)

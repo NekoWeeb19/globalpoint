@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <script src="/public/js/i18n.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/public/tailwind.css">
     <title>Starpoint</title>
@@ -223,7 +224,7 @@
 
             const pad = (n) => String(n).padStart(2, "0")
             const utc = (ms) => new Date(ms).toISOString().slice(0, 16).replace("T", " ")
-            const local = (ms) => new Date(ms).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })
+            const local = (ms) => new Date(ms).toLocaleString(window.dashboardLanguage === "zh" ? "zh-CN" : undefined, { dateStyle: "medium", timeStyle: "short" })
             const forInput = (ms) => new Date(ms).toISOString().slice(0, 19)
             const serverNow = () => clock === null ? NaN : Date.parse(clock.serverDate) + (clock.ticking ? Date.now() - clock.loadedAt : 0)
 
