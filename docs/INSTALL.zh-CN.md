@@ -51,7 +51,7 @@ Android 手机或模拟器上，电脑上什么都不用装。
 ### 校验值
 
 下载文件的 SHA-256，用来检查文件（Windows 上 `certutil -hashfile <文件> SHA256`，其他系统 `sha256sum <文件>`）。
-StarPoint Companion 的 **游戏数据** > **检查文件……** 也能检查（中文版 APK 和中文图片包除外）：
+StarPoint Companion 的 **游戏数据** > **检查文件……** 也能检查（中文版 APK 和中文图片包需要 StarPoint Companion 1.0.1 或更新）：
 
 ```
 a57b1629b3564aa600cfaa9b1bbc88794a36eb1214b58f58238986dc0f0aebb7  main.1008001.com.leiting.wf.part1of3.obb

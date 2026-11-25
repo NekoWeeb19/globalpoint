@@ -77,7 +77,7 @@ how to build it.
   made by `companion/tools/make-data-zip.cjs`.
 - **Check a file...** (DownloadCheck): picks any file and works out its SHA-256, then says whether it is one of the
   GlobalPoint downloads (the OBB parts, the old single OBB, the data pack (1.0 and older), the comics pack, the skill
-  preview art pack, the game APK), whole and
+  preview art pack, the Chinese art pack, the game APK in English or Chinese), whole and
   undamaged, or damaged / cut short. The known hashes are in `DownloadCheck.java` (update them when a Drive file changes).
 
 **Full game files.** A fresh game asks its server for the full ~10 GB download, and the companion
