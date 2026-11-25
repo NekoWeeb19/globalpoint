@@ -68,7 +68,7 @@ checksum, and [how to update a PC server](docs/INSTALL.md#updating-the-server-on
 
 Dashboard > **Game settings** > **Game language** > **简体中文**, then reopen the game. For the labels built into
 the app and the pictures with words on them, add the optional **Chinese game app** and **Chinese art pack**
-(1.5 GB). The dashboard and the companion app have their own Chinese too. Steps: [docs/CHINESE.en.md](docs/CHINESE.en.md).
+(1.5 GB). The dashboard and the companion app have their own Chinese too. Steps: [docs/CHINESE.md](docs/CHINESE.md).
 
 ## Features
 
@@ -144,7 +144,7 @@ also play as they did on any date ([balance by date](docs/DETAILS.md#balance-by-
 
 - [docs/INSTALL.md](docs/INSTALL.md): every setup in full, downloads, checksums and troubleshooting.
 - [docs/DASHBOARD.md](docs/DASHBOARD.md): the dashboard, tab by tab and job by job.
-- [docs/CHINESE.en.md](docs/CHINESE.en.md): playing in Simplified Chinese.
+- [docs/CHINESE.md](docs/CHINESE.md): playing in Simplified Chinese.
 - [docs/DETAILS.md](docs/DETAILS.md): balance by date, the harmless errors in the log, how the game was
   translated, the server's settings (`.env`), and pointers for developers.
 - [docs/UNIT_EDITOR.md](docs/UNIT_EDITOR.md) and [docs/CUSTOM_UNITS.md](docs/CUSTOM_UNITS.md): changing
@@ -162,7 +162,7 @@ also play as they did on any date ([balance by date](docs/DETAILS.md#balance-by-
 - [nodejs-mobile](https://github.com/digidem/nodejs-mobile) (digidem fork), which runs the server
   inside the companion app.
 - The World Flipper community, for names and sources used in the translation, and **晓之车**, for the Chinese fixes
-  in Chinese mode (see [docs/CHINESE.en.md](docs/CHINESE.en.md#the-chinese-communitys-fixes)).
+  in Chinese mode (see [docs/CHINESE.md](docs/CHINESE.md#the-chinese-communitys-fixes)).
 
 ## License
 

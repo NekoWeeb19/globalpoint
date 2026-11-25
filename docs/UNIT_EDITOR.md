@@ -1,6 +1,6 @@
 # Unit editor (dashboard)
 
-> 中文版：[UNIT_EDITOR.zh-CN.md](UNIT_EDITOR.zh-CN.md)
+> 中文版：[zh-CN/UNIT_EDITOR.md](zh-CN/UNIT_EDITOR.md)
 
 > Written by Claude (AI) in a Claude Code session, with the repository owner choosing how it works.
 

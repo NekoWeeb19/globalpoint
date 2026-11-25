@@ -1,11 +1,11 @@
 # 用技能标签页制作技能
 
-> 本页是 [SKILL_GUIDE.md](SKILL_GUIDE.md) 的中文版，由 Claude（AI）翻译。两者内容相同；如有出入，以英文版为准。
+> 本页是 [SKILL_GUIDE.md](../SKILL_GUIDE.md) 的中文版，由 Claude（AI）翻译。两者内容相同；如有出入，以英文版为准。
 
 > 由 Claude（AI）在 Claude Code 会话中编写，工作方式由仓库作者决定。
 
 角色编辑器的 **技能** 标签页（控制台 → **角色编辑器** → 选一个角色 → **技能**）可以修改角色的技能做什么：打在哪里、多强、看起来怎样、给什么强化。本页是入门指南：
-技能需要什么、什么是可选的、可能出什么问题，以及一些可以照抄的做法。标签页的每个按钮和设置都列在 [UNIT_EDITOR.zh-CN.md](UNIT_EDITOR.zh-CN.md#技能标签页)。
+技能需要什么、什么是可选的、可能出什么问题，以及一些可以照抄的做法。标签页的每个按钮和设置都列在 [UNIT_EDITOR.md](UNIT_EDITOR.md#技能标签页)。
 
 **保存前就能看到技能的样子。** **▶ 预览技能** 在控制台上播放它：角色的姿势、特效、每个范围命中的位置，以及在假想目标上的命中。数值（实际造成多少伤害、
 战斗中强化怎样叠加）只能在游戏里实际使用来测试。
@@ -106,7 +106,7 @@
 **强化整个队伍：** 查找群组，设为「队伍」→ 里面一个对「该群组」的强化 / 弱体效果：攻击提升（`ACAttackPoint`），帧 720，数量 0.3（+30 %），最大叠加层数 1。
 
 **召唤其他角色的协力球：** **+ 添加…… → CreateSummonsMultiball**，然后在它的第二个设置里填协力球的编号。协力球的编号是它角色的编号加一位数字（黄金船 113001 → 1130011；
-梅米 311002 → 3110021、3110022、3110023）。国服的每一个都列在 [research/skill-commands.zh-CN.md](research/skill-commands.zh-CN.md)。第三个设置是它停留多久（国服大多数技能里是
+梅米 311002 → 3110021、3110022、3110023）。国服的每一个都列在 [research/skill-commands.md](research/skill-commands.md)。第三个设置是它停留多久（国服大多数技能里是
 9000 帧 = 150 秒）。已测试：克菈菈召唤了其他角色的协力球，并且它正常行动。未确认：它用谁的数值。预览不显示协力球。
 
 ## 需要注意的地方
@@ -134,5 +134,5 @@
 
 ## 更多
 
-- 每条指令和设置：[research/skill-commands.zh-CN.md](research/skill-commands.zh-CN.md)。
-- 特效、它们的放置方式和文件：[research/skill-effects.md](research/skill-effects.md)（英文）。
+- 每条指令和设置：[research/skill-commands.md](research/skill-commands.md)。
+- 特效、它们的放置方式和文件：[../research/skill-effects.md](../research/skill-effects.md)（英文）。

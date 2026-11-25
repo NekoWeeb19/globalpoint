@@ -1,6 +1,6 @@
 # Making custom units
 
-> 中文版：[MAKING_UNITS.zh-CN.md](MAKING_UNITS.zh-CN.md)
+> 中文版：[zh-CN/MAKING_UNITS.md](zh-CN/MAKING_UNITS.md)
 
 How to make a custom unit for the CN app, change an existing one by hand, and what the server and the
 build do with them. Getting a finished unit into the game, giving it and removing it is in

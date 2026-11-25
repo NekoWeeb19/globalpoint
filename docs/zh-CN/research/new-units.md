@@ -1,6 +1,6 @@
 # 只用数据在国服客户端中加入新角色（研究，2026-11-03）
 
-> 本页是 [new-units.md](new-units.md) 的中文版，由 Claude（AI）翻译。两者内容相同；如有出入，以英文版为准。
+> 本页是 [new-units.md](../../research/new-units.md) 的中文版，由 Claude（AI）翻译。两者内容相同；如有出入，以英文版为准。
 
 > [!IMPORTANT]
 > ## 🤖 由 AI 撰写
@@ -23,8 +23,8 @@
 
 | | |
 |---|---|
-| ![detail](images/new-unit-detail.png) | ![skill](images/new-unit-skill.png) |
-| ![skill preview battle](images/new-unit-skill-preview.png) | ![awakening](images/new-unit-awakening.png) |
+| ![detail](../../research/images/new-unit-detail.png) | ![skill](../../research/images/new-unit-skill.png) |
+| ![skill preview battle](../../research/images/new-unit-skill-preview.png) | ![awakening](../../research/images/new-unit-awakening.png) |
 
 ## 来源
 
@@ -122,7 +122,7 @@
 - **日程重建是难点。** 其中七个数据表（character、character_status、ability、leader_ability、action_skill、
   encyclopedia、mana_board2_open_condition）会被每次日程构建（`scripts/gen_cn_event_schedule.cjs`）用国服自己的行重新
   发送，所以新行在下次重建时就会消失，含有该角色的存档随后会出现 C8601。按日期切换配置的机制（`assets/kit_dates.json`）
-  只会*替换*已有的行。**此后已解决：** 自制角色（[../CUSTOM_UNITS.zh-CN.md](../CUSTOM_UNITS.zh-CN.md)）把行保存在
+  只会*替换*已有的行。**此后已解决：** 自制角色（[../CUSTOM_UNITS.md](../CUSTOM_UNITS.md)）把行保存在
   `assets/custom_units/<id>.json` 中，每次日程构建都会把它们加进 19 个数据表（总是发送）；服务器在启动时把该角色合并进
   它的角色、能力学习和扭蛋数据。
 
@@ -223,7 +223,7 @@
 - `assets/mana_node_cn.json`：两个盘，节点 ID → 道具、玛纳消耗（解锁节点需要它）。
 - 可选：`assets/gacha.json` 卡池（放在该档位列表的第一个，或重新调整权重；见扭蛋一节）。
 - 对于要长期保留的角色，这三项都改写进它的自制角色文件（`character`、`manaNodes`、`banners`，权重在启动时重新调整；
-  见 [../CUSTOM_UNITS.zh-CN.md](../CUSTOM_UNITS.zh-CN.md)）：自带的 assets 保持不变。
+  见 [../CUSTOM_UNITS.md](../CUSTOM_UNITS.md)）：自带的 assets 保持不变。
 
 ### 5. 发送
 
@@ -232,7 +232,7 @@
   （`clone_cn_unit.cjs` → `art_files.json`）。
 - 数据表的行放进 `assets/custom_units/<id>.json`：每次日程构建都会把它们加进随后发送的全部 19 个数据表，所以重建时不会
   丢失（以前，日程重建的 7 个数据表会丢失这些行，含有该角色的存档就无法加载，C8601）。见
-  [../CUSTOM_UNITS.zh-CN.md](../CUSTOM_UNITS.zh-CN.md)。
+  [../CUSTOM_UNITS.md](../CUSTOM_UNITS.md)。
 - 手机和获取其他更新一样获取它（Wi-Fi 复制，勾选游戏更新）。
 
 ### 6. 过程中遇到的错误代码
@@ -248,7 +248,7 @@
 1. **行。** 用一个小 JSON 文件描述角色（ID、字符串 ID、稀有度、属性、属性数值、能力行、队长特性、技能行、能力学习），
    编译成 19 个数据表的行。能力/队长特性的列已经解码（内部笔记 kit-rows-decode，`scripts/build_kit_*.cjs`），
    `*Values.as` 写明了每个数据表每一列的名称。
-2. **与日程集成。** 已完成：[../CUSTOM_UNITS.zh-CN.md](../CUSTOM_UNITS.zh-CN.md)（`assets/custom_units/`，每次日程构建都加入
+2. **与日程集成。** 已完成：[../CUSTOM_UNITS.md](../CUSTOM_UNITS.md)（`assets/custom_units/`，每次日程构建都加入
    这些行，启动时合并服务器数据）。
 3. **美术流程。** 像素精灵图做成精灵表 + `.atlas`（帧的矩形，AMF3）+ `.frame`/`.timeline`（动画序列，例如
    `special_land`/`special_pose`）；固定尺寸的立绘和图标（上面的 `ui/` 列表）；`trimmed_image`/`character_image` 的
@@ -262,9 +262,9 @@
    测量、哪些 atlas 字段是必需的）；可以复制一个模板角色的来对比。
 4. **技能。** 已完成（2026-11-16/17）：角色编辑器的**技能页（Skill tab）**以指令的形式编辑技能脚本（一棵 AMF3 树，
    `["ActionDsl", 1, …, ["Block", [["Command", ["StopBall", …]], …]]]`），用国服的每个脚本来检查它们，提供预览，并发送它们
-   （[../UNIT_EDITOR.zh-CN.md](../UNIT_EDITOR.zh-CN.md#技能标签页)、[../SKILL_GUIDE.zh-CN.md](../SKILL_GUIDE.zh-CN.md)）。每条指令都记录在
-   [skill-commands.zh-CN.md](skill-commands.zh-CN.md) 中；特效、它们的文件和动画格式见
-   [skill-effects.md](skill-effects.md)（英文）。新技能可以组合已有的指令，复用任何角色的特效和任何协力球（按 ID）。新的
+   （[../UNIT_EDITOR.md](../UNIT_EDITOR.md#技能标签页)、[../SKILL_GUIDE.md](../SKILL_GUIDE.md)）。每条指令都记录在
+   [skill-commands.md](skill-commands.md) 中；特效、它们的文件和动画格式见
+   [../../research/skill-effects.md](../../research/skill-effects.md)（英文）。新技能可以组合已有的指令，复用任何角色的特效和任何协力球（按 ID）。新的
    *特效*动画仍然属于美术：格式已经清楚（网页控制台也能播放），但还没有制作工具。
 5. **语音。** 可选。游戏的 MP3 把每帧的同步字节 0xFF 存为 0x7F（见 wdfp-extractor 的 restoreMp3）；新的语音片段应该用
    同样的方式存储（普通 MP3 能否播放尚未测试）。
@@ -347,7 +347,7 @@ harpy 的完整立绘中裁出的图，在技能连锁中与另一个角色的�
 **ability 和 leader_ability** 每行带有一整棵效果树（每个效果一个 CSV 子行）。它们的布局是本附录“使用客户端自己的名称”
 的唯一例外：本附录使用的反编译来自一个**较旧的客户端**，它的能力行少 2 列（124/122，与 2024 年凉宫春日模组的行一样），
 而且它无法读取那些庞大的效果解析器（栈溢出）。下面的列是国服 1.8.1 的，已对照实际发送的行和
-[ability-triggers.md](ability-triggers.md)（英文）核对过，后者从已安装客户端的 p-code 中读取它们：
+[../../research/ability-triggers.md](../../research/ability-triggers.md)（英文）核对过，后者从已安装客户端的 p-code 中读取它们：
 
 | 能力列 | 队长特性列 | 部分 |
 |---|---|---|
@@ -456,7 +456,7 @@ ability 6 角色条件（9/10 数量，11 属性），27 触发（8 Fever 开始
 ### ability（`1e/664c…`）和 leader_ability（`ff/8435…`）
 
 示例键：`1119071`…`1119076`（凉宫春日的每行两个子行），队长特性 `111907`（3 个子行）。列：见本附录开头的表格，以及
-[ability-triggers.md](ability-triggers.md)（英文）中的每个代码。
+[../../research/ability-triggers.md](../../research/ability-triggers.md)（英文）中的每个代码。
 
 ### master/skill/action_skill（`91/7989…`，解析器 `ActionSkillValues`）
 

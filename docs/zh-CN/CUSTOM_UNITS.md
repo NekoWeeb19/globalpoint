@@ -1,15 +1,15 @@
 # 自制角色（国服应用）
 
-> 本页是 [CUSTOM_UNITS.md](CUSTOM_UNITS.md) 的中文版，由 Claude（AI）翻译。两者内容相同；如有出入，以英文版为准。
+> 本页是 [CUSTOM_UNITS.md](../CUSTOM_UNITS.md) 的中文版，由 Claude（AI）翻译。两者内容相同；如有出入，以英文版为准。
 
 国服应用的新角色，只用游戏数据和文件制作（不改游戏代码）。本页是给玩家的：把别人做的角色放进你的游戏、发给自己、以及移除它。制作方法和文件格式见
-[MAKING_UNITS.zh-CN.md](MAKING_UNITS.zh-CN.md)；它们是怎样被发现可行的，见 [research/new-units.zh-CN.md](research/new-units.zh-CN.md)。
+[MAKING_UNITS.md](MAKING_UNITS.md)；它们是怎样被发现可行的，见 [research/new-units.md](research/new-units.md)。
 
 ## 把自制角色放到你的设备（或模拟器）上
 
-方式 1-3 就是安装指南[选择安装方式](INSTALL.zh-CN.md#选择安装方式)里的那些。
+方式 1-3 就是安装指南[选择安装方式](INSTALL.md#选择安装方式)里的那些。
 
-**需要：** 别人做好的角色（见 [MAKING_UNITS.zh-CN.md](MAKING_UNITS.zh-CN.md)）：一个文件夹，里面有 `custom_unit.json`（角色文件）、`art_files.json` 以及角色的
+**需要：** 别人做好的角色（见 [MAKING_UNITS.md](MAKING_UNITS.md)）：一个文件夹，里面有 `custom_unit.json`（角色文件）、`art_files.json` 以及角色的
 图片和语音。自制角色从不包含在 APK、数据包或 OBB 里：要你自己在电脑上添加。
 
 ### 有电脑服务器时（方式 2 和 3）
@@ -34,7 +34,7 @@
 ### 手机或模拟器，从电脑复制（方式 1）
 
 1. 先完成上面电脑上的步骤，并确认电脑日志里的那几行。
-2. 启动电脑的服务器，让手机能连上（`LISTEN_HOST="0.0.0.0"`，同[从电脑复制数据](INSTALL.zh-CN.md#改从电脑复制数据)）。
+2. 启动电脑的服务器，让手机能连上（`LISTEN_HOST="0.0.0.0"`，同[从电脑复制数据](INSTALL.md#改从电脑复制数据)）。
 3. 在 **StarPoint Companion** 里点 **游戏数据**，然后 **从电脑下载**，并勾选 **游戏更新**：它会带来角色的图片更新。角色文件不论勾选什么都会一起带来。
    （除非你想用电脑上的存档替换手机上的，否则不要勾选 **我的存档**。）
 4. 回到主界面，服务器启动后会发现新角色并重建它自己的游戏更新（一两分钟）。其他什么都不用做。
@@ -55,7 +55,7 @@ StarPoint Companion 更新和导入存档后都会保留）。
 
 ### 发送和抽取
 
-- **发送：** 在控制台的 **邮件** 标签页，把角色（输入它的 id，例如 `111907`）以 **一次**、**现在** 发送（[定时邮件](DASHBOARD.zh-CN.md#定时邮件)）。在游戏里打开
+- **发送：** 在控制台的 **邮件** 标签页，把角色（输入它的 id，例如 `111907`）以 **一次**、**现在** 发送（[定时邮件](DASHBOARD.md#定时邮件)）。在游戏里打开
   **邮件** 领取。游戏下载了含有这个角色的更新之后才能发送，否则游戏会以 C8601 停止。
 - **抽取：** 在角色文件的 `"banners"` 里列出扭蛋 id（例如 `["1613"]`），然后重启服务器。之后这个角色会从这些扭蛋里掉落，概率和同稀有度的其他角色一样。
   扭蛋的概率画面不会列出它。可抽取角色的 id 第一位必须与稀有度一致（1 = 5★，2 = 4★……）。
@@ -91,6 +91,6 @@ StarPoint Companion 更新和导入存档后都会保留）。
 ## 修改已有的角色
 
 自制角色文件只用于新角色。要修改游戏里已有的角色（它的能力、队长特性、数值、技能槽、名称、称号、介绍、职业、职责，或技能做什么），请用控制台的
-**角色编辑器**（[UNIT_EDITOR.zh-CN.md](UNIT_EDITOR.zh-CN.md)；技能见 [SKILL_GUIDE.zh-CN.md](SKILL_GUIDE.zh-CN.md)）。它对自制角色也有效：修改会写进角色自己的文件，
+**角色编辑器**（[UNIT_EDITOR.md](UNIT_EDITOR.md)；技能见 [SKILL_GUIDE.md](SKILL_GUIDE.md)）。它对自制角色也有效：修改会写进角色自己的文件，
 编辑过的技能脚本会随每次游戏更新发出。编辑器会检查游戏能读取什么、保存修改文件并替你重建游戏更新，电脑上或 StarPoint Companion 里都可以。其他行或角色的
-新图片，见 [MAKING_UNITS.zh-CN.md](MAKING_UNITS.zh-CN.md#手动修改已有角色)。
+新图片，见 [MAKING_UNITS.md](MAKING_UNITS.md#手动修改已有角色)。

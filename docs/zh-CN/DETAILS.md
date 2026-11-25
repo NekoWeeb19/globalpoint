@@ -1,8 +1,8 @@
 # GlobalPoint 细节
 
-> 本页是 [DETAILS.md](DETAILS.md) 的中文版，由 Claude（AI）翻译。两者内容相同；如有出入，以英文版为准。
+> 本页是 [DETAILS.md](../DETAILS.md) 的中文版，由 Claude（AI）翻译。两者内容相同；如有出入，以英文版为准。
 
-从 [README](../README.zh-CN.md) 移出来的参考资料：角色怎样跟随服务器日期、日志里无害的错误、游戏是怎样翻译的、服务器的设置，以及给开发者的指引。
+从 [README](../../README.zh-CN.md) 移出来的参考资料：角色怎样跟随服务器日期、日志里无害的错误、游戏是怎样翻译的、服务器的设置，以及给开发者的指引。
 
 - [按日期的平衡](#按日期的平衡)
 - [错误和 404](#错误和-404)
@@ -25,7 +25,7 @@
   （Pecorine、莫弥亚、阿露姆等）有旧的能力和队长特性，但技能是现在的；亚美莉亚（Deep-Sea Princess）还有旧的职业和数值。露娜露（Mad Scientist）保留现在的能力 1，
   因为说明里旧的文本被截断了。
 
-角色和日期在 `assets/kit_dates.json`。要永久修改某个角色，见[修改已有的角色](CUSTOM_UNITS.zh-CN.md#修改已有的角色)（角色编辑器，或[手动](MAKING_UNITS.zh-CN.md#手动修改已有角色)）。
+角色和日期在 `assets/kit_dates.json`。要永久修改某个角色，见[修改已有的角色](CUSTOM_UNITS.md#修改已有的角色)（角色编辑器，或[手动](MAKING_UNITS.md#手动修改已有角色)）。
 
 ## 错误和 404
 
@@ -100,27 +100,27 @@ Noelle Silva、Clover Kingdom、Wizard King、Water Creation Magic: Sea Dragon's
 | `CN_ACCOUNT_ID` | 空 | 所有设备用同一个账号（空 = 每台设备一个账号） |
 | `CN_CDN_DIR`、`CN_TRANSLATED_DIR` | `.cdn/cn`、`.cdn/cn_text` | 国服游戏文件和它们的英文数据表 |
 | `CN_SLIM_DIR` | `.cdn/cn_slim` | 手机为编辑日程复制的小型国服数据集（缺少时服务器启动时会生成） |
-| `CUSTOM_UNITS_DIR` | `assets/custom_units` | 自制角色文件和角色修改文件的文件夹（[MAKING_UNITS.zh-CN.md](MAKING_UNITS.zh-CN.md)） |
+| `CUSTOM_UNITS_DIR` | `assets/custom_units` | 自制角色文件和角色修改文件的文件夹（[MAKING_UNITS.md](MAKING_UNITS.md)） |
 
 关卡掉落倍率、扭蛋概率、用不完的邮件和游戏语言在控制台设置，不在 `.env` 里。`.env.example` 还列出几项只用于重建翻译和图片补丁的设置
-（见 [docs/contributing.md](contributing.md)（英文））；玩游戏从不需要它们。
+（见 [docs/contributing.md](../contributing.md)（英文））；玩游戏从不需要它们。
 
 ## 自己构建（给开发者）
 
 用于开发 GlobalPoint 而不是玩它（以下页面除注明外都是英文）：
 
-- [docs/contributing.md](contributing.md)：项目的结构和运行方法。
-- [docs/routes.md](routes.md)：服务器响应的每个路由（由服务器生成）。
-- [docs/CN_CLIENT_SETUP.md](CN_CLIENT_SETUP.md)：国服应用是怎样从零开始连接并国际化的。
-- [docs/UNIT_EDITOR.zh-CN.md](UNIT_EDITOR.zh-CN.md) 和 [docs/CUSTOM_UNITS.zh-CN.md](CUSTOM_UNITS.zh-CN.md)（中文）：修改角色和加入新角色；
-  [docs/research/](research/new-units.zh-CN.md) 有背后的研究。[docs/KIT_FORMAT.zh-CN.md](KIT_FORMAT.zh-CN.md)（中文）说明配置文件，供在其他国服分支上使用。
-- [docs/global/](global/README.md)：国际服应用的原版 StarPoint 页面（旧版），包括从国际服官方服务器抓取的通信。
+- [docs/contributing.md](../contributing.md)：项目的结构和运行方法。
+- [docs/routes.md](../routes.md)：服务器响应的每个路由（由服务器生成）。
+- [docs/CN_CLIENT_SETUP.md](../CN_CLIENT_SETUP.md)：国服应用是怎样从零开始连接并国际化的。
+- [docs/zh-CN/UNIT_EDITOR.md](UNIT_EDITOR.md) 和 [docs/zh-CN/CUSTOM_UNITS.md](CUSTOM_UNITS.md)（中文）：修改角色和加入新角色；
+  [docs/research/](research/new-units.md) 有背后的研究。[docs/zh-CN/KIT_FORMAT.md](KIT_FORMAT.md)（中文）说明配置文件，供在其他国服分支上使用。
+- [docs/global/](../global/README.md)：国际服应用的原版 StarPoint 页面（旧版），包括从国际服官方服务器抓取的通信。
 - `scripts/package_release.cjs`：把一个可用的电脑服务器（代码、游戏文件和游戏 APK）复制到一个可以直接运行的文件夹，例如搬到另一台电脑。不用于发布：游戏 APK 不是我们可以托管的。
-- `scripts/build_cn_obb.cjs`（可选）：从服务器的游戏文件生成方式 1 用的 OBB。见 [docs/CN_CLIENT_SETUP.md](CN_CLIENT_SETUP.md#9-optional-an-obb-for-phones)。
+- `scripts/build_cn_obb.cjs`（可选）：从服务器的游戏文件生成方式 1 用的 OBB。见 [docs/CN_CLIENT_SETUP.md](../CN_CLIENT_SETUP.md#9-optional-an-obb-for-phones)。
 - `scripts/gen_cn_slim.cjs`：StarPoint Companion 编辑日程需要的小型国服数据集，加上角色编辑器技能预览用的图片（角色精灵、技能特效；约 35 MB）。CN 游戏文件在、
   而数据集缺少或还没有图片时，服务器启动时会自动运行它。
 - `scripts/build_kit_*.cjs`、`scripts/kit_dates.cjs`：生成和读取 `assets/kit_dates.json`，即[按日期的平衡](#按日期的平衡)用的旧角色配置。
-- `scripts/custom_units.cjs`、`assets/custom_units/`：只用数据和文件为国服应用加入的新角色，每次重建日程都会保留。见 [MAKING_UNITS.zh-CN.md](MAKING_UNITS.zh-CN.md)，以及
-  各种方式的[把自制角色放到你的设备上](CUSTOM_UNITS.zh-CN.md#把自制角色放到你的设备或模拟器上)。
+- `scripts/custom_units.cjs`、`assets/custom_units/`：只用数据和文件为国服应用加入的新角色，每次重建日程都会保留。见 [MAKING_UNITS.md](MAKING_UNITS.md)，以及
+  各种方式的[把自制角色放到你的设备上](CUSTOM_UNITS.md#把自制角色放到你的设备或模拟器上)。
 - `scripts/client_mod/README.txt`：游戏应用的补丁，按顺序，以及怎样构建应用。
-- `companion/README.md`：StarPoint Companion 应用（Android 上的 Node.js）以及怎样构建它（使用说明部分有[中文版](../companion/README.zh-CN.md)）。
+- `companion/README.md`：StarPoint Companion 应用（Android 上的 Node.js）以及怎样构建它（使用说明部分有[中文版](../../companion/README.zh-CN.md)）。

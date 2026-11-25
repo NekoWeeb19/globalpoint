@@ -1,6 +1,6 @@
 # Dashboard guide
 
-> 中文版：[DASHBOARD.zh-CN.md](DASHBOARD.zh-CN.md)
+> 中文版：[zh-CN/DASHBOARD.md](zh-CN/DASHBOARD.md)
 
 The GlobalPoint dashboard, tab by tab and job by job.
 
@@ -97,7 +97,7 @@ dates, then **Save**. Where two overlap, the longer one runs that year.
 
 - **Game language:** English (default) or 简体中文, for the CN app. Chinese puts back CN's own text and keeps
   everything else GlobalPoint changes. Wait for the ready light, then reopen the game. See
-  [CHINESE.en.md](CHINESE.en.md).
+  [CHINESE.md](CHINESE.md).
 - **Quest drop amount:** 1x (default) is the base game; up to 100x, from the next quest.
 - **Enemy strength:** every enemy's HP and attack, 0.1x to 10x each, with presets. Reopen the game after saving.
 

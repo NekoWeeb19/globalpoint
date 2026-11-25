@@ -1,6 +1,6 @@
 # New units in the CN app from data only (research, 2026-11-03)
 
-> 中文版：[new-units.zh-CN.md](new-units.zh-CN.md)
+> 中文版：[../zh-CN/research/new-units.md](../zh-CN/research/new-units.md)
 
 > [!IMPORTANT]
 > ## 🤖 Written by AI

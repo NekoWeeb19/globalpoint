@@ -1,6 +1,6 @@
 # GlobalPoint details
 
-> 中文版：[DETAILS.zh-CN.md](DETAILS.zh-CN.md)
+> 中文版：[zh-CN/DETAILS.md](zh-CN/DETAILS.md)
 
 Reference material moved out of the [README](../README.md): how units follow the server's date, the
 harmless errors in the log, how the game was translated, the server's settings, and pointers for
@@ -74,7 +74,7 @@ effect in the next room.
 ## Translation
 
 The CN app's text was translated into English from scratch where global didn't have it, and taken
-from global where it did. (The game can also play in CN's own Chinese: [CHINESE.en.md](CHINESE.en.md).) The rules:
+from global where it did. (The game can also play in CN's own Chinese: [CHINESE.md](CHINESE.md).) The rules:
 
 1. **Global's English comes first.** Where global had the same text (unit, item, quest,
    Flipperpedia), its official English is reused word for word, so the game reads like global.

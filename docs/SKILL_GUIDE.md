@@ -1,6 +1,6 @@
 # Making a skill with the Skill tab
 
-> 中文版：[SKILL_GUIDE.zh-CN.md](SKILL_GUIDE.zh-CN.md)
+> 中文版：[zh-CN/SKILL_GUIDE.md](zh-CN/SKILL_GUIDE.md)
 
 > Written by Claude (AI) in a Claude Code session, with the repository owner choosing how it works.
 

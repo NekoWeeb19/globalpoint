@@ -122,10 +122,10 @@ same size, so it resumes), and then offers to delete the pack.
     difference from the phone once.
 - **Comics pack** (~1.4 GB), `node scripts/build_pack.cjs comics <out.zip>`: the server's comics
   folder. The server keeps running while it's imported. A Chinese comics pack (`comics-zh`, none published yet) goes
-  beside it in `comics_zh` ([CHINESE.en.md](../docs/CHINESE.en.md#comics)).
+  beside it in `comics_zh` ([CHINESE.md](../docs/CHINESE.md#comics)).
 - **Chinese art pack** (~1.5 GB, `starpoint-chinese-art-pack.zip`), `node scripts/build_pack.cjs zh-art <out.zip>`:
   CN's original pictures that GlobalPoint replaced with English ones, for the Chinese game language
-  ([CHINESE.en.md](../docs/CHINESE.en.md)). Import it after the data pack, then stop and start the server. **Set up
+  ([CHINESE.md](../docs/CHINESE.md)). Import it after the data pack, then stop and start the server. **Set up
   everything** doesn't import it.
 
 ### Saves

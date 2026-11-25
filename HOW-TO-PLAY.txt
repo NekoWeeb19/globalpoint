@@ -63,7 +63,7 @@ Dashboard
     and the never-ending Bread, Mana and EXP mails.
   - Events, Summons, Campaigns: move any event, summon banner, login bonus or free pull to any date.
   - News and Players: in-game news posts, accounts, saves and gifts.
-  - Game settings > Game language: 简体中文 plays the game in CN's own Chinese (docs/CHINESE.en.md). The
+  - Game settings > Game language: 简体中文 plays the game in CN's own Chinese (docs/CHINESE.md). The
     sidebar's Dashboard language switches the dashboard itself to Chinese.
 
 After updating the game app

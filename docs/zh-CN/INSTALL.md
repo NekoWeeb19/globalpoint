@@ -1,8 +1,8 @@
 # 安装 GlobalPoint
 
-> 本页是 [INSTALL.md](INSTALL.md) 的中文版，由 Claude（AI）翻译。两者内容相同；如有出入，以英文版为准。
+> 本页是 [INSTALL.md](../INSTALL.md) 的中文版，由 Claude（AI）翻译。两者内容相同；如有出入，以英文版为准。
 
-每种方式的完整步骤，以及出问题时怎么办。[README](../README.zh-CN.md) 有简短版本。**大多数人选方式 1**：游戏和它的服务器都在同一台
+每种方式的完整步骤，以及出问题时怎么办。[README](../../README.zh-CN.md) 有简短版本。**大多数人选方式 1**：游戏和它的服务器都在同一台
 Android 手机或模拟器上，电脑上什么都不用装。
 
 - [选择安装方式](#选择安装方式)
@@ -92,10 +92,10 @@ node scripts/build_cn_obb.cjs <输出文件夹> --parts 3
 2. **安装两个 APK**：世界弹射物语和 StarPoint Companion。**先不要打开游戏。**
 3. **打开 StarPoint Companion**，点顶部的按钮 **设置（全部设置好，或检查）**。
 
-   ![StarPoint Companion 主界面，顶部是设置按钮](images/install-p-main.png)
+   ![StarPoint Companion 主界面，顶部是设置按钮](../images/install-p-main.png)
 4. **点「全部设置」。**
 
-   ![设置画面上的「全部设置」按钮](images/install-p-setup-button.png)
+   ![设置画面上的「全部设置」按钮](../images/install-p-setup-button.png)
 
    然后按它的要求做：
    - **Android 询问** 是否允许 StarPoint Companion 使用手机存储：点 **允许**。（Android 11 及更新版本会打开 **所有文件访问权限** 页面：
@@ -104,15 +104,15 @@ node scripts/build_cn_obb.cjs <输出文件夹> --parts 3
      （Android 13 及更新版本：**音乐和音频** 以及 **照片和视频**）。然后按返回。应用会自己继续。
    - **它会列出要做的事。** 点 **开始**。
 
-     ![全部设置：将要导入数据包。完成前请保持此画面打开。取消或开始](images/install-p-this-will.png)
+     ![全部设置：将要导入数据包。完成前请保持此画面打开。取消或开始](../images/install-p-this-will.png)
 5. **等待，并保持画面打开。** 它会检查 OBB 没有损坏并移到游戏读取的位置，导入数据包和漫画包，清理之前安装留下的文件，然后启动服务器。
    可能需要几分钟。
 6. **它会问是否删除** 已导入的压缩包。**删除** 可以腾出空间；**保留** 也没问题。
 
-   ![删除已导入的资源包？保留或删除](images/install-p-delete-packs.png)
+   ![删除已导入的资源包？保留或删除](../images/install-p-delete-packs.png)
 7. **它显示全部完成。** 如果还缺什么（找不到的下载，或损坏的文件），会在 **还需完成** 下说明。
 
-   ![全部设置结束：服务器已就绪，数据包已导入，全部完成](images/install-p-all-set.png)
+   ![全部设置结束：服务器已就绪，数据包已导入，全部完成](../images/install-p-all-set.png)
 8. 服务器那一行显示 **已就绪**（主界面的指示灯为 **绿色：已就绪**）后，**打开游戏**。第一次会显示「正在解压游戏文件」，它会自己解压 OBB，
    完成后删除 OBB。
 
@@ -125,32 +125,32 @@ node scripts/build_cn_obb.cjs <输出文件夹> --parts 3
 1. 把下载的文件放进 **下载**，并安装两个 APK，同上。
 2. 打开 **StarPoint Companion**。第一次时指示灯是红色，并显示 **游戏数据：缺失**：这是正常的。
 
-   ![第一次打开 StarPoint Companion：红色，已停止，游戏数据缺失](images/install-p-first-open.png)
+   ![第一次打开 StarPoint Companion：红色，已停止，游戏数据缺失](../images/install-p-first-open.png)
 
    点 **游戏数据** > **导入资源包……**，在文件选择器里打开 **下载**（左上角的 ☰ 菜单），选数据包。想要漫画的话再用同样的方法选漫画压缩包。
    也可以改为从电脑服务器复制（[见下文](#改从电脑复制数据)）。
 
-   ![游戏数据：导入资源包按钮](images/install-p-import-pack.png)
-   ![文件选择器的下载文件夹里的数据包](images/install-p-picker.png)
+   ![游戏数据：导入资源包按钮](../images/install-p-import-pack.png)
+   ![文件选择器的下载文件夹里的数据包](../images/install-p-picker.png)
 
    底部的进度条显示导入进度（一两分钟）。完成后应用会问是否删除压缩包：**删除** 腾出 0.2 GB，**保留** 也没问题。
 
-   ![游戏数据底部的导入进度条](images/install-p-import-progress.png)
-   ![删除资源包？它已解压，不再需要](images/install-p-delete-pack.png)
+   ![游戏数据底部的导入进度条](../images/install-p-import-progress.png)
+   ![删除资源包？它已解压，不再需要](../images/install-p-delete-pack.png)
 3. 返回并点 **设置**。每一行是 **绿色**（完成）、**黄色**（等待）或 **红色**（还有事要做），应用能代劳的会附带按钮：
 
-   ![刚开始的设置检查：StarPoint Companion 的存储权限、服务器数据和已停止的服务器是红色](images/install-p-setup-fresh.png)
+   ![刚开始的设置检查：StarPoint Companion 的存储权限、服务器数据和已停止的服务器是红色](../images/install-p-setup-fresh.png)
 
    - **允许**：让 StarPoint Companion 使用手机存储，以便找到并移动 OBB。Android 询问时点 **允许**（Android 11 及更新版本会打开
      **所有文件访问权限** 页面：打开开关后返回）。
 
-     ![Android 询问是否允许 StarPoint Companion 访问照片、媒体和文件](images/install-p-allow-prompt.png)
+     ![Android 询问是否允许 StarPoint Companion 访问照片、媒体和文件](../images/install-p-allow-prompt.png)
    - **打开世界弹射物语的设置**：打开 **所有文件访问权限** 并允许存储权限。只有你能拨这些开关；游戏自己从不请求，没有它们就看不到 OBB。
      在 Android 设置里游戏叫 **世界弹射物语**；这个按钮会直接带你过去。打开 **权限**，把存储权限打开。
 
-     ![设置检查中世界弹射物语存储权限的红色行，以及「打开世界弹射物语的设置」按钮](images/install-p-setup-check.png)
-     ![游戏的应用信息页面，名为世界弹射物语](images/install-p-appinfo.png)
-     ![它的权限，存储已打开](images/install-p-permissions.png)
+     ![设置检查中世界弹射物语存储权限的红色行，以及「打开世界弹射物语的设置」按钮](../images/install-p-setup-check.png)
+     ![游戏的应用信息页面，名为世界弹射物语](../images/install-p-appinfo.png)
+     ![它的权限，存储已打开](../images/install-p-permissions.png)
 
      （这些截图来自 Android 9 模拟器。Android 11 及更新版本还有 **所有文件访问权限** 开关；Android 13 及更新版本的存储分成 **音乐和音频**
      以及 **照片和视频**：两个都要允许。）
@@ -161,7 +161,7 @@ node scripts/build_cn_obb.cjs <输出文件夹> --parts 3
 4. 每一行都变绿后，主界面的指示灯就是 **绿色：已就绪**。打开游戏（如果已经开着，先完全关闭）。它会显示「正在解压游戏文件」，自己解压 OBB，
    完成后删除 OBB。
 
-   ![StarPoint Companion 主界面：绿色，已就绪，打开游戏](images/install-p-main.png)
+   ![StarPoint Companion 主界面：绿色，已就绪，打开游戏](../images/install-p-main.png)
 
 StarPoint Companion 主界面的指示灯：**绿色** = 打开游戏；**黄色** = 等待（服务器正在启动，或在控制台更改后正在重建游戏更新；这时打开的游戏会拿到旧的更新）；
 **红色** = 已停止。**游戏数据 > 检查文件……** 可以检查任何下载（OBB 分卷、数据包、漫画包、游戏 APK），不会改动任何东西。
@@ -247,7 +247,7 @@ StarPoint Companion 主界面的指示灯：**绿色** = 打开游戏；**黄色
 2. 在电脑上打开控制台（**http://127.0.0.1:8000**）。在 **通过 Wi-Fi 在手机上游玩** 下，选电脑的地址（以 192.168 或 10 开头的那个），点
    **下载手机连接文件**。你会得到 `server.txt`。
 
-   ![控制台的「通过 Wi-Fi 在手机上游玩」，已选好电脑的地址](images/install-phone-wifi-box.png)
+   ![控制台的「通过 Wi-Fi 在手机上游玩」，已选好电脑的地址](../images/install-phone-wifi-box.png)
 3. 把 `server.txt` 放到手机的 `内部存储/Android/obb/com.leiting.wf/`（需要的话新建这个文件夹）。可以发给自己，也可以在手机上打开
    `http://<电脑地址>:8000` 的控制台直接下载。
 
@@ -256,7 +256,7 @@ StarPoint Companion 主界面的指示灯：**绿色** = 打开游戏；**黄色
    （`adb push server.txt /sdcard/Android/obb/com.leiting.wf/`，先做方式 1 故障排除里建文件夹的步骤）。游戏不会从 `starpoint_game` 读取 `server.txt`。
 4. 安装并打开游戏。标题画面显示 **「Server: 192.168.x.y:8000」**。如果显示「server.txt not understood」，说明文件里的地址行写错了。
 
-   ![标题画面在 TAP TO START 旁显示 Server: 192.168.x.y:8000](images/install-title-server.png)
+   ![标题画面在 TAP TO START 旁显示 Server: 192.168.x.y:8000](../images/install-title-server.png)
 
 `server.txt` 只有一行：电脑的地址和端口，例如 `192.168.1.20:8000`，所以也可以手写。以 `#` 开头的行会被忽略。游戏每次启动时读取它。
 删除它就回到手机自己的服务器（StarPoint Companion）。如果路由器给电脑分配了新地址，重新下载这个文件。
@@ -267,7 +267,7 @@ StarPoint Companion 主界面的指示灯：**绿色** = 打开游戏；**黄色
 
 ## 3. 只用电脑：模拟器加电脑服务器
 
-用于 **自制角色**（[CUSTOM_UNITS.zh-CN.md](CUSTOM_UNITS.zh-CN.md)，它们在电脑上添加），或 **开发 GlobalPoint**。只是想在电脑上玩的话，改在模拟器里用[方式 1](#1-手机或模拟器)。
+用于 **自制角色**（[CUSTOM_UNITS.md](CUSTOM_UNITS.md)，它们在电脑上添加），或 **开发 GlobalPoint**。只是想在电脑上玩的话，改在模拟器里用[方式 1](#1-手机或模拟器)。
 
 1. 安装 Android 模拟器（已测试：雷电模拟器 9；它必须能运行 ARM64 应用，同方式 1），并在下一步之前把游戏 APK 放进 GlobalPoint 文件夹里的
    `apk` 文件夹（例如 `D:\GlobalPoint\apk\`）。
@@ -288,7 +288,7 @@ StarPoint Companion 主界面的指示灯：**绿色** = 打开游戏；**黄色
 
 **在文件夹里打开命令提示符：** 在文件资源管理器里打开这个文件夹，点顶部的地址栏，输入 `cmd` 并按回车。会打开一个黑色窗口，已经位于这个文件夹。
 
-![文件资源管理器的地址栏里输入了 cmd](images/install-open-cmd.png)
+![文件资源管理器的地址栏里输入了 cmd](../images/install-open-cmd.png)
 
 1. **安装 Node.js 22。** 从 [nodejs.org/dist/latest-v22.x](https://nodejs.org/dist/latest-v22.x/) 下载 Windows 安装程序：文件名以 **`-x64.msi`**
    结尾的那个（例如 `node-v22.23.4-x64.msi`）。运行它，保持默认选项。
@@ -300,7 +300,7 @@ StarPoint Companion 主界面的指示灯：**绿色** = 打开游戏；**黄色
    直接在 `D:\GlobalPoint` 里，而不是深一层（如果是，把文件移上来）。用 git 的话：
    `git clone https://github.com/NekoWeeb19/globalpoint.git D:\GlobalPoint`。
 
-   ![GitHub 的绿色 Code 按钮菜单，底部是 Download ZIP](images/install-github-zip.png)
+   ![GitHub 的绿色 Code 按钮菜单，底部是 Download ZIP](../images/install-github-zip.png)
 3. **放入国服游戏文件。** 从 [CN CDN 1.4.54 release](https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54) 下载六个 `cn-cdn.tar.part.00` 到
    `.05` 文件和 `SHA256SUMS.txt`，全部放在同一个文件夹（例如下载）。然后 **在那个文件夹里** 打开命令提示符，逐条运行：
    ```bat
@@ -312,13 +312,13 @@ StarPoint Companion 主界面的指示灯：**绿色** = 打开游戏；**黄色
    ```bat
    tar -xf cn-cdn.tar -C D:\GlobalPoint\.cdn
    ```
-   ![三条命令之后的命令提示符：已复制 1 个文件，然后 tar 安静地完成](images/install-cmd-commands.png)
+   ![三条命令之后的命令提示符：已复制 1 个文件，然后 tar 安静地完成](../images/install-cmd-commands.png)
 
    - 第一条创建 `.cdn` 文件夹（如果说已存在，没关系）。第二条把六个分卷合成一个文件 `cn-cdn.tar`：暂时需要多约 10 GB 可用空间。第三条解压它；
      需要几分钟，完成前不会显示任何东西。
    - **确认成功：** `D:\GlobalPoint\.cdn\cn` 里现在有名为 `archive-...` 的文件夹和一个 `entities` 文件夹。然后可以删除 `cn-cdn.tar` 和六个分卷。
 
-     ![解压后的 .cdn\cn 文件夹：archive 文件夹、entities 和 path](images/install-cdn-cn.png)
+     ![解压后的 .cdn\cn 文件夹：archive 文件夹、entities 和 path](../images/install-cdn-cn.png)
    - 用命令提示符，不要用 PowerShell：`copy /b` 只能在命令提示符里用。（`tar` 是 Windows 10 及更新版本自带的。）
    - **检查下载**（可选）：在同一窗口里对每个分卷运行 `certutil -hashfile cn-cdn.tar.part.00 SHA256`，并与 `SHA256SUMS.txt` 对比。用 Git Bash、Linux
      或 macOS 时，`sha256sum -c SHA256SUMS.txt` 一次检查全部，`cat cn-cdn.tar.part.* | tar -x -C /path/to/GlobalPoint/.cdn` 解压时不需要额外的 10 GB。
@@ -326,7 +326,7 @@ StarPoint Companion 主界面的指示灯：**绿色** = 打开游戏；**黄色
    删掉最后一段）。如果 Windows 询问已存在的文件，选择替换。确认成功：`D:\GlobalPoint\.cdn` 里现在也有 `cn_text` 和 `cn_patches`。想要漫画的话，
    漫画压缩包也这样做。
 
-   ![全部解压缩，目标设为 D:\GlobalPoint](images/install-extract-all.png)
+   ![全部解压缩，目标设为 D:\GlobalPoint](../images/install-extract-all.png)
 5. **运行 `setup.bat`**（在 `D:\GlobalPoint` 里双击）。它会安装服务器的软件包（需要联网一次）、构建服务器、从 `.env.example` 生成你的 `.env` 设置文件，
    并检查游戏文件和更新。缺什么会停下并说明。如果找到 `adb`，它会提出把 `apk` 文件夹里的 APK 装到模拟器上（方式 3，或通过 USB 的方式 2，
    请在这一步之前[获取 adb](#获取-adb)）。然后启动服务器。
@@ -340,7 +340,7 @@ StarPoint Companion 主界面的指示灯：**绿色** = 打开游戏；**黄色
 2. 把它的 `platform-tools` 文件夹里的三个文件复制到你的 GlobalPoint 文件夹（`setup.bat` 旁边）：**`adb.exe`**、**`AdbWinApi.dll`** 和
    **`AdbWinUsbApi.dll`**。脚本会先在这里找。（或者把 `platform-tools` 文件夹加入 PATH，如果你会的话。）
 
-   ![GlobalPoint 文件夹里的 adb.exe、AdbWinApi.dll 和 AdbWinUsbApi.dll，以及 setup.bat](images/install-adb-files.png)
+   ![GlobalPoint 文件夹里的 adb.exe、AdbWinApi.dll 和 AdbWinUsbApi.dll，以及 setup.bat](../images/install-adb-files.png)
 3. 检查：在 GlobalPoint 文件夹里打开命令提示符，运行 `adb devices`。模拟器在运行时（或手机已插上并打开 USB 调试），会列出一个设备。
 
 很多模拟器的安装文件夹里也自带 `adb.exe`（雷电模拟器 9 就有，在 `D:\LDPlayer\LDPlayer9` 或你安装的位置）；复制那个进来也可以。如果 `adb devices`
@@ -348,7 +348,7 @@ StarPoint Companion 主界面的指示灯：**绿色** = 打开游戏；**黄色
 
 之后运行 **`start-cn.bat`** 启动服务器，然后打开游戏。关闭服务器窗口即可停止。
 
-这些步骤的简短版本在 [`HOW-TO-PLAY.zh-CN.txt`](../HOW-TO-PLAY.zh-CN.txt)。Linux 和 macOS 有 `setup.sh` 和 `start-cn.sh`，未经测试。
+这些步骤的简短版本在 [`HOW-TO-PLAY.zh-CN.txt`](../../HOW-TO-PLAY.zh-CN.txt)。Linux 和 macOS 有 `setup.sh` 和 `start-cn.sh`，未经测试。
 
 ## 更新电脑上的服务器
 

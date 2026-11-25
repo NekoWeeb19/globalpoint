@@ -1,15 +1,15 @@
 # 制作自制角色
 
-> 本页是 [MAKING_UNITS.md](MAKING_UNITS.md) 的中文版，由 Claude（AI）翻译。两者内容相同；如有出入，以英文版为准。
+> 本页是 [MAKING_UNITS.md](../MAKING_UNITS.md) 的中文版，由 Claude（AI）翻译。两者内容相同；如有出入，以英文版为准。
 
 本页说明怎样为国服（CN）客户端制作自制角色、怎样手动修改已有角色，以及服务器和构建程序会怎样处理它们。把做好的
-角色放进游戏、发给存档以及移除角色，见 [CUSTOM_UNITS.zh-CN.md](CUSTOM_UNITS.zh-CN.md)。能力、数值、文字和技能用网页控制台的
-[角色编辑器（Unit editor）](UNIT_EDITOR.zh-CN.md)修改比手动改文件更方便，它也能编辑自制角色。
+角色放进游戏、发给存档以及移除角色，见 [CUSTOM_UNITS.md](CUSTOM_UNITS.md)。能力、数值、文字和技能用网页控制台的
+[角色编辑器（Unit editor）](UNIT_EDITOR.md)修改比手动改文件更方便，它也能编辑自制角色。
 
 **现在需要手动做的部分：** 角色*做什么*（能力、队长特性、属性数值、技能槽、名称和文字、类型和职责，以及技能：游戏中
 任何指令、任何角色的特效、任何协力球）都可以在网页控制台中编辑。仍需手动制作的是**美术和声音**：像素精灵图（包括
-`skill_ready` 姿势）、立绘和图标、技能特写（cut-in，[png2atf 做法](research/new-units.zh-CN.md#制作战斗技能特写-atf)）、
-语音，以及任何全新的特效美术（特效格式已有文档 [research/skill-effects.md](research/skill-effects.md)（英文），但还没有
+`skill_ready` 姿势）、立绘和图标、技能特写（cut-in，[png2atf 做法](research/new-units.md#制作战斗技能特写-atf)）、
+语音，以及任何全新的特效美术（特效格式已有文档 [../research/skill-effects.md](../research/skill-effects.md)（英文），但还没有
 制作它的工具）。美术打包用脚本完成（`build_cn_patch.cjs`，见下文）。
 
 自制角色分为以下几部分：
@@ -25,14 +25,14 @@
 
 ## 手动修改已有角色
 
-自制角色文件只用于新角色：使用国服角色 ID 或字符串 ID 的文件会被拒绝。[角色编辑器](UNIT_EDITOR.zh-CN.md)可以修改能力、队长
+自制角色文件只用于新角色：使用国服角色 ID 或字符串 ID 的文件会被拒绝。[角色编辑器](UNIT_EDITOR.md)可以修改能力、队长
 特性、属性数值、技能槽、名称、称号、说明、类型、职责和技能脚本。其他内容请用下面两种方法之一；两者在每次日程重建后
 都会保留。
 
 ### 其他行：手写修改文件
 
 编辑器保存的是修改文件（change file），你也可以为它不编辑的行自己写一个（例如
-[19 个数据表](research/new-units.zh-CN.md#数据表19-个)中的另一个，比如图片的裁剪行）。把它放进
+[19 个数据表](research/new-units.md#数据表19-个)中的另一个，比如图片的裁剪行）。把它放进
 `assets/custom_units/changes/`（文件名任意，以 `.json` 结尾）：
 
 ```json
@@ -43,9 +43,9 @@
 
 - 每一行写作 `<数据表>#<行键>`。数据表可以是逻辑名称，也可以是存储路径（`upload/5c/6a4f…`）；嵌套的键用 `/` 连接
   （属性数值是 `<id>/<等级>`）。值是整行，或者是 `{ "cols": { … } }`，表示该行第一个子行中的部分列。
-  [各列附录](research/new-units.zh-CN.md#附录19-个数据表的每一列)列出了每个数据表和每一列。
+  [各列附录](research/new-units.md#附录19-个数据表的每一列)列出了每个数据表和每一列。
 - 重启服务器即可重建；日志会显示 `Unit changes: N of N row(s) in <table>`（找到的比列出的少，说明某个行名不存在）。
-  修改应用在游戏自己的行以及[按日期平衡（Balance by date）](DETAILS.zh-CN.md#按日期的平衡)之上；同一行以文件名排序
+  修改应用在游戏自己的行以及[按日期平衡（Balance by date）](DETAILS.md#按日期的平衡)之上；同一行以文件名排序
   靠后的文件为准。
 - 手机通过 **Download from PC**（从电脑下载）获取修改文件，不论勾选了什么。复制会让手机上的修改文件与电脑上的一致，
   所以电脑上删除的文件在手机上也会被删除。
@@ -67,7 +67,7 @@ node scripts/build_cn_patch.cjs 1.4.950 <newest version> my_art.json
 - `scripts/research/unit_files.cjs <id>` 按逻辑路径列出该角色的文件。存储名称是 `scripts/cdn_hash.cjs` 中的
   `uploadPath(<逻辑路径>, <文件夹>)`，文件夹（`upload`、`medium_upload` 或 `android_upload`）与游戏原文件所在的相同。
   查找文件夹的方法可以参考 `clone_cn_unit.cjs`。
-- 保持格式和尺寸不变（见[文件](research/new-units.zh-CN.md#3-文件76-个大多数玩家从不会看到这些文件夹名)）。动画的精灵图
+- 保持格式和尺寸不变（见[文件](research/new-units.md#3-文件76-个大多数玩家从不会看到这些文件夹名)）。动画的精灵图
   （sprite sheet）、`.atlas` 和 `.frame` 文件必须彼此对应；形状不同的图片可能还需要修改它的裁剪行（`trimmed_image`、
   `character_image`），方法是上面的修改文件。
 - 手机和获取其他游戏更新一样获取它：**Download from PC**，并勾选 **Game updates**（游戏更新）。
@@ -89,16 +89,16 @@ node scripts/build_cn_patch.cjs 1.4.950 <newest version> my_art.json
 
    它会写出 `out/custom_unit.json`（角色文件）、`out/art_files.json`（它的文件，不含数据表）以及这些文件。
    （`out/files.json` 是旧的一次性测试更新，里面带着数据表；要长期保留的角色不要发送它。）
-   复制出的角色也是制作新角色的好起点：在[角色编辑器](UNIT_EDITOR.zh-CN.md)中修改它的能力、属性数值和名称（编辑器也能编辑
+   复制出的角色也是制作新角色的好起点：在[角色编辑器](UNIT_EDITOR.md)中修改它的能力、属性数值和名称（编辑器也能编辑
    自制角色），再替换它的文件。
 
    **b. 手动制作（或用你自己的工具）。** 你需要：
    - **角色文件**，包含它在 19 个数据表中的行。数据表以及每一列（用客户端自己的字段名）见研究文档的
-     [清单](research/new-units.zh-CN.md#清单自制角色需要的一切)和[各列附录](research/new-units.zh-CN.md#附录19-个数据表的每一列)。
+     [清单](research/new-units.md#清单自制角色需要的一切)和[各列附录](research/new-units.md#附录19-个数据表的每一列)。
      每一行都必须使用新的 ID 和字符串 ID。能力学习的节点 ID 要遵守下面的规则，`manaNodes` 和 `mana_node` 行都要遵守；
      `character` 必须与角色行中的稀有度一致。
    - **文件**，放在 `character/<字符串 ID>/...` 下，名称和格式见研究文档
-     （[清单第 3 部分](research/new-units.zh-CN.md#3-文件76-个大多数玩家从不会看到这些文件夹名)：固定尺寸的图片，内部写着
+     （[清单第 3 部分](research/new-units.md#3-文件76-个大多数玩家从不会看到这些文件夹名)：固定尺寸的图片，内部写着
      新文件夹名的 AMF3 `.atlas`/`.frame`/`.timeline`，MP3 语音，技能脚本和预览用的 `.battle` 文件）。每个文件都存放在它的
      哈希名称下（`scripts/cdn_hash.cjs` 的 `uploadPath(<逻辑路径>, <文件夹>)`），文件夹是游戏读取它的那个文件夹
      （`upload`、`medium_upload` 或 `android_upload`；文档中写明了是哪个）。
@@ -107,7 +107,7 @@ node scripts/build_cn_patch.cjs 1.4.950 <newest version> my_art.json
 
    游戏能做的事是固定的：能力、队长特性和技能必须由游戏已有的种类和指令组成（新的数值和组合没问题；新的机制不行）。
    出错时会表现得很明显：构建程序和服务器会指出错误的 ID 或节点 ID；缺少文件时会出现素材恢复画面，路径记录在
-   `logs/cn_requests.log` 中；行有问题会出现 C8601（见[故障排除](CUSTOM_UNITS.zh-CN.md#故障排除)）。目前测试过的
+   `logs/cn_requests.log` 中；行有问题会出现 C8601（见[故障排除](CUSTOM_UNITS.md#故障排除)）。目前测试过的
    角色：凉宫春日的复制品，以及（研究，2026-11-16，不属于 GlobalPoint）**harpy**，归档文件中的一个未实装角色：它是克菈菈
    （Clara）的复制品，文件换成了 harpy 的美术，精灵图由它的敌人图重建，带有自己的技能脚本和用 png2atf 做的技能特写；
    它在战斗中正常运行。它的语音仍然是克菈菈的。
@@ -171,7 +171,7 @@ node scripts/build_cn_patch.cjs 1.4.950 <newest version> my_art.json
   拒绝，`manaNodes` 和 `mana_node` 数据表的行都一样。
 - **扭蛋卡池**：角色会以该档位的平均权重加入每个列出的卡池中与其稀有度对应的档位，其他角色按比例缩小，使该档位的总和
   不变。卡池的概率画面不会列出它（那是国服的概率数据表）。
-- 完整示例（研究用测试角色，未启用）：[examples/custom_units/111907.json](examples/custom_units/111907.json)。
+- 完整示例（研究用测试角色，未启用）：[../examples/custom_units/111907.json](../examples/custom_units/111907.json)。
 
 ## 构建程序的检查
 

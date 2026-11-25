@@ -1,6 +1,6 @@
 # 技能脚本指令（研究，2026-11-16）
 
-> 本页是 [skill-commands.md](skill-commands.md) 的中文版，由 Claude（AI）翻译。两者内容相同；如有出入，以英文版为准。
+> 本页是 [skill-commands.md](../../research/skill-commands.md) 的中文版，由 Claude（AI）翻译。两者内容相同；如有出入，以英文版为准。
 
 > [!IMPORTANT]
 > ## 🤖 由 AI 撰写
@@ -10,7 +10,7 @@
 > 做出的推测。
 
 技能编辑器的基础资料（尚未制作）。技能、特效及其位置怎样运作，以及游戏内的
-测试，见 [skill-effects.md](skill-effects.md)（英文）。
+测试，见 [../../research/skill-effects.md](../../research/skill-effects.md)（英文）。
 
 ## 脚本的存储方式
 

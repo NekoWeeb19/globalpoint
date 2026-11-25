@@ -64,7 +64,7 @@ Node scripts that build data, translations, game updates and packages. The ones 
 - `build_pack.cjs`: the packs for the companion's **Import pack...**: data, comics, Chinese comics, Chinese art and
   skill preview art.
 - `cn_language.cjs` (with `game_language.cjs`): the Chinese game language, applied by the schedule build
-  ([CHINESE.en.md](CHINESE.en.md)). The dashboard's Chinese is `scripts/i18n/zh/*.json`, built into `web/public/i18n/zh.json`
+  ([CHINESE.md](CHINESE.md)). The dashboard's Chinese is `scripts/i18n/zh/*.json`, built into `web/public/i18n/zh.json`
   by `build_dashboard_i18n.cjs`; the companion's is `companion/i18n/zh.json` (`gen_companion_zh.cjs`).
 - `gen_cn_art_fill.cjs`: global's pictures for CN pictures that were missing, as an art patch.
 - `build_kit_*.cjs`, `kit_dates.cjs`: the old unit kits for balance by date (`assets/kit_dates.json`).

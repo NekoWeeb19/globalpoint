@@ -1,6 +1,6 @@
 # Kit file format
 
-> 中文版：[KIT_FORMAT.zh-CN.md](KIT_FORMAT.zh-CN.md)
+> 中文版：[zh-CN/KIT_FORMAT.md](zh-CN/KIT_FORMAT.md)
 
 A **kit** is the file the dashboard's Unit editor makes when you download edited units or armaments
 ([UNIT_EDITOR.md](UNIT_EDITOR.md)). This page describes the file itself, so another CN World Flipper server or fork can

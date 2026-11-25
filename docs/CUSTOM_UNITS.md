@@ -1,6 +1,6 @@
 # Custom units (CN app)
 
-> 中文版：[CUSTOM_UNITS.zh-CN.md](CUSTOM_UNITS.zh-CN.md)
+> 中文版：[zh-CN/CUSTOM_UNITS.md](zh-CN/CUSTOM_UNITS.md)
 
 New units for the CN app, made from game data and files only (no game-code change). This page is for
 players: getting a unit someone made into your game, giving it, and removing it. Making one, and the file

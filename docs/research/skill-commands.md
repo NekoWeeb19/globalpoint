@@ -1,6 +1,6 @@
 # Skill script commands (research, 2026-11-16)
 
-> 中文版：[skill-commands.zh-CN.md](skill-commands.zh-CN.md)
+> 中文版：[../zh-CN/research/skill-commands.md](../zh-CN/research/skill-commands.md)
 
 > [!IMPORTANT]
 > ## 🤖 Written by AI
