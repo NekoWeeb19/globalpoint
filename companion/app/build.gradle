@@ -36,7 +36,7 @@ android {
         minSdk 24
         targetSdk 34
         versionCode 90
-        versionName "0.9.7"
+        versionName "1.0"
         externalNativeBuild {
             ndkBuild { arguments "NODEJS_MOBILE_DIR=${nodeDir}" }
         }

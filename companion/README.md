@@ -28,7 +28,7 @@ how to build it.
 - **Setup check** (SetupActivity): a checklist for setup 1, each line green/yellow/red with a fix button:
   the game installed; this app's and the game's storage access (opens the right settings screen); the
   OBB, found in Download, Downloads, Documents (and their folders one level down) or the top of storage, on
-  the phone or an SD card (the 3 parts or the single file; a browser's " (1)", "-1" or ".bin" is allowed and
+  the phone or an SD card (the 3 parts, or a single file built with `build_cn_obb.cjs`; the old 1.4.203 single OBB gets a red line: GlobalPoint 1.0 doesn't support it; a browser's " (1)", "-1" or ".bin" is allowed and
   dropped on the move),
   SHA-256 checked, then moved into `starpoint_game` (a rename, so instant; a copy only across storages);
   leftover loose game files in the drop-off folders (removed when an OBB is there, since the game would
@@ -72,7 +72,7 @@ how to build it.
 - **Choose zip...** takes a zip with `.database/` and `.cdn/` folders (and optionally `.env`), as
   made by `companion/tools/make-data-zip.cjs`.
 - **Check a file...** (DownloadCheck): picks any file and works out its SHA-256, then says whether it is one of the
-  GlobalPoint downloads (the OBB parts, the single OBB, the data pack, the comics pack, the game APK), whole and
+  GlobalPoint downloads (the OBB parts, the old single OBB, the data pack (1.0 and older), the comics pack, the game APK), whole and
   undamaged, or damaged / cut short. The known hashes are in `DownloadCheck.java` (update them when a Drive file changes).
 
 **Full game files.** A fresh game asks its server for the full ~10 GB download, and the companion

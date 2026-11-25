@@ -33,16 +33,14 @@ StarPoint's mitmproxy route, which only worked for the global app.
 | File | What it is | Where | Size |
 |---|---|---|---|
 | **World Flipper (game) APK** | the patched game app (build 25; installs over builds 23 and 24), for every setup | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 139 MB |
-| **StarPoint Companion APK** | the server-on-your-phone app (0.9.6), for setup 1 (phones and emulators) | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 76 MB |
-| **OBB in 3 parts** (`main.1008001.com.leiting.wf.part1of3.obb`, `part2of3`, `part3of3`) | every game file (game files 1.4.800, up to date), for setup 1; download all three | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 3.6 GB each |
-| **OBB** (`main.1008001.com.leiting.wf.obb`), the alternative | the same as one 10 GB file (game files 1.4.203: older, the game updates after unpacking), for phones and file apps that handle one big file | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 10.3 GB |
-| **`starpoint-data.zip`** | GlobalPoint's English tables, game updates (art and text patches), schedule files, dashboard pictures and news. Setup 1 imports it into the companion; a PC server unzips it into its folder | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 2.25 GB |
+| **StarPoint Companion APK** | the server-on-your-phone app (1.0), for setup 1 (phones and emulators) | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 76 MB |
+| **OBB in 3 parts** (`main.1008001.com.leiting.wf.part1of3.obb`, `part2of3`, `part3of3`) | every game file (game files 1.4.800, up to date), for every setup; download all three | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 3.6 GB each |
+| **`starpoint-data.zip`** | GlobalPoint's English tables, CN's tables, schedule files, dashboard pictures and news (the game's own files come from the OBB). Setup 1 imports it into the companion; a PC server unzips it into its folder | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 221 MB |
 | **Comics zip** (optional) | the in-game comics, used the same way as `starpoint-data.zip` | [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) | 1.4 GB |
 | **CN game files** (CN CDN 1.4.54) | the official CN game's files, for a PC server (setups 2 and 3): six parts `cn-cdn.tar.part.00` to `05`, plus `SHA256SUMS.txt` | [dennis96292/.cdn, release cdn-1.4.54](https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54) | ~10.1 GB |
 | **GlobalPoint** (this repository) | the server, the dashboard and the scripts | `git clone`, or **Code > Download ZIP** on GitHub | small |
 
-Everything except the CN game files and the repository is on [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO), and all of it except the
-single-file OBB is also on [MEGA](https://mega.nz/folder/fWRATYbJ#z8wtDI7krmKgBn2HL_s0jg).
+Everything except the CN game files and the repository is on [Google Drive](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO), and all of it is also on [MEGA](https://mega.nz/folder/fWRATYbJ#z8wtDI7krmKgBn2HL_s0jg).
 
 You can also build the OBB yourself on a PC with the server installed.
 
@@ -55,8 +53,7 @@ SHA-256 of the downloads, to check one (`certutil -hashfile <file> SHA256` on Wi
 a57b1629b3564aa600cfaa9b1bbc88794a36eb1214b58f58238986dc0f0aebb7  main.1008001.com.leiting.wf.part1of3.obb
 343438b6ee2debb1843609acbf386b2cf977d23a6ea018485e22e6d48a5fc453  main.1008001.com.leiting.wf.part2of3.obb
 b3676a2042c945b26b7c0bfa1bd1127cb15e07984d7b2b47971c8b0d4aa9e412  main.1008001.com.leiting.wf.part3of3.obb
-5494b5a79f6508068c133c6ebd971862b1f0aaef1e6d0b2955d85a76eca1f697  main.1008001.com.leiting.wf.obb (the single file)
-8637a682ab1439e8c62040ebe9a4ce47b3b3ec28b4f1f65c4ba00f5332a6e393  starpoint-data.zip
+b863c94735c93d2afa169d3e0b3e09d2735fd259abef94150023866fe458f2e1  starpoint-data.zip
 7409b79cbe56c8c7ff05e48755904c7c35fb9677914925607a474f5a33424174  starpoint-comics.zip
 198f2b4fb31568e2050ca5e1989d711ff63077494b21ff990562263c0ff0774e  World Flipper (game) APK, build 25
 ```
@@ -79,8 +76,8 @@ with one button (**Set up everything**); the [steps by hand](#by-hand) still wor
 **Downloads** (from the [Google Drive folder](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO)):
 - the **game** APK (build 25) and the **StarPoint Companion** APK (0.8.5 or newer);
 - the **OBB**: the 3 parts `part1of3` / `part2of3` / `part3of3` (~3.6 GB each, game files 1.4.800, up to
-  date), or the single `.obb` (10.3 GB, game files 1.4.203: older, the game updates itself after
-  unpacking). Either works; the 3 parts are newer and easier to download;
+  date). The old single 10 GB `.obb` (game files 1.4.203) isn't supported any more: the updates it needed
+  aren't in `starpoint-data.zip` since GlobalPoint 1.0;
 - **`starpoint-data.zip`** (the server's data), and the comics zip if you want comics.
 
 Or build the OBB yourself on a PC with [the server installed](#installing-the-server-on-a-pc), in its folder (needs ~10.3 GB free; leave out `--parts 3` for
@@ -145,7 +142,7 @@ below are from an earlier version, where the main button read **Setup check** an
    ![The file picker's Downloads folder with starpoint-data.zip](images/install-p-picker.png)
 
    A bar at the bottom shows the import (a minute or two). When it's done, the app asks whether to
-   delete the zip: **Delete** frees 2.2 GB, and **Keep** is fine too.
+   delete the zip: **Delete** frees 0.2 GB, and **Keep** is fine too.
 
    ![The import's progress bar at the bottom of Game data](images/install-p-import-progress.png)
    ![Delete the pack? It's unpacked, so the pack isn't needed any more](images/install-p-delete-pack.png)
@@ -194,8 +191,7 @@ the data pack, the comics zip, the game APK) without changing anything.
 1. Install the game APK (build 25). **Don't open it yet.**
 2. At the top of internal storage, create a folder named exactly **`starpoint_game`**
    (`Internal storage/starpoint_game/`; `Internal storage/StarPoint/game/` works the same way).
-3. Put the OBB in it: all three parts together, directly in that folder (not in a subfolder), or the
-   single file. From a PC copy them over USB; already on the phone, **Move** them with the file app (Move,
+3. Put the OBB in it: all three parts together, directly in that folder (not in a subfolder). From a PC copy them over USB; already on the phone, **Move** them with the file app (Move,
    not Copy: a copy needs twice the space). Don't let anything compress or zip them. To check a download,
    compare its SHA-256 with the [list above](#checksums).
 4. Android Settings > Apps > World Flipper (listed as **世界弹射物语**): turn on **All files access**, and under **Permissions** allow
@@ -214,8 +210,8 @@ on the device: **Export save** / **Import save** in the companion move it.
 ### Copying the data from a PC instead
 
 With [the server installed on a PC](#installing-the-server-on-a-pc) on the same Wi-Fi, the companion can
-copy everything from it instead of using the downloads, your PC save included. You need ~25 GB free on
-the phone.
+copy the server's data from it instead of `starpoint-data.zip`, your PC save included. The game's files
+still come from the OBB: put it on the phone first ([by hand](#by-hand), steps 1-4).
 
 1. On the PC, set `LISTEN_HOST="0.0.0.0"` in `.env` so the phone can reach the server, and start it.
    If Windows asks about the firewall, allow it on **Private networks**.
@@ -225,22 +221,22 @@ the phone.
    tap **Settings** and turn on **Allow from this source**. **Don't open the game yet.**
 4. Open **StarPoint Companion**, tap **Game data**, and type your PC's address with the port, e.g.
    `192.168.1.20:8000` (use your own; that one is only an example).
-5. Tick **Full game files**, **My save** (to bring your PC account), **Game updates**, **Event
-   schedule editing** and **Dashboard pictures**. Comics are optional.
+5. Tick **My save** (to bring your PC account), **Event schedule editing** and **Dashboard pictures**.
+   Comics are optional. Leave **Full game files** and **Game updates** off: the OBB has them.
 6. Tap **Download from PC**. When asked, turn on **All files access** for the companion and press
-   back. The copy starts by itself and takes a while (~12 GB).
+   back. The copy starts by itself (a few hundred MB, more with comics).
 7. On the same screen, tap the button that opens **World Flipper's "All files access"** page and turn
    it on. The game never asks for it itself.
 8. On the companion's main screen, check that it says **Server: running**, then tap **Let the server
    run in the background**. Allow notifications if asked. If your phone still stops the server in
    the background, tick **Keep the server awake**, and try **Battery and auto-start settings** and
    **Allow usage access** on the same screen.
-9. Open the game. The first start moves the game files into place (a few minutes), then you're in,
-   with no download.
+9. Open the game. The first start unpacks the OBB (a few minutes), then you're in, with no download.
 
 If the phone says **"failed to connect"**, the address is wrong or the PC's firewall is blocking
 Node.js (allow it on Private networks in Windows Security > Firewall > Allow an app). A phone that
-already has the game files (from the OBB) only needs the boxes other than **Full game files**.
+already has the game files (from the OBB) only needs the boxes other than **Full game files**, which
+would only work from a PC that still has the game updates of an older GlobalPoint.
 
 From then on your save lives on the phone. Use **Export save** / **Import save** in the companion to
 move it.
@@ -256,9 +252,6 @@ it's interrupted it carries on where it stopped next time. Setup check shows mos
 - **A part missing or cut short:** the game says so, e.g. "Game files part 2 of 3 is missing" or
   "...is incomplete: x of y GB", and unpacks nothing. Copy the missing part next to the others (or
   download it again) and reopen the game.
-- **The single-file OBB is older** (game files 1.4.203). After it unpacks, the game downloads the rest
-  from the companion once (~2 GB, from the phone itself, so it's quick). The 3 parts and an OBB you build
-  yourself are already up to date.
 - **Stuck on "Finding game files… (a number)" after unpacking:** a drop-off folder still holds loose
   game files from an earlier setup, usually a `download` folder in `StarPoint/game`, `starpoint_game` or
   `Android/obb/com.leiting.wf` (e.g. from the companion's **Full game files**). The game lists and moves
@@ -298,8 +291,8 @@ it's interrupted it carries on where it stopped next time. Setup check shows mos
 
 The phone plays against your PC's server, so your save stays on the PC and the PC must be on while
 you play. First [install the server on the PC](#installing-the-server-on-a-pc). The game needs its files
-too: on a fresh install it downloads ~12 GB from your PC, or put an OBB on the phone as in
-[setup 1, by hand](#by-hand), steps 1-4.
+too: put the OBB on the phone as in [setup 1, by hand](#by-hand), steps 1-4. (Since GlobalPoint 1.0 the
+PC no longer has the game updates a download without the OBB needs.)
 
 **Over Wi-Fi (game build 23 or newer):**
 1. On the PC, set `LISTEN_HOST="0.0.0.0"` in `.env` and start the server. Allow it if Windows asks
@@ -349,8 +342,9 @@ GlobalPoint**. Just to play on a PC, use [setup 1](#1-phone-or-emulator) in an e
 4. Open the game.
    - The first screen is the CN publisher's agreement, in Chinese. The **right** button (同意) agrees
      and continues; the left one (拒绝) closes the game.
-   - The first start downloads ~12 GB of game files from your own server (about 6 minutes on an
-     emulator). That only happens once.
+   - Before the first start, put the OBB on the emulator as in [setup 1, by hand](#by-hand), steps 1-4
+     (copy the three parts in with the emulator's shared folder or `adb push`). The first start
+     unpacks it (a few minutes). That only happens once.
 
 ## Installing the server on a PC
 

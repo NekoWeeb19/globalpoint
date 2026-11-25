@@ -171,6 +171,14 @@ try {
     const names = require(path.join(scripts, "..", "assets", "event_names_zh.json")).names
     check("CN's own event names are there (boss event 1, banner 1)", /[一-鿿]/.test(names["advent_event:1"] ?? "") && /[一-鿿]/.test(names["gacha:1"] ?? ""), [names["advent_event:1"], names["gacha:1"]])
 
+    // the English tables' list: files.json, or (a data pack without one) the folder's own tables
+    const listDir = path.join(temp, "cn_text_list")
+    fs.mkdirSync(path.join(listDir, "production", "upload", "ab"), { recursive: true })
+    fs.writeFileSync(path.join(listDir, "production", "upload", "ab", "cdef"), "x")
+    check("no files.json: the English tables folder lists itself", JSON.stringify(CL.translatedPaths(listDir)) === JSON.stringify(["production/upload/ab/cdef"]), CL.translatedPaths(listDir))
+    fs.writeFileSync(path.join(listDir, "files.json"), JSON.stringify([{ path: "production/upload/ab/cdef" }, { path: "production/upload/cd/0123", from: "elsewhere" }]))
+    check("files.json lists every table, also ones in earlier folders", CL.translatedPaths(listDir).length === 2, CL.translatedPaths(listDir))
+
     // the dashboard's dictionary and the companion's table: every text has its Chinese
     const { execFileSync } = require("child_process")
     let companion = ""

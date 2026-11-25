@@ -116,7 +116,17 @@ step("English CN tables")
         n++
     }
     if (list.length === 0) n = copyTree(textDir, out)
-    console.log(`${n} tables from ${textDir}`)
+    // the flat folder's own list (no "from": everything is here), which the game-language switch reads
+    // (scripts/cn_language.cjs translatedPaths) and the data pack carries
+    const flat = list.length > 0 ? list.map(({ path: p }) => ({ path: p })) : []
+    if (flat.length === 0) (function walk(dir, rel) {
+        for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+            if (e.isDirectory()) walk(path.join(dir, e.name), rel ? `${rel}/${e.name}` : e.name)
+            else if (rel.startsWith("production/")) flat.push({ path: `${rel}/${e.name}` })
+        }
+    })(out, "")
+    fs.writeFileSync(path.join(out, "files.json"), JSON.stringify(flat))
+    console.log(`${n} tables from ${textDir} (files.json: ${flat.length})`)
 }
 
 step("patches, comics, dashboard pictures")

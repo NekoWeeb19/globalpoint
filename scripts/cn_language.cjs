@@ -168,7 +168,18 @@ function translatedPaths(translatedDir) {
     try {
         return JSON.parse(fs.readFileSync(path.join(translatedDir, "files.json"), "utf8")).map(f => f.path ?? f).filter(p => typeof p === "string")
     } catch {
-        return []
+        // no files.json (the data pack of 2026-11-03 left it out): the folder's own tables, which are all of them there
+        const out = []
+        const walk = (dir, rel) => {
+            let entries = []
+            try { entries = fs.readdirSync(dir, { withFileTypes: true }) } catch { return }
+            for (const e of entries) {
+                if (e.isDirectory()) walk(path.join(dir, e.name), rel ? `${rel}/${e.name}` : e.name)
+                else if (e.isFile() && rel.startsWith("production/")) out.push(`${rel}/${e.name}`)
+            }
+        }
+        walk(translatedDir, "")
+        return out
     }
 }
 

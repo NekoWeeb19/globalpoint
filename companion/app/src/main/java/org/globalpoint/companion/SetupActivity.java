@@ -202,8 +202,10 @@ public class SetupActivity extends Activity {
                 out.add(new Line(YELLOW, Tr.t("Found the OBB (%s) in %s. This app can check it's undamaged and move it to starpoint_game for the game (moving is instant, no extra space).", elsewhere.describe(), elsewhere.folder),
                         Tr.t("Check and move it"), () -> checkAndMove(elsewhere)));
             } else {
-                out.add(new Line(GREY, Tr.t("No OBB found. If the game already has its files (it got past its title screen before), nothing to do. Otherwise download the OBB (the 3 parts, or the single file) into Download and check again."), null, null));
+                out.add(new Line(GREY, Tr.t("No OBB found. If the game already has its files (it got past its title screen before), nothing to do. Otherwise download the OBB (the 3 parts) into Download and check again."), null, null));
             }
+            if (inPlace.oldSingle() || (!inPlace.any() && elsewhere.oldSingle()))
+                out.add(new Line(RED, Tr.t("This is the old single OBB (game files 1.4.203). GlobalPoint 1.0 doesn't support it: the updates it needs aren't in starpoint-data.zip any more. Download the OBB in 3 parts (game files 1.4.800) instead."), null, null));
             long[] loose = looseFiles();
             if (loose[0] > 0) {
                 boolean obb = inPlace.any() || elsewhere.any();
@@ -284,6 +286,8 @@ public class SetupActivity extends Activity {
 
     // ---- the OBB ----
 
+    private static final long OLD_SINGLE_OBB_BYTES = 10293099326L;
+
     /** The OBB files found in one folder: the split parts (if all are there) or the single file. */
     private static final class Obb {
         String folder = "";
@@ -291,6 +295,8 @@ public class SetupActivity extends Activity {
         File[] parts;
         int partCount;
         boolean any() { return single != null || parts != null; }
+        /** The old single OBB (game files 1.4.203, by its size): its updates left the data pack in GlobalPoint 1.0. */
+        boolean oldSingle() { return parts == null && single != null && single.length() == OLD_SINGLE_OBB_BYTES; }
         List<File> files() {
             List<File> f = new ArrayList<>();
             if (parts != null) for (File p : parts) f.add(p);
@@ -623,7 +629,7 @@ public class SetupActivity extends Activity {
         String head = done.isEmpty() ? "" : done + "\n\n";
         // this app can't see whether the game already unpacked its files (they're in its private storage), so no OBB is only a note
         String noObb = !p.inPlace.any() && !p.elsewhere.any()
-                ? Tr.t("\n\nNo OBB found: fine if the game has got past its title screen before. If not, download the OBB (the 3 parts or the single file) into Download and press the button again.") : "";
+                ? Tr.t("\n\nNo OBB found: fine if the game has got past its title screen before. If not, download the OBB (the 3 parts) into Download and press the button again.") : "";
         if (left.isEmpty()) return head + Tr.t("All set. Open the game once the server line above says ready.") + (p.comics ? "" : Tr.t(" Comics are optional: put the comics zip in Download and press the button again to add them.")) + noObb;
         StringBuilder s = new StringBuilder(head).append(Tr.t("Still to do:"));
         for (String l : left) s.append("\n• ").append(l);

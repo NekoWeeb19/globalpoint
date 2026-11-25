@@ -14,10 +14,11 @@ What you need
     docs/INSTALL.md, "Installing the server on a PC", step 1.
   - An Android emulator (e.g. LDPlayer) or an Android phone connected with adb. The game talks to
     127.0.0.1:8000, so on an emulator it reaches your PC through "adb reverse" (done for you).
-  - About 16 GB of free space (the game downloads ~12 GB of files from this server the first time).
+  - About 12 GB of free space on the PC (the CN game files), and room for the OBB (~10.3 GB) on the
+    emulator or phone.
   - Downloads (links in README.md):
-      the game APK (build 25) and starpoint-data.zip (2.25 GB) from the Google Drive folder, plus
-        the comics zip (1.4 GB) if you want comics;
+      the game APK (build 25), the OBB in 3 parts (game files 1.4.800) and starpoint-data.zip
+        (221 MB) from the Google Drive folder, plus the comics zip (1.4 GB) if you want comics;
       the CN game files (CN CDN 1.4.54, six cn-cdn.tar.part.* files, ~10.1 GB) from
         https://github.com/dennis96292/.cdn/releases/tag/cdn-1.4.54
 
@@ -29,13 +30,15 @@ First time
      (Git Bash, Linux, macOS: cat cn-cdn.tar.part.* | tar -x -C <this folder>/.cdn)
      You get .cdn\cn\... Delete cn-cdn.tar and the parts afterwards.
   2. Unzip starpoint-data.zip (and the comics zip) into this folder itself.
-  3. Put the game APK in an "apk" folder here, or install it on the emulator yourself.
+  3. Put the game APK in an "apk" folder here, or install it on the emulator yourself. Put the three
+     OBB parts on the emulator or phone, in Internal storage/starpoint_game (docs/INSTALL.md, setup 1,
+     "By hand", steps 1-4).
   4. Run setup.bat. It installs the server's packages (needs internet once), builds the server,
      makes .env, and checks the game files (it says what's missing, if anything). If adb is found
      it offers to install the APK from the apk folder, then starts the server.
   5. Open the game. The very first screen is the CN publisher's user agreement and privacy notice in
      Chinese: the right-hand button (同意) agrees and continues, the left one (拒绝) declines and closes
-     the game. Then it downloads its files from the server (only the first time), and you can play.
+     the game. Then it unpacks the OBB (only the first time, a few minutes), and you can play.
 
 Every other time
   Run start-cn.bat, then open the game. Close the server window to stop the server.

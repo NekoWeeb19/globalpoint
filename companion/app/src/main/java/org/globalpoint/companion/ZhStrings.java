@@ -7,13 +7,13 @@ import java.util.Map;
 final class ZhStrings {
     private ZhStrings() { }
 
-    private static final Map<String, String> MAP = new HashMap<>(444);
+    private static final Map<String, String> MAP = new HashMap<>(448);
 
     static {
         Map<String, String> m = MAP;
         m.put("\n\nCouldn't delete every pack; delete them in your Files app.", "\n\n无法删除全部资源包；请在「文件」应用中删除。");
         m.put("\n\nCouldn't delete the pack; delete it in your Files app.", "\n\n无法删除资源包；请在「文件」应用中删除。");
-        m.put("\n\nNo OBB found: fine if the game has got past its title screen before. If not, download the OBB (the 3 parts or the single file) into Download and press the button again.", "\n\n未找到 OBB：如果游戏之前已进入过标题画面之后，则没有问题。否则请把 OBB（3 个分卷或单个文件）下载到「下载」，然后再按一次按钮。");
+        m.put("\n\nNo OBB found: fine if the game has got past its title screen before. If not, download the OBB (the 3 parts) into Download and press the button again.", "\n\n未找到 OBB：如果游戏之前已进入过标题画面之后，则没有问题。否则请把 OBB（3 个分卷）下载到「下载」，然后再按一次按钮。");
         m.put("\n\nNote from the PC:\n", "\n\n电脑端的提示：\n");
         m.put("\n\nThe game files are in %s. Next:\n1. Install World Flipper (build 21 or newer) if it isn't yet.\n2. Allow it \"All files access\" (button above; the game never asks by itself).\n3. Start the server here, then open the game: it moves the files in (a few minutes) and needs no download.", "\n\n游戏文件位于 %s。接下来：\n1. 如果尚未安装，请安装世界弹射物语（build 21 或更新）。\n2. 允许它的「所有文件访问权限」（上方按钮；游戏自己不会请求）。\n3. 在这里启动服务器，然后打开游戏：它会把文件移进去（几分钟），无需下载。");
         m.put("\n\nThe pack was deleted.", "\n\n资源包已删除。");
@@ -41,7 +41,7 @@ final class ZhStrings {
         m.put(". Your save wasn't touched. Back on the main screen the server starts.", "。你的存档未被改动。回到主界面后服务器会启动。");
         m.put("127.0.0.1:8000 - kept awake - tap to open the companion", "127.0.0.1:8000 - 保持唤醒 - 点按打开 Companion");
         m.put("127.0.0.1:8000 - tap to open the companion", "127.0.0.1:8000 - 点按打开 Companion");
-        m.put("A data pack (~1.8 GB: everything above except your save and the full game files), a comics pack (~1.4 GB), the skill preview art pack (~35 MB: the Unit editor's skill preview pictures; import it after a data pack) or the Chinese art pack (~1.6 GB: the game's pictures in Chinese; import it after a data pack), copied to this phone, e.g. into Downloads. Packs are made on a PC with scripts/build_pack.cjs. A pack never touches your save.", "数据包（约 1.8 GB：除存档和完整游戏文件外的上述全部内容）、漫画包（约 1.4 GB）、技能预览图片包（约 35 MB：角色编辑器的技能预览图片；请在数据包之后导入）或中文图片包（约 1.6 GB：游戏的中文图片；请在数据包之后导入），复制到这台手机上，例如放进「下载」。资源包在电脑上用 scripts/build_pack.cjs 制作。资源包不会改动你的存档。");
+        m.put("A data pack (~220 MB: everything above except your save, the game updates and the full game files, which the OBB has), a comics pack (~1.4 GB), the skill preview art pack (~35 MB: the Unit editor's skill preview pictures; import it after a data pack) or the Chinese art pack (~1.6 GB: the game's pictures in Chinese; import it after a data pack), copied to this phone, e.g. into Downloads. Packs are made on a PC with scripts/build_pack.cjs. A pack never touches your save.", "数据包（约 220 MB：除存档、游戏更新和完整游戏文件（这些在 OBB 中）外的上述全部内容）、漫画包（约 1.4 GB）、技能预览图片包（约 35 MB：角色编辑器的技能预览图片；请在数据包之后导入）或中文图片包（约 1.6 GB：游戏的中文图片；请在数据包之后导入），复制到这台手机上，例如放进「下载」。资源包在电脑上用 scripts/build_pack.cjs 制作。资源包不会改动你的存档。");
         m.put("A zip with .database/ and .cdn/ folders (and optionally .env), e.g. from the shared package.", "包含 .database/ 和 .cdn/ 文件夹（可选 .env）的压缩包，例如来自分享包。");
         m.put("All set. Open the game once the server line above says ready.", "全部完成。等上方的服务器状态显示已就绪后，打开游戏。");
         m.put("Allow", "允许");
@@ -125,7 +125,7 @@ final class ZhStrings {
         m.put("Looking for the downloads...", "正在查找下载的文件……");
         m.put("Moving %d of %d: %s", "正在移动第 %d / %d 个：%s");
         m.put("My save (account, units, progress)", "我的存档（账号、角色、进度）");
-        m.put("No OBB found. If the game already has its files (it got past its title screen before), nothing to do. Otherwise download the OBB (the 3 parts, or the single file) into Download and check again.", "未找到 OBB。如果游戏已经有其文件（之前进入过标题画面之后），则无需操作。否则请把 OBB（3 个分卷或单个文件）下载到「下载」并重新检查。");
+        m.put("No OBB found. If the game already has its files (it got past its title screen before), nothing to do. Otherwise download the OBB (the 3 parts) into Download and check again.", "未找到 OBB。如果游戏已经有其文件（之前进入过标题画面之后），则无需操作。否则请把 OBB（3 个分卷）下载到「下载」并重新检查。");
         m.put("No PC? Import a pack", "没有电脑？导入资源包");
         m.put("No data pack found: download starpoint-data.zip into Download (or use Game data > Download from PC).", "未找到数据包：请把 starpoint-data.zip 下载到「下载」（或使用 游戏数据 > 从电脑下载）。");
         m.put("Not enough free space for the game files: %.1f GB more needed, %.1f GB free.", "游戏文件空间不足：还需要 %.1f GB，剩余 %.1f GB。");
@@ -189,6 +189,7 @@ final class ZhStrings {
         m.put("They're left from an earlier setup. The OBB has every game file, so they aren't needed. OBB files and server.txt stay.", "它们是之前设置留下的。OBB 包含全部游戏文件，因此不需要它们。OBB 文件和 server.txt 会保留。");
         m.put("They're unpacked, so the zip file(s) (%s) aren't needed any more.", "已经解压完毕，压缩包（%s）不再需要。");
         m.put("This app can use the phone's storage.", "本应用可以使用手机存储。");
+        m.put("This is the old single OBB (game files 1.4.203). GlobalPoint 1.0 doesn't support it: the updates it needs aren't in starpoint-data.zip any more. Download the OBB in 3 parts (game files 1.4.800) instead.", "这是旧的单文件 OBB（游戏文件 1.4.203）。GlobalPoint 1.0 不再支持它：它所需的更新已不在 starpoint-data.zip 中。请改为下载 3 个分卷的 OBB（游戏文件 1.4.800）。");
         m.put("This replaces the save on this phone (account, units, progress) with the one in the zip you pick. The server restarts. Export your current save first if you may want it back.", "这会用你选择的压缩包中的存档替换这台手机上的存档（账号、角色、进度）。服务器会重启。如果以后可能还要用当前存档，请先导出。");
         m.put("This will:\n\n%s\nKeep this screen open until it's done.", "将会：\n\n%s\n完成之前请保持此页面打开。");
         m.put("Turn on \"All files access\" for StarPoint Companion, then come back here: setup carries on by itself.", "请为 StarPoint Companion 开启「所有文件访问权限」，然后回到这里：设置会自动继续。");
@@ -203,6 +204,7 @@ final class ZhStrings {
         m.put("World Flipper is installed (%s).", "已安装世界弹射物语（%s）。");
         m.put("World Flipper isn't installed yet: install it first, then press this again.", "尚未安装世界弹射物语：请先安装，然后再按一次。");
         m.put("World Flipper isn't installed: install the game APK (build 25) from the downloads.", "未安装世界弹射物语：请安装下载的游戏 APK（build 25）。");
+        m.put("an older starpoint-data.zip (before GlobalPoint 1.0; the 1.0 one is smaller and lists the tables for the game language switch)", "旧版 starpoint-data.zip（GlobalPoint 1.0 之前；1.0 版更小，并带有切换游戏语言所需的数据表列表）");
         m.put("can't move the old save aside", "无法移开旧存档");
         m.put("can't put the new save in place", "无法放入新存档");
         m.put("couldn't make %s", "无法创建 %s");
@@ -213,15 +215,15 @@ final class ZhStrings {
         m.put("no wdfp_data.db in this zip", "此压缩包中没有 wdfp_data.db");
         m.put("not enough free space to copy %s (%s)", "空间不足，无法复制 %s（%s）");
         m.put("starpoint-comics.zip (comics pack)", "starpoint-comics.zip（漫画包）");
-        m.put("starpoint-data.zip (data pack, game files 1.4.800)", "starpoint-data.zip（数据包，游戏文件 1.4.800）");
+        m.put("starpoint-data.zip (data pack for GlobalPoint 1.0, game files 1.4.800)", "starpoint-data.zip（GlobalPoint 1.0 的数据包，游戏文件 1.4.800）");
         m.put("starpoint-skill-preview-art.zip (skill preview art pack)", "starpoint-skill-preview-art.zip（技能预览图片包）");
         m.put("stopped", "已停止");
         m.put("the copy of %s came out short", "%s 的副本不完整");
         m.put("the file", "该文件");
+        m.put("the old single OBB (game files 1.4.203; not supported since GlobalPoint 1.0: use the OBB in 3 parts)", "旧的单文件 OBB（游戏文件 1.4.203；GlobalPoint 1.0 起不再支持：请使用 3 个分卷的 OBB）");
         m.put("the pack holds no art", "资源包中没有图片");
         m.put("the pack holds no comics", "资源包中没有漫画");
         m.put("the pack holds no data", "资源包中没有数据");
-        m.put("the single OBB (game files 1.4.203)", "单文件 OBB（游戏文件 1.4.203）");
         m.put("the single file, %s", "单个文件，%s");
         m.put("there is no save on this phone yet", "这台手机上还没有存档");
         m.put("this isn't a StarPoint pack (make one on a PC with: node scripts/build_pack.cjs data|comics|art <out.zip>)", "这不是 StarPoint 资源包（在电脑上用 node scripts/build_pack.cjs data|comics|art <out.zip> 制作）");

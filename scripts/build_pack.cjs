@@ -17,10 +17,11 @@
 //     Import pack... takes it; import it after a data pack, like that one. Needs ~1.6 GB free next to <out.zip>
 //     while it's made (the pictures are unpacked there first, then removed).
 //   node scripts/build_pack.cjs data <out.zip> [--from <server folder>] [--slim <folder>]
-//     what "Download from PC" brings, without the save and the full game files (~1.8 GB): the CN version
-//     files (path, entities csv), the slim CN tables + names.txt (schedule edits), the English tables,
-//     StarPoint's patch zips (a game older than the newest patch downloads them; schedule rebuilds read
-//     their art), the schedule files the server made (cn_schedule_files), dashboard pictures, and the
+//     what "Download from PC" brings, without the save and the full game files (~190 MB): the CN version
+//     files (path, entities csv), the slim CN tables + names.txt (schedule edits), the English tables (with their
+//     files.json), StarPoint's patch zips after the OBB's game files version (OBB_VERSION: the 3-part OBB holds
+//     the ones up to it, so they stay out; the old single OBB isn't supported), the schedule files the server made
+//     (cn_schedule_files), dashboard pictures, and the
 //     schedule/news files in .database. Never the save, account files or .env. Marker:
 //     starpoint-data-pack.json, which also lists what the pack replaces on the phone (so leftovers of
 //     earlier schedule edits there are removed).
@@ -34,6 +35,9 @@ const fs = require("fs")
 const path = require("path")
 const crypto = require("crypto")
 const zlib = require("zlib")
+
+// the game files version the OBB holds (the 3-part OBB): a data pack leaves out the updates up to it
+const OBB_VERSION = "1.4.800"
 
 const args = process.argv.slice(2)
 const kind = args.shift(), out = args.shift()
@@ -132,8 +136,42 @@ if (kind === "comics") {
     addTree(".cdn/cn/tables", path.join(slim, "tables"))
     const translated = at(setting("CN_TRANSLATED_DIR"), path.join(cdn, "cn_text"))
     need(addTree(".cdn/cn_text", translated), `English CN tables ${translated} (CN_TRANSLATED_DIR)`)
+    // files.json lists every table the translation touched (the game-language switch re-sends them all,
+    // scripts/cn_language.cjs translatedPaths); a translation step's folder holds only its own tables and points to
+    // the rest in earlier steps' folders ("from"), which go in too (as src/routes/companion.ts sends them)
+    const listed = path.join(translated, "files.json")
+    if (fs.existsSync(listed)) {
+        const have = new Set(files.map(([name]) => name))
+        for (const f of JSON.parse(fs.readFileSync(listed, "utf8"))) {
+            const at = `.cdn/cn_text/${f.path ?? f}`
+            if (!have.has(at) && f.from) need(addFile(at, f.from), f.from)
+            have.add(at)
+        }
+    } else {
+        const tables = files.filter(([name]) => name.startsWith(".cdn/cn_text/production/")).map(([name]) => ({ path: name.slice(".cdn/cn_text/".length) }))
+        const made = path.resolve(out) + ".files.json"
+        fs.writeFileSync(made, JSON.stringify(tables))
+        process.on("exit", () => fs.rmSync(made, { force: true }))
+        files.push([".cdn/cn_text/files.json", made])
+    }
     const patches = path.join(cdn, "cn_patches")
-    need(fs.existsSync(path.join(patches, "patches.json")) && addTree(".cdn/cn_patches", patches), `${patches}/patches.json`)
+    need(fs.existsSync(path.join(patches, "patches.json")), `${patches}/patches.json`)
+    // the updates up to the OBB's game files version (OBB_VERSION) are in the OBB itself, so they stay out (~2 GB):
+    // patches.json keeps one empty entry for that version, so a game with the OBB is up to date before the server's
+    // first own update is built, and the server numbers its updates after it. (The old single OBB, game files
+    // 1.4.203, needed them: it isn't supported by the data pack any more.)
+    const cmp = (a, b) => { const x = a.split(".").map(Number), y = b.split(".").map(Number); for (let i = 0; i < 3; i++) if (x[i] !== y[i]) return x[i] - y[i]; return 0 }
+    const allPatches = JSON.parse(fs.readFileSync(path.join(patches, "patches.json"), "utf8")).sort((a, b) => cmp(a.version, b.version))
+    const inObb = allPatches.filter(p => cmp(p.version, OBB_VERSION) <= 0)
+    need(inObb.some(p => p.version === OBB_VERSION), `an update ${OBB_VERSION} (the OBB's game files version) in ${patches}/patches.json`)
+    const kept = allPatches.filter(p => cmp(p.version, OBB_VERSION) > 0)
+    for (const p of kept) for (const a of p.archives) need(addFile(`.cdn/cn_patches/${a.file}`, path.join(patches, a.file)), path.join(patches, a.file))
+    for (const entry of fs.readdirSync(patches, { withFileTypes: true }))
+        if (entry.isFile() && entry.name !== "patches.json") addFile(`.cdn/cn_patches/${entry.name}`, path.join(patches, entry.name))
+    const listFile = path.resolve(out) + ".patches.json"
+    fs.writeFileSync(listFile, JSON.stringify([{ version: OBB_VERSION, from: inObb[0].from, files: 0, archives: [], inObb: true }, ...kept]))
+    process.on("exit", () => fs.rmSync(listFile, { force: true }))
+    files.push([".cdn/cn_patches/patches.json", listFile])
     addTree(".cdn/cn_schedule_files", path.join(cdn, "cn_schedule_files"))
     addTree(".cdn/dashboard_images", path.join(cdn, "dashboard_images"))
     // only these .database files (schedules and news), never the save or account files
