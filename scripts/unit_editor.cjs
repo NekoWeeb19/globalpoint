@@ -236,13 +236,41 @@ async function unitRows(id) {
     return { custom, charRow, textRow, skillName, own, current, others, kit }
 }
 
+/**
+ * CN's own Chinese text rows of a unit (name/description/title, the character row's leader name, the skills' name and
+ * description), when the game is set to Chinese (scripts/game_language.cjs): what the game shows then. null in
+ * English. Cells CN has no Chinese for (left in Japanese, or empty) are null, so the English stays.
+ */
+async function chineseRows(id, skillName) {
+    if (gameLanguage() !== "zh") return null
+    const [text, character, skill] = await Promise.all([cnTable(T.text), cnTable(T.character), cnTable(T.skill)])
+    const HAN = /[㐀-鿿]/, KANA = /[぀-ヿ]/
+    const row = (table, key) => {
+        if (!table || table[key] === undefined) return null
+        return lines(table[key])[0].map(c => HAN.test(c) && !KANA.test(c) ? c : null)
+    }
+    return { text: row(text, id), character: row(character, id), skill: { "1": row(skill, `${skillName}/1`), "2": row(skill, `${skillName}/2`) } }
+}
+/** The game's language (scripts/game_language.cjs), "en" when it can't be read. */
+function gameLanguage() {
+    try { return require("./game_language.cjs").readGameLanguage(path.join(process.cwd(), ".database")) } catch { return "en" }
+}
+/** A row as the game shows it in Chinese: CN's Chinese cells (zh) in place of the English ones. */
+const inChinese = (row, zh) => zh ? row.map((c, i) => zh[i] ?? c) : row
+/** The row being edited, in Chinese where it isn't edited (a cell still the game's English shows CN's). */
+const editedInChinese = (row, own, zh) => zh ? row.map((c, i) => c === own[i] && zh[i] ? zh[i] : c) : row
+
 /** The page's view of a unit. */
 async function getUnit(id) {
     id = String(id)
     const r = await unitRows(id)
     if (!r) return null
-    const t = lines(r.current.text[id] ?? "")[0] ?? [], c = lines(r.current.character[id])[0]
-    const gt = lines(r.own.text[id] ?? "")[0] ?? [], gc = lines(r.own.character[id])[0]
+    const t0 = lines(r.current.text[id] ?? "")[0] ?? [], c0 = lines(r.current.character[id])[0]
+    const gt0 = lines(r.own.text[id] ?? "")[0] ?? [], gc0 = lines(r.own.character[id])[0]
+    // in Chinese the game shows CN's own text: as the game's text, and in the fields nothing edited
+    const zh = r.custom ? null : await chineseRows(id, r.skillName)
+    const t = editedInChinese(t0, gt0, zh?.text), c = editedInChinese(c0, gc0, zh?.character)
+    const gt = inChinese(gt0, zh?.text), gc = inChinese(gc0, zh?.character)
     const detailsOf = (tx, ch) => ({ name: tx[0] ?? "", description: tx[2] ?? "", title: tx[3] ?? "", class: ch[6] ?? "", role: ch[26] ?? "", leaderName: ch[18] ?? "" })
     const details = { ...detailsOf(t, c), hasText: r.own.text[id] !== undefined, game: detailsOf(gt, gc) }
     const abilities = [1, 2, 3, 4, 5, 6].map(n => `${id}${n}`).filter(k => r.current.ability[k] !== undefined)
@@ -255,7 +283,8 @@ async function getUnit(id) {
         return { level: l, hp: Number(hp), atk: Number(atk), game: { hp: Number(ghp), atk: Number(gatk) } }
     })
     const skills = ["1", "2"].filter(n => r.current.skill[`${r.skillName}/${n}`] !== undefined).map(n => {
-        const key = `${r.skillName}/${n}`, s = lines(r.current.skill[key])[0], g = lines(r.own.skill[key])[0]
+        const key = `${r.skillName}/${n}`, own = lines(r.own.skill[key])[0]
+        const s = editedInChinese(lines(r.current.skill[key])[0], own, zh?.skill[n]), g = inChinese(own, zh?.skill[n])
         return { key, name: s[0], description: s[1] ?? "", script: s[7] ?? "", plus: n === "2", gaugeMin: Number(s[4]), gaugeMax: Number(s[5]), game: { name: g[0] ?? "", description: g[1] ?? "", gaugeMin: Number(g[4]), gaugeMax: Number(g[5]), script: g[7] ?? "" } }
     })
     return {
@@ -515,6 +544,9 @@ async function saveUnit(id, edit, advanced = false) {
     const r = await unitRows(id)
     if (!r) return { errors: { message: `no unit ${id}` } }
     const rows = {} // "<logical table>#<key>" -> row text | { cols }
+    // in Chinese the page shows CN's own text: a value still CN's is no edit (or the English game would get it)
+    const zh = r.custom ? null : await chineseRows(id, r.skillName)
+    const asShown = (v, zhRow, i) => v !== undefined && zhRow?.[i] !== undefined && zhRow[i] !== null && String(v).replace(/\r\n?/g, "\n") === zhRow[i]
     for (const a of edit.abilities ?? []) {
         if (r.own.ability[a.key] === undefined) continue
         const text = rowText(a.lines.map(l => trimRow(pad(l), lines(r.own.ability[a.key])[0].length)))
@@ -535,8 +567,9 @@ async function saveUnit(id, edit, advanced = false) {
         if (r.own.skill[s.key] === undefined) continue
         const g = lines(r.own.skill[s.key])[0]
         const cols = {}
-        if (s.name !== undefined && String(s.name) !== (g[0] ?? "")) cols[0] = String(s.name)
-        if (s.description !== undefined && String(s.description).replace(/\r\n?/g, "\n") !== (g[1] ?? "")) cols[1] = String(s.description).replace(/\r\n?/g, "\n")
+        const zs = zh?.skill[s.key.endsWith("/2") ? "2" : "1"]
+        if (s.name !== undefined && String(s.name) !== (g[0] ?? "") && !asShown(s.name, zs, 0)) cols[0] = String(s.name)
+        if (s.description !== undefined && String(s.description).replace(/\r\n?/g, "\n") !== (g[1] ?? "") && !asShown(s.description, zs, 1)) cols[1] = String(s.description).replace(/\r\n?/g, "\n")
         if (String(s.gaugeMin) !== g[4]) cols[4] = String(s.gaugeMin)
         if (String(s.gaugeMax) !== g[5]) cols[5] = String(s.gaugeMax)
         // an edited script: written under the custom units folder (a new name per content), the row pointed at it
@@ -546,16 +579,16 @@ async function saveUnit(id, edit, advanced = false) {
     }
     if (edit.details) {
         const d = edit.details
-        const colsOf = (row, map) => {
+        const colsOf = (row, map, zhRow) => {
             const g = lines(row)[0], cols = {}
-            for (const [i, v] of Object.entries(map)) if (v !== undefined && String(v) !== (g[i] ?? "")) cols[i] = String(v)
+            for (const [i, v] of Object.entries(map)) if (v !== undefined && String(v) !== (g[i] ?? "") && !asShown(v, zhRow, i)) cols[i] = String(v)
             return cols
         }
         if (r.own.text[id] !== undefined) {
-            const cols = colsOf(r.own.text[id], { 0: d.name, 2: d.description, 3: d.title })
+            const cols = colsOf(r.own.text[id], { 0: d.name, 2: d.description, 3: d.title }, zh?.text)
             if (Object.keys(cols).length) rows[`${T.text}#${id}`] = { cols }
         }
-        const cols = colsOf(r.own.character[id], { 6: d.class, 18: d.leaderName, 26: d.role })
+        const cols = colsOf(r.own.character[id], { 6: d.class, 18: d.leaderName, 26: d.role }, zh?.character)
         if (Object.keys(cols).length) rows[`${T.character}#${id}`] = { cols }
     }
     // the unit's own edited scripts that no skill row points at any more go
@@ -682,6 +715,6 @@ async function importKits(data) {
 }
 
 // shared with the armament editor (scripts/armament_editor.cjs)
-const _internal = { gameTable, cnTable, lines, rowText, pad, uniqueIds, uniqueName, soulToAbility, abilityToSoul, ABILITY_COLUMNS }
+const _internal = { gameTable, cnTable, gameLanguage, inChinese, editedInChinese, lines, rowText, pad, uniqueIds, uniqueName, soulToAbility, abilityToSoul, ABILITY_COLUMNS }
 
 module.exports = { MODES, _internal, exportKits, importKits, CLASSES, ROLES, MAX_LINES, listUnits, getUnit, checkEdit, checkLine, saveUnit, resetUnit, editorData, unitLines, catalog, leaderToAbility, abilityToLeader, contradictions, _setBase: b => { base = b; catalogCache = null } }

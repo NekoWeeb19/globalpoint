@@ -14,7 +14,15 @@ const path = require("path")
 const UE = require("./unit_editor.cjs")
 const CU = require("./custom_units.cjs")
 const TEXT = require("./unit_editor_text.cjs")
-const { gameTable, cnTable, lines, rowText, pad, uniqueIds, uniqueName, soulToAbility, abilityToSoul } = UE._internal
+const { gameTable, cnTable, gameLanguage, inChinese, editedInChinese, lines, rowText, pad, uniqueIds, uniqueName, soulToAbility, abilityToSoul } = UE._internal
+
+/** CN's own Chinese equipment row of an armament (name col 1, description col 7) when the game is set to Chinese, else null. */
+async function chineseRow(id) {
+    if (gameLanguage() !== "zh") return null
+    const table = await cnTable(T.equipment)
+    if (!table || table[id] === undefined) return null
+    return lines(table[id])[0].map(c => /[\u3400-\u9fff]/.test(c) && !/[\u3040-\u30ff]/.test(c) ? c : null)
+}
 const CODES = require(path.join(__dirname, "..", "assets", "unit_editor", "ability_codes.json"))
 
 const T = { equipment: "master/item/equipment.orderedmap", status: "master/item/equipment_status.orderedmap", soul: "master/ability/ability_soul.orderedmap" }
@@ -86,7 +94,10 @@ async function getArmament(id) {
     id = String(id)
     const r = await armamentRows(id)
     if (!r) return null
-    const c = lines(r.current.equipment[id])[0], g = lines(r.own.equipment[id])[0]
+    // in Chinese the game shows CN's own name and description: as the game's, and in the fields nothing edited
+    const zh = await chineseRow(id)
+    const own0 = lines(r.own.equipment[id])[0]
+    const c = editedInChinese(lines(r.current.equipment[id])[0], own0, zh), g = inChinese(own0, zh)
     const maxLevel = Number(c[8]) || 1
     const own = slotsOf(r.own.soul[id]), cur = slotsOf(r.current.soul[id])
     const stats = Object.keys(r.current.status).map(k => k.split("/")[1]).sort((a, b) => a - b).map(level => {
@@ -175,8 +186,10 @@ async function saveArmament(id, edit, advanced = false) {
     }
     if (edit.details) {
         const g = lines(r.own.equipment[id])[0], cols = {}
-        if (edit.details.name !== undefined && edit.details.name !== g[1]) cols[1] = edit.details.name
-        if (edit.details.description !== undefined && edit.details.description !== g[7]) cols[7] = edit.details.description
+        // a value still CN's own Chinese (shown in Chinese) is no edit
+        const zh = await chineseRow(id), asShown = (v, i) => zh?.[i] != null && String(v).replace(/\r\n?/g, "\n") === zh[i]
+        if (edit.details.name !== undefined && edit.details.name !== g[1] && !asShown(edit.details.name, 1)) cols[1] = edit.details.name
+        if (edit.details.description !== undefined && edit.details.description !== g[7] && !asShown(edit.details.description, 7)) cols[7] = edit.details.description
         if (Object.keys(cols).length) rows[`${T.equipment}#${id}`] = { cols }
     }
     const file = editorFile(id)
