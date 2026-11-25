@@ -984,6 +984,8 @@ async function main() {
     // on its dates: the first opens on the event's first day, the rest keep their spacing and length. Before any
     // move, so a moved event takes them along too.
     {
+        const BOX_GACHA_FILE = fileOf("master/box_gacha/box_gacha.orderedmap")
+        const WORLD_STORY_FILE = fileOf("master/quest/event/world_story_event.orderedmap")
         const LINEUP = new Map([
             [fileOf("master/mission/event_mission.orderedmap"), "missions"],
             [fileOf("master/mission/daily_mission.orderedmap"), "daily missions"],
@@ -993,6 +995,9 @@ async function main() {
             ["production/upload/74/5671e8eba88e75cdc4f97e4c6ade23b04b1757", "home announcement"],
             [fileOf("master/feature_banner/feature_banner.orderedmap"), "home banner"],
             [fileOf("master/feature_banner/feature_banner_secondary.orderedmap"), "home banner"],
+            // an event's box summon (world story events: the event row's column 14): Neon Skyline's box summon 1 kept
+            // JP's 2020 dates while the event ran on CN's 2022 ones, so it never counted as open (C3425, "no box unlocked")
+            [BOX_GACHA_FILE, "box summon"],
         ])
         const DAY = 864e5
         const leafIndex = new Map()
@@ -1008,7 +1013,15 @@ async function main() {
             const start = Date.parse(window.start), end = Date.parse(window.end)
             const rerun = !!event.rerunOf || /\(Rerun\)$/.test(event.name ?? "")
             for (const [file, label] of LINEUP) {
-                const rows = (event.rows[file] ?? []).map(p => leafOf(file, p)).filter(Boolean).map(leaf => {
+                let keys = event.rows[file] ?? []
+                // a world story event names its box summon itself (column 14), also when the catalog doesn't link it
+                // (The Poppet Princess's box summon 2)
+                if (file === BOX_GACHA_FILE && event.family === "world_story_event") {
+                    const own = leafOf(WORLD_STORY_FILE, String(event.id))
+                    const box = own ? R.splitCsv(own.text.split("\n")[0])[14] : undefined
+                    if (box && box !== "(None)" && !keys.includes(box)) keys = [...keys, box]
+                }
+                const rows = keys.map(p => leafOf(file, p)).filter(Boolean).map(leaf => {
                     const ds = (leaf.text.match(DATE) ?? []).map(parse).filter(ms => ms !== null && ms < FAR)
                     return { leaf, first: Math.min(...ds), last: Math.max(...ds), dated: ds.length > 0 }
                 }).filter(r => r.dated)
