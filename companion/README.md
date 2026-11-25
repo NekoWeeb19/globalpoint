@@ -1,5 +1,7 @@
 # StarPoint Companion
 
+> 中文版（使用说明部分）：[README.zh-CN.md](README.zh-CN.md)
+
 An Android app that runs the GlobalPoint server on the phone itself, on `127.0.0.1:8000`, so the
 patched CN game plays with no PC: no root, no adb, no Shizuku. It's the server half of setup
 1 in the main [README](../README.md).
@@ -25,7 +27,7 @@ how to build it.
   server is starting, or it's rebuilding the game update after a dashboard change (GET
   `/api/server/status`, `updateRebuilding`); a game opened meanwhile would get the old update. **Red**:
   stopped. If something else answers on 8000 (a PC through `adb reverse`, say), the screen says so.
-- **Setup check** (SetupActivity): a checklist for setup 1, each line green/yellow/red with a fix button:
+- **Setup** (SetupActivity; earlier versions called it Setup check): a checklist for setup 1, each line green/yellow/red with a fix button:
   the game installed; this app's and the game's storage access (opens the right settings screen); the
   OBB, found in Download, Downloads, Documents (and their folders one level down) or the top of storage, on
   the phone or an SD card (the 3 parts, or a single file built with `build_cn_obb.cjs`; the old 1.4.203 single OBB gets a red line: GlobalPoint 1.0 doesn't support it; a browser's " (1)", "-1" or ".bin" is allowed and
@@ -48,7 +50,9 @@ how to build it.
   the end of the server log and of the game's requests, plus the app and Android versions. Send it with a
   bug report. The logs are kept in the app's data folder, so app updates don't clear them (from 0.7.14).
 - A notification shows while the server runs; its **Stop** button ends it.
-- The app and its dashboard follow the phone's light/dark setting.
+- The app and its dashboard follow the phone's light/dark setting, and its language: Simplified Chinese on a
+  phone set to Chinese, English otherwise (`companion/i18n/zh.json`, made into `ZhStrings.java` by
+  `scripts/gen_companion_zh.cjs`).
 
 **Game data screen.** The server needs some data the APK doesn't carry (see
 [What the phone server needs](#what-the-phone-server-needs)). There are three ways to get it:
@@ -72,7 +76,8 @@ how to build it.
 - **Choose zip...** takes a zip with `.database/` and `.cdn/` folders (and optionally `.env`), as
   made by `companion/tools/make-data-zip.cjs`.
 - **Check a file...** (DownloadCheck): picks any file and works out its SHA-256, then says whether it is one of the
-  GlobalPoint downloads (the OBB parts, the old single OBB, the data pack (1.0 and older), the comics pack, the game APK), whole and
+  GlobalPoint downloads (the OBB parts, the old single OBB, the data pack (1.0 and older), the comics pack, the skill
+  preview art pack, the game APK), whole and
   undamaged, or damaged / cut short. The known hashes are in `DownloadCheck.java` (update them when a Drive file changes).
 
 **Full game files.** A fresh game asks its server for the full ~10 GB download, and the companion
@@ -98,7 +103,8 @@ phone (e.g. into Downloads), and loaded with **Import pack...**. The app recogni
 first entry, checks free space, unpacks it with progress (skipping files already there with the
 same size, so it resumes), and then offers to delete the pack.
 
-- **Data pack** (~2.25 GB; the [downloads](../docs/INSTALL.md#downloads) have one, `starpoint-data.zip`), made with
+- **Data pack** (221 MB since GlobalPoint 1.0, which leaves out the game updates the 3-part OBB already has; the
+  [downloads](../docs/INSTALL.md#downloads) have one, `starpoint-data.zip`), made with
   `node scripts/build_pack.cjs data <out.zip> [--from <server folder>] [--slim <slim CN folder>]`:
   everything **Download from PC** brings except the save and the full
   game files. That's the CN version files, the slim CN tables, the English tables, the patch zips,
@@ -115,7 +121,12 @@ same size, so it resumes), and then offers to delete the pack.
   - If the game's files are older than the pack (an older OBB, say), the game downloads the
     difference from the phone once.
 - **Comics pack** (~1.4 GB), `node scripts/build_pack.cjs comics <out.zip>`: the server's comics
-  folder. The server keeps running while it's imported.
+  folder. The server keeps running while it's imported. A Chinese comics pack (`comics-zh`, none published yet) goes
+  beside it in `comics_zh` ([CHINESE.en.md](../docs/CHINESE.en.md#comics)).
+- **Chinese art pack** (~1.5 GB, `starpoint-chinese-art-pack.zip`), `node scripts/build_pack.cjs zh-art <out.zip>`:
+  CN's original pictures that GlobalPoint replaced with English ones, for the Chinese game language
+  ([CHINESE.en.md](../docs/CHINESE.en.md)). Import it after the data pack, then stop and start the server. **Set up
+  everything** doesn't import it.
 
 ### Saves
 

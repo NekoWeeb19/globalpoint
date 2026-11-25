@@ -1,141 +1,144 @@
-# Playing in Chinese (简体中文)
+# 中文游玩（简体中文）
 
-GlobalPoint runs CN's World Flipper app (世界弹射物语) with English added on top. The game can also run in
-CN's own Simplified Chinese, with everything else GlobalPoint adds kept: event and summon scheduling, summon
-rates, the unit and armament editor, fixes, the companion app.
+> English: [CHINESE.en.md](CHINESE.en.md)。本页由 Claude（AI）撰写，中文为主要版本。
 
-## Turning it on
+GlobalPoint 运行的是国服的世界弹射物语应用，并在其上加入了英文。游戏也可以使用国服自己的简体中文运行，同时保留
+GlobalPoint 的其他全部改动：活动与扭蛋日程、扭蛋概率、角色编辑器、各项修复。
 
-1. Dashboard, **Game settings**, **Game language**: pick **简体中文**.
-2. Wait for the ready light (the game update rebuilds, about half a minute on a PC).
-3. Close and reopen the game. It downloads the change (about 24 MB).
-4. Optional, for the labels built into the game app: install the **Chinese game app** over the English one
-   (same signature, so the game's files and save stay), then clear the game's cache once (Android Settings >
-   Apps > 世界弹射物语 > Storage > **Clear cache**, not Clear data).
-5. Optional, for the pictures with words on them (home buttons, bottom bar, banners): a PC server with CN's full
-   game files does this by itself. On a phone, import the **Chinese art pack** (`starpoint-chinese-art-pack.zip`,
-   about 1.5 GB) with the companion's **Game data > Import pack...**, after the data pack, then stop and start the
-   server and reopen the game. The game then takes in about 1.6 GB.
+## 开启方法
 
-Back to English: pick **English** the same way (and reinstall the English game app if you changed it).
+1. 控制台 > **游戏设置** > **游戏语言**：选择 **简体中文**。
+2. 等待就绪指示灯变绿（电脑上约半分钟，手机上几分钟）。
+3. 完全关闭并重新打开游戏。它会下载这次更改（约 24 MB）。
 
-The dashboard and the companion app have their own language, apart from the game's:
+可选，让游戏其余部分也变成中文：
+- **中文版游戏应用**：游戏应用内置的标签（等级、体力、战斗和结算画面、标题画面）。直接覆盖安装在英文版上（游戏文件和存档都会保留），
+  然后清除一次游戏缓存（Android 设置 > 应用 > 世界弹射物语 > 存储 > **清除缓存**，不是清除数据）。
+- **中文图片包**：带文字的图片（主界面按钮、底部栏、横幅）。装有国服完整游戏文件的电脑服务器不需要它。手机上：StarPoint Companion >
+  **游戏数据** > **导入资源包……**（在数据包之后导入），然后停止并重新启动服务器，再打开游戏（会下载约 1.6 GB）。
 
-- **Dashboard**: the **Dashboard language** menu in the sidebar (English or 简体中文). Kept per
-  browser; with none picked it follows the browser's language, so inside the companion it follows the phone.
-- **Companion app**: follows the phone's language (Chinese on a phone set to Chinese, English otherwise).
+改回英文：同样的位置选择 **English**（如果换过中文版游戏应用，再装回英文版）。
 
-## What turns Chinese
+控制台和 StarPoint Companion 有各自的语言设置：
+- **控制台**：侧边栏底部的 **管理面板语言**。没有选择时跟随浏览器（在 StarPoint Companion 里则跟随手机）。
+- **StarPoint Companion**：跟随手机的语言。
 
-| Part | In Chinese | How |
-|---|---|---|
-| Game text from its tables: menus, units, skills, abilities, stories, shops, missions, events, items | Yes | the game update: CN's own cells put back (scripts/cn_language.cjs) |
-| The server's mail: Bread/Mana/EXP x1500, mails with the default title, CN's gift mails | Yes | src/nya/mail.ts, src/nya/mailSchedule.ts, assets/cn_gift_mails.json (titleZh) |
-| Automatic news posts (Coming soon / Now on / Ended) | Yes, with CN's event names | src/nya/autoNews.ts, assets/event_names_zh.json |
-| Labels built into the app (Lv, stamina, battle and result screens, title screen, download dialogs) | With the Chinese game app | CN's own app bundle, no English text patch |
-| GlobalPoint's own game messages (OBB unpacking, server.txt) | With the Chinese game app | scripts/client_mod/as3_zh.json |
-| Pictures with words on them (home buttons, bottom bar, banners, labels drawn into sheets) | With CN's full files (PC) or the Chinese art pack (phone) | assets/cn_lang_art.json, see below |
-| Text you type on the dashboard (mail titles, news posts) | As typed | |
-| The dashboard itself | With its Dashboard language set to 简体中文 | web/public/js/i18n.js, web/public/i18n/zh.json (built from scripts/i18n/zh by scripts/build_dashboard_i18n.cjs) |
-| Comics (Menu > Other > Comics) | With a Chinese comics pack (none yet: see below) | .cdn/comics_zh, src/routes/api/comic.ts |
-| The companion app's screens and notification | On a phone set to Chinese | companion/i18n/zh.json, made into ZhStrings.java by scripts/gen_companion_zh.cjs |
-| Unit editor and armament editor text (names, titles, descriptions, skills), custom units | As typed, in either language; the cells you didn't edit turn Chinese | the builder puts the edits back after the Chinese step |
-| Cells CN left in Japanese (the Black Clover collab's story, items, shop names, missions...) | Yes: the Chinese community's translations, and GlobalPoint's own for the rest | assets/cn_zh_fixes.json, assets/cn_zh_own.json, see below |
-| The three summer stories CN cut short | Yes, complete (the English game ships global's complete English) | assets/cn_story_fixes_zh (晓之车's complete copies) |
-| Voice actors CN left blank, items only global has | Yes (谷山纪章..., 北极熊饼干, CN's own name for the exchange tickets) | assets/cn_zh_own.json |
+![游戏设置：游戏语言](images/dashboard-game-language.zh.png)
 
-## How the game update does it
+## 下载
 
-When the setting is Chinese, the CN update builder (scripts/gen_cn_event_schedule.cjs) runs one more step on
-every table it ships: a cell that CN's own copy has in Chinese and that GlobalPoint changed goes back to CN's
-cell. Dates, rows GlobalPoint added, rates and every other change stay. Rows are matched by their keys.
+国内玩家请使用 [百度网盘](https://pan.baidu.com/s/1e_OhBTvGzM9OLFQnAozUkg?pwd=3625)（提取码 `3625`）。百度网盘上的文件名是中文的：
 
-Switching language (or a game coming from another server) ships every table GlobalPoint's translation touched
-(about 1,800, from CN_TRANSLATED_DIR files.json), from its newest English copy in StarPoint's updates. Updates
-built in Chinese are listed in `<CDN_DIR>/cn_patches/languages.json`, so a switch back to English never takes
-a Chinese copy. The setting is `.database/game_language.json` and is part of the rebuild fingerprint.
+| 文件 | 大小 | 百度网盘上的名称 | 其他下载站的名称 |
+|---|---|---|---|
+| 数据包（必需） | 221 MB | `StarPoint-数据包-1.0.zip` | `starpoint-data.zip` |
+| StarPoint Companion（必需，手机） | 76 MB | `StarPoint-伴侣应用-1.0.apk` | StarPoint Companion APK |
+| 中文版游戏应用（可选） | 133 MB | `世界弹射物语-中文版-build25.apk` | Chinese game APK |
+| 中文图片包（可选） | 1.5 GB | `StarPoint-中文图片包.zip` | `starpoint-chinese-art-pack.zip` |
+| OBB（必需，3 个分卷） | 每个 3.6 GB | `.obb` 文件夹里，文件名不变 | `main.1008001.com.leiting.wf.part1of3.obb` 等 |
 
-## The Chinese community's fixes
+百度网盘上只有中文版游戏应用：直接安装它就行，它也是完整的游戏应用。改过名字的压缩包也能用：StarPoint Companion 按文件内容识别资源包，不看文件名。校验值见 [INSTALL.zh-CN.md](INSTALL.zh-CN.md#校验值)。
 
-Thanks to **晓之车**, who keeps an untranslated CN project and shared their CN tables (2026-11-22). Where CN's own
-release left text in Japanese, or worded something they improved, their Chinese is used in Chinese mode
-(`assets/cn_zh_fixes.json`, built by `node --env-file=.env scripts/gen_cn_zh_fixes.cjs <their intermediate.zip>`):
+## 哪些内容会变成中文
 
-- 1,479 cells CN left in Japanese, written in Chinese: the Black Clover collab's story, item names and descriptions,
-  boss-coin shop items, skill preview quests, login bonus names, unit text and speech placeholders, missions,
-  titles, boss skill names, notifications and dialogs.
-- 273 of their rewordings of CN's Chinese: the Lv labels (技能Lv, 觉醒Lv, 强化Lv), voice actors' names in Chinese
-  characters (德井青空, 岛崎信长), clearer pack and campaign names, a banner name typo (书本装备特选扭蛋).
-- One rule from their edits: 生命值 becomes HP in game text (skills, abilities, UI, titles, missions); unit profile
-  text keeps 生命值, as theirs does.
+| 部分 | 中文 |
+|---|---|
+| 游戏文本：菜单、角色、技能、能力、剧情、商店、任务、活动、道具 | 是 |
+| 服务器的邮件和自动公告 | 是 |
+| 国服留着日文的文本（黑色五叶草联动等）、国服删短的三个夏日剧情、空白的声优名 | 是：使用中文社区的文本，其余由 GlobalPoint 补上 |
+| 游戏应用内置的标签 | 需要中文版游戏应用 |
+| 带文字的图片 | 需要国服完整文件（电脑）或中文图片包（手机） |
+| 漫画 | 需要中文漫画包（目前还没有，见[漫画](#漫画)） |
+| 控制台 | 把 **管理面板语言** 设为简体中文 |
+| StarPoint Companion | 手机语言为中文时 |
+| 你输入的文字（邮件标题、公告、角色编辑器） | 按输入原样，中英文都可以 |
 
-Only edits on the same row as CN's are taken: every cell that isn't text (ids, numbers, paths) must match, dates
-aside. Their tables also hold their own rows and rows that moved to other ids (689 edits); those are left out. A
-fixed cell changes only while CN's own copy still has the text the fix was made from. Edits made in the Unit editor
-still win over these.
+## 开发者说明
 
-## GlobalPoint's own Chinese
+各部分所在位置：
+- 游戏文本：游戏更新，`scripts/cn_language.cjs`（还原国服自己的单元格）；
+- 邮件：`src/nya/mail.ts`、`src/nya/mailSchedule.ts`、`assets/cn_gift_mails.json`（`titleZh`）；公告：`src/nya/autoNews.ts`、
+  `assets/event_names_zh.json`；
+- 应用内的标签：国服自己的应用 bundle，不打英文文本补丁；GlobalPoint 自己的游戏提示：`scripts/client_mod/as3_zh.json`；
+- 图片：`assets/cn_lang_art.json`（见[图片](#图片)）；漫画：`.cdn/comics_zh`、`src/routes/api/comic.ts`；
+- 控制台：`web/public/js/i18n.js`、`web/public/i18n/zh.json`（由 `scripts/build_dashboard_i18n.cjs` 从 `scripts/i18n/zh` 生成）；
+  StarPoint Companion：`companion/i18n/zh.json`，由 `scripts/gen_companion_zh.cjs` 生成 `ZhStrings.java`；
+- 日文单元格：`assets/cn_zh_fixes.json`、`assets/cn_zh_own.json`；夏日剧情：`assets/cn_story_fixes_zh`（晓之车的完整版本）；
+- 角色编辑器的修改：生成器在中文步骤之后再把它们放回去。
 
-What the community's fixes don't cover is in `assets/cn_zh_own.json` (`node --env-file=.env scripts/gen_cn_zh_own.cjs`),
-in CN's wording and the community's names:
+### 游戏更新怎样做到
 
-- the boss coin shop's limited-time labels in CN's own form (【2月8日まで】 -> 【至2月8日】, 466 cells);
-- the rest of the Black Clover collab (quest names and summaries, Noelle's shop entries, the clovers), 25 collection
-  missions, three banner names, the collab pack dialogs;
-- the four voice actors CN left blank, in Chinese characters, and the four items only global has.
+设置为中文时，国服更新生成器（`scripts/gen_cn_event_schedule.cjs`）会对它发出的每张数据表多做一步：国服自己的版本里是中文、
+而 GlobalPoint 改过的单元格，改回国服的内容。日期、GlobalPoint 新增的行、概率和其他所有改动都保留。行按键值对应。
 
-The payment packs' Japanese names aren't covered: the server lists no payment products, so the game never shows them.
-The titles' third column (a kana reading used for sorting) stays as it is; it isn't shown.
+切换语言（或游戏来自另一个服务器）时，会发出 GlobalPoint 翻译涉及的每张表（约 1,800 张，来自 CN_TRANSLATED_DIR 的
+files.json），取自 StarPoint 更新里最新的英文版本。以中文生成的更新会记录在 `<CDN_DIR>/cn_patches/languages.json` 中，所以切回
+英文时绝不会取到中文版本。设置保存在 `.database/game_language.json`，并计入重建指纹。
 
-## The Chinese game app
+### 中文社区的修正
 
-Built like the English app (scripts/client_mod/README.txt) but without step 2 (patch_cn_text.cjs) and with CN's
-own `bundle.zip`, and `--zh` on patch_cn_storage_dropoff.cjs and patch_cn_server_file.cjs. Steps 1, 4-10 as
-usual; the font patch (3) isn't needed. Sign it with the same key as the English app.
+感谢 **晓之车**：他维护着一个未翻译的国服项目，并分享了他的国服数据表（2026-11-22）。国服正式版留着日文、或他改进过措辞的地方，
+中文模式下使用他的中文（`assets/cn_zh_fixes.json`，由 `node --env-file=.env scripts/gen_cn_zh_fixes.cjs <他的 intermediate.zip>` 生成）：
 
-## Comics
+- 国服留着日文的 1,479 个单元格，改为中文：黑色五叶草联动的剧情、道具名称和说明、领主币商店道具、技能预览关卡、登录奖励名称、
+  角色文本和台词占位、任务、称号、领主技能名称、通知和对话框。
+- 他对国服中文的 273 处改写：等级标签（技能Lv、觉醒Lv、强化Lv）、用汉字写的声优名（德井青空、岛崎信长）、更清楚的礼包和活动名称、
+  一处扭蛋名称的错字（书本装备特选扭蛋）。
+- 从他的修改中得出的一条规则：游戏文本（技能、能力、界面、称号、任务）中 生命值 改为 HP；角色资料文本和他的一样保留 生命值。
 
-The comics are global's English ones (`.cdn/comics`, from wfjukebox). With the game in Chinese, the server shows
-Chinese comics instead where it has them, in `.cdn/comics_zh`; any episode they don't have stays English. No Chinese
-set is shipped yet: CN's own (Simplified) comics were on its servers, now gone. wfjukebox's "TW" set is Traditional
-Chinese (episodes 1-360), not CN's.
+只采用与国服同一行的修改：所有非文本单元格（id、数字、路径）必须一致，日期除外。他的表里还有他自己加的行和移到其他 id 的行
+（689 处修改），这些不采用。修正的单元格只在国服自己的版本仍是修正所依据的文本时才会改变。角色编辑器里的修改仍然优先于这些修正。
 
-The folder follows the Chinese StarPoint fork's layout (startpoint-cn, `docs/systems/comic.md`), so a set made for
-it goes in as it is:
+### GlobalPoint 自己的中文
+
+社区修正没有涵盖的部分在 `assets/cn_zh_own.json`（`node --env-file=.env scripts/gen_cn_zh_own.cjs`），使用国服的措辞和社区的名称：
+
+- 领主币商店的限时标签改为国服自己的格式（【2月8日まで】 -> 【至2月8日】，466 个单元格）；
+- 黑色五叶草联动的其余部分（关卡名称和简介、诺艾尔的商店条目、四叶草）、25 个收集任务、三个扭蛋名称、联动礼包对话框；
+- 国服留空的四位声优（用汉字），以及只有国际服才有的四件道具。
+
+付费礼包的日文名称没有覆盖：服务器不列出付费商品，所以游戏从不显示它们。称号的第三列（排序用的假名读音）保持原样，不会显示。
+
+### 中文版游戏应用
+
+制作方法与英文版应用相同（`scripts/client_mod/README.txt`），但不做第 2 步（`patch_cn_text.cjs`），使用国服自己的 `bundle.zip`，并在
+`patch_cn_storage_dropoff.cjs` 和 `patch_cn_server_file.cjs` 上加 `--zh`。第 1、4-10 步照常；不需要字体补丁（第 3 步）。用与英文版相同的密钥签名。
+
+### 漫画
+
+漫画是国际服的英文漫画（`.cdn/comics`，来自 wfjukebox）。游戏设为中文时，服务器会改为显示 `.cdn/comics_zh` 里有的中文漫画；
+没有中文的话数仍显示英文。目前还没有附带中文漫画：国服自己的（简体）漫画在它的服务器上，现已关闭。wfjukebox 的 "TW" 套是繁体中文
+（第 1-360 话），不是国服的。
+
+文件夹采用中文 StarPoint 分支（startpoint-cn，`docs/systems/comic.md`）的布局，为它制作的漫画可以直接放进来：
 
 ```
-comics_zh/0/第1话 踏上旅程.jpg            Flipper World (弹射小世界): episode and title from the name
-comics_zh/0/main/第1话 踏上旅程.png       the page (.png, or .jpg with the same name)
-comics_zh/0/thumbnail_l/第1话 踏上旅程.jpg   the wide banner
-comics_zh/0/thumbnail_s/第1话 踏上旅程.jpg   the list's thumbnail
-comics_zh/1/第1课 今日课程：标题.jpg       Stella's W.F.101 (史黛拉的弹射世界讲座), same subfolders
+comics_zh/0/第1话 踏上旅程.jpg            弹射小世界：话数和标题取自文件名
+comics_zh/0/main/第1话 踏上旅程.png       正文页（.png，或同名的 .jpg）
+comics_zh/0/thumbnail_l/第1话 踏上旅程.jpg   宽横幅
+comics_zh/0/thumbnail_s/第1话 踏上旅程.jpg   列表缩略图
+comics_zh/1/第1课 今日课程：标题.jpg       史黛拉的弹射世界讲座，子文件夹相同
 ```
 
-When a set turns up:
-1. On a PC server, put it in `.cdn/comics_zh` (the comics show in Chinese mode right away), or make the phone pack:
-   `node scripts/build_pack.cjs comics-zh starpoint-comics-zh.zip --comics <the folder>`.
-2. Add the pack's SHA-256 and size to `KNOWN` in `companion/app/src/main/java/org/globalpoint/companion/DownloadCheck.java`
-   (and the checksums in docs/INSTALL.md), so **Check a file** knows it.
-3. Phones import it with **Game data > Import pack...** (it goes beside the English comics; **Set up everything** only
-   takes the English comics pack). **Download from PC** with Comics ticked brings both.
+找到一套时：
+1. 电脑服务器：放进 `.cdn/comics_zh`（中文模式下立即显示中文漫画），或制作手机用的资源包：
+   `node scripts/build_pack.cjs comics-zh starpoint-comics-zh.zip --comics <文件夹>`。
+2. 把资源包的 SHA-256 和大小加入 `companion/app/src/main/java/org/globalpoint/companion/DownloadCheck.java` 的 `KNOWN`
+   （以及 docs/INSTALL.md 里的校验值），让 **检查文件……** 认得它。
+3. 手机用 **游戏数据** > **导入资源包……** 导入（它会放在英文漫画旁边；**全部设置** 只导入英文漫画包）。勾选漫画后 **从电脑下载** 会两者都带上。
 
-## Pictures
+### 图片
 
-GlobalPoint's updates replace 6,318 of CN's pictures and sprite layouts with English ones (global's art in 1.4.56
-and 1.4.57, English labels drawn into CN's sheets, and the layouts that had to follow them). The list is
-`assets/cn_lang_art.json` (`node --env-file=.env scripts/gen_cn_lang_art.cjs`, on a PC with CN's archives). Left out
-are fixes for CN's own broken art, which stay in both languages: the art fixes every update carries
-(assets/cn_art_fixes.json), the summon strips without their halftone band, Razelt's Launch Gala animation. A sheet
-and its layout always go back together, so CN's own matching pair is used.
+GlobalPoint 的更新用英文版替换了国服的 6,318 张图片和精灵布局（国际服 1.4.56 和 1.4.57 的图片、画进国服图集的英文标签，以及必须
+随之改变的布局）。列表是 `assets/cn_lang_art.json`（在有国服压缩包的电脑上运行 `node --env-file=.env scripts/gen_cn_lang_art.cjs`）。
+不包括修正国服自身损坏图片的部分，它们在两种语言下都保留：每次更新都带的图片修正（`assets/cn_art_fixes.json`）、去掉网点带的扭蛋
+横条、拉杰尔特的开服庆典动画。图集和它的布局总是一起还原，所以使用国服自己配对的那一组。
 
-On a language switch the builder ships the set as its own update before the tables: CN's originals in Chinese, the
-newest English copies back in English. CN's originals come from the PC's CN archives, or on a phone from the Chinese
-art pack, which puts them in the slim folder's `tables/` (`node scripts/build_pack.cjs zh-art <out.zip>`; it uses
-the skill preview art pack's marker, so any companion can import it). Without them the pictures stay English and
-the text still turns Chinese; once the pack is there, the next server start ships them (the rebuild fingerprint
-counts it).
+切换语言时，生成器会在数据表之前把这组图片作为单独的更新发出：中文时是国服原图，英文时是最新的英文版本。国服原图来自电脑上的国服
+压缩包，手机上则来自中文图片包，它会放进精简文件夹的 `tables/`（`node scripts/build_pack.cjs zh-art <out.zip>`；它使用技能预览图片包的
+标记，所以任何版本的 StarPoint Companion 都能导入）。没有原图时图片保持英文，文字仍会变成中文；导入资源包后，下次启动服务器就会发出图片
+（重建指纹会计入它）。
 
-Each set (about 1.6 GB) is zipped once into `<CDN_DIR>/cn_patches/lang-art/<language>-<hash>/`, and every later
-switch's update entry points at the same archives, so switching back and forth doesn't fill the disk. A new
-English art update makes a new English set (the hash is of the contents). Tested on the emulator 2026-11-25 both
-ways: the home screen's buttons, bottom bar and banners in Chinese, then English again.
+每组（约 1.6 GB）只压缩一次，存在 `<CDN_DIR>/cn_patches/lang-art/<语言>-<哈希>/`，之后每次切换的更新条目都指向同一组压缩包，所以来回切换
+不会占满磁盘。新的英文图片更新会生成一组新的英文图片（哈希按内容计算）。2026-11-25 在模拟器上测试了两个方向：主界面按钮、底部栏和横幅
+变成中文，然后又变回英文。

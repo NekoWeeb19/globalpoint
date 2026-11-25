@@ -1,5 +1,7 @@
 # Custom units (CN app)
 
+> 中文版：[CUSTOM_UNITS.zh-CN.md](CUSTOM_UNITS.zh-CN.md)
+
 New units for the CN app, made from game data and files only (no game-code change). This page is for
 players: getting a unit someone made into your game, giving it, and removing it. Making one, and the file
 format, are in [MAKING_UNITS.md](MAKING_UNITS.md); how they were found to work is in
@@ -7,7 +9,7 @@ format, are in [MAKING_UNITS.md](MAKING_UNITS.md); how they were found to work i
 
 ## Getting a custom unit onto your device (or emulator)
 
-Setups A–D are the ones in the installation guide's [Which setup](INSTALL.md#which-setup).
+Setups 1-3 are the ones in the installation guide's [Which setup](INSTALL.md#which-setup).
 
 **What you need:** a unit someone made (see [MAKING_UNITS.md](MAKING_UNITS.md)): a folder with
 `custom_unit.json` (the unit file), `art_files.json` and the unit's pictures and voices. Custom units never
@@ -64,8 +66,8 @@ art survive companion updates and save imports).
 
 ### Giving and summoning it
 
-- **Give:** in the dashboard, open **Players** > the player, and under **Give** choose **Character**. Type the unit's id
-  (e.g. `111907`) and press **Send Mail**. In the game, open **Mail** and claim it.
+- **Give:** on the dashboard's **Mail** tab, send the unit (type its id, e.g. `111907`) **Once**, **Now**
+  ([Schedule mail](DASHBOARD.md#schedule-mail)). In the game, open **Mail** and claim it.
   Only give it once the game has downloaded the update with the unit, or the game stops with C8601.
 - **Summon:** list summon banner ids in the unit file's `"banners"` (e.g. `["1613"]`), then restart the server.
   The unit then drops from those banners as often as any other unit of its rarity. The banner's **Rates**
