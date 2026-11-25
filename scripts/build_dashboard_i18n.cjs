@@ -39,8 +39,10 @@ for (const file of fs.readdirSync(SRC).filter(f => f.endsWith(".json") && !f.sta
         } else strings[norm(en)] = zh
     }
 }
-// longer patterns first, so the most specific one wins
-patterns.sort((a, b) => b[0].length - a[0].length)
+// the most specific first: patterns that start with fixed words ("Can't save: (.+)") before ones that start with a
+// wildcard ("(.+?): (.+?) must be a number", which would take the fixed words in as its first part), then longer first
+const wildStart = re => /^[(.[]/.test(re) ? 1 : 0
+patterns.sort((a, b) => wildStart(a[0]) - wildStart(b[0]) || b[0].length - a[0].length)
 fs.mkdirSync(path.dirname(OUT), { recursive: true })
 fs.writeFileSync(OUT, JSON.stringify({ _note: "Built by scripts/build_dashboard_i18n.cjs from scripts/i18n/zh/*.json.", strings, patterns, keys: [...seen.keys()].map(k => k.startsWith("html:") || k.startsWith("pattern:") ? k : norm(k)) }))
 console.log(`${Object.keys(strings).length} strings, ${patterns.length} patterns -> ${path.relative(process.cwd(), OUT)}`)

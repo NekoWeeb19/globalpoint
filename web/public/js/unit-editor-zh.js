@@ -228,6 +228,8 @@ window.UNIT_EDITOR_ZH = (function () {
 
     const q = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
     const patterns = [
+        // first: a save message is "Can't save: " + the server's message, translated on its own (the message patterns below)
+        [/^Can't save: ([\s\S]+)$/, (m, tr) => "无法保存：" + tr(m[1])],
         [/^Daily reset in (.*)$/, (m) => "每日重置：" + m[1].replace(/(\d+) ?h/, "$1 小时").replace(/(\d+) ?min/, "$1 分钟")],
         [/^Can't save: (.*)$/, (m, tr) => "无法保存：" + tr(m[1])],
         [/^(Ability \d+|Leader skill|Effect \d+) · (line|version) (\d+): ([\s\S]*)$/, (m, tr) => `${tr(m[1])} · ${m[2] === "line" ? "第" + m[3] + "行" : "版本 " + m[3]}：${m[4]}`],
@@ -316,6 +318,21 @@ window.UNIT_EDITOR_ZH = (function () {
         [/^(all elements|fire|water|thunder|wind|light|dark) resistance up$/, (m) => `${EL[m[1]]}属性耐性提升`],
         [/^all elements damage cut$/, "全属性伤害减轻"], [/^Power Flip Lv (\d) damage up$/, "强化弹射 Lv$1 伤害提升"], [/^Power Flip Lv (\d) extra damage$/, "强化弹射 Lv$1 追加伤害"],
         [/^Power Flip Lv (\d) charges faster$/, "强化弹射 Lv$1 蓄力加快"], [/^enemy (.+)$/, (m, tr) => "敌人" + tr(m[1])], [/^multiball (.+)$/, (m, tr) => "协力球" + tr(m[1])],
+
+        // ---- the server's save messages (scripts/skill_editor.cjs, scripts/unit_editor.cjs), after "Can't save: " ----
+        [/^"(.*)" isn't an effect path$/, "“$1”不是有效的特效路径（应为 battle/effect/…）"],
+        [/^the effect (.+) isn't one CN's skills show this way$/, "特效 $1 不是 CN 的技能以这种方式使用过的"],
+        [/^(.+): each value needs a lowest and highest number$/, (m, tr) => `${tr(m[1])}：每个值都需要最低值和最高值`],
+        [/^(.+): not a number$/, (m, tr) => `${tr(m[1])}：不是数字`],
+        [/^(.+) must be yes or no$/, (m, tr) => `${tr(m[1])} 必须是「是」或「否」`], [/^(.+) must be text$/, (m, tr) => `${tr(m[1])} 必须是文本`],
+        [/^(.+) must be a block$/, (m, tr) => `${tr(m[1])} 必须是块`], [/^(.+) must be a list$/, (m, tr) => `${tr(m[1])} 必须是列表`],
+        [/^(.+) is #(\d+), which nothing above has named \(an area, a group, a point\.\.\.\)$/, (m, tr) => `${tr(m[1])} 是 #${m[2]}，上方没有任何内容使用此编号（范围、分组、点……）`],
+        [/^(.+) is (empty|a \w+), which CN's skills never have here$/, (m, tr) => `${tr(m[1])} 是${m[2] === "empty" ? "空的" : m[2].slice(2)}，CN 的技能在此处从未这样用过`],
+        [/^(.+) "(.*)" isn't one CN's skills use$/, (m, tr) => `${tr(m[1])}“${m[2]}”不是 CN 的技能用过的`],
+        [/^item (\d+) isn't a command$/, "第 $1 项不是指令"], [/^the game has no (\w+) "(.*)"$/, "游戏中没有$1“$2”"],
+        [/^has (\d+) settings, the game reads (\d+)$/, "有 $1 个设置，游戏读取 $2 个"],
+        // last: "where: message" (a command or a place, then what's wrong), each part on its own
+        [/^([^:"]{1,60}): ([\s\S]+)$/, (m, tr) => { const a = tr(m[1]), b = tr(m[2]); return a === m[1] && b === m[2] ? undefined : `${a}：${b}` }],
     ]
     const EL = { fire: "火", water: "水", thunder: "雷", wind: "风", light: "光", dark: "暗", "all elements": "全", all: "全" }
     // "debuffed", "fire-resistance-down", "poisoned"... (enemy states in effect names)
