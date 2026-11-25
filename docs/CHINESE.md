@@ -37,6 +37,7 @@ The dashboard and the companion app have their own language, apart from the game
 | Pictures with words on them (home buttons, bottom bar, banners, labels drawn into sheets) | With CN's full files (PC) or the Chinese art pack (phone) | assets/cn_lang_art.json, see below |
 | Text you type on the dashboard (mail titles, news posts) | As typed | |
 | The dashboard itself | With its Dashboard language set to 简体中文 | web/public/js/i18n.js, web/public/i18n/zh.json (built from scripts/i18n/zh by scripts/build_dashboard_i18n.cjs) |
+| Comics (Menu > Other > Comics) | With a Chinese comics pack (none yet: see below) | .cdn/comics_zh, src/routes/api/comic.ts |
 | The companion app's screens and notification | On a phone set to Chinese | companion/i18n/zh.json, made into ZhStrings.java by scripts/gen_companion_zh.cjs |
 | Unit editor and armament editor text (names, titles, descriptions, skills), custom units | As typed, in either language; the cells you didn't edit turn Chinese | the builder puts the edits back after the Chinese step |
 | Cells CN left in Japanese (the Black Clover collab's story, items, shop names, missions...) | Yes: the Chinese community's translations, and GlobalPoint's own for the rest | assets/cn_zh_fixes.json, assets/cn_zh_own.json, see below |
@@ -91,6 +92,32 @@ The titles' third column (a kana reading used for sorting) stays as it is; it is
 Built like the English app (scripts/client_mod/README.txt) but without step 2 (patch_cn_text.cjs) and with CN's
 own `bundle.zip`, and `--zh` on patch_cn_storage_dropoff.cjs and patch_cn_server_file.cjs. Steps 1, 4-10 as
 usual; the font patch (3) isn't needed. Sign it with the same key as the English app.
+
+## Comics
+
+The comics are global's English ones (`.cdn/comics`, from wfjukebox). With the game in Chinese, the server shows
+Chinese comics instead where it has them, in `.cdn/comics_zh`; any episode they don't have stays English. No Chinese
+set is shipped yet: CN's own (Simplified) comics were on its servers, now gone. wfjukebox's "TW" set is Traditional
+Chinese (episodes 1-360), not CN's.
+
+The folder follows the Chinese StarPoint fork's layout (startpoint-cn, `docs/systems/comic.md`), so a set made for
+it goes in as it is:
+
+```
+comics_zh/0/第1话 踏上旅程.jpg            Flipper World (弹射小世界): episode and title from the name
+comics_zh/0/main/第1话 踏上旅程.png       the page (.png, or .jpg with the same name)
+comics_zh/0/thumbnail_l/第1话 踏上旅程.jpg   the wide banner
+comics_zh/0/thumbnail_s/第1话 踏上旅程.jpg   the list's thumbnail
+comics_zh/1/第1课 今日课程：标题.jpg       Stella's W.F.101 (史黛拉的弹射世界讲座), same subfolders
+```
+
+When a set turns up:
+1. On a PC server, put it in `.cdn/comics_zh` (the comics show in Chinese mode right away), or make the phone pack:
+   `node scripts/build_pack.cjs comics-zh starpoint-comics-zh.zip --comics <the folder>`.
+2. Add the pack's SHA-256 and size to `KNOWN` in `companion/app/src/main/java/org/globalpoint/companion/DownloadCheck.java`
+   (and the checksums in docs/INSTALL.md), so **Check a file** knows it.
+3. Phones import it with **Game data > Import pack...** (it goes beside the English comics; **Set up everything** only
+   takes the English comics pack). **Download from PC** with Comics ticked brings both.
 
 ## Pictures
 

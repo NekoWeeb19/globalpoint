@@ -171,6 +171,13 @@ try {
     const names = require(path.join(scripts, "..", "assets", "event_names_zh.json")).names
     check("CN's own event names are there (boss event 1, banner 1)", /[一-鿿]/.test(names["advent_event:1"] ?? "") && /[一-鿿]/.test(names["gacha:1"] ?? ""), [names["advent_event:1"], names["gacha:1"]])
 
+    // the comics in Chinese: the CN fork's file names (src/routes/api/comic.ts)
+    const CM = await import(new URL("routes/api/comic.js", out))
+    const parseZh = (CM.default?.parseZhComicName ?? CM.parseZhComicName)
+    check("Chinese comic names: 第N话 标题.jpg", JSON.stringify(parseZh(0, "第12话 史黛拉的世界.jpg")) === JSON.stringify({ episode: 12, title: "史黛拉的世界" }), parseZh(0, "第12话 史黛拉的世界.jpg"))
+    check("Chinese comic names: Stella's 第N课 ... 今日课程：标题", JSON.stringify(parseZh(1, "第3课 今日课程：弹射是什么？.jpg")) === JSON.stringify({ episode: 3, title: "弹射是什么" }), parseZh(1, "第3课 今日课程：弹射是什么？.jpg"))
+    check("Chinese comic names: other files are no comic", parseZh(0, "第12话 史黛拉.png") === null && parseZh(0, "cover.jpg") === null && parseZh(1, "第12话 x.jpg") === null)
+
     // the English tables' list: files.json, or (a data pack without one) the folder's own tables
     const listDir = path.join(temp, "cn_text_list")
     fs.mkdirSync(path.join(listDir, "production", "upload", "ab"), { recursive: true })

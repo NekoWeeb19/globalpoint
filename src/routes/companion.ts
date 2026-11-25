@@ -95,7 +95,11 @@ function entries(options: Options, snapshot: boolean, notes: string[] = []): Ent
     }
     if (options.patches) addTree(list, ".cdn/cn_patches", cnPatchDir(), name => name === "patches.json")
     if (options.images) addTree(list, ".cdn/dashboard_images", path.join(cdnDir(), "dashboard_images"))
-    if (options.comics) addTree(list, ".cdn/comics", path.join(cdnDir(), "comics"))
+    if (options.comics) {
+        addTree(list, ".cdn/comics", path.join(cdnDir(), "comics"))
+        // the comics in Chinese too, when this PC has them (src/routes/api/comic.ts)
+        if (existsSync(path.join(cdnDir(), "comics_zh"))) addTree(list, ".cdn/comics_zh", path.join(cdnDir(), "comics_zh"))
+    }
     if (options.schedule) {
         const slim = slimDir()
         if (slim) {

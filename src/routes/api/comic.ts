@@ -18,6 +18,7 @@ import path from "path";
 import { getSession } from "../../data/wdfpData";
 import { generateDataHeaders, getServerDate } from "../../utils";
 import { cdnDir, inCnRequest } from "../../lib/cnClient";
+import { chineseForRequest } from "../../nya/gameLanguage";
 import comicsEn from "../../../assets/comics_en.json";
 import comicsStellaEn from "../../../assets/comics_stella_en.json";
 
@@ -34,8 +35,74 @@ const releasesOf = (list: ComicList) => new Map(list.comics.map(c => [c.episode,
 /** Official titles and release times (UTC), by kind and episode: 0 Flipper World, 1 Stella's W.F.101. */
 const RELEASES: Record<number, Map<number, { title: string, at: number }>> = { 0: releasesOf(comicsEn as ComicList), 1: releasesOf(comicsStellaEn as ComicList) }
 
-/** The comics of one kind that are out on the server date, newest first. */
+// ---- the comics in Chinese (the game set to Chinese: docs/CHINESE.md), from a Chinese comics pack ----
+// .cdn/comics_zh/<kind>/ in the Chinese StarPoint fork's layout (startpoint-cn, docs/systems/comic.md), so a set made
+// for it goes in as it is:
+//   <kind>/第N话 标题.jpg                     kind 0, Flipper World (弹射小世界): episode N, its title
+//   <kind>/…第N课…今日课程：标题？.jpg          kind 1, Stella's W.F.101 (史黛拉的弹射世界讲座)
+//   <kind>/main/<same name>.png (or .jpg)     the page; thumbnail_l/<same name>.jpg the wide banner;
+//   thumbnail_s/<same name>.jpg the list's thumbnail
+// The top-level .jpg names the episode and title. An episode the Chinese set doesn't have stays English.
+const COMIC_ZH_DIR = path.join(cdnDir(), "comics_zh")
+
+/** Episode and title from a Chinese comic's file name (the CN fork's parseKind0 / parseKind1). */
+export function parseZhComicName(kind: number, file: string): { episode: number, title: string } | null {
+    if (!/\.jpg$/i.test(file)) return null
+    if (kind === 1) {
+        const ep = /第(\d+)课/.exec(file)
+        if (!ep) return null
+        const title = /今日课程：(.+?)？?\.jpg$/i.exec(file)?.[1] ?? file.replace(/\.jpg$/i, "")
+        return { episode: Number(ep[1]), title }
+    }
+    const m = /^第(\d+)话\s+(.+)\.jpg$/i.exec(file)
+    return m ? { episode: Number(m[1]), title: m[2] } : null
+}
+
+/** The Chinese comics of one kind there are, by episode (none without a Chinese comics pack). */
+function zhComicsOf(kind: number): Map<number, { title: string, file: string, thumbnail: string, banner: string }> {
+    const out = new Map<number, { title: string, file: string, thumbnail: string, banner: string }>()
+    const dir = path.join(COMIC_ZH_DIR, String(kind))
+    let files: string[] = []
+    try { files = readdirSync(dir) } catch { return out }
+    for (const name of files) {
+        const parsed = parseZhComicName(kind, name)
+        if (!parsed || out.has(parsed.episode)) continue
+        const png = path.join(dir, "main", name.replace(/\.jpg$/i, ".png"))
+        const jpg = path.join(dir, "main", name)
+        const file = existsSync(png) ? png : existsSync(jpg) ? jpg : path.join(dir, name)
+        const small = path.join(dir, "thumbnail_s", name), large = path.join(dir, "thumbnail_l", name)
+        out.set(parsed.episode, { title: parsed.title, file, thumbnail: existsSync(small) ? small : file, banner: existsSync(large) ? large : file })
+    }
+    return out
+}
+
+/** The comics of one kind that are out on the server date, newest first; Chinese ones where there are some and
+ *  the game is set to Chinese. */
 function comicsOf(kind: number): Comic[] {
+    const english = englishComicsOf(kind)
+    if (!chineseForRequest()) return english
+    const zh = zhComicsOf(kind)
+    if (zh.size === 0) return english
+    const now = getServerDate().getTime()
+    const shown = new Set<number>()
+    const comics: Comic[] = english.filter(c => c.file !== PLACEHOLDER).map(c => {
+        shown.add(c.episode)
+        const z = zh.get(c.episode)
+        return z ? { episode: c.episode, ...z } : c
+    })
+    // episodes only the Chinese set has, out on the server date when their release is known
+    for (const [episode, z] of zh) {
+        if (shown.has(episode)) continue
+        const release = RELEASES[kind]?.get(episode)
+        if (release !== undefined && release.at + (inCnRequest() ? CN_COMIC_DELAY_MS : 0) > now) continue
+        comics.push({ episode, ...z })
+    }
+    comics.sort((a, b) => b.episode - a.episode)
+    return comics.length > 0 ? comics : english
+}
+
+/** The English comics of one kind that are out on the server date, newest first. */
+function englishComicsOf(kind: number): Comic[] {
     const dir = path.join(COMIC_DIR, String(kind))
     let files: string[] = []
     try { files = readdirSync(dir) } catch { }

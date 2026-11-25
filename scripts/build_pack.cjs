@@ -4,6 +4,10 @@
 //
 //   node scripts/build_pack.cjs comics <out.zip> [--from <server folder>] [--comics <folder>]
 //     <CDN_DIR>/comics as .cdn/comics/... (~1.4 GB). Marker: starpoint-comics-pack.json
+//   node scripts/build_pack.cjs comics-zh <out.zip> [--from <server folder>] [--comics <folder>]
+//     the comics in Chinese for the game set to Chinese (<CDN_DIR>/comics_zh, or --comics: a folder in the Chinese
+//     StarPoint fork's layout, 0/第N话 标题.jpg + main/ thumbnail_l/ thumbnail_s/, 1/ for Stella's) as .cdn/comics_zh/...
+//     Same marker as the comics pack, with content "zh", so the companion puts it beside the English comics.
 //   node scripts/build_pack.cjs art <out.zip> [--from <server folder>] [--slim <folder>]
 //     the Unit editor's skill preview art from the slim CN folder (unit sprites and skill effects in tables/, which
 //     scripts/gen_cn_slim.cjs adds by their hashed names, plus preview_art.txt; ~35 MB), for phones that already
@@ -42,8 +46,8 @@ const OBB_VERSION = "1.4.800"
 const args = process.argv.slice(2)
 const kind = args.shift(), out = args.shift()
 const opt = name => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : undefined }
-if (!["comics", "data", "art", "zh-art"].includes(kind) || !out) {
-    console.error("usage: node scripts/build_pack.cjs comics|data|art|zh-art <out.zip> [--from <server folder>] [--slim <folder>] [--comics <folder>]")
+if (!["comics", "comics-zh", "data", "art", "zh-art"].includes(kind) || !out) {
+    console.error("usage: node scripts/build_pack.cjs comics|comics-zh|data|art|zh-art <out.zip> [--from <server folder>] [--slim <folder>] [--comics <folder>]")
     process.exit(1)
 }
 
@@ -92,6 +96,15 @@ if (kind === "comics") {
     const comics = path.resolve(opt("comics") || path.join(cdn, "comics"))
     need(addTree(".cdn/comics", comics), `comics folder ${comics}`)
     marker = { name: "starpoint-comics-pack.json", info: { kind: "starpoint-comics-pack", version: 1 } }
+} else if (kind === "comics-zh") {
+    // the comics in Chinese, in the Chinese StarPoint fork's layout (src/routes/api/comic.ts): <kind>/第N话 标题.jpg
+    // (kind 1: 第N课 ... 今日课程：标题.jpg) with main/, thumbnail_l/ and thumbnail_s/ beside them
+    const comics = path.resolve(opt("comics") || path.join(cdn, "comics_zh"))
+    need(addTree(".cdn/comics_zh", comics), `Chinese comics folder ${comics}`)
+    const named = files.filter(([name]) => /^\.cdn\/comics_zh\/[01]\/[^/]*第[0-9]+[话课][^/]*\.jpg$/i.test(name)).length
+    need(named > 0, `comics named like 第1话 标题.jpg in ${comics}/0 (or 第1课 ... in ${comics}/1)`)
+    console.log(`${named} Chinese comics`)
+    marker = { name: "starpoint-comics-pack.json", info: { kind: "starpoint-comics-pack", version: 1, content: "zh" } }
 } else if (kind === "zh-art") {
     need(!isSlim(cnRoot), `CN's archives (${cnRoot} is a slim folder): point CN_CDN_DIR at the full CN game files`)
     // CN's originals, unpacked by a child step (reading the archives is async) into a folder next to the pack

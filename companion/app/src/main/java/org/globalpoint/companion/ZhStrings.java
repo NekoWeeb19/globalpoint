@@ -7,7 +7,7 @@ import java.util.Map;
 final class ZhStrings {
     private ZhStrings() { }
 
-    private static final Map<String, String> MAP = new HashMap<>(448);
+    private static final Map<String, String> MAP = new HashMap<>(452);
 
     static {
         Map<String, String> m = MAP;
@@ -38,6 +38,7 @@ final class ZhStrings {
         m.put(". The game moves these in when it starts (e.g. after Download from PC with Full game files). Keep the game open until it's done.", "。游戏启动时会把它们移进去（例如勾选「完整游戏文件」从电脑下载之后）。完成之前请保持游戏打开。");
         m.put(". They show in the game under Menu > Other > Comics.", "。在游戏的 菜单 > 其他 > 漫画 中查看。");
         m.put(". With Game language set to 简体中文 on the dashboard, stop and start the server, then reopen the game (about 1.6 GB to take in).", "。在控制台把「游戏语言」设为简体中文后，停止并重新启动服务器，然后重新打开游戏（约需接收 1.6 GB）。");
+        m.put(". With Game language set to 简体中文 on the dashboard, they show in the game under Menu > Other > Comics (episodes they don't have stay English).", "。在控制台把「游戏语言」设为简体中文后，在游戏的 菜单 > 其他 > 漫画 中查看（中文版没有的话数仍为英文）。");
         m.put(". Your save wasn't touched. Back on the main screen the server starts.", "。你的存档未被改动。回到主界面后服务器会启动。");
         m.put("127.0.0.1:8000 - kept awake - tap to open the companion", "127.0.0.1:8000 - 保持唤醒 - 点按打开 Companion");
         m.put("127.0.0.1:8000 - tap to open the companion", "127.0.0.1:8000 - 点按打开 Companion");
@@ -65,6 +66,7 @@ final class ZhStrings {
         m.put("Checking %s...", "正在检查 %s……");
         m.put("Checking the files already here... %d / %d", "正在检查已有文件…… %d / %d");
         m.put("Checking what's already here... %d / %d", "正在检查已有内容…… %d / %d");
+        m.put("Chinese comics ready: %d file(s) unpacked", "中文漫画已就绪：解压了 %d 个文件");
         m.put("Chinese pictures ready: %d file(s) unpacked", "中文图片已就绪：解压了 %d 个文件");
         m.put("Chinese pictures: %d / %d files", "中文图片：%d / %d 个文件");
         m.put("Choose zip...", "选择压缩包……");

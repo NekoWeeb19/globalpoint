@@ -272,8 +272,11 @@ public class DataActivity extends Activity {
                                 + Tr.t(". The Unit editor's skill preview now shows the unit and its effects.");
                 } else {
                     r = DataTransfer.importComicsPack(this, uri, this::progress);
-                    done = Tr.t("Comics ready: %d file(s) unpacked", r.written) + (r.skipped > 0 ? Tr.t(", %d already here", r.skipped) : "")
-                            + Tr.t(". They show in the game under Menu > Other > Comics.");
+                    done = r.chinese
+                            ? Tr.t("Chinese comics ready: %d file(s) unpacked", r.written) + (r.skipped > 0 ? Tr.t(", %d already here", r.skipped) : "")
+                                + Tr.t(". With Game language set to 简体中文 on the dashboard, they show in the game under Menu > Other > Comics (episodes they don't have stay English).")
+                            : Tr.t("Comics ready: %d file(s) unpacked", r.written) + (r.skipped > 0 ? Tr.t(", %d already here", r.skipped) : "")
+                                + Tr.t(". They show in the game under Menu > Other > Comics.");
                 }
                 DataTransfer.PackResult finished = r;
                 ui.post(() -> offerDelete(uri, finished.packBytes));

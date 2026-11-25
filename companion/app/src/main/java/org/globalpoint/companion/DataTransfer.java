@@ -173,7 +173,7 @@ final class DataTransfer {
     static final String DATA_MARKER = "starpoint-data-pack.json";
 
     /** What a pack import did. */
-    static final class PackResult { int written, skipped, removed; long packBytes; String version = ""; }
+    static final class PackResult { int written, skipped, removed; long packBytes; String version = ""; boolean chinese; }
 
     /** "comics", "data", "art", or null when the file isn't a pack: read from its first entry. */
     static String packKind(Context c, Uri uri) {
@@ -303,7 +303,6 @@ final class DataTransfer {
      */
     static PackResult importComicsPack(Context c, Uri uri, Progress p) throws Exception {
         File data = ServerFiles.dataDir(c);
-        File comics = new File(data, ".cdn/comics");
         long total = -1;
         try (android.content.res.AssetFileDescriptor fd = c.getContentResolver().openAssetFileDescriptor(uri, "r")) {
             if (fd != null) total = fd.getLength();
@@ -319,6 +318,11 @@ final class DataTransfer {
             }
             JSONObject info = new JSONObject(new String(readAll(zip), "UTF-8"));
             if (!"starpoint-comics-pack".equals(info.optString("kind"))) throw new IOException("this isn't a comics pack");
+            // a Chinese comics pack (content "zh", scripts/build_pack.cjs comics-zh) goes beside the English comics:
+            // the server shows it when the game is set to Chinese (src/routes/api/comic.ts)
+            result.chinese = "zh".equals(info.optString("content"));
+            String folder = result.chinese ? ".cdn/comics_zh/" : ".cdn/comics/";
+            File comics = new File(data, folder);
             long bytes = info.optLong("bytes", 0);
             // room for what isn't here yet (files already in place are skipped)
             long have = folderSize(comics);
@@ -333,7 +337,7 @@ final class DataTransfer {
             while ((entry = zip.getNextEntry()) != null) {
                 if (entry.isDirectory()) continue;
                 String name = entry.getName().replace('\\', '/');
-                if (!name.startsWith(".cdn/comics/")) continue;
+                if (!name.startsWith(folder)) continue;
                 File out = target(data, name);
                 if (out == null) continue;
                 long size = entry.getSize();

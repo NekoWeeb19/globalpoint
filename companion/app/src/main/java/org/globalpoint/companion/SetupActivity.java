@@ -542,7 +542,8 @@ public class SetupActivity extends Activity {
                 if (info == null) continue;
                 String kind = info.optString("kind");
                 if (kind.equals("starpoint-data-pack") && f.lastModified() > dataTime) { dataTime = f.lastModified(); p.dataPack = f; p.dataPackVersion = info.optString("gameFilesVersion"); }
-                if (kind.equals("starpoint-comics-pack") && f.lastModified() > comicsTime) { comicsTime = f.lastModified(); p.comicsPack = f; }
+                // the English comics; a Chinese comics pack (content "zh") is an extra for Game data > Import pack
+                if (kind.equals("starpoint-comics-pack") && !"zh".equals(info.optString("content")) && f.lastModified() > comicsTime) { comicsTime = f.lastModified(); p.comicsPack = f; }
             }
         }
         // a data pack goes in when the server has no data yet, or it's another version than the one imported here

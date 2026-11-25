@@ -223,5 +223,7 @@
  "Working...": "正在处理……",
  "Internal storage": "内部存储",
  "an older starpoint-data.zip (before GlobalPoint 1.0; the 1.0 one is smaller and lists the tables for the game language switch)": "旧版 starpoint-data.zip（GlobalPoint 1.0 之前；1.0 版更小，并带有切换游戏语言所需的数据表列表）",
- "This is the old single OBB (game files 1.4.203). GlobalPoint 1.0 doesn't support it: the updates it needs aren't in starpoint-data.zip any more. Download the OBB in 3 parts (game files 1.4.800) instead.": "这是旧的单文件 OBB（游戏文件 1.4.203）。GlobalPoint 1.0 不再支持它：它所需的更新已不在 starpoint-data.zip 中。请改为下载 3 个分卷的 OBB（游戏文件 1.4.800）。"
+ "This is the old single OBB (game files 1.4.203). GlobalPoint 1.0 doesn't support it: the updates it needs aren't in starpoint-data.zip any more. Download the OBB in 3 parts (game files 1.4.800) instead.": "这是旧的单文件 OBB（游戏文件 1.4.203）。GlobalPoint 1.0 不再支持它：它所需的更新已不在 starpoint-data.zip 中。请改为下载 3 个分卷的 OBB（游戏文件 1.4.800）。",
+ "Chinese comics ready: %d file(s) unpacked": "中文漫画已就绪：解压了 %d 个文件",
+ ". With Game language set to 简体中文 on the dashboard, they show in the game under Menu > Other > Comics (episodes they don't have stay English).": "。在控制台把「游戏语言」设为简体中文后，在游戏的 菜单 > 其他 > 漫画 中查看（中文版没有的话数仍为英文）。"
 }
