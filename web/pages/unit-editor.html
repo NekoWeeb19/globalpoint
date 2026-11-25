@@ -226,6 +226,13 @@
                 if (!ZH() || typeof s !== "string") return s
                 const m = s.match(/^(\s*)([\s\S]*?)(\s*)$/), core = m[2]
                 if (!/[A-Za-z]/.test(core)) return s
+                // a code option's tags: " [ClientName]" (two codes with the same words) and " (untested)" (CN never
+                // uses it): the words are translated, the client's name stays, the note turns Chinese
+                const tags = /^(.+?)( \[[A-Za-z0-9_]+\])?( \(untested\))?$/.exec(core)
+                if (tags && (tags[2] || tags[3])) {
+                    const words = tr(tags[1])
+                    if (words !== tags[1]) return m[1] + words + (tags[2] ?? "") + (tags[3] ? " " + (Z.exact["(untested)"] ?? "(untested)") : "") + m[3]
+                }
                 let out = Z.exact[core]
                 if (out === undefined) for (const [re, to] of Z.patterns) {
                     const x = core.match(re)

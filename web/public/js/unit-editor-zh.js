@@ -48,7 +48,10 @@ window.UNIT_EDITOR_ZH = (function () {
         "+ New effect": "+ 新效果", "The most is 10 effects": "最多 10 个效果", "+ New version": "+ 新版本", "+ New line": "+ 新的一行",
         "The most is 3 versions": "最多 3 个版本", "Copy from another armament": "从其他装备复制", "Copy a line from another unit": "从其他角色复制一行",
         "No versions: this effect is dropped when saved.": "没有版本：保存时会删除这个效果。", "No lines: this ability does nothing.": "没有任何行：这个能力没有效果。",
-        "(untested)": "（未经测试）", "(none, explicit)": "（无，明确指定）", "(lowest)": "（最低）", "(highest)": "（最高）",
+        "(untested)": "（未经测试）", "(none)": "（无）", "always": "始终", "(none, explicit)": "（无，明确指定）",
+        // character groups: gender as CN's own text (男/女); CN's tables don't name the races, so the Chinese of the
+        // Japanese originals (獣 竜 精霊 機械 妖)
+        "Male": "男", "Female": "女", "Beast": "兽", "Dragon": "龙", "Element": "精灵", "Machine": "机械", "Mystery": "妖", "(lowest)": "（最低）", "(highest)": "（最高）",
         "every N times": "每 N 次", "(empty or (None) = no limit)": "（留空或 (None) = 不限制）", "More settings (as the game has them)": "更多设置（与游戏数据一致）",
         "Remove version": "删除版本", "Remove line": "删除这一行", "Only if": "仅当", "Condition": "条件", "Remove": "删除",
         "+ Another condition": "+ 再加一个条件", "+ Add a condition (none now)": "+ 添加条件（目前没有）", "From level": "起始等级",
