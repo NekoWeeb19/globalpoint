@@ -76,6 +76,11 @@ repack_apk.py takes any number of <path in APK>=<file> pairs: the English app bu
 (assets/bundle.zip and assets/bundle.zip.sha1, see docs/CN_CLIENT_SETUP.md step 6) goes in the same
 way. Keep SWFs uncompressed (the scripts write them that way).
 
+The Chinese game app (docs/CHINESE.md): the same chain without step 2 (and step 3 isn't needed), CN's own
+bundle.zip (don't pass the English one to repack_apk.py), and --zh after the arguments of steps 9 and 10:
+their messages are then compiled in Chinese (as3_zh.json, applied by as3_source.cjs; a piece that isn't found
+stops the build). First built 2026-11-25 from build 25's chain (wfcn-chinese-25.apk).
+
 Keep your signing key. Android installs a new build over the old one only if it's signed with the
 same key; a different key means uninstalling, which deletes the game's downloaded files.
 

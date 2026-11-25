@@ -20,7 +20,7 @@ fs.mkdirSync(work, { recursive: true })
 // 1. compile ServerAddress into a stub SWF
 const stub = path.join(work, "serveraddress_stub.swf"), compiled = path.join(work, "serveraddress.swf")
 execFileSync(process.execPath, [path.join(__dirname, "stub_class.cjs"), stub, "starpoint", "ServerAddress", "apiHost", "versionUrl", "titleLine"], { stdio: "inherit" })
-execFileSync("java", ["-jar", ffdec, "-air", "-importScript", stub, compiled, path.join(__dirname, "as3")], { stdio: "inherit" })
+execFileSync("java", ["-jar", ffdec, "-air", "-importScript", stub, compiled, require("./as3_source.cjs").as3Source(work)], { stdio: "inherit" })
 const helperTag = A.readSwf(compiled).tags.find(t => t.code === 82)
 if (!helperTag || !A.splitDoAbc(helperTag.data).abc.includes("server.txt")) throw new Error("ServerAddress did not compile")
 

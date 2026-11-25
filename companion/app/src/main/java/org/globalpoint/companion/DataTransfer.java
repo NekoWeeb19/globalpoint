@@ -371,15 +371,15 @@ final class DataTransfer {
         PackResult result = new PackResult();
         result.packBytes = total;
         if (!new File(data, ".cdn/cn/tables").isDirectory()) {
-            throw new IOException("import the data pack first (or Download from PC with Event schedule editing ticked): the skill preview art goes with its CN tables");
+            throw new IOException("import the data pack first (or Download from PC with Event schedule editing ticked): the art goes with its CN tables");
         }
         try (InputStream raw = c.getContentResolver().openInputStream(uri);
              CountingStream counted = new CountingStream(new BufferedInputStream(raw, 1 << 20));
              ZipInputStream zip = new ZipInputStream(counted)) {
             ZipEntry first = zip.getNextEntry();
-            if (first == null || !ART_MARKER.equals(first.getName())) throw new IOException("this isn't a skill preview art pack");
+            if (first == null || !ART_MARKER.equals(first.getName())) throw new IOException("this isn't an art pack");
             JSONObject info = new JSONObject(new String(readAll(zip), "UTF-8"));
-            if (!"starpoint-art-pack".equals(info.optString("kind"))) throw new IOException("this isn't a skill preview art pack");
+            if (!"starpoint-art-pack".equals(info.optString("kind"))) throw new IOException("this isn't an art pack");
             long free = new StatFs(data.getPath()).getAvailableBytes();
             long need = info.optLong("bytes", 0) + (64L << 20);
             if (free < need) {
@@ -403,7 +403,7 @@ final class DataTransfer {
                 }
                 long now = System.currentTimeMillis();
                 if (now - last > 250) {
-                    p.update("Skill preview art: " + (result.written + result.skipped) + " / " + info.optInt("files") + " files", counted.count, total);
+                    p.update(("zh-art".equals(info.optString("content")) ? "Chinese pictures: " : "Skill preview art: ") + (result.written + result.skipped) + " / " + info.optInt("files") + " files", counted.count, total);
                     last = now;
                 }
             }

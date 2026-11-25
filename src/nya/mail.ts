@@ -5,6 +5,7 @@ import { epochOf, getServerDate } from "../utils"
 import { ClientError } from "./utils"
 import { recordReceivedSync } from "./receiveHistory"
 import { InfiniteMail, infiniteMailOn } from "./serverSettings"
+import { chineseForRequest } from "./gameLanguage"
 import { isScheduledMailId, removeScheduledMail, ScheduledMail, scheduledMailsFor } from "./mailSchedule"
 
 export interface Mail_ {
@@ -100,8 +101,18 @@ const SPECIAL_MAIL_SWITCH: Record<number, InfiniteMail> = {
     [SPECIAL_MAIL_ID.MANA_1500]: "mana",
     [SPECIAL_MAIL_ID.EXP_1500]: "exp",
 }
+// their subjects in Chinese (the CN app with the game set to Chinese, src/nya/gameLanguage.ts)
+const SPECIAL_MAIL_SUBJECT_ZH: Record<number, string> = {
+    [SPECIAL_MAIL_ID.BREAD_1500]: "付费星导石 * 1500",
+    [SPECIAL_MAIL_ID.MANA_1500]: "玛纳 * 1500",
+    [SPECIAL_MAIL_ID.EXP_1500]: "经验值 * 1500",
+}
 /** The never-ending mails switched on on the dashboard. */
-const activeSpecialMails = () => SpecialMails.filter(mail => infiniteMailOn(SPECIAL_MAIL_SWITCH[mail.id]))
+const activeSpecialMails = () => {
+    const zh = chineseForRequest()
+    return SpecialMails.filter(mail => infiniteMailOn(SPECIAL_MAIL_SWITCH[mail.id]))
+        .map(mail => zh ? { ...mail, subject: SPECIAL_MAIL_SUBJECT_ZH[mail.id] ?? mail.subject } : mail)
+}
 
 let MailIdCounter = 10000000
 const CachedMails: Record<number, Mail_[]> = {}

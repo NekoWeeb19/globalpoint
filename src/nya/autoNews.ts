@@ -13,6 +13,8 @@
 // Off with the switch on the dashboard's News tab (src/nya/serverSettings.ts autoNews).
 
 import artPathsData from "../../assets/event_art_paths_cn.json"
+import eventNamesZh from "../../assets/event_names_zh.json"
+import { isChineseGame } from "./gameLanguage"
 import { getServerDate } from "../utils"
 import { getEventOverview } from "./eventSchedule"
 import { NewsPost } from "./news"
@@ -56,24 +58,45 @@ function picture(d: { key: string }): string {
 
 type Dated = { key: string, name: string, kind: string, start: number, end: number, banners: { key: string, name: string }[] }
 
-function datedEvents(): Dated[] {
+// Chinese, when the game is set to Chinese (src/nya/gameLanguage.ts): CN's own event names (assets/event_names_zh.json,
+// scripts/gen_cn_event_names_zh.cjs; English when CN has none) and these words
+const zhNames = (eventNamesZh as { names: Record<string, string> }).names
+const ZH_KINDS: Record<string, string> = {
+    story_event: "剧情活动", world_story_event: "世界剧情活动", advent_event: "讨伐活动", carnival_event: "土俑嘉年华",
+    hard_multi_event: "共同决战", raid_event: "战阵活动", ranking_event: "竞速活动", rush_event: "狂热激战",
+    pass_card_event: "修行之道", unit: "角色扭蛋", armament: "装备扭蛋",
+}
+const nameOf = (key: string, english: string, zh: boolean) => zh ? zhNames[key.replace(/-cn$/, "")] ?? english : english
+
+function datedEvents(zh: boolean): Dated[] {
     const out: Dated[] = []
     for (const e of getEventOverview().events) {
         if (!e.servers.includes("cn")) continue
         const from = e.scheduled ?? e.cn ?? e.original
         const start = Date.parse(from.start), end = Date.parse(from.end)
         if (isNaN(start) || isNaN(end) || end - start >= PERMANENT) continue
-        const kind = e.family === "gacha" ? (e.bannerType === "armament" ? "Armament summon" : "Unit summon") : e.familyLabel
-        const banners = (e.banners as { id?: string, name: string }[]).filter(b => b.id).map(b => ({ key: `gacha:${b.id}`, name: b.name }))
-        out.push({ key: e.key, name: e.name + (e.rerun ? " (rerun)" : ""), kind, start, end, banners })
+        const kind = zh
+            ? ZH_KINDS[e.family === "gacha" ? (e.bannerType === "armament" ? "armament" : "unit") : e.family] ?? e.familyLabel
+            : e.family === "gacha" ? (e.bannerType === "armament" ? "Armament summon" : "Unit summon") : e.familyLabel
+        const banners = (e.banners as { id?: string, name: string }[]).filter(b => b.id).map(b => ({ key: `gacha:${b.id}`, name: nameOf(`gacha:${b.id}`, b.name, zh) }))
+        out.push({ key: e.key, name: nameOf(e.key, e.name, zh) + (e.rerun ? (zh ? "（复刻）" : " (rerun)") : ""), kind, start, end, banners })
     }
     return out
+}
+
+/** "3 days" / "3天" */
+function spanText(ms: number, zh: boolean): string {
+    if (!zh) return span(ms)
+    const hours = Math.max(0, Math.round(ms / 3_600_000))
+    const days = Math.floor(hours / 24)
+    return days >= 1 ? `${days}天` : `${hours}小时`
 }
 
 /** The automatic posts right now, newest first. */
 export function autoNewsPosts(now: number = getServerDate().getTime()): NewsPost[] {
     if (!autoNewsOn()) return []
-    const all = datedEvents()
+    const zh = isChineseGame()
+    const all = datedEvents(zh)
     const byKey = new Map(all.map(d => [d.key, d]))
     // banners that start with their event go in its post
     const folded = new Set<string>()
@@ -97,16 +120,20 @@ export function autoNewsPosts(now: number = getServerDate().getTime()): NewsPost
         else if (d.start <= now && now <= d.end) { state = "on"; date = d.start }
         else if (d.end < now && now - d.end <= AFTER_END) { state = "ended"; date = d.end }
         else continue
-        const title = { soon: "Coming soon", on: "Now on", ended: "Ended" }[state] + ": " + d.name
-        const when = state === "soon" ? `Starts in ${span(d.start - now)}.` : state === "on" ? `Ends in ${span(d.end - now)}.` : "This has ended."
+        const title = zh
+            ? { soon: "即将开始", on: "进行中", ended: "已结束" }[state] + "：" + d.name
+            : { soon: "Coming soon", on: "Now on", ended: "Ended" }[state] + ": " + d.name
+        const when = zh
+            ? (state === "soon" ? `${spanText(d.start - now, zh)}后开始。` : state === "on" ? `${spanText(d.end - now, zh)}后结束。` : "本活动已结束。")
+            : (state === "soon" ? `Starts in ${span(d.start - now)}.` : state === "on" ? `Ends in ${span(d.end - now)}.` : "This has ended.")
         // "Hanifolk Carnival: Hanifolk Carnival" -> just the name
-        const what = d.name.toLowerCase().startsWith(d.kind.toLowerCase()) ? d.name : `${d.kind}: ${d.name}`
+        const what = d.name.toLowerCase().startsWith(d.kind.toLowerCase()) ? d.name : `${d.kind}${zh ? "：" : ": "}${d.name}`
         let html = picture(d)
             + `<p>${escape(what)}</p>`
-            + `<p>${escape(utc(d.start))} to ${escape(utc(d.end))}</p>`
+            + `<p>${escape(utc(d.start))}${zh ? " 至 " : " to "}${escape(utc(d.end))}</p>`
             + `<p>${escape(when)}</p>`
         for (const banner of foldedInto.get(d.key) ?? []) {
-            html += `<p>With the ${escape(banner.kind.toLowerCase())}: ${escape(banner.name)}</p>` + picture(banner)
+            html += (zh ? `<p>同时开启的${escape(banner.kind)}：${escape(banner.name)}</p>` : `<p>With the ${escape(banner.kind.toLowerCase())}: ${escape(banner.name)}</p>`) + picture(banner)
         }
         const post: NewsPost = {
             id: idOf(d.key), title, body: "", category: CATEGORY, apps: ["cn"],

@@ -19,7 +19,7 @@ fs.mkdirSync(work, { recursive: true })
 // 1. compile StorageDropoff into a stub SWF
 const stub = path.join(work, "storagedropoff_stub.swf"), compiled = path.join(work, "storagedropoff.swf")
 execFileSync(process.execPath, [path.join(__dirname, "stub_class.cjs"), stub, "starpoint", "StorageDropoff", "start"], { stdio: "inherit" })
-execFileSync("java", ["-jar", ffdec, "-air", "-importScript", stub, compiled, path.join(__dirname, "as3")], { stdio: "inherit" })
+execFileSync("java", ["-jar", ffdec, "-air", "-importScript", stub, compiled, require("./as3_source.cjs").as3Source(work)], { stdio: "inherit" })
 const helperTag = A.readSwf(compiled).tags.find(t => t.code === 82)
 if (!helperTag || !A.splitDoAbc(helperTag.data).abc.includes("asset/asset_download/dummy")) throw new Error("StorageDropoff did not compile")
 

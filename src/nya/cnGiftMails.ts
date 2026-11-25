@@ -19,8 +19,8 @@ export const FIRST_ID = 1_000_000_000
 const PER_GIFT = 100
 
 export interface CnGiftItem { kind: MailKind, typeId?: number, amount: number }
-export interface CnGift { id: number, post: string, at: string, title: string, items: CnGiftItem[] }
-interface GiftFile { message: string, mails: CnGift[] }
+export interface CnGift { id: number, post: string, at: string, title: string, titleZh?: string, items: CnGiftItem[] }
+interface GiftFile { message: string, messageZh?: string, mails: CnGift[] }
 export interface CnGiftSettings { off?: boolean, removed?: number[] }
 
 let assetCache: GiftFile | null = null
@@ -63,6 +63,14 @@ export function setCnGiftRemoved(id: number, removed: boolean) {
     if (removed) list.add(id)
     else list.delete(id)
     saveSettings({ ...s, removed: [...list] })
+}
+
+/** A gift mail's Chinese title and message (the game set to Chinese: src/nya/gameLanguage.ts), or null. */
+export function cnGiftTextZh(scheduleId: number): { title: string, message: string } | null {
+    if (!isCnGiftScheduleId(scheduleId)) return null
+    const file = cnGifts()
+    const gift = file.mails.find(g => g.id === giftIdOf(scheduleId))
+    return gift?.titleZh && file.messageZh ? { title: gift.titleZh, message: file.messageZh } : null
 }
 
 /** The schedule id of a gift's item, and back. */

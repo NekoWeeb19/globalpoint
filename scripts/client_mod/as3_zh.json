@@ -1,0 +1,20 @@
+{
+ "_note": "Chinese for the messages GlobalPoint's own game code shows (as3/starpoint/*.as), for the Chinese game app: patch_cn_storage_dropoff.cjs and patch_cn_server_file.cjs with --zh (as3_source.cjs) replace each English piece with its Chinese one before compiling. Every piece must be found, or the build stops.",
+ "StorageDropoff.as": [
+  ["\"Finding game files…\"", "\"正在查找游戏文件…\""],
+  ["\"Game files part 1 of \" + parts.length + \" is missing:\\n\"", "\"游戏文件第 1/\" + parts.length + \" 部分缺失：\\n\""],
+  ["\"\\nCopy it next to the other parts, then reopen the game.\"", "\"\\n请把它复制到其他部分所在的文件夹，然后重新打开游戏。\""],
+  ["\"Reading \" + obb.name + \"…\"", "\"正在读取 \" + obb.name + \"…\""],
+  ["\"Game files part \" + (m + 1) + \" of \" + segCount + \" is missing:\\n\"", "\"游戏文件第 \" + (m + 1) + \"/\" + segCount + \" 部分缺失：\\n\""],
+  ["\"Game files part \" + (p + 1) + \" of \" + segCount + \" is incomplete:\\n\" + gbText(have) + \" of \" + gbText(sizes[p]) + \"\\nCopy it again, then reopen the game.\"", "\"游戏文件第 \" + (p + 1) + \"/\" + segCount + \" 部分不完整：\\n\" + gbText(have) + \" / \" + gbText(sizes[p]) + \"\\n请重新复制，然后重新打开游戏。\""],
+  ["\"Game files part \" + segCount + \" of \" + segCount + \" is incomplete.\\nCopy it again, then reopen the game.\"", "\"游戏文件第 \" + segCount + \"/\" + segCount + \" 部分不完整。\\n请重新复制，然后重新打开游戏。\""],
+  ["\"Phone storage is full: \" + ((obbBytesTotal - obbBytesDone) / gb).toFixed(1) + \" GB still to unpack, \" + (free / gb).toFixed(1) + \" GB free.\\nFree some space, then close and reopen the game. It carries on where it stopped.\"", "\"手机存储空间已满：还有 \" + ((obbBytesTotal - obbBytesDone) / gb).toFixed(1) + \" GB 待解压，剩余空间 \" + (free / gb).toFixed(1) + \" GB。\\n请清理空间后关闭并重新打开游戏，将从中断处继续。\""],
+  ["\"Unpacking game files: \" + obbNext + \" / \" + obbCount + \"\\n\" + (obbBytesDone / g).toFixed(1) + \" / \" + (obbBytesTotal / g).toFixed(1) + \" GB. Keep the game open.\"", "\"正在解压游戏文件：\" + obbNext + \" / \" + obbCount + \"\\n\" + (obbBytesDone / g).toFixed(1) + \" / \" + (obbBytesTotal / g).toFixed(1) + \" GB。请保持游戏开启。\""],
+  ["\"Finding game files… \" + files.length", "\"正在查找游戏文件… \" + files.length"],
+  ["\"Moving game files: \" + next + \" / \" + files.length + \"\\n\" + (bytesDone / gb).toFixed(1) + \" / \" + (bytesTotal / gb).toFixed(1) + \" GB. Keep the game open.\"", "\"正在移动游戏文件：\" + next + \" / \" + files.length + \"\\n\" + (bytesDone / gb).toFixed(1) + \" / \" + (bytesTotal / gb).toFixed(1) + \" GB。请保持游戏开启。\""]
+ ],
+ "ServerAddress.as": [
+  ["\"Server: \" + custom + \"\\n\"", "\"服务器：\" + custom + \"\\n\""],
+  ["\"server.txt not understood\\n\"", "\"无法识别 server.txt\\n\""]
+ ]
+}

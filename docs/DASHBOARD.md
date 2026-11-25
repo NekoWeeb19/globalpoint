@@ -218,6 +218,13 @@ the login bonuses. Later that day the game goes straight to the home screen. Not
 
 ![The Summon rates box](images/dashboard-rates.png)
 
+- **Game language:** English (default) or 简体中文 (Simplified Chinese), for the CN app. Chinese puts back
+  CN's own text everywhere the game reads its tables (menus, units, skills, stories, shops, missions,
+  events) and keeps everything else GlobalPoint changes; the server's mail titles and automatic news
+  follow. Pictures with words on them follow too when CN's originals are here (a PC with CN's full game
+  files, or a phone with the Chinese art pack, about 1.5 GB); the Chinese game app adds the labels built
+  into the app. Saving rebuilds the game update: wait for the ready light, then reopen the game. See
+  [CHINESE.md](CHINESE.md).
 - **Quest drop amount:** 1x (default) is the base game's amounts; original StarPoint gave 10x. Up to
   100x; applies from the next quest.
 - **Enemy strength:** every enemy's HP and attack, 0.1x to 10x each (presets: 1x, HP 1.5x / attack

@@ -44,7 +44,13 @@ function scheduleFingerprint(dataDir) {
     const ES = require("./enemy_scaling.cjs"), enemy = ES.readEnemyScaling(dataDir)
     // and the summon rates (scripts/gacha_odds.cjs; only when changed)
     const GO = require("./gacha_odds.cjs"), rates = GO.readGachaRates(dataDir)
-    return crypto.createHash("sha1").update(JSON.stringify(stable({ events, yearly, builder: BUILDER_REVISION, ...(custom ? { custom } : {}), ...(kits ? { kits } : {}), ...(calendar ? { calendar } : {}), ...(jpText ? { jpText } : {}), ...(ES.isDefault(enemy) ? {} : { enemy }), ...(GO.isDefault(rates) ? {} : { rates }) }))).digest("hex")
+    // and the game's language (scripts/game_language.cjs; only when not English)
+    const GL = require("./game_language.cjs"), language = GL.readGameLanguage(dataDir)
+    // in Chinese, also whether CN's pictures are here (a Chinese art pack imported later ships them at the next start)
+    const chineseArt = language === "zh" && GL.chineseArtReady(require("./cn_archives.cjs").cnDir())
+    // and the Chinese community's fixes (assets/cn_zh_fixes.json): a new version ships at the next start
+    const zhFixes = language === "zh" ? require("./cn_language.cjs").zhFixes().hash : ""
+    return crypto.createHash("sha1").update(JSON.stringify(stable({ events, yearly, builder: BUILDER_REVISION, ...(custom ? { custom } : {}), ...(kits ? { kits } : {}), ...(calendar ? { calendar } : {}), ...(jpText ? { jpText } : {}), ...(ES.isDefault(enemy) ? {} : { enemy }), ...(GO.isDefault(rates) ? {} : { rates }), ...(language === GL.DEFAULT_LANGUAGE ? {} : { language, ...(chineseArt ? { chineseArt } : {}), ...(zhFixes ? { zhFixes } : {}) }) }))).digest("hex")
 }
 
 /** What the current CN update was built from, or null (an update built before this was recorded). */

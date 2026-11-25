@@ -1143,7 +1143,75 @@ async function main() {
         if (typeof seen === "string" && /^\d+\.\d+\.\d+$/.test(seen) && newer(seen, base)) base = seen
     } catch { }
     const v = versionNumbers(base); v[2]++
-    const version = v.join(".")
+    let version = v.join(".")
+    let tablesFrom = last
+    // The game's language (dashboard Game settings: scripts/game_language.cjs, scripts/cn_language.cjs). In Chinese,
+    // every table this update ships gets CN's own Chinese text back. When the language changed since the last build,
+    // or a game reported a newer update than this server's (its copies can't be known), every table the translation
+    // touched ships too, from its newest English copy, so the game's whole text follows the setting either way.
+    const CL = require("./cn_language.cjs")
+    const language = require("./game_language.cjs").readGameLanguage(dataDir())
+    let languageBefore = "en", zhFixesBefore = null
+    try {
+        const built = JSON.parse(fs.readFileSync(path.join(dataDir(), "cn_schedule_built.json"), "utf8"))
+        languageBefore = built.language ?? "en"
+        zhFixesBefore = built.zhFixes ?? null
+    } catch { }
+    // the Chinese community's fixes (assets/cn_zh_fixes.json): a new version of them reaches every table again too
+    const zhFixes = CL.zhFixes()
+    const zhFixesNow = language === "zh" ? zhFixes.hash : null
+    const wholeText = language !== languageBefore || base !== last || (language === "zh" && zhFixesNow !== zhFixesBefore)
+    let languageTables = 0, chineseCells = 0, communityCells = 0
+    if (wholeText) {
+        const patchDir = path.join(cdnDir(), "cn_patches")
+        const extra = [...new Set([...CL.translatedPaths(TRANSLATED), ...Object.keys(zhFixes.cells)])].filter(p => !trees.has(p))
+        const english = await CL.newestEnglishCopies(patchDir, extra)
+        for (const p of extra) {
+            const buf = english.get(p) ?? await tableBuffer(p)
+            if (!buf) continue
+            try { trees.set(p, R.decodeFile(buf)); languageTables++ } catch { }
+        }
+    }
+    if (language === "zh") {
+        const originals = await CL.readCnOriginals(CN_DIR, [...trees.keys()])
+        for (const [p, tree] of trees) {
+            const cnBuf = originals.get(p)
+            if (!cnBuf) continue
+            try {
+                const cnRoot = R.decodeFile(cnBuf)
+                chineseCells += CL.chineseTree(tree, cnRoot)
+                // then the Chinese community's fixes: Chinese for cells CN left in Japanese, their rewordings, 生命值 -> HP
+                communityCells += CL.applyZhFixes(p, tree, cnRoot)
+            } catch { }
+        }
+        if (communityCells > 0) console.log(`game language zh: ${communityCells} cells from the Chinese community's fixes (晓之车)`)
+        // what the Unit editor (and kit files in changes/) changed in existing units and armaments wins over CN's text:
+        // their edited cells go back in (in English or Chinese, as typed); the cells they didn't touch stay CN's
+        let kept = 0
+        for (const [file, wanted] of changes.rows) if (trees.has(file)) kept += replaceRows(trees.get(file), wanted)
+        if (kept > 0) console.log(`game language zh: ${kept} edited row(s) keep their edits`)
+    }
+    if (wholeText || language !== "en") console.log(`game language ${language}${wholeText ? ` (whole text: ${languageTables} more tables)` : ""}${language === "zh" ? `, ${chineseCells} cells in CN's Chinese` : ""}`)
+    // the pictures follow too (assets/cn_lang_art.json), as their own update before the tables' one: when the game's
+    // pictures are in another language than the setting, or the game came from elsewhere. CN's originals need a PC's CN
+    // archives or the phone's Chinese art pack; without them the pictures stay as they are until the pack is there.
+    let artLanguage = "en"
+    try { artLanguage = JSON.parse(fs.readFileSync(path.join(dataDir(), "cn_schedule_built.json"), "utf8")).artLanguage ?? "en" } catch { }
+    if (language !== artLanguage || base !== last) {
+        const patchDir = path.join(cdnDir(), "cn_patches")
+        const art = await CL.artArchives(language, patchDir, CN_DIR, CL.artPaths())
+        if (art) {
+            CL.registerArt(patchDir, version, last, art)
+            CL.recordLanguage(patchDir, version, language)
+            console.log(`pictures in ${language}: update ${version}, ${art.files} files (${(art.archives.reduce((n, a) => n + a.size, 0) / 1e6).toFixed(0)} MB, kept for later switches)`)
+            tablesFrom = version
+            const w = versionNumbers(version); w[2]++
+            version = w.join(".")
+            artLanguage = language
+        } else if (language === "zh") {
+            console.log("pictures stay in English: CN's original pictures aren't here (import the Chinese art pack, docs/CHINESE.md)")
+        }
+    }
     const outDir = path.join(cdnDir(), "cn_schedule_files")
     fs.rmSync(outDir, { recursive: true, force: true })
     const list = []
@@ -1185,8 +1253,10 @@ async function main() {
         }
         if (shipped) console.log(`edited skill scripts: ${shipped}`)
     }
-    await build(version, last, list)
-    fs.writeFileSync(path.join(dataDir(), "cn_schedule_built.json"), JSON.stringify({ fingerprint, version, freePullCopyIds: builtFreePullCopyIds.sort((a, b) => a - b), kitState, customUnits: customUnits.map(u => u.id),
+    await build(version, tablesFrom, list)
+    // an update in another language than English is never an "English copy" for a later switch back
+    CL.recordLanguage(path.join(cdnDir(), "cn_patches"), version, language)
+    fs.writeFileSync(path.join(dataDir(), "cn_schedule_built.json"), JSON.stringify({ fingerprint, version, language, artLanguage, zhFixes: zhFixesNow, freePullCopyIds: builtFreePullCopyIds.sort((a, b) => a - b), kitState, customUnits: customUnits.map(u => u.id),
         // units left out only because their files weren't there yet: the server rebuilds once a newer update is listed
         customWaitingForFiles: customWaiting, changedTables: [...new Set([...changes.rows.keys(), ...enemyTables, ...rateFiles.keys()])].sort() }))
     console.log(`CN schedule ${version}: ${events} event(s), ${moved} rows moved, ${campaignsMade}, ${list.length} files`)

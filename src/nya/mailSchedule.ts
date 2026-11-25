@@ -18,7 +18,8 @@ import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "fs
 import path from "path"
 import { getAccountPlayersSync } from "../data/wdfpData"
 import { cnLinkedAccountId, inCnRequest } from "../lib/cnClient"
-import { cnGifts, cnGiftSchedules, giftIdOf, isCnGiftScheduleId } from "./cnGiftMails"
+import { cnGiftSchedules, cnGiftTextZh, cnGifts, giftIdOf, isCnGiftScheduleId } from "./cnGiftMails"
+import { chineseForRequest } from "./gameLanguage"
 import { getServerDate } from "../utils"
 
 const DIR = path.join(process.cwd(), ".database")
@@ -369,8 +370,25 @@ export function scheduledMailsFor(playerId: number, now = getServerDate().getTim
         d.players[key] = state
         writeDelivered(d)
     }
+    // in Chinese (the CN app with the game set to Chinese): CN's gifts get their Chinese title and message, other mails
+    // the Chinese default title and message when they have the English defaults (a title typed on the dashboard stays)
+    if (cn && chineseForRequest()) return state.mails.map(m => {
+        const gift = cnGiftTextZh(m.scheduleId)
+        if (gift) return { ...m, subject: gift.title, description: gift.message }
+        return { ...m, subject: defaultTitleZh(m.subject), description: m.description === DEFAULT_MESSAGE ? DEFAULT_MESSAGE_ZH : m.description }
+    })
     return state.mails.map(m => ({ ...m }))
 }
+
+const KIND_WORDS_ZH: Record<string, string> = {
+    "Paid beads": "付费星导石", "Free beads": "免费星导石", Mana: "玛纳", EXP: "经验值", Item: "道具", Unit: "角色", Armament: "装备",
+}
+/** A default title ("Free beads * 100", "Item 1001 * 5") in Chinese; any other title as it is. */
+export function defaultTitleZh(subject: string): string {
+    const m = /^(Paid beads|Free beads|Mana|EXP|Item|Unit|Armament)( \d+)? \* (\d+)$/.exec(subject)
+    return m ? `${KIND_WORDS_ZH[m[1]]}${m[2] ?? ""} * ${m[3]}` : subject
+}
+export const DEFAULT_MESSAGE_ZH = "来自服务器的礼物。"
 
 /** Players tab > Clear mailbox: drops a save's delivered, unclaimed scheduled mails (their schedules don't send them
  *  again: the progress is kept). Returns how many were dropped. */

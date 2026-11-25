@@ -20,6 +20,7 @@ import { withRealTimeOfDay } from "../../lib/serverClock";
 import { deleteNews, listNews, NEWS_CATEGORIES, saveNews } from "../../nya/news";
 import { DROP_MULTIPLIER_MAX, DROP_MULTIPLIER_MIN, getDropMultiplier, setDropMultiplier } from "../../nya/dropSettings";
 import { DEFAULT_GACHA_RATES, getGachaRates, resetGachaRates, setGachaRates } from "../../nya/gachaRates";
+import { GAME_LANGUAGES, getGameLanguage, setGameLanguage } from "../../nya/gameLanguage";
 import { ENEMY_MULTIPLIER_MAX, ENEMY_MULTIPLIER_MIN, getEnemyScaling, setEnemyScaling } from "../../nya/enemySettings";
 import { lanAddresses } from "../../nya/coop";
 import { coopPartnerChoicesSync, setCoopPartnerPicksSync } from "../../nya/coopPartnerPicks";
@@ -147,6 +148,18 @@ const routes = async (fastify: FastifyInstance) => {
             return reply.status(400).send({ error: "Bad Request", message: (error as Error).message })
         }
         return reply.send(ratesReply())
+    })
+
+    // ---- the CN game's language (src/nya/gameLanguage.ts) ----
+
+    fastify.get("/game-language", async (_: FastifyRequest, reply: FastifyReply) => reply.send({ language: getGameLanguage(), languages: GAME_LANGUAGES }))
+    fastify.post("/game-language", async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+            setGameLanguage((request.body as { language?: unknown } | undefined)?.language)
+        } catch (error) {
+            return reply.status(400).send({ error: "Bad Request", message: (error as Error).message })
+        }
+        return reply.send({ language: getGameLanguage(), languages: GAME_LANGUAGES })
     })
 
     // ---- daily paid beads and the never-ending mails (src/nya/serverSettings.ts) ----

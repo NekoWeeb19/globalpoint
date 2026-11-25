@@ -9,6 +9,13 @@
 //     scripts/gen_cn_slim.cjs adds by their hashed names, plus preview_art.txt; ~35 MB), for phones that already
 //     have the data pack, so the 1.8 GB data pack needn't be downloaded again. Marker: starpoint-art-pack.json.
 //     Import it after a data pack: a data pack replaces .cdn/cn/tables and removes what it doesn't hold.
+//   node scripts/build_pack.cjs zh-art <out.zip> [--from <server folder>]
+//     CN's own pictures for the game in Chinese (docs/CHINESE.md): CN's originals of every picture and sprite layout
+//     StarPoint's updates replaced (assets/cn_lang_art.json, ~1.6 GB), from CN's archives (CN_CDN_DIR, not a slim
+//     folder), into the slim folder's tables/ by their hashed names, where the update builder reads CN's files.
+//     Same marker as the skill preview art pack (starpoint-art-pack.json, content "zh-art"), so the companion's
+//     Import pack... takes it; import it after a data pack, like that one. Needs ~1.6 GB free next to <out.zip>
+//     while it's made (the pictures are unpacked there first, then removed).
 //   node scripts/build_pack.cjs data <out.zip> [--from <server folder>] [--slim <folder>]
 //     what "Download from PC" brings, without the save and the full game files (~1.8 GB): the CN version
 //     files (path, entities csv), the slim CN tables + names.txt (schedule edits), the English tables,
@@ -31,8 +38,8 @@ const zlib = require("zlib")
 const args = process.argv.slice(2)
 const kind = args.shift(), out = args.shift()
 const opt = name => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : undefined }
-if (!["comics", "data", "art"].includes(kind) || !out) {
-    console.error("usage: node scripts/build_pack.cjs comics|data|art <out.zip> [--from <server folder>] [--slim <folder>] [--comics <folder>]")
+if (!["comics", "data", "art", "zh-art"].includes(kind) || !out) {
+    console.error("usage: node scripts/build_pack.cjs comics|data|art|zh-art <out.zip> [--from <server folder>] [--slim <folder>] [--comics <folder>]")
     process.exit(1)
 }
 
@@ -81,6 +88,26 @@ if (kind === "comics") {
     const comics = path.resolve(opt("comics") || path.join(cdn, "comics"))
     need(addTree(".cdn/comics", comics), `comics folder ${comics}`)
     marker = { name: "starpoint-comics-pack.json", info: { kind: "starpoint-comics-pack", version: 1 } }
+} else if (kind === "zh-art") {
+    need(!isSlim(cnRoot), `CN's archives (${cnRoot} is a slim folder): point CN_CDN_DIR at the full CN game files`)
+    // CN's originals, unpacked by a child step (reading the archives is async) into a folder next to the pack
+    const work = path.resolve(out) + ".files"
+    fs.rmSync(work, { recursive: true, force: true })
+    const extract = `
+        const fs = require("fs"), path = require("path")
+        const { readCnOriginals, artPaths } = require(${JSON.stringify(path.join(__dirname, "cn_language.cjs"))})
+        ;(async () => {
+            const paths = artPaths()
+            if (paths.length === 0) throw new Error("assets/cn_lang_art.json is missing (node scripts/gen_cn_lang_art.cjs)")
+            const got = await readCnOriginals(process.env.CN_CDN_DIR, paths)
+            if (got.size !== paths.length) throw new Error("only " + got.size + " of " + paths.length + " pictures are in CN's files")
+            for (const [p, buf] of got) { const f = path.join(${JSON.stringify(work)}, p); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, buf) }
+            console.log(paths.length + " pictures unpacked")
+        })().catch(e => { console.error(e.message); process.exit(1) })`
+    require("child_process").execFileSync(process.execPath, ["-e", extract], { stdio: "inherit", env: { ...process.env, CN_CDN_DIR: cnRoot } })
+    addTree(".cdn/cn/tables/production", path.join(work, "production"))
+    process.on("exit", () => fs.rmSync(work, { recursive: true, force: true }))
+    marker = { name: "starpoint-art-pack.json", info: { kind: "starpoint-art-pack", version: 1, content: "zh-art" } }
 } else if (kind === "art") {
     const slim = [opt("slim") && path.resolve(opt("slim")), cnRoot, setting("CN_SLIM_DIR") && at(setting("CN_SLIM_DIR")), path.join(cdn, "cn_slim")].find(isSlim)
     need(slim, "a slim CN folder (tables/ + names.txt): pass --slim, or make one with node scripts/gen_cn_slim.cjs")

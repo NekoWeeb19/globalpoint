@@ -272,9 +272,14 @@ public class DataActivity extends Activity {
                             + (r.skipped > 0 ? ", " + r.skipped + " already here" : "") + (r.removed > 0 ? ", " + r.removed + " old file(s) removed" : "")
                             + ". Your save wasn't touched. Back on the main screen the server starts.";
                 } else if (kind.equals("art")) {
+                    org.json.JSONObject info = DataTransfer.packInfo(this, uri);
+                    boolean chinese = info != null && "zh-art".equals(info.optString("content"));
                     r = DataTransfer.importArtPack(this, uri, this::progress);
-                    done = "Skill preview art ready: " + r.written + " file(s) unpacked" + (r.skipped > 0 ? ", " + r.skipped + " already here" : "")
-                            + ". The Unit editor's skill preview now shows the unit and its effects.";
+                    done = chinese
+                            ? "Chinese pictures ready: " + r.written + " file(s) unpacked" + (r.skipped > 0 ? ", " + r.skipped + " already here" : "")
+                                + ". With Game language set to 简体中文 on the dashboard, stop and start the server, then reopen the game (about 1.6 GB to take in)."
+                            : "Skill preview art ready: " + r.written + " file(s) unpacked" + (r.skipped > 0 ? ", " + r.skipped + " already here" : "")
+                                + ". The Unit editor's skill preview now shows the unit and its effects.";
                 } else {
                     r = DataTransfer.importComicsPack(this, uri, this::progress);
                     done = "Comics ready: " + r.written + " file(s) unpacked" + (r.skipped > 0 ? ", " + r.skipped + " already here" : "")

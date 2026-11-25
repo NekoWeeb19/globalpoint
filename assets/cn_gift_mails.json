@@ -1,12 +1,14 @@
 {
  "_note": "CN's own gift and compensation mails, from its official Bilibili posts (2021-10-26 to 2025-07-22), sent on CN's dates to every save of the CN app (src/nya/cnGiftMails.ts, docs/DASHBOARD.md Mail). id = the post's number in the post list, post = its Bilibili id, at = send time (UTC; CN time - 8 h). One game mail per item. Left out: profile titles, exchange tickets (CN gave them through an exchange event, not by mail), one-day battle tries and bonus points, gift codes, pre-registration rewards and mails only some players got. Gifts for real-world reasons are titled \"Milestone Gift\" (chart ranks, repost goals, server-wide counts) or \"Compensation Gift\" (CN's apologies for bugs and downtime).",
  "message": "A gift for all adventurers. Thank you for playing World Flipper!",
+ "messageZh": "献给所有冒险者的礼物。感谢您游玩《世界弹射物语》！",
  "mails": [
   {
    "id": 32,
    "post": "585511034377977690",
    "at": "2021-10-26T02:00:00Z",
    "title": "Launch Day Gift",
+   "titleZh": "公测礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -19,6 +21,7 @@
    "post": "586190901935125347",
    "at": "2021-11-02T04:00:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -31,6 +34,7 @@
    "post": "587706166393807861",
    "at": "2021-11-03T04:00:00Z",
    "title": "Halloween Gift",
+   "titleZh": "万圣节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -43,6 +47,7 @@
    "post": "589097744387990552",
    "at": "2021-11-04T04:00:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -85,6 +90,7 @@
    "post": "590953148787791589",
    "at": "2021-11-10T04:00:00Z",
    "title": "14 Days Since Launch",
+   "titleZh": "公测14天纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -97,6 +103,7 @@
    "post": "594292915350787420",
    "at": "2021-11-18T04:00:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -109,6 +116,7 @@
    "post": "599488159336217614",
    "at": "2021-12-02T04:00:00Z",
    "title": "Boss Battle Support Gift",
+   "titleZh": "领主战应援礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -121,6 +129,7 @@
    "post": "604683326012646692",
    "at": "2021-12-17T04:00:00Z",
    "title": "Main Story Chapter 7 Gift",
+   "titleZh": "主线第七章完结礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -133,6 +142,7 @@
    "post": "608023079687760554",
    "at": "2021-12-24T04:00:00Z",
    "title": "Holy Night Festival Gift",
+   "titleZh": "圣夜祭礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -145,6 +155,7 @@
    "post": "610620671619007522",
    "at": "2022-01-01T04:00:00Z",
    "title": "New Year's Day Gift",
+   "titleZh": "元旦礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -157,6 +168,7 @@
    "post": "615073719478153952",
    "at": "2022-01-13T04:00:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -169,6 +181,7 @@
    "post": "617671302816384986",
    "at": "2022-01-20T04:00:00Z",
    "title": "New Event Gift",
+   "titleZh": "新活动礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -181,6 +194,7 @@
    "post": "622124333494644006",
    "at": "2022-02-01T04:00:00Z",
    "title": "Lunar New Year Gift",
+   "titleZh": "农历新年礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -193,6 +207,7 @@
    "post": "627319521645313647",
    "at": "2022-02-15T04:00:00Z",
    "title": "Lantern Festival Gift",
+   "titleZh": "元宵节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -205,6 +220,7 @@
    "post": "633256875925700644",
    "at": "2022-03-03T04:00:00Z",
    "title": "Early Spring Gift",
+   "titleZh": "初春礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -217,6 +233,7 @@
    "post": "635854446368129081",
    "at": "2022-03-10T04:00:00Z",
    "title": "Main Story Chapter 8 Gift",
+   "titleZh": "主线第8章开放礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -229,6 +246,7 @@
    "post": "640786786817146918",
    "at": "2022-03-24T04:00:00Z",
    "title": "Princess Connect! Collab Gift",
+   "titleZh": "公主连结联动礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -241,6 +259,7 @@
    "post": "644018350275428448",
    "at": "2022-04-01T04:00:00Z",
    "title": "April Fools' Gift",
+   "titleZh": "愚人节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -258,6 +277,7 @@
    "post": "650778465522417699",
    "at": "2022-04-19T07:00:00Z",
    "title": "Thank-You Gift",
+   "titleZh": "感谢礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -270,6 +290,7 @@
    "post": "651195803193311254",
    "at": "2022-04-21T04:00:00Z",
    "title": "Compensation Gift",
+   "titleZh": "补偿",
    "items": [
     {
      "kind": "item",
@@ -298,6 +319,7 @@
    "post": "653295475262226481",
    "at": "2022-04-26T04:00:00Z",
    "title": "Half Anniversary Gift",
+   "titleZh": "半周年礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -323,6 +345,7 @@
    "post": "654515555233955857",
    "at": "2022-05-01T04:00:00Z",
    "title": "Golden Week Gift",
+   "titleZh": "黄金周礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -335,6 +358,7 @@
    "post": "659975012957028369",
    "at": "2022-05-14T04:00:00Z",
    "title": "200 Days Since Launch",
+   "titleZh": "上线200天纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -347,6 +371,7 @@
    "post": "664505352838971433",
    "at": "2022-05-26T09:00:00Z",
    "title": "Compensation Gift",
+   "titleZh": "补偿",
    "items": [
     {
      "kind": "item",
@@ -360,6 +385,7 @@
    "post": "667396703328927796",
    "at": "2022-06-03T04:00:00Z",
    "title": "Dragon Boat Festival Gift",
+   "titleZh": "端午节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -372,6 +398,7 @@
    "post": "669805196448104489",
    "at": "2022-06-09T04:00:00Z",
    "title": "Compensation Gift",
+   "titleZh": "补偿",
    "items": [
     {
      "kind": "item",
@@ -385,6 +412,7 @@
    "post": "672264894262804505",
    "at": "2022-06-16T06:51:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -417,6 +445,7 @@
    "post": "675292480982220809",
    "at": "2022-06-30T04:00:00Z",
    "title": "Thank-You Gift",
+   "titleZh": "感谢礼物",
    "items": [
     {
      "kind": "item",
@@ -430,6 +459,7 @@
    "post": "680354091448139827",
    "at": "2022-07-08T04:00:00Z",
    "title": "Zombie Land Saga Collab Gift",
+   "titleZh": "佐贺联动礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -442,6 +472,7 @@
    "post": "685208808850456677",
    "at": "2022-07-21T04:00:00Z",
    "title": "Zombie Land Saga Collab Gift",
+   "titleZh": "佐贺联动礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -454,6 +485,7 @@
    "post": "685645297782620161",
    "at": "2022-07-23T11:00:00Z",
    "title": "Compensation Gift",
+   "titleZh": "补偿",
    "items": [
     {
      "kind": "item",
@@ -467,6 +499,7 @@
    "post": "690403992866390035",
    "at": "2022-08-04T04:00:00Z",
    "title": "Tanabata Gift",
+   "titleZh": "七夕礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -483,6 +516,7 @@
    "post": "695973302585262096",
    "at": "2022-08-19T07:00:00Z",
    "title": "Compensation Gift",
+   "titleZh": "补偿",
    "items": [
     {
      "kind": "item",
@@ -501,6 +535,7 @@
    "post": "698196794361774161",
    "at": "2022-08-25T04:00:00Z",
    "title": "Main Story Part 1 Finale Gift",
+   "titleZh": "主线第1部完结礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -513,6 +548,7 @@
    "post": "698598777529827399",
    "at": "2022-08-26T10:00:00Z",
    "title": "Compensation Gift",
+   "titleZh": "补偿",
    "items": [
     {
      "kind": "item",
@@ -526,6 +562,7 @@
    "post": "704134161438343224",
    "at": "2022-09-10T04:00:00Z",
    "title": "Mid-Autumn Festival Gift",
+   "titleZh": "中秋节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -538,6 +575,7 @@
    "post": "706035934349492304",
    "at": "2022-09-22T10:00:00Z",
    "title": "Compensation Gift",
+   "titleZh": "补偿",
    "items": [
     {
      "kind": "item",
@@ -551,6 +589,7 @@
    "post": "709777727061753953",
    "at": "2022-09-30T16:00:00Z",
    "title": "National Day Gift",
+   "titleZh": "国庆黄金周礼物",
    "items": [
     {
      "kind": "item",
@@ -623,6 +662,7 @@
    "post": "715630238476795909",
    "at": "2022-10-11T06:00:00Z",
    "title": "Compensation Gift",
+   "titleZh": "补偿",
    "items": [
     {
      "kind": "item",
@@ -636,6 +676,7 @@
    "post": "716379967969034407",
    "at": "2022-10-13T04:00:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -648,6 +689,7 @@
    "post": "721204036561272953",
    "at": "2022-10-26T04:00:00Z",
    "title": "1st Anniversary Gift",
+   "titleZh": "一周年礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -660,6 +702,7 @@
    "post": "727141412246651009",
    "at": "2022-11-11T04:00:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -672,6 +715,7 @@
    "post": "729367927595204759",
    "at": "2022-11-17T04:00:00Z",
    "title": "Stamina Support Gift",
+   "titleZh": "体力应援礼物",
    "items": [
     {
      "kind": "item",
@@ -685,6 +729,7 @@
    "post": "731594455813980305",
    "at": "2022-11-23T04:00:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -702,6 +747,7 @@
    "post": "736758810403668008",
    "at": "2022-12-07T04:00:00Z",
    "title": "Compensation Gift",
+   "titleZh": "补偿",
    "items": [
     {
      "kind": "beads_free",
@@ -719,6 +765,7 @@
    "post": "739758299606417429",
    "at": "2022-12-15T04:00:00Z",
    "title": "Re:Zero Collab Gift",
+   "titleZh": "Re:Zero联动礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -731,6 +778,7 @@
    "post": "742355891543605270",
    "at": "2022-12-22T04:00:00Z",
    "title": "Winter Gift",
+   "titleZh": "冬日礼物",
    "items": [
     {
      "kind": "item",
@@ -744,6 +792,7 @@
    "post": "743469211490189412",
    "at": "2022-12-25T04:00:00Z",
    "title": "Holy Night Festival Gift",
+   "titleZh": "圣夜祭礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -756,6 +805,7 @@
    "post": "746066743274766504",
    "at": "2023-01-01T04:00:00Z",
    "title": "New Year's Day Gift",
+   "titleZh": "元旦礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -768,6 +818,7 @@
    "post": "750187725754204169",
    "at": "2023-01-12T10:00:00Z",
    "title": "Compensation Gift",
+   "titleZh": "补偿",
    "items": [
     {
      "kind": "item",
@@ -781,6 +832,7 @@
    "post": "753859531948163201",
    "at": "2023-01-22T04:00:00Z",
    "title": "Lunar New Year Gift",
+   "titleZh": "农历新年礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -798,6 +850,7 @@
    "post": "759054724376821793",
    "at": "2023-02-05T04:00:00Z",
    "title": "Lantern Festival Gift",
+   "titleZh": "元宵节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -810,6 +863,7 @@
    "post": "762394512457728038",
    "at": "2023-02-14T04:00:00Z",
    "title": "Valentine's Day Gift",
+   "titleZh": "情人节礼物",
    "items": [
     {
      "kind": "item",
@@ -823,6 +877,7 @@
    "post": "765363172343283735",
    "at": "2023-02-22T04:00:00Z",
    "title": "Granblue Fantasy Collab Gift",
+   "titleZh": "碧蓝幻想联动礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -835,6 +890,7 @@
    "post": "768331853738278945",
    "at": "2023-03-02T04:00:00Z",
    "title": "Welcome Back Gift",
+   "titleZh": "回归礼物",
    "items": [
     {
      "kind": "item",
@@ -853,6 +909,7 @@
    "post": "770929449971482659",
    "at": "2023-03-09T04:00:00Z",
    "title": "1.5 Anniversary Gift",
+   "titleZh": "1.5周年礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -865,6 +922,7 @@
    "post": "772413786372964517",
    "at": "2023-03-13T04:00:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -877,6 +935,7 @@
    "post": "772784875841257480",
    "at": "2023-03-14T04:00:00Z",
    "title": "White Day Gift",
+   "titleZh": "白色情人节礼物",
    "items": [
     {
      "kind": "item",
@@ -890,6 +949,7 @@
    "post": "776495723317297190",
    "at": "2023-03-24T04:00:00Z",
    "title": "Zombie Land Saga Collab Gift",
+   "titleZh": "佐贺联动礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -902,6 +962,7 @@
    "post": "779464146985943044",
    "at": "2023-04-01T04:00:00Z",
    "title": "April Fools' Gift",
+   "titleZh": "愚人节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -914,6 +975,7 @@
    "post": "786143942143901696",
    "at": "2023-04-19T04:00:00Z",
    "title": "Early Summer Gift",
+   "titleZh": "初夏礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -926,6 +988,7 @@
    "post": "789854811040252343",
    "at": "2023-04-29T04:00:00Z",
    "title": "Golden Week Gift",
+   "titleZh": "黄金周礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -943,6 +1006,7 @@
    "post": "791014435032399912",
    "at": "2023-05-03T04:00:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -955,6 +1019,7 @@
    "post": "797647582569431059",
    "at": "2023-05-20T04:00:00Z",
    "title": "570 Days Since Launch",
+   "titleZh": "570日纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -967,6 +1032,7 @@
    "post": "799503003894677573",
    "at": "2023-05-25T04:00:00Z",
    "title": "Summer Festival Gift",
+   "titleZh": "夏日庆典礼物",
    "items": [
     {
      "kind": "item",
@@ -1014,6 +1080,7 @@
    "post": "802100604677652532",
    "at": "2023-06-01T04:00:00Z",
    "title": "June Gift",
+   "titleZh": "6月礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1026,6 +1093,7 @@
    "post": "809893414549061671",
    "at": "2023-06-22T04:00:00Z",
    "title": "Dragon Boat Festival Gift",
+   "titleZh": "端午节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1038,6 +1106,7 @@
    "post": "809893414556401769",
    "at": "2023-06-22T04:00:00Z",
    "title": "Treasure Key Gift",
+   "titleZh": "示宝金钥匙礼物",
    "items": [
     {
      "kind": "item",
@@ -1051,6 +1120,7 @@
    "post": "816572921928482856",
    "at": "2023-07-10T04:00:00Z",
    "title": "Haruhi Suzumiya Collab Gift",
+   "titleZh": "凉宫联动礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1063,6 +1133,7 @@
    "post": "816613238784393273",
    "at": "2023-07-10T10:00:00Z",
    "title": "Compensation Gift",
+   "titleZh": "补偿",
    "items": [
     {
      "kind": "item",
@@ -1076,6 +1147,7 @@
    "post": "817038234406092867",
    "at": "2023-07-11T10:00:00Z",
    "title": "Collab Summon Ticket Gift",
+   "titleZh": "联动单抽券礼物",
    "items": [
     {
      "kind": "item",
@@ -1089,6 +1161,7 @@
    "post": "820283777980825620",
    "at": "2023-07-20T04:00:00Z",
    "title": "Midsummer Gift",
+   "titleZh": "盛夏礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1101,6 +1174,7 @@
    "post": "832578577132159044",
    "at": "2023-08-23T04:00:00Z",
    "title": "Tanabata Gift",
+   "titleZh": "七夕礼物",
    "items": [
     {
      "kind": "item",
@@ -1122,6 +1196,7 @@
    "post": "835869372491759737",
    "at": "2023-08-31T04:00:00Z",
    "title": "2nd Anniversary Gift",
+   "titleZh": "2周年礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1134,6 +1209,7 @@
    "post": "837447364925980672",
    "at": "2023-09-04T08:00:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1146,6 +1222,7 @@
    "post": "837448073595584515",
    "at": "2023-09-04T10:00:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1158,6 +1235,7 @@
    "post": "838803960408047616",
    "at": "2023-09-08T01:45:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1170,6 +1248,7 @@
    "post": "846630825351970997",
    "at": "2023-09-29T04:00:00Z",
    "title": "Mid-Autumn Festival Gift",
+   "titleZh": "中秋节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1182,6 +1261,7 @@
    "post": "847372995718545488",
    "at": "2023-10-01T04:00:00Z",
    "title": "National Day Gift",
+   "titleZh": "国庆黄金周礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1194,6 +1274,7 @@
    "post": "854052528854138947",
    "at": "2023-10-19T04:00:00Z",
    "title": "Princess Connect! Collab Gift",
+   "titleZh": "公主连结联动礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1206,6 +1287,7 @@
    "post": "856650142228414536",
    "at": "2023-10-26T04:00:00Z",
    "title": "Argo Compass Gift",
+   "titleZh": "阿尔戈罗盘礼物",
    "items": [
     {
      "kind": "item",
@@ -1219,6 +1301,7 @@
    "post": "859618823640186899",
    "at": "2023-11-02T04:00:00Z",
    "title": "Re:Zero Collab Gift",
+   "titleZh": "Re:Zero联动礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1231,6 +1314,7 @@
    "post": "864442931152420931",
    "at": "2023-11-16T04:00:00Z",
    "title": "EX Break Celebration Gift",
+   "titleZh": "EX突破纪念礼物",
    "items": [
     {
      "kind": "item",
@@ -1299,6 +1383,7 @@
    "post": "866669441955397719",
    "at": "2023-11-22T04:00:00Z",
    "title": "November Gift",
+   "titleZh": "11月礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1311,6 +1396,7 @@
    "post": "872235723863883784",
    "at": "2023-12-07T04:00:00Z",
    "title": "Bead Day Gift",
+   "titleZh": "「今日宜：发星导石」礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1333,6 +1419,7 @@
    "post": "878915256985845811",
    "at": "2023-12-25T04:00:00Z",
    "title": "Christmas Gift",
+   "titleZh": "圣诞节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1345,6 +1432,7 @@
    "post": "881512831764135992",
    "at": "2024-01-01T04:00:00Z",
    "title": "New Year's Day Gift",
+   "titleZh": "元旦礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1357,6 +1445,7 @@
    "post": "896170717635150560",
    "at": "2024-02-09T16:00:00Z",
    "title": "Lunar New Year Gift",
+   "titleZh": "农历新年礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1374,6 +1463,7 @@
    "post": "897840600912494627",
    "at": "2024-02-14T04:00:00Z",
    "title": "Valentine's Day Gift",
+   "titleZh": "情人节礼物",
    "items": [
     {
      "kind": "item",
@@ -1387,6 +1477,7 @@
    "post": "900809277977919688",
    "at": "2024-02-22T04:00:00Z",
    "title": "2.5 Anniversary Gift",
+   "titleZh": "2.5周年礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1399,6 +1490,7 @@
    "post": "906005930736353316",
    "at": "2024-03-07T04:00:00Z",
    "title": "Umamusume Collab Gift",
+   "titleZh": "优俊少女联动礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1411,6 +1503,7 @@
    "post": "911199645695213570",
    "at": "2024-03-21T04:00:00Z",
    "title": "KonoSuba Collab Gift",
+   "titleZh": "祝福联动礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1423,6 +1516,7 @@
    "post": "915281067216207875",
    "at": "2024-04-01T04:01:00Z",
    "title": "April Fools' Gift",
+   "titleZh": "愚人节礼物",
    "items": [
     {
      "kind": "item",
@@ -1445,6 +1539,7 @@
    "post": "921218945411711026",
    "at": "2024-04-17T04:00:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1457,6 +1552,7 @@
    "post": "926414137862389793",
    "at": "2024-05-01T04:00:00Z",
    "title": "May Day Gift",
+   "titleZh": "五一礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1474,6 +1570,7 @@
    "post": "933464751871098913",
    "at": "2024-05-20T04:00:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "item",
@@ -1487,6 +1584,7 @@
    "post": "934578011718549509",
    "at": "2024-05-23T04:00:00Z",
    "title": "Armament Enhancement Gift",
+   "titleZh": "追忆装备强化纪念礼物",
    "items": [
     {
      "kind": "item",
@@ -1510,6 +1608,7 @@
    "post": "938288863432933379",
    "at": "2024-06-01T04:00:00Z",
    "title": "Children's Day Gift",
+   "titleZh": "儿童节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1522,6 +1621,7 @@
    "post": "941257545067003969",
    "at": "2024-06-10T04:00:00Z",
    "title": "Dragon Boat Festival Gift",
+   "titleZh": "端午节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1534,6 +1634,7 @@
    "post": "952761185211514886",
    "at": "2024-07-11T04:00:00Z",
    "title": "3rd Anniversary Gift",
+   "titleZh": "3周年礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1551,6 +1652,7 @@
    "post": "963893740492029956",
    "at": "2024-08-10T04:00:00Z",
    "title": "Tanabata Gift",
+   "titleZh": "七夕礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1576,6 +1678,7 @@
    "post": "968746984815984640",
    "at": "2024-08-23T04:00:00Z",
    "title": "Summer Gift",
+   "titleZh": "消暑礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1588,6 +1691,7 @@
    "post": "977994979217506313",
    "at": "2024-09-17T04:00:00Z",
    "title": "Mid-Autumn Festival Gift",
+   "titleZh": "中秋节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1610,6 +1714,7 @@
    "post": "983190171710128132",
    "at": "2024-10-01T04:00:00Z",
    "title": "National Day Gift",
+   "titleZh": "国庆黄金周礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1622,6 +1727,7 @@
    "post": "994693812081131562",
    "at": "2024-11-01T04:00:00Z",
    "title": "Halloween Gift",
+   "titleZh": "万圣节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1634,6 +1740,7 @@
    "post": "998404663844798489",
    "at": "2024-11-11T04:00:00Z",
    "title": "Milestone Gift",
+   "titleZh": "达成纪念礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1646,6 +1753,7 @@
    "post": "1014732411494203413",
    "at": "2024-12-25T04:00:00Z",
    "title": "Christmas Gift",
+   "titleZh": "圣诞节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1658,6 +1766,7 @@
    "post": "1017330007707484168",
    "at": "2025-01-01T04:00:00Z",
    "title": "New Year's Day Gift",
+   "titleZh": "元旦礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1670,6 +1779,7 @@
    "post": "1017701092917510161",
    "at": "2025-01-01T04:00:00Z",
    "title": "3.5 Anniversary Gift",
+   "titleZh": "3.5周年礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1692,6 +1802,7 @@
    "post": "1020298689095139334",
    "at": "2025-01-09T04:00:00Z",
    "title": "3.5 Anniversary Gift",
+   "titleZh": "3.5周年礼物",
    "items": [
     {
      "kind": "item",
@@ -1715,6 +1826,7 @@
    "post": "1027720392592064537",
    "at": "2025-01-29T04:00:00Z",
    "title": "Lunar New Year Gift",
+   "titleZh": "农历新年礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1737,6 +1849,7 @@
    "post": "1032915585072103425",
    "at": "2025-02-12T04:00:00Z",
    "title": "Lantern Festival Gift",
+   "titleZh": "元宵节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1749,6 +1862,7 @@
    "post": "1033657755386249221",
    "at": "2025-02-14T04:00:00Z",
    "title": "Valentine's Day Gift",
+   "titleZh": "情人节礼物",
    "items": [
     {
      "kind": "item",
@@ -1777,6 +1891,7 @@
    "post": "1046274651332804613",
    "at": "2025-03-20T04:00:00Z",
    "title": "Spring Gift",
+   "titleZh": "春日礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1794,6 +1909,7 @@
    "post": "1050727158049144854",
    "at": "2025-04-01T04:00:00Z",
    "title": "April Fools' Gift",
+   "titleZh": "愚人节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1811,6 +1927,7 @@
    "post": "1061860228621926406",
    "at": "2025-05-01T04:00:00Z",
    "title": "May Day Gift",
+   "titleZh": "五一礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1823,6 +1940,7 @@
    "post": "1064061367174037508",
    "at": "2025-05-07T02:00:00Z",
    "title": "Thank-You Gift",
+   "titleZh": "感谢礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1865,6 +1983,7 @@
    "post": "1068910846959157273",
    "at": "2025-05-20T04:00:00Z",
    "title": "Early Summer Gift",
+   "titleZh": "初夏礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1877,6 +1996,7 @@
    "post": "1072992783856304163",
    "at": "2025-05-31T04:00:00Z",
    "title": "Dragon Boat Festival Gift",
+   "titleZh": "端午节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1889,6 +2009,7 @@
    "post": "1073363869058990089",
    "at": "2025-06-01T04:00:00Z",
    "title": "Children's Day Gift",
+   "titleZh": "儿童节礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1901,6 +2022,7 @@
    "post": "1080043402169417729",
    "at": "2025-06-19T04:00:00Z",
    "title": "4th Anniversary Gift",
+   "titleZh": "4周年礼物",
    "items": [
     {
      "kind": "beads_free",
@@ -1933,6 +2055,7 @@
    "post": "1092289212968861696",
    "at": "2025-07-22T04:00:00Z",
    "title": "Summer Gift",
+   "titleZh": "消暑礼物",
    "items": [
     {
      "kind": "beads_free",
