@@ -324,10 +324,14 @@
             let featuredNames = null
             fetch("/api/unit-editor/names").then(r => r.ok ? r.json() : null).then(names => {
                 if (!names) return
-                featuredNames = new Map([...names.chara, ...names.equip].map(n => [Number(n.id), n.name.toLowerCase()]))
+                // English and CN's own Chinese name (cnName), so either finds a banner
+                featuredNames = new Map([...names.chara, ...names.equip].map(n => [Number(n.id), (n.name + "|" + (n.cnName ?? "")).toLowerCase()]))
                 renderList()
             }).catch(() => { })
             const featuresName = (event, search) => featuredNames !== null && (event.featured ?? []).some(id => (featuredNames.get(id) ?? "").includes(search))
+            // what a search matches: the name and type as stored (English) and as shown (the dashboard in Chinese,
+            // web/public/js/i18n.js: window.t gives the same Chinese the list shows)
+            const searchText = (event) => [event.name, window.t(event.name), kindOf(event), window.t(kindOf(event))].join("|").toLowerCase()
 
             function renderList() {
                 if (data === null) return
@@ -339,7 +343,7 @@
                 const all = data.events.filter(inMode).filter(inGame)
                 const shown = all.filter(event => {
                     if (family && kindKey(event) !== family) return false
-                    if (search && !event.name.toLowerCase().includes(search) && !featuresName(event, search)) return false
+                    if (search && !searchText(event).includes(search) && !featuresName(event, search)) return false
                     const state = stateOf(event)
                     if (showing === "scheduled" && !event.scheduled) return false
                     if (showing === "live" && state !== "live") return false
