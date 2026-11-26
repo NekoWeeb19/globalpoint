@@ -1044,6 +1044,31 @@ async function main() {
             }
         }
         if (lined) console.log(`Event parts put on their events' dates: ${lined}`)
+        // A box summon's boxes (box.orderedmap, keyed by box summon id) have dates of their own, and the game counts a
+        // box as unlocked only inside them: lined up above, Neon Skyline's box summon still had its boxes on JP's 2020
+        // dates, so no box was open (C3425). Boxes that don't overlap their box summon's dates are put on them: the
+        // first opens with the box summon, the rest keep their spacing and length.
+        const BOX_FILE = fileOf("master/box_gacha/box.orderedmap")
+        const span = text => {
+            const ds = (text.match(DATE) ?? []).map(parse).filter(ms => ms !== null && ms < FAR)
+            return ds.length ? { first: Math.min(...ds), last: Math.max(...ds) } : null
+        }
+        if (trees.has(BOX_GACHA_FILE) && trees.has(BOX_FILE)) {
+            const boxesOf = new Map()
+            for (const l of R.leaves(trees.get(BOX_FILE))) {
+                if (l.path.length !== 2) continue
+                if (!boxesOf.has(l.path[0])) boxesOf.set(l.path[0], [])
+                boxesOf.get(l.path[0]).push(l.leaf)
+            }
+            for (const l of R.leaves(trees.get(BOX_GACHA_FILE))) {
+                const own = l.path.length === 1 && span(l.leaf.text)
+                const boxes = (boxesOf.get(l.path[0]) ?? []).map(leaf => ({ leaf, s: span(leaf.text) })).filter(b => b.s)
+                if (!own || boxes.length === 0 || boxes.some(b => b.s.first <= own.last && b.s.last >= own.first)) continue
+                const from = Math.min(...boxes.map(b => b.s.first)), shift = own.first - from
+                for (const { leaf } of boxes) R.setLeafText(leaf, leaf.text.replace(DATE, found => { const ms = parse(found); return ms === null || ms >= FAR ? found : format(ms + shift) }))
+                console.log(`box summon ${l.path[0]}: its ${boxes.length} boxes (dated ${format(from).slice(0, 10)}) put on its dates, ${format(own.first).slice(0, 10)}`)
+            }
+        }
     }
 
     let moved = 0, events = 0
