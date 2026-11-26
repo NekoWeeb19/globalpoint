@@ -33,7 +33,7 @@ game (it's ARM64): LDPlayer 9 is tested, and MuMu works with an Android 12 insta
 hiccups on its Android 15 one).
 
 1. Download the files from the [Google Drive folder](https://drive.google.com/drive/folders/1EdY0GajMm-v6c219s02ZnuEz0u_0XdOO) (or [MEGA](https://mega.nz/folder/fWRATYbJ#z8wtDI7krmKgBn2HL_s0jg); in mainland China,
-   [Baidu Netdisk](https://pan.baidu.com/s/1e_OhBTvGzM9OLFQnAozUkg?pwd=3625), code `3625`): the two APKs,
+   [Baidu Netdisk](https://pan.baidu.com/s/1e_OhBTvGzM9OLFQnAozUkg?pwd=3625), code `3625`): the two APKs [English] and Companion App,
    `starpoint-data.zip`, the comics zip if you want comics, and the game files: the three
    `.obb` parts. Leave them in the phone's **Download**
    folder and don't unzip anything.
