@@ -294,7 +294,12 @@
             // when the CN game runs it on its own (its dates in CN's data), next to global's original run
             // a list by start date: the CN game's own when known, else the original run's
             const byStart = (items) => [...items].sort((a, b) => Date.parse((a.cn ?? a.original).start) - Date.parse((b.cn ?? b.original).start))
-            const cnLine = (cn) => "In the CN game: " + fullText(cn.start) + " to " + fullText(cn.end) + " UTC"
+            // CN launched 2021-10-26 (10:00 China time): a run dated before then in the CN data is the JP run, which CN never ran
+            // (CN's own seasonal ones are separate rows, e.g. qingming_2022 for Golden Week)
+            const CN_LAUNCH = Date.parse("2021-10-26T02:00:00Z")
+            const cnLine = (cn) => Date.parse(cn.start) < CN_LAUNCH
+                ? "Not in the CN game: JP's run, " + fullText(cn.start) + " to " + fullText(cn.end) + " UTC, before CN's launch (2021-10-26)"
+                : "In the CN game: " + fullText(cn.start) + " to " + fullText(cn.end) + " UTC"
 
             function renderLists() {
                 if (data === null) return

@@ -443,8 +443,8 @@ function featuredIds(id: string): number[] {
 }
 
 /** Every event's own dates in CN's data (.database/cn_event_windows.json, written by each CN update build), or null. */
-let cnWindowsCache: { mtimeMs: number, windows: Record<string, { start: string, end: string }> } | null = null
-export function cnEventWindows(): Record<string, { start: string, end: string }> | null {
+let cnWindowsCache: { mtimeMs: number, windows: Record<string, { start: string, end: string, copyOf?: string }> } | null = null
+export function cnEventWindows(): Record<string, { start: string, end: string, copyOf?: string }> | null {
     const file = path.join(process.cwd(), ".database", "cn_event_windows.json")
     try {
         const mtimeMs = statSync(file).mtimeMs
@@ -475,7 +475,10 @@ export function getEventOverview(): { serverDate: string, events: EventOverview[
         const window = eventWindow(event)
         if (window === null) continue
         const entry = schedule.entries.find(e => e.key === event.key) ?? null
-        const cn = cnDates?.[event.key] ?? null
+        const cnWindow = cnDates?.[event.key] ?? null
+        // CN's own copy of a banner, hidden in the game: its original (the same banner, CN's settings) is listed instead
+        if (cnWindow?.copyOf && !entry) continue
+        const cn = cnWindow ? { start: cnWindow.start, end: cnWindow.end } : null
         // an event that isn't moved runs on its CN dates in the CN game (the game this server is for)
         const start = entry ? Date.parse(entry.start) : cn ? Date.parse(cn.start) : window.start
         const end = entry ? Date.parse(entry.end) : cn ? Date.parse(cn.end) : window.end

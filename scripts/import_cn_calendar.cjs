@@ -118,7 +118,63 @@ const rowsOf = buf => {
     return rows
 }
 
+const GACHA = "master/gacha/gacha.orderedmap"
+// a hidden copy's dates: a week in 2011, before any save starts (as the builder's banners without a picture)
+const COPY_HIDDEN = ["2011-01-01 12:00:00", "2011-01-08 11:59:59"]
+const COPY_SUFFIXES = ["_1", "_2", "_001", "_2022"]
+
+/** CN's banners each come twice in its files: JP's original (JP's dates, JP's own tickets, no guarantee settings) and
+ *  CN's own copy, which CN ran (its own dates and settings; named like the original plus "_1", or "_2" for some),
+ *  whose row number is far from the original's (6 xmas19 -> 63 xmas19_1, 10061 -> 1531). The fork keeps one: CN's
+ *  copy, moved onto the original's number (its row 6 is CN's row 63 apart from the name). Taking only its dates
+ *  ran JP's original on CN's dates beside CN's copy (two of the same banner at once, the original with JP's settings).
+ *  So each original takes every cell of CN's copy but its name (its dates as the fork has them, the import's own
+ *  dates otherwise), and the copy is hidden. Pairs: the fork's rows that are another CN row under the original's
+ *  name, then the originals the fork doesn't have, by name and the same unit pool. Writes into the gacha table's
+ *  cells; returns the [original, copy] pairs. */
+function cnBannerCopies(mine, cn, cells, hiddenIds) {
+    const flat = recs => recs.flat()
+    const ids = [...cn.keys()]
+    const byName = new Map(ids.map(id => [flat(cn.get(id))[0], id]))
+    const pairs = [], taken = new Set()
+    for (const [id, recs] of mine) {
+        const own = cn.get(id)
+        const f = flat(recs)
+        if (!own || flat(own)[0] !== f[0]) continue
+        const same = row => row && row.length === f.length && row.every((v, i) => i === 0 || v === f[i])
+        if (same(flat(own))) continue
+        const src = ids.filter(j => j !== id && same(flat(cn.get(j))))
+        if (src.length === 1 && !taken.has(src[0])) { pairs.push([id, src[0], true]); taken.add(id); taken.add(src[0]) }
+    }
+    for (const id of ids) {
+        if (taken.has(id)) continue
+        const o = flat(cn.get(id))
+        for (const suffix of COPY_SUFFIXES) {
+            const j = byName.get(o[0] + suffix)
+            if (!j || taken.has(j) || flat(cn.get(j))[14] !== o[14]) continue
+            pairs.push([id, j, mine.has(id) && flat(mine.get(id))[0] === o[0]]); taken.add(id); taken.add(j)
+            break
+        }
+    }
+    const used = pairs.filter(([o, c]) => !hiddenIds.has(o) && !hiddenIds.has(c))
+    for (const [orig, copy, forkDated] of used) {
+        const o = flat(cn.get(orig)), c = flat(cn.get(copy))
+        const row = cells[orig] ??= {}
+        for (let i = 1; i < o.length; i++) {
+            if (o[i] === c[i]) continue
+            // the fork's own dates for the original (e.g. CN's last banners kept open past the shutdown) stay
+            if (DATE.test(o[i]) && DATE.test(c[i]) && forkDated) continue
+            if (row[String(i)]) continue
+            row[String(i)] = [o[i], c[i]]
+        }
+        const hide = cells[copy] = {}
+        c.forEach((v, i) => { if (DATE.test(v) && v >= HIDDEN_BEFORE) hide[String(i)] = [v, i === 29 ? COPY_HIDDEN[0] : COPY_HIDDEN[1]] })
+    }
+    return used
+}
+
 ;(async () => {
+    let gachaRows = null
     const fork = await forkTables()
     const tables = {}, hidden = [], perTable = []
     const review = { notInCn: [], structure: [], changedRows: {}, otherCells: {}, onlyInFork: {}, onlyInCn: {} }
@@ -155,6 +211,7 @@ const rowsOf = buf => {
             if (dates[key]) rowsDated++
             if (rowHidden) hidden.push(`${logical} ${key}`)
         }
+        if (logical === GACHA) gachaRows = { mine, cn }
         for (const key of cn.keys()) if (!mine.has(key)) (review.onlyInCn[logical] ??= []).push(key)
         if (other > 0) review.otherCells[logical] = other
         if (Object.keys(dates).length > 0) tables[logical] = dates
@@ -223,12 +280,14 @@ const rowsOf = buf => {
         if (Object.keys(cellsTo).length > 0) (tables[logical] ??= {})[key] = cellsTo
     }
     for (const [logical, key, col, from, to] of FORK_CELLS) ((tables[logical] ??= {})[key] ??= {})[String(col)] = [from, to]
+    const copies = gachaRows ? cnBannerCopies(gachaRows.mine, gachaRows.cn, tables[GACHA] ??= {}, new Set(hidden.filter(h => h.startsWith(GACHA + " ")).map(h => h.slice(GACHA.length + 1)))) : []
+    console.log(`summon banners run as CN's own copy: ${copies.length} (copies hidden)`)
     const sha = crypto.createHash("sha256")
     if (source.endsWith(".zip")) sha.update(fs.readFileSync(source))
     fs.writeFileSync(OUT, JSON.stringify({
         _note: "CN's own calendar, taken from 晓之车's starpoint-cn tables by scripts/import_cn_calendar.cjs: table -> row key -> cell -> [CN game files' date, CN's real date]. Cell = column, or record:column. 'hidden' = rows of events CN never ran: dated before 2013 by CN, or listed in the script's JP_ONLY; 'hiddenYears' = how many years each moved back so its event starts in 2020 (their final dates are in 'tables' like every other row). Rows the fork changed in other ways are left out (see the import report), apart from the few cells the script's FORK_CELLS takes (banner pools and pictures).",
         source: { name: path.basename(source), sha256: source.endsWith(".zip") ? sha.digest("hex") : null, imported: new Date().toISOString().slice(0, 10) },
-        hidden, hiddenYears, tables,
+        hidden, hiddenYears, bannerCopies: Object.fromEntries(copies.map(([orig, copy]) => [copy, orig])), tables,
     }, null, 1) + "\n")
     const counts = { tables: fork.size, tablesWithDates: Object.keys(tables).length, rowsDated, cells, hidden: hidden.length, changedRowsWithDates: rowsChanged }
     fs.writeFileSync(reportFile, JSON.stringify({ counts, perTable, ...review }, null, 1))

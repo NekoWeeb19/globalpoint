@@ -30,6 +30,8 @@
  "Skipped in": "跳过的年份：",
  "(the game runs one of its own then, or another picked one that runs longer)": "（届时游戏自己有活动，或另一个已选的更长的活动在进行）",
  "In the CN game:": "国服游戏中：",
+ "Not in the CN game: JP's run,": "国服未举办：日服于",
+ "UTC, before CN's launch (2021-10-26)": "UTC 举办，早于国服上线（2021-10-26）",
  "Overlaps a longer one": "与更长的活动重叠",
  "Doesn't repeat: a longer picked bonus is on at the same time": "不重复：同一时间有更长的已选奖励开放",
  "A copy runs every later year on the same dates and works on any of the": "之后每年于相同日期举办一次副本，适用于届时开放的任意",

@@ -89,6 +89,8 @@ const STORY_FIXES_ZH = require("./game_language.cjs").readGameLanguage(dataDir()
 // CN client a used copy it doesn't have (an unknown campaign id stops it with C8601)
 const builtFreePullCopyIds = []
 const PATCHES = path.join(cdnDir(), "cn_patches", "patches.json")
+// CN's own copies of banners that run under their original's number (assets/cn_calendar_dates.json bannerCopies: copy -> original)
+const BANNER_COPIES = (() => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, "assets", "cn_calendar_dates.json"), "utf8")).bannerCopies ?? {} } catch { return {} } })()
 const OFFSET = 8 * 3600 * 1000
 const DATE = /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/g
 const parse = t => { const ms = Date.parse(t.replace(" ", "T") + "Z"); return isNaN(ms) ? null : ms - OFFSET }
@@ -959,6 +961,9 @@ async function main() {
             const last = v => { const all = (v ?? "").match(DATE) ?? []; return parse(all[all.length - 1] ?? "") }
             const start = first(c[own.start]), end = last(c[own.end])
             if (start !== null && end !== null && end >= start) windows[event.key] = { start: new Date(start).toISOString(), end: new Date(end).toISOString() }
+            // CN's own copy of a banner, hidden: its original runs in its place (scripts/import_cn_calendar.cjs
+            // cnBannerCopies); the dashboard leaves it out
+            if (windows[event.key] && event.family === "gacha" && BANNER_COPIES[id]) windows[event.key].copyOf = BANNER_COPIES[id]
         }
         // the Campaigns tab's rows: "login:<group>" (a group's first day, columns 41/42), "freePull:<id>"
         // (gacha_campaign 3/4), "reward:<id>" and "stamina:<id>" (1/2), before the yearly copies are added

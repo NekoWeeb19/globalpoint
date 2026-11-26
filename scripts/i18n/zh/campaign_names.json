@@ -48,6 +48,7 @@
  "Original run: {} to {} UTC (its own banners only)": "原本举办：{} 至 {} UTC（仅限其自身的扭蛋）",
  "Original run: {} to {} UTC": "原本举办：{} 至 {} UTC",
  "In the CN game: {} to {} UTC": "国服游戏中：{} 至 {} UTC",
+ "Not in the CN game: JP's run, {} to {} UTC, before CN's launch (2021-10-26)": "国服未举办：日服于 {} 至 {} UTC 举办，早于国服上线（2021-10-26）",
  "This year's run: {} to {} UTC": "今年的举办：{} 至 {} UTC",
  "Next run: {} to {} UTC": "下次举办：{} 至 {} UTC",
  "Repeats every year, {} to {} UTC (the CN game's dates)": "每年重复，{} 至 {} UTC（国服游戏的日期）",
