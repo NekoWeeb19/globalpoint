@@ -122,6 +122,10 @@ const GACHA = "master/gacha/gacha.orderedmap"
 // a hidden copy's dates: a week in 2011, before any save starts (as the builder's banners without a picture)
 const COPY_HIDDEN = ["2011-01-01 12:00:00", "2011-01-08 11:59:59"]
 const COPY_SUFFIXES = ["_1", "_2", "_001", "_2022"]
+// pairs whose copy is named differently, [original, copy, columns the original keeps]: the Z collab rerun's copy
+// (revival_character_pickup_zcollabo_1) has a picture CN's files don't have, so the original keeps its own (column 3),
+// as the fork's row does
+const NAMED_COPIES = [["30000", "1552", [3]]]
 
 /** CN's banners each come twice in its files: JP's original (JP's dates, JP's own tickets, no guarantee settings) and
  *  CN's own copy, which CN ran (its own dates and settings; named like the original plus "_1", or "_2" for some),
@@ -146,6 +150,11 @@ function cnBannerCopies(mine, cn, cells, hiddenIds) {
         const src = ids.filter(j => j !== id && same(flat(cn.get(j))))
         if (src.length === 1 && !taken.has(src[0])) { pairs.push([id, src[0], true]); taken.add(id); taken.add(src[0]) }
     }
+    const keepCols = new Map()
+    for (const [orig, copy, keep] of NAMED_COPIES) {
+        if (!cn.has(orig) || !cn.has(copy) || taken.has(orig) || taken.has(copy)) continue
+        pairs.push([orig, copy, false]); taken.add(orig); taken.add(copy); keepCols.set(orig, new Set(keep))
+    }
     for (const id of ids) {
         if (taken.has(id)) continue
         const o = flat(cn.get(id))
@@ -161,7 +170,7 @@ function cnBannerCopies(mine, cn, cells, hiddenIds) {
         const o = flat(cn.get(orig)), c = flat(cn.get(copy))
         const row = cells[orig] ??= {}
         for (let i = 1; i < o.length; i++) {
-            if (o[i] === c[i]) continue
+            if (o[i] === c[i] || keepCols.get(orig)?.has(i)) continue
             // the fork's own dates for the original (e.g. CN's last banners kept open past the shutdown) stay
             if (DATE.test(o[i]) && DATE.test(c[i]) && forkDated) continue
             if (row[String(i)]) continue
@@ -216,6 +225,18 @@ function cnBannerCopies(mine, cn, cells, hiddenIds) {
         if (other > 0) review.otherCells[logical] = other
         if (Object.keys(dates).length > 0) tables[logical] = dates
         perTable.push({ table: logical, rows: mine.size, cnRows: cn.size, datedRows: Object.keys(dates).length })
+    }
+    // banners the fork hides (dated before 2013) under another number, found by name: e.g. JP's freemium armament
+    // portal equipment_9_enable_freemium, CN's 15016 and the fork's 5016, which ran on JP's dates in CN's first
+    // December (2021-12-17) beside CN's own armament portal
+    if (gachaRows) {
+        const forkByName = new Map([...gachaRows.mine].map(([id, recs]) => [recs.flat()[0], [id, recs.flat()]]))
+        for (const [id, recs] of gachaRows.cn) {
+            const f = forkByName.get(recs.flat()[0])
+            if (!f || f[0] === id || !DATE.test(f[1][29] ?? "") || f[1][29] >= HIDDEN_BEFORE) continue
+            const key = `${GACHA} ${id}`
+            if (!hidden.includes(key)) hidden.push(key)
+        }
     }
     // events CN never ran that the fork doesn't hide under the same id: every row the catalog lists for them
     const catalog = JSON.parse(fs.readFileSync(CATALOG, "utf8"))

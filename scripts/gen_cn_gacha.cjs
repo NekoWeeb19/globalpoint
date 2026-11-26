@@ -75,14 +75,19 @@ async function pool(oddsId) {
         Object.assign(gachas[id], perAccount(R.splitCsv(line.trimEnd())))
     }
     const added = [], skipped = [], missingUnits = new Map()
+    let refreshed = 0
     for (const [id, line] of Object.entries(cn)) {
-        if (gachas[id] !== undefined) continue
+        // a CN-only banner an earlier run added is written again from CN's row as it is now (CN's calendar applied):
+        // an original that runs as CN's own copy (scripts/import_cn_calendar.cjs cnBannerCopies) takes the copy's
+        // pools, e.g. 30000 the Z collab rerun's 2023 pool (15 more units), 10061-10088 their CN runs' pools
+        const again = gachas[id] !== undefined && gachas[id].cn === true
+        if (gachas[id] !== undefined && !again) continue
         const c = R.splitCsv(line.replace(/\n$/, ""))
         const kind = Number(c[13])
         const cols = kind === 1 ? [24, 23, 22] : [16, 15, 14]
         const pools = []
         for (const col of cols) pools.push(await pool(c[col]))
-        if (pools.some(p => p === null || p.length === 0) || !utc(c[29]) || !utc(c[30])) { skipped.push(id); continue }
+        if (pools.some(p => p === null || p.length === 0) || !utc(c[29]) || !utc(c[30])) { if (!again) skipped.push(id); continue }
         if (kind === 0) for (const p of pools) for (const e of p) if (characters[e.id] === undefined) missingUnits.set(e.id, (missingUnits.get(e.id) ?? 0) + 1)
         gachas[id] = {
             type: kind,
@@ -98,7 +103,8 @@ async function pool(oddsId) {
             ...perAccount(c),
             cn: true,
         }
-        added.push(id)
+        if (again) refreshed++
+        else added.push(id)
     }
     // banners both have under the same id but that are different banners in CN (e.g. 1574: CN's Haruhi Suzumiya
     // collab spotlight, a global spotlight of other units): CN's own version, used for the CN app's pulls
@@ -139,7 +145,7 @@ async function pool(oddsId) {
     const sharedFile = path.join(ROOT, "assets", "gacha_cn_shared.json")
     if (!DRY) fs.writeFileSync(file, JSON.stringify(gachas))
     if (!DRY) fs.writeFileSync(sharedFile, JSON.stringify(shared))
-    console.log(`added ${added.length} CN-only banners (${skipped.length} skipped: no odds or dates)`)
+    console.log(`added ${added.length} CN-only banners (${skipped.length} skipped: no odds or dates), ${refreshed} written again from CN's rows`)
     console.log(`${sharedChanged.length} banners have the same id as a global one but are different in CN (CN's own version written): ${sharedChanged.slice(0, 60).join(",")}${sharedChanged.length > 60 ? ",..." : ""}`)
     console.log(`units in their pools the server doesn't know: ${missingUnits.size} -> ${[...missingUnits.keys()].slice(0, 40).join(",")}`)
 })().catch(e => { console.error(e); process.exit(1) })

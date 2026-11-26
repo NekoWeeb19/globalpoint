@@ -312,6 +312,7 @@
   "master/quest/event/story_event.orderedmap 300001",
   "master/quest/event/story_event.orderedmap 200004",
   "master/reward/event/collect_item_event.orderedmap 13001",
+  "master/gacha/gacha.orderedmap 15016",
   "master/quest/event/story_event.orderedmap 200003",
   "master/quest/event/story_event_single_quest.orderedmap 200003/1",
   "master/quest/event/story_event_single_quest.orderedmap 200003/2",
@@ -673,6 +674,7 @@
   "master/quest/event/story_event_single_quest.orderedmap 400001/5": 1,
   "master/quest/event/story_event.orderedmap 400001": 1,
   "master/reward/event/collect_item_event.orderedmap 13001": 2,
+  "master/gacha/gacha.orderedmap 15016": 1,
   "master/quest/event/story_event.orderedmap 200007": 1,
   "master/quest/event/story_event_single_quest.orderedmap 200007/1": 1,
   "master/quest/event/story_event_single_quest.orderedmap 200007/2": 1,
@@ -915,6 +917,7 @@
   "1548": "10075",
   "1549": "10076",
   "1550": "10077",
+  "1552": "30000",
   "1553": "10078",
   "1554": "10079",
   "1555": "10070",
@@ -9201,6 +9204,16 @@
      "2011-01-08 11:59:59"
     ]
    },
+   "1552": {
+    "29": [
+     "2023-03-24 12:00:00",
+     "2011-01-01 12:00:00"
+    ],
+    "30": [
+     "2023-04-06 11:59:59",
+     "2011-01-08 11:59:59"
+    ]
+   },
    "1553": {
     "29": [
      "2023-03-24 12:00:00",
@@ -12395,6 +12408,16 @@
      "true"
     ]
    },
+   "15016": {
+    "29": [
+     "2021-12-17 12:00:00",
+     "2020-12-17 12:00:00"
+    ],
+    "30": [
+     "2021-12-31 11:59:59",
+     "2020-12-31 11:59:59"
+    ]
+   },
    "25008": {
     "29": [
      "2022-07-14 12:00:00",
@@ -12751,6 +12774,72 @@
     "30": [
      "2025-08-14 23:59:59",
      "2011-01-08 11:59:59"
+    ]
+   },
+   "30000": {
+    "14": [
+     "revival_zcollabo_character_pickup_01_character_3",
+     "revival_zcollabo_1_character_3"
+    ],
+    "15": [
+     "revival_zcollabo_character_pickup_01_character_4",
+     "revival_zcollabo_1_character_4"
+    ],
+    "16": [
+     "revival_zcollabo_character_pickup_01_character_5",
+     "revival_zcollabo_1_character_5"
+    ],
+    "19": [
+     "true",
+     "false"
+    ],
+    "21": [
+     "false",
+     "true"
+    ],
+    "29": [
+     "2021-04-24 12:00:00",
+     "2023-03-24 12:00:00"
+    ],
+    "30": [
+     "2021-04-30 11:59:59",
+     "2023-04-06 11:59:59"
+    ],
+    "35": [
+     "167",
+     "142"
+    ],
+    "36": [
+     "168",
+     "143"
+    ],
+    "37": [
+     "bgm/event/advent_event/advent_event_z_collabo/battle/z_collabo_event_battle",
+     "(None)"
+    ],
+    "38": [
+     "false",
+     "true"
+    ],
+    "39": [
+     "(None)",
+     "tutorial_rarity"
+    ],
+    "40": [
+     "(None)",
+     "normal_guarantee"
+    ],
+    "41": [
+     "(None)",
+     "150"
+    ],
+    "42": [
+     "(None)",
+     "72"
+    ],
+    "44": [
+     "false",
+     "true"
     ]
    },
    "100100": {
