@@ -700,6 +700,12 @@ async function main() {
     // their newest copy of the feature table (only for this check; tables are still edited from the
     // translated/CN copies, never from an earlier schedule's output)
     let featureBuf = cn.has(featureFile) ? await cn.get(featureFile).buffer() : null
+    // the files of StarPoint's updates up to the 3-part OBB's version (1.4.800), which the OBB holds: the data pack
+    // leaves those updates out (scripts/build_pack.cjs OBB_VERSION), so a phone's update folder doesn't list them.
+    // Without their names every unit banner whose picture came in them counted as having none and was hidden (315 on
+    // a phone, the Launch Gala too). Names only (8,780), listed from the PC's updates 1.4.55-1.4.800.
+    const OBB_NAMES = path.join(ROOT, "assets", "cn_obb_update_names.txt.gz")
+    if (fs.existsSync(OBB_NAMES)) for (const name of require("zlib").gunzipSync(fs.readFileSync(OBB_NAMES)).toString("utf8").split("\n")) if (name) cnNames.add(name)
     if (fs.existsSync(PATCHES)) for (const p of JSON.parse(fs.readFileSync(PATCHES, "utf8"))) for (const a of p.archives) {
         const zf = path.join(path.dirname(PATCHES), a.file)
         if (!fs.existsSync(zf)) continue
