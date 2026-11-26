@@ -220,6 +220,15 @@ final class DataTransfer {
         PackResult result = new PackResult();
         result.packBytes = total;
         java.util.Set<String> inPack = new java.util.HashSet<>();
+        // custom units' own art updates (keptCustomArtUpdates): the pack's update list and folder replace this phone's
+        JSONArray keptUpdates = keptCustomArtUpdates(data);
+        for (int i = 0; i < keptUpdates.length(); i++) {
+            JSONArray archives = keptUpdates.getJSONObject(i).optJSONArray("archives");
+            if (archives != null) for (int j = 0; j < archives.length(); j++) {
+                String file = archives.getJSONObject(j).optString("file");
+                if (!file.isEmpty()) inPack.add(PATCHES_DIR + "/" + file.replace('\\', '/'));
+            }
+        }
         JSONObject info;
         try (InputStream raw = c.getContentResolver().openInputStream(uri);
              CountingStream counted = new CountingStream(new BufferedInputStream(raw, 1 << 20));
@@ -272,10 +281,80 @@ final class DataTransfer {
                 result.removed += removeOthers(new File(data, folder), folder, inPack);
             }
         }
+        restoreUpdates(data, keptUpdates);
         if (result.written + result.skipped == 0) throw new IOException(Tr.t("the pack holds no data"));
         c.getSharedPreferences("companion", Context.MODE_PRIVATE).edit().putString("dataPackVersion", result.version).apply();
         p.update(Tr.t("Done"), total, total);
         return result;
+    }
+
+    private static final String PATCHES_DIR = ".cdn/cn_patches";
+
+    /**
+     * The update list entries (.cdn/cn_patches/patches.json) of this phone's custom units' own art updates: a unit file
+     * (.cdn/custom_units/*.json) names its update as "art": {"patch": "1.4.9000"}. No pack has them, and a data pack's
+     * update list and folder replace this phone's: the unit's pictures went, the game update then left the unit out,
+     * and a save that owns it stopped on Home with C8601 ("key=<unit id>").
+     */
+    private static JSONArray keptCustomArtUpdates(File data) {
+        JSONArray kept = new JSONArray();
+        java.util.Set<String> versions = new java.util.HashSet<>();
+        File[] units = new File(data, CUSTOM_UNITS).listFiles();
+        if (units != null) for (File f : units) {
+            if (!f.isFile() || !f.getName().endsWith(".json") || f.getName().startsWith("_")) continue;
+            try {
+                JSONObject art = new JSONObject(readText(f)).optJSONObject("art");
+                String version = art == null ? "" : art.optString("patch");
+                if (!version.isEmpty()) versions.add(version);
+            } catch (Exception ignored) { }
+        }
+        if (versions.isEmpty()) return kept;
+        try {
+            JSONArray list = new JSONArray(readText(new File(data, PATCHES_DIR + "/patches.json")));
+            for (int i = 0; i < list.length(); i++) {
+                JSONObject entry = list.getJSONObject(i);
+                if (versions.contains(entry.optString("version"))) kept.put(entry);
+            }
+        } catch (Exception ignored) { }
+        return kept;
+    }
+
+    /** Puts kept entries back into the update list the pack wrote (in version order), when it lacks them. */
+    private static void restoreUpdates(File data, JSONArray kept) throws Exception {
+        if (kept.length() == 0) return;
+        File listFile = new File(data, PATCHES_DIR + "/patches.json");
+        JSONArray list = listFile.exists() ? new JSONArray(readText(listFile)) : new JSONArray();
+        List<JSONObject> entries = new ArrayList<>();
+        java.util.Set<String> have = new java.util.HashSet<>();
+        for (int i = 0; i < list.length(); i++) { entries.add(list.getJSONObject(i)); have.add(list.getJSONObject(i).optString("version")); }
+        int added = 0;
+        for (int i = 0; i < kept.length(); i++) {
+            JSONObject entry = kept.getJSONObject(i);
+            if (have.add(entry.optString("version"))) { entries.add(entry); added++; }
+        }
+        if (added == 0) return;
+        java.util.Collections.sort(entries, (a, b) -> compareVersions(a.optString("version"), b.optString("version")));
+        JSONArray out = new JSONArray();
+        for (JSONObject e : entries) out.put(e);
+        File part = new File(listFile.getPath() + ".part");
+        try (OutputStream o = new FileOutputStream(part)) { o.write(out.toString().getBytes("UTF-8")); }
+        if (!part.renameTo(listFile)) { listFile.delete(); if (!part.renameTo(listFile)) throw new IOException("can't write " + listFile); }
+    }
+
+    /** "1.4.800" against "1.4.9000", by number. */
+    private static int compareVersions(String a, String b) {
+        String[] x = a.split("\\."), y = b.split("\\.");
+        for (int i = 0; i < Math.max(x.length, y.length); i++) {
+            long p = 0, q = 0;
+            try { p = i < x.length ? Long.parseLong(x[i]) : 0; } catch (NumberFormatException ignored) { }
+            try { q = i < y.length ? Long.parseLong(y[i]) : 0; } catch (NumberFormatException ignored) { }
+            if (p != q) return p < q ? -1 : 1;
+        }
+        return 0;
+    }
+
+    private static String readText(File f) throws IOException {
+        try (InputStream in = new FileInputStream(f)) { return new String(readAll(in), "UTF-8"); }
     }
 
     /** Deletes the files under dir (shown as at/...) that aren't in keep; returns how many. */
