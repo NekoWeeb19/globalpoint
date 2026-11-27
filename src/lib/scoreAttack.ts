@@ -4,6 +4,11 @@
 // The rules follow the Chinese fork (lib/quest/finish/score-attack-handler.ts, lib/quest/battle-history.ts);
 // the reply fields are the global client's (data.score_attack_event.main_character_ids / reward_ids,
 // data.history[i].*).
+// The CN client has its own quests and borders (assets/score_attack_cn.json, scripts/gen_cn_score_attack.cjs).
+
+import scoreAttackJson from "../../assets/score_attack.json"
+import scoreAttackCnJson from "../../assets/score_attack_cn.json"
+import { inCnRequest } from "./cnClient"
 
 export interface ScoreAttackBorder {
     id: number
@@ -16,6 +21,11 @@ export interface ScoreAttackData {
     quests: Record<string, { eventId: number, localId: number, scores: [number, number, number, number] }>
     /** Quest id -> its score borders, lowest first. */
     borders: Record<string, ScoreAttackBorder[]>
+}
+
+/** The Score Attack data for the client of the request being handled. */
+export function scoreAttackDataSync(): ScoreAttackData {
+    return (inCnRequest() ? scoreAttackCnJson : scoreAttackJson) as unknown as ScoreAttackData
 }
 
 /** The grade for a score: 5 SS, 4 S, 3 A, 2 B, 1 below B (the clear_rank values). */

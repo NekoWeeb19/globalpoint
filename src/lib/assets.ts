@@ -17,6 +17,7 @@ import raidEventQuests from "../../assets/raid_event_quest.json";
 import rankingEventSingleQuests from "../../assets/ranking_event_single_quest.json";
 import rushEventQuests from "../../assets/rush_event_quest.json";
 import scoreAttackEventQuests from "../../assets/score_attack_event_quest.json";
+import scoreAttackEventQuestsCn from "../../assets/score_attack_event_quest_cn.json";
 import soloTimeAttackEventQuests from "../../assets/solo_time_attack_event_quest.json";
 import storyEventSingleQuests from "../../assets/story_event_single_quest.json";
 import towerDungeonEventQuests from "../../assets/tower_dungeon_event_quest.json";
@@ -312,7 +313,8 @@ export function getQuestFromCategorySync(
         case QuestCategory.SOLO_TIME_ATTACK_EVENT:
             return getQuestSync((soloTimeAttackEventQuests as RawQuests), questId)
         case QuestCategory.SCORE_ATTACK_EVENT:
-            return getQuestSync((scoreAttackEventQuests as RawQuests), questId)
+            // the CN client has its own Infinite Arena quests (scripts/gen_cn_score_attack.cjs)
+            return getQuestSync(((inCnRequest() ? scoreAttackEventQuestsCn : scoreAttackEventQuests) as RawQuests), questId)
         case QuestCategory.HARD_MULTI_EVENT:
             return getQuestSync((hardMultiEventQuests as RawQuests), questId)
         // CN practice battles (scripts/gen_cn_practice_quests.cjs): no rewards

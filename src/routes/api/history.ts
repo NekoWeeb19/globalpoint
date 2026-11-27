@@ -7,15 +7,12 @@
 // game with U0000, a player's log 2026-11-12).
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import scoreAttackJson from "../../../assets/score_attack.json"
 import { getAccountPlayers, getPlayerSync, getSession } from "../../data/wdfpData";
 import { generateDataHeaders } from "../../utils";
-import { ScoreAttackData } from "../../lib/scoreAttack";
+import { scoreAttackDataSync } from "../../lib/scoreAttack";
 import { getScoreAttackHistorySync, PRACTICE_HISTORY_EVENT } from "../../nya/scoreAttack";
 import { receiveHistoryPageSync } from "../../nya/receiveHistory";
 
-const scoreAttackData = scoreAttackJson as unknown as ScoreAttackData
-const scoreAttackEvents = new Set(Object.values(scoreAttackData.quests).map(quest => quest.eventId))
 
 const bad = (reply: FastifyReply, message = "Invalid request body.") => reply.status(400).send({ "error": "Bad Request", "message": message })
 
@@ -33,7 +30,7 @@ const routes = async (fastify: FastifyInstance) => {
         const body = request.body as { viewer_id: number, event_id: unknown }
         const playerId = await viewerPlayer(body?.viewer_id)
         const eventId = body?.event_id
-        if (playerId === null || typeof eventId !== "number" || !scoreAttackEvents.has(eventId)) return bad(reply)
+        if (playerId === null || typeof eventId !== "number" || !Object.values(scoreAttackDataSync().quests).some(quest => quest.eventId === eventId)) return bad(reply)
         reply.header("content-type", "application/x-msgpack")
         return reply.status(200).send({
             "data_headers": generateDataHeaders({ viewer_id: body.viewer_id }),

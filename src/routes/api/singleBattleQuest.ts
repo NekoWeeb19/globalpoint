@@ -31,10 +31,8 @@ import { givePeriodicDropSync } from "../../nya/periodicReward";
 import { NUGGETS_PER_CLEAR, rescueNugget } from "../../nya/rescue";
 import { cnCoinSwap } from "../../lib/cnCoinSwaps";
 import { rescueRewardsOn } from "../../nya/serverSettings";
-import scoreAttackJson from "../../../assets/score_attack.json";
-import { borderRewardItems, mainCharacterIds, newlyPassedBorders, ScoreAttackData, scoreAttackCleared, scoreAttackGrade } from "../../lib/scoreAttack";
+import { borderRewardItems, mainCharacterIds, newlyPassedBorders, scoreAttackCleared, scoreAttackDataSync, scoreAttackGrade } from "../../lib/scoreAttack";
 import { PRACTICE_HISTORY_EVENT, recordScoreAttackBattleSync } from "../../nya/scoreAttack";
-const scoreAttackData = scoreAttackJson as unknown as ScoreAttackData
 const eventDropRules = eventDropData as unknown as EventDropData
 // the CN client's own treasure hunts (CN's events, items and dates)
 const cnEventDropRules = cnEventDropData as unknown as EventDropData
@@ -203,6 +201,7 @@ const routes = async (fastify: FastifyInstance) => {
         if (campaign.ids.length > 0) console.log(`[campaign] Quest ${questId}: items x${campaign.items}, EXP x${campaign.exp}, mana x${campaign.mana} (campaigns ${campaign.ids.join(", ")}).`)
 
         // Score Attack: graded by score instead of time, and cleared once the score reaches the first border
+        const scoreAttackData = scoreAttackDataSync()
         const scoreAttack = questCategory === QuestCategory.SCORE_ATTACK_EVENT ? scoreAttackData.quests[String(questId)] : undefined
         const scoreAttackBorders = scoreAttack === undefined ? [] : scoreAttackData.borders[String(questId)] ?? []
 

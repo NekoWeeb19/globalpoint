@@ -5,8 +5,9 @@
 //   node scripts/test_score_attack.mjs
 
 import { readFileSync } from "node:fs"
-import { borderRewardItems, historyRecord, mainCharacterIds, newlyPassedBorders, scoreAttackCleared, scoreAttackGrade } from "../out/lib/scoreAttack.js"
+import { borderRewardItems, historyRecord, mainCharacterIds, newlyPassedBorders, scoreAttackCleared, scoreAttackDataSync, scoreAttackGrade } from "../out/lib/scoreAttack.js"
 import { getQuestFromCategorySync } from "../out/lib/assets.js"
+import { runInCnContext } from "../out/lib/cnClient.js"
 
 const data = JSON.parse(readFileSync(new URL("../assets/score_attack.json", import.meta.url), "utf8"))
 let failures = 0
@@ -33,6 +34,13 @@ check("a lower score than the best pays nothing", newlyPassedBorders(borders, 20
 check("beating the best pays only the new borders", JSON.stringify(newlyPassedBorders(borders, 20000000, 40000000).map(b => b.id)) === "[1003]")
 const all = newlyPassedBorders(borders, 0, 1e12)
 check(`every border at once: 60 borders, items ${JSON.stringify([...borderRewardItems(all)])}`, all.length === 60)
+
+// the CN client: its own quests (1001-1060, the Infinite Arena 1101-1163) and borders
+const cn = JSON.parse(readFileSync(new URL("../assets/score_attack_cn.json", import.meta.url), "utf8"))
+check("CN data: 123 quests, the dark Infinite Arena quest 1114 has 100 borders", Object.keys(cn.quests).length === 123 && cn.borders["1114"]?.length === 100 && cn.borders["1001"][0].score === 1050000)
+let cnQuest = null, cnData = null, globalQuest = getQuestFromCategorySync(27, 1114)
+runInCnContext(true, () => { cnQuest = getQuestFromCategorySync(27, 1114); cnData = scoreAttackDataSync() })
+check("quest 1114 is found for the CN client only, with CN data", globalQuest === null && cnQuest?.rankPointReward === 10 && Object.keys(cnData.quests).length === 123 && Object.keys(scoreAttackDataSync().quests).length === 30, { globalQuest, cnQuest })
 
 // reply pieces
 check("main_character_ids: slot -> leader", JSON.stringify(mainCharacterIds({ characters: [{ id: 111001 }, null, { id: 2 }] })) === JSON.stringify({ 0: 111001, 2: 2 }))
